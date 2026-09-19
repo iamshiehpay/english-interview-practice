@@ -1,0 +1,86 @@
+{
+  "reviewVersion": "1.0.0",
+  "contractVersion": "2.0.0",
+  "generatedAt": "2026-09-18T11:36:22.929Z",
+  "rawReport": {
+    "generatedAt": "2026-09-18T11:32:12.441Z",
+    "provider": "Codex / ChatGPT subscription / gpt-5.6-sol",
+    "model": "gpt-5.6-sol",
+    "codeChecksum": "9a6278302bb215627bd33f67e683caf76375019c0b2674b129e5eda1ed4e6056",
+    "checksum": "2f571a173e0fa762560ba52cc045754e9a489d26e43c104fa94c56751fa4699d"
+  },
+  "sourceEvidence": {
+    "rawCodeChecksum": "9a6278302bb215627bd33f67e683caf76375019c0b2674b129e5eda1ed4e6056",
+    "capturedModelRunMatchesRaw": true,
+    "capturedNote": "Source hashes for running Codex v2 evaluation before the review-driven operation concurrency guard. Model contracts/providers remain unchanged by that guard.",
+    "currentCodeChecksum": "2e4ce5917773fa63fb6ac665dccd237f47d4df3965e6ccfa8acc6ff9dc8363cf",
+    "currentMatchesRaw": false,
+    "changedFiles": [
+      "src/operations.js"
+    ]
+  },
+  "artifactChecksums": {
+    "frozenAnalysis": "20257a5c9f16d483f222e6257143eb09c59d76031fef06bb295d4394dd59f247",
+    "bilingualAudit": "802ded78b7740dfec9762690bc08d467cbf005fede300a05a608f4c2648100b8",
+    "semanticReviews": "3e570cbe6afe35a4c6edf0fe038a2e719b3e286ad6adba38aa4ad205a206d3ce",
+    "humanLabels": "ac2d9cb2e40986ac1611b78e5d02428bc53690976216a383f4f9fdff8b158e32",
+    "creatorValidation": "c2ce504317947d9203901f593bc553afb85714c1f18214b3046670323f59fd65"
+  },
+  "automaticRevalidation": {
+    "pass": true,
+    "cases": 20,
+    "repeats": 3,
+    "outputs": 60,
+    "stability": {
+      "stable": 80,
+      "total": 80,
+      "ratio": 1,
+      "pass": true
+    }
+  },
+  "bilingualGate": {
+    "status": "PASS",
+    "pass": true,
+    "reviewedOutputs": 60,
+    "reviewer": "Independent AI reviewer /root/contracts (configured gpt-5.6-sol, high)",
+    "reviewedAt": "2026-09-18T11:34:53.822Z",
+    "errors": []
+  },
+  "humanLabels": {
+    "pass": false,
+    "status": "PENDING",
+    "approved": 0,
+    "errors": [
+      "ai-role-fit: missing, stale or invalid human approval",
+      "ai-experience-depth: missing, stale or invalid human approval",
+      "ai-behavioral: missing, stale or invalid human approval",
+      "ai-technical-communication: missing, stale or invalid human approval",
+      "backend-role-fit: missing, stale or invalid human approval",
+      "backend-experience-depth: missing, stale or invalid human approval",
+      "backend-behavioral: missing, stale or invalid human approval",
+      "backend-technical-communication: missing, stale or invalid human approval",
+      "data-role-fit: missing, stale or invalid human approval",
+      "data-experience-depth: missing, stale or invalid human approval",
+      "data-behavioral: missing, stale or invalid human approval",
+      "data-technical-communication: missing, stale or invalid human approval",
+      "embedded-role-fit: missing, stale or invalid human approval",
+      "embedded-experience-depth: missing, stale or invalid human approval",
+      "embedded-behavioral: missing, stale or invalid human approval",
+      "embedded-technical-communication: missing, stale or invalid human approval",
+      "frontend-role-fit: missing, stale or invalid human approval",
+      "frontend-experience-depth: missing, stale or invalid human approval",
+      "frontend-behavioral: missing, stale or invalid human approval",
+      "frontend-technical-communication: missing, stale or invalid human approval"
+    ]
+  },
+  "creator": {
+    "pass": false,
+    "status": "PENDING",
+    "count": 0
+  },
+  "releaseStatus": "BLOCKED",
+  "blockers": [
+    "Human-labelled expectations pending or stale",
+    "Creator five-loop real-use validation pending"
+  ]
+}

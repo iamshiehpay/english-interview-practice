@@ -1,0 +1,118 @@
+import {execFile} from 'node:child_process';
+import {promisify} from 'node:util';
+import {mkdtemp,rm,mkdir} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join,resolve} from 'node:path';
+import {createApplication} from '../src/server.js';
+const exec=promisify(execFile),directory=await mkdtemp(join(tmpdir(),'coach-browser-')),session=`coach-v3-${process.pid}`;
+const browser=(...args)=>exec('agent-browser',['--session',session,...args],{timeout:60000,maxBuffer:2000000});
+let server;
+const helpers=`
+const el=s=>document.querySelector(s), btn=t=>[...document.querySelectorAll('button')].find(b=>b.textContent.trim()===t);
+const wait=async(p,label)=>{for(let i=0;i<300;i++){if(p())return;await new Promise(r=>setTimeout(r,25));}throw Error(label+' / '+el('#error')?.textContent);};
+const click=n=>{if(typeof n==='string')n=el(n);if(!n)throw Error('Missing button');n.click();};
+const fill=(s,v)=>{const n=el(s);if(!n)throw Error('Missing '+s);n.value=v;n.dispatchEvent(new InputEvent('input',{bubbles:true}));};
+const ws=()=>fetch('/api/workspace').then(r=>r.json());
+`;
+const run=code=>browser('eval',`(async()=>{${helpers}${code}})()`);
+try {
+ ({server}=await createApplication({directory}));await new Promise(r=>server.listen(0,'127.0.0.1',r));const url=`http://127.0.0.1:${server.address().port}`;
+ await browser('set','viewport','1440','900');await browser('open',url);
+ await mkdir('docs/verification/learner-flow',{recursive:true});
+ await run(`await wait(()=>!el('#capture').disabled,'ready');el('nav [data-view="evidence"]').focus();`);
+ await browser('press','Enter');await run(`await wait(()=>el('#resume-text'),'keyboard resume navigation');el('nav [data-view="home"]').focus();`);await browser('press','Enter');
+ await browser('screenshot',resolve('docs/verification/learner-flow/home.png'));
+ await run(`
+ click('[data-view="evidence"]');await wait(()=>el('#evidence-view').classList.contains('active')&&el('#resume-text'),'resume form');
+ const originalExtractFetch=window.fetch.bind(window);
+ window.fetch=async(...a)=>{if(String(a[0]).endsWith('/resume/extract')){const data=JSON.parse(a[1].body);await new Promise(r=>setTimeout(r,data.name==='A.txt'?500:30));return new Response(JSON.stringify({name:data.name,text:data.name+' Python developer'}),{headers:{'Content-Type':'application/json'}});}return originalExtractFetch(...a);};
+ const pick=name=>{const dt=new DataTransfer();dt.items.add(new File(['Python developer'],name,{type:'text/plain'}));el('#resume-file').files=dt.files;el('#resume-file').dispatchEvent(new Event('change',{bubbles:true}));};
+ pick('A.txt');pick('B.txt');await wait(()=>el('#resume-name').value==='B.txt','latest extraction');await new Promise(r=>setTimeout(r,650));if(el('#resume-name').value!=='B.txt')throw Error('Old extraction overwrote latest upload');
+ pick('A.txt');const oversized=new DataTransfer();oversized.items.add(new File([new Uint8Array(5000001)],'large.txt'));el('#resume-file').files=oversized.files;el('#resume-file').dispatchEvent(new Event('change',{bubbles:true}));await wait(()=>!el('#save-resume').disabled,'oversize does not strand earlier extraction');if(el('#resume-name').value!=='A.txt')throw Error('Earlier valid extraction was stranded');window.fetch=originalExtractFetch;
+ 
+ fill('#resume-name','Practice resume');fill('#resume-text','Built a Python task manager with PostgreSQL.');click('#save-resume');await wait(()=>el('#notice').textContent.includes('履歷已儲存'),'resume saved');
+ click('nav [data-view="home"]');await wait(()=>el('#use-resume')?.checked,'default resume');
+ fill('#jd','Build reliable Python APIs.\\nOperate Kubernetes services.');click('#capture');await wait(()=>el('#recommended-question'),'question');
+ if(document.body.innerText.includes('查看出題依據'))throw Error('Redundant evidence shown');
+ const data=await ws();if(!Object.values(data.snapshots)[0].resume)throw Error('Resume not selected');
+ click('#recommended-question button');await wait(()=>el('#answer'),'editor');
+ if(!el('#retry-draft').hidden)throw Error('Retry visible before failure');
+ const originalFetch=window.fetch.bind(window);let failDraft=true,failFeedback=true;
+ window.fetch=async(...a)=>{const path=String(a[0]);if(a[1]?.method==='POST'&&((path.endsWith('/draft')&&failDraft)||(path.endsWith('/feedback')&&failFeedback))){if(path.endsWith('/draft'))failDraft=false;else failFeedback=false;return new Response(JSON.stringify({error:'synthetic failure'}),{status:503,headers:{'Content-Type':'application/json'}});}return originalFetch(...a);};
+ fill('#answer','I would measure query latency and compare the execution plans.');await wait(()=>!el('#retry-draft').hidden,'draft failure');
+ click('#retry-draft');await wait(()=>el('#draft-status').textContent.includes('已儲存'),'draft retry');
+ click('#next-question');await wait(()=>el('#recommended-question'),'switch');click('#recommended-question button');await wait(()=>el('#answer'),'new editor');
+ click('[data-view="history"]');await wait(()=>el('[data-record-id]'),'history');
+ const first=Object.values((await ws()).records).find(r=>r.writtenDraft);click('[data-record-id="'+first.id+'"] button');await wait(()=>el('#answer')?.value.includes('measure'),'restored draft');
+ sessionStorage.setItem('record',first.id);
+ `);
+ await browser('open',url);
+ await run(`
+ await wait(()=>el('[data-view="history"]'),'load');click('[data-view="history"]');await wait(()=>el('[data-record-id]'),'history');
+ click('[data-record-id="'+sessionStorage.getItem('record')+'"] button');await wait(()=>el('#answer')?.value.includes('measure'),'reload draft');
+ const real=window.fetch.bind(window);let failed=false;window.fetch=async(...a)=>{if(!failed&&a[1]?.method==='POST'&&String(a[0]).endsWith('/feedback')){failed=true;return new Response(JSON.stringify({error:'synthetic failure'}),{status:503,headers:{'Content-Type':'application/json'}});}return real(...a);};
+ click('#submit-answer');await wait(()=>btn('重試取得回饋'),'feedback failure');click(btn('重試取得回饋'));await wait(()=>el('#complete-practice'),'feedback retry');
+ if(el('#answer'))throw Error('Revision is forced');
+ click(btn('幫我講得更自然'));await wait(()=>el('#rewrite-result .coaching-text'),'rewrite');
+ if((await ws()).records[sessionStorage.getItem('record')].attempts.length!==1)throw Error('AI assistance became attempt');
+ click(btn('自己再試一次'));await wait(()=>el('#answer'),'optional revision');
+ fill('#answer','I would inspect the execution plan, measure latency, then check the cost of adding an index.');
+ click('#submit-answer');await wait(()=>el('#complete-practice'),'revision feedback');
+ if(!document.body.innerText.includes('關鍵句前後對照'))throw Error('Missing concise comparison');
+ if([...document.querySelectorAll('summary')].some(n=>n.textContent==='英文說明'))throw Error('English feedback explanations still displayed');
+ el('#attempt-history').open=true;
+ el('#attempt-version').value='0';el('#attempt-version').dispatchEvent(new Event('change',{bubbles:true}));
+ if(el('#attempt-detail').querySelector('blockquote').textContent!=='I would measure query latency and compare the execution plans.')throw Error('History did not select first answer');
+ el('#attempt-version').value='1';el('#attempt-version').dispatchEvent(new Event('change',{bubbles:true}));
+ if(el('#attempt-detail').querySelectorAll('h3').length!==1||el('#attempt-detail').textContent.includes('I would measure query latency'))throw Error('History stacked multiple versions');
+ el('#attempt-history').open=false;
+
+ `);
+ await browser('screenshot',resolve('docs/verification/learner-flow/feedback.png'),'--full');
+ await run(`click('#complete-practice');await wait(()=>el('#practice-complete'),'saved');`);
+ await browser('set','viewport','390','844');
+ await run(`if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow');if(btn('查看參考表達'))throw Error('Old reference outline shown');click('nav [data-view="home"]');await wait(()=>el('#use-resume'),'home');el('#use-resume').checked=false;fill('#jd','Build services and discuss engineering trade-offs.');click('#capture');await wait(()=>el('#recommended-question'),'JD only');click('#recommended-question button');await wait(()=>el('#answer'),'editor');`);
+ await browser('screenshot',resolve('docs/verification/learner-flow/mobile.png'),'--full');
+ await run(`
+ fill('#ideas','I would compare two approaches.');click(btn('幫我整理成英文'));await wait(()=>el('#ideas-result .coaching-text'),'ideas');
+ const before=await ws();const fresh=Object.values(before.records).find(r=>r.attempts.length===0&&before.snapshots[r.snapshotId].resume===null);if(!fresh)throw Error('JD-only record missing');
+ if(fresh.attempts.length)throw Error('Ideas counted as answer');
+ fill('#answer','I would compare the cost and failure modes of both approaches.');click('#submit-answer');await wait(()=>btn('讓面試官追問'),'primary feedback');
+ await wait(()=>document.activeElement&&document.activeElement.id==='feedback-heading','feedback heading focused after submit');
+ if(btn('直接結束並保存'))throw Error('Duplicate end button still present after primary feedback');
+ const endButtons=[...document.querySelectorAll('button')].filter(b=>b.textContent.trim()==='結束並保存');
+ if(endButtons.length!==1||!el('#complete-practice'))throw Error('Expected exactly one completion button before follow-up, got '+endButtons.length);
+ const ratingQuoteCount=document.querySelectorAll('.ratings blockquote').length,dimCount=document.querySelectorAll('.ratings .rating').length;
+ if(dimCount!==4)throw Error('Expected four assessment dimensions, got '+dimCount);
+ if(ratingQuoteCount>=dimCount)throw Error('Rating citations were not deduplicated: '+ratingQuoteCount+' of '+dimCount);
+ if((await ws()).records[fresh.id].attempts.length!==1)throw Error('Primary feedback changed formal-answer count');
+ click(btn('讓面試官追問'));await wait(()=>el('#follow-up-answer'),'first optional follow-up');
+ if((await ws()).records[fresh.id].attempts.length!==1)throw Error('Follow-up generation became a primary answer');
+ fill('#follow-up-answer','I would begin with the highest-risk failure mode and validate it with a small test.');click('#submit-follow-up');await wait(()=>btn('繼續追問'),'first follow-up feedback');
+ const afterFirstFollowUp=(await ws()).records[fresh.id];if(afterFirstFollowUp.attempts.length!==1||afterFirstFollowUp.followUps?.length!==1||!afterFirstFollowUp.followUps[0].attempt?.feedback)throw Error('First follow-up was not saved with Chinese feedback');
+ if(![...el('#follow-up-actions').querySelectorAll('button')].some(button=>button.textContent.trim()==='結束並保存'))throw Error('Early finish was unavailable after first follow-up feedback');
+ click(btn('繼續追問'));await wait(()=>el('#follow-up-answer'),'second optional follow-up');
+ const realFollowUpFetch=window.fetch.bind(window);let followUpFeedbackStarted=false,releaseFollowUpFeedback;
+ window.fetch=async(...a)=>{if(a[1]?.method==='POST'&&/\\/follow-ups\\/[^/]+\\/feedback$/.test(String(a[0]))){followUpFeedbackStarted=true;await new Promise(resolve=>{releaseFollowUpFeedback=resolve;});}return realFollowUpFetch(...a);};
+ fill('#follow-up-answer','I would document the decision and monitor the result after release.');click('#submit-follow-up');await wait(()=>followUpFeedbackStarted,'pending second follow-up feedback');
+ if([...el('#follow-up-actions').querySelectorAll('button')].some(button=>button.textContent.trim()==='結束並保存'))throw Error('Follow-up can be ended while its Chinese feedback is pending');if(el('#complete-practice')&&!el('#complete-practice').disabled)throw Error('Practice can be ended while follow-up Chinese feedback is pending');releaseFollowUpFeedback();await wait(()=>el('#follow-up-feedback-title'),'second follow-up feedback');window.fetch=realFollowUpFetch;
+ const afterSecondFollowUp=(await ws()).records[fresh.id];if(afterSecondFollowUp.attempts.length!==1||afterSecondFollowUp.followUps?.length!==2||!afterSecondFollowUp.followUps.every(node=>node.attempt?.feedback))throw Error('Second follow-up was not saved with Chinese feedback');
+ if(btn('繼續追問'))throw Error('A third follow-up was offered');click(btn('結束並保存'));await wait(()=>el('#practice-complete'),'follow-up completion');
+ const final=(await ws()).records[fresh.id];if(final.attempts.length!==1||final.status!=='completed')throw Error('Follow-up completion changed primary answer or did not save');
+ if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow');
+ return 'pass';`);
+ await run(`
+ click(btn('再練一題'));await wait(()=>el('#recommended-question'),'early-end question');click('#recommended-question button');await wait(()=>el('#answer'),'early-end editor');
+ fill('#answer','I would identify the riskiest assumption and test it first.');click('#submit-answer');await wait(()=>btn('讓面試官追問'),'early-end primary feedback');click(btn('讓面試官追問'));await wait(()=>el('#follow-up-answer'),'early-end follow-up');
+ fill('#follow-up-answer','I would measure the outcome and adjust the plan.');click('#submit-follow-up');await wait(()=>btn('繼續追問'),'early-end follow-up feedback');click(btn('結束並保存'));await wait(()=>el('#practice-complete'),'early-end completion');
+ const earlyEnded=Object.values((await ws()).records).find(r=>r.attempts[0]?.transcript==='I would identify the riskiest assumption and test it first.');if(earlyEnded?.status!=='completed'||earlyEnded.followUps?.length!==1||!earlyEnded.followUps[0].attempt?.feedback)throw Error('Early end after first follow-up feedback did not preserve the completed follow-up');
+ `);
+ await run(`
+ click(btn('再練一題'));await wait(()=>el('#recommended-question'),'another question');click('#recommended-question button');await wait(()=>el('#answer'),'another editor');
+ const realFetch=window.fetch.bind(window);let started=false;
+ window.fetch=async(...a)=>{if(a[1]?.method==='POST'&&String(a[0]).endsWith('/feedback')){started=true;await new Promise(r=>setTimeout(r,800));return new Response(JSON.stringify({error:'synthetic delayed failure'}),{status:503,headers:{'Content-Type':'application/json'}});}return realFetch(...a);};
+ fill('#answer','I would start by checking the logs.');click('#submit-answer');await wait(()=>started,'background feedback');click('#next-question');await wait(()=>el('#recommended-question'),'background switch');click('#recommended-question button');await wait(()=>el('#answer'),'background new editor');fill('#answer','This new draft must survive the previous feedback failure.');await wait(()=>el('#draft-status').textContent.includes('已儲存'),'background draft save');await new Promise(r=>setTimeout(r,1000));
+ const records=Object.values((await ws()).records);if(!records.some(r=>r.writtenDraft?.transcript==='This new draft must survive the previous feedback failure.'))throw Error('Background feedback destroyed new draft');window.fetch=realFetch;
+ `);
+ console.log('Browser smoke PASS: resume default/opt-out, draft failure/reload recovery, feedback retry, optional revision, separate AI assistance, one-answer completion and mobile layout.');
+}finally{await browser('close').catch(()=>{});if(server)await new Promise(r=>server.close(r));await rm(directory,{recursive:true,force:true});}

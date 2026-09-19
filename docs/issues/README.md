@@ -1,0 +1,20 @@
+# Implementation Issues
+
+Local issue tracker for the Adaptive English Interview Coach. All issues below were approved as tracer-bullet vertical slices and are ready for an implementation agent.
+
+| Issue | Status | Blocked by |
+|---|---|---|
+| [0001 — Complete a text Practice Loop from a pasted JD](./0001-complete-a-text-practice-loop-from-a-pasted-jd.md) | completed | None |
+| [0002 — Generate a grounded Capability Map and Question Set](./0002-generate-a-grounded-capability-map-and-question-set.md) | completed | 0001 |
+| [0003 — Add voice-first Answer Attempts](./0003-add-voice-first-answer-attempts.md) | completed | 0001 |
+| [0004 — Discover jobs from a Job Search Profile](./0004-discover-jobs-from-a-job-search-profile.md) | completed | 0001 |
+| [0005 — Personalize with optional Candidate Evidence](./0005-personalize-with-optional-candidate-evidence.md) | completed | 0002 |
+| [0006 — Track Focus Points across Practice Loops](./0006-track-focus-points-across-practice-loops.md) | completed | 0001 |
+| [0007 — Harden the Local Workspace and provider controls](./0007-harden-the-local-workspace-and-provider-controls.md) | completed | 0001, 0003, 0004 |
+| [0008 — Ship the Evaluation Suite and portfolio release](./0008-ship-the-evaluation-suite-and-portfolio-release.md) | awaiting-human-validation | 0002, 0003, 0005, 0006, 0007 |
+| [0009 — Add bounded optional follow-ups](./0009-add-bounded-optional-follow-ups.md) | completed | None |
+| [0010 — Add evidence-safe key-sentence corrections](./0010-add-evidence-safe-key-sentence-corrections.md) | ready-for-agent | 0009 (completed) |
+| [0011 — Start Focus Point practice in the same job](./0011-start-focus-point-practice-in-the-same-job.md) | ready-for-agent | 0009, 0010 |
+| [0012 — Reorganize Records by job](./0012-reorganize-records-by-job.md) | ready-for-agent | 0009 |
+
+Implementation should proceed in dependency order. Start each issue in a fresh session with the PRD and only the selected issue as the implementation brief.

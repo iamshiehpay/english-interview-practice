@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#fff4e8">
+  <title>英文面試練習</title>
+  <link rel="stylesheet" href="/style.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <button class="brand" type="button" data-view="home" aria-label="回到首頁">
+      <span class="brand-mark" aria-hidden="true">問</span>
+      <span><strong>英文面試練習</strong><small>Interview Coach</small></span>
+    </button>
+    <nav aria-label="主要導覽">
+      <button type="button" data-view="home">開始練習</button>
+      <button type="button" data-view="history">練習紀錄</button>
+      <button type="button" data-view="evidence">我的履歷</button>
+      <button type="button" data-view="settings">設定</button>
+    </nav>
+  </header>
+
+  <div class="system-strip">
+    <span id="provider">正在確認服務狀態…</span>
+    <button type="button" class="text-button" data-view="settings">資料傳送說明</button>
+  </div>
+
+  <main>
+    <div id="operations" aria-live="polite"></div>
+    <div id="error" role="alert"></div>
+    <div id="notice" role="status" aria-live="polite"></div>
+
+    <section id="home-view" class="view" aria-labelledby="home-title">
+      <div class="home-heading">
+        <p class="eyebrow">一次專心說好一件事</p>
+        <h1 id="home-title">慢慢來，<br>把想法說成自己的英文。</h1>
+        <p>選一個職缺，練一個問題。先試著說，再一起調整。</p>
+      </div>
+      <div id="resume-practice"></div>
+      <section class="start-card" aria-labelledby="start-title">
+        
+        <div>
+          <p class="eyebrow">開始新練習</p>
+          <h2 id="start-title">你想準備哪個職缺？</h2>
+          <label for="jd">貼上完整職缺描述</label>
+          <textarea id="jd" rows="6" placeholder="貼上 Responsibilities、Requirements 等原始內容…"></textarea>
+          <div id="resume-choice"></div><details><summary>調整題目深度</summary><label for="difficulty">練習深度</label><select id="difficulty"><option value="standard">依職缺要求</option><option value="easier">簡單一點</option><option value="deeper">深入一點</option></select></details><p class="data-note" id="generation-disclosure">題目生成時，會依目前的服務設定傳送這份職缺內容。</p>
+          <div id="provider-gate"></div>
+          <button id="capture" class="primary wide" type="button">儲存職缺並產生題目</button>
+        </div>
+      </section>
+      <section id="home-progress" class="home-progress"></section>
+    </section>
+
+    <section id="practice-view" class="view" aria-label="單題練習">
+      <div id="practice"></div>
+    </section>
+
+    <section id="history-view" class="view narrow" aria-labelledby="history-title">
+      <p class="eyebrow">保存在這台裝置</p>
+      <h1 id="history-title">練習紀錄</h1>
+      <div class="split-list">
+        <section><h2>所有練習</h2><div id="records"></div></section>
+        <section><h2>已保存的職缺</h2><div id="snapshots"></div></section>
+      </div>
+    </section>
+
+    <section id="progress-view" class="view narrow" aria-labelledby="progress-title">
+      <p class="eyebrow">從實際回答累積</p>
+      <h1 id="progress-title">我的進步</h1>
+      <div id="progress"></div>
+    </section>
+
+    <section id="evidence-view" class="view narrow" aria-labelledby="evidence-title">
+      <p class="eyebrow">從你的背景開始</p>
+      <h1 id="evidence-title">我的履歷</h1>
+      <div id="evidence"></div>
+    </section>
+
+    <section id="discovery-view" class="view narrow" aria-labelledby="discovery-title">
+      <p class="eyebrow">由你決定何時搜尋</p>
+      <h1 id="discovery-title">找職缺</h1>
+      <div id="discovery"></div>
+    </section>
+
+    <section id="settings-view" class="view narrow" aria-labelledby="settings-title">
+      <p class="eyebrow">服務與本機資料</p>
+      <h1 id="settings-title">設定</h1>
+      <section class="settings-section"><h2>目前使用的服務</h2><div id="provider-settings"></div></section>
+      <section class="settings-section danger-zone"><h2>刪除本機資料</h2><div id="delete-workspace"></div></section>
+    </section>
+  </main>
+
+  <footer>練習題依職缺內容生成，不代表雇主實際使用的面試題。</footer>
+</body>
+</html>

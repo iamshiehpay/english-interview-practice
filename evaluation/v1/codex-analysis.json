@@ -1,0 +1,684 @@
+{
+  "schemaVersion": 1,
+  "model": "gpt-5.6-sol",
+  "jdChecksum": "3f6dfe10f42c2e2542dec7b171528e409c40da289c6d7bd18af3e44141ba754a",
+  "entries": [
+    [
+      "Evaluate retrieval quality for a Mandarin support assistant.\nBuild Python inference services in Taipei.\nDiscuss model limitations with product colleagues.\nExplain latency and accuracy trade-offs.",
+      {
+        "capabilities": [
+          {
+            "id": "cap_1",
+            "description": "Evaluate retrieval quality for a Mandarin support assistant.",
+            "evidence": "Evaluate retrieval quality for a Mandarin support assistant.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap_2",
+            "description": "Build Python inference services in Taipei.",
+            "evidence": "Build Python inference services in Taipei.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap_3",
+            "description": "Discuss model limitations with product colleagues.",
+            "evidence": "Discuss model limitations with product colleagues.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap_4",
+            "description": "Explain latency and accuracy trade-offs.",
+            "evidence": "Explain latency and accuracy trade-offs.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap_5",
+            "description": "The role likely expects familiarity with retrieval evaluation methods and Mandarin-language quality considerations.",
+            "evidence": "Evaluate retrieval quality for a Mandarin support assistant.",
+            "kind": "inference"
+          },
+          {
+            "id": "cap_6",
+            "description": "The role likely requires production-oriented Python and model-serving experience.",
+            "evidence": "Build Python inference services in Taipei.",
+            "kind": "inference"
+          },
+          {
+            "id": "cap_7",
+            "description": "The role likely values candid, cross-functional communication about model risks and constraints.",
+            "evidence": "Discuss model limitations with product colleagues.",
+            "kind": "inference"
+          },
+          {
+            "id": "cap_8",
+            "description": "The role likely requires making and communicating measurable system-design trade-offs.",
+            "evidence": "Explain latency and accuracy trade-offs.",
+            "kind": "inference"
+          }
+        ],
+        "questions": [
+          {
+            "id": "q_1",
+            "text": "What interests you about evaluating retrieval for a Mandarin-language support assistant, and how does your background prepare you for it?",
+            "rationale": "Assesses motivation and alignment with the assistant’s language, support, and retrieval context.",
+            "category": "role-fit",
+            "capabilityIds": [
+              "cap_1"
+            ],
+            "evidence": "Evaluate retrieval quality for a Mandarin support assistant."
+          },
+          {
+            "id": "q_2",
+            "text": "How does building Python inference services fit your experience and the kind of engineering work you want to do next?",
+            "rationale": "Tests alignment between the candidate’s technical interests and the service-building focus of the role.",
+            "category": "role-fit",
+            "capabilityIds": [
+              "cap_2"
+            ],
+            "evidence": "Build Python inference services in Taipei."
+          },
+          {
+            "id": "q_3",
+            "text": "Describe a retrieval evaluation project you led: what dataset, metrics, baselines, and error categories did you use?",
+            "rationale": "Probes practical depth in designing a rigorous retrieval-quality evaluation process.",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap_5"
+            ],
+            "evidence": "Evaluate retrieval quality for a Mandarin support assistant."
+          },
+          {
+            "id": "q_4",
+            "text": "Walk through a Python inference service you built, including its architecture, deployment model, observability, and failure handling.",
+            "rationale": "Examines production experience beyond simply writing model inference code.",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap_6"
+            ],
+            "evidence": "Build Python inference services in Taipei."
+          },
+          {
+            "id": "q_5",
+            "text": "Tell me about a time you had to communicate a significant model limitation to product colleagues who wanted to ship quickly. What did you do?",
+            "rationale": "Evaluates candor, judgment, and collaboration under delivery pressure.",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap_7"
+            ],
+            "evidence": "Discuss model limitations with product colleagues."
+          },
+          {
+            "id": "q_6",
+            "text": "Describe a disagreement over a latency-versus-accuracy decision. How did you build consensus, and what was the outcome?",
+            "rationale": "Assesses evidence-based decision-making and the ability to resolve cross-functional trade-offs.",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap_8"
+            ],
+            "evidence": "Explain latency and accuracy trade-offs."
+          },
+          {
+            "id": "q_7",
+            "text": "How would you evaluate whether a Mandarin retrieval system returns relevant evidence for ambiguous, colloquial, or code-switched support queries?",
+            "rationale": "Tests the ability to explain an evaluation design that accounts for language-specific retrieval challenges.",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap_5"
+            ],
+            "evidence": "Evaluate retrieval quality for a Mandarin support assistant."
+          },
+          {
+            "id": "q_8",
+            "text": "How would you explain to a product colleague why improving model accuracy can increase latency, and how would you recommend choosing an operating point?",
+            "rationale": "Tests whether the candidate can translate technical performance constraints into a clear product decision.",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap_4"
+            ],
+            "evidence": "Explain latency and accuracy trade-offs."
+          }
+        ]
+      }
+    ],
+    [
+      "Build reliable payment APIs in Taipei.\nUse PostgreSQL transactions and automated tests.\nCollaborate on incident reviews without blame.\nExplain consistency and availability trade-offs.",
+      {
+        "capabilities": [
+          {
+            "id": "cap_1",
+            "description": "Build reliable payment APIs",
+            "evidence": "Build reliable payment APIs in Taipei.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap_2",
+            "description": "Use PostgreSQL transactions",
+            "evidence": "Use PostgreSQL transactions and automated tests.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap_3",
+            "description": "automated tests",
+            "evidence": "Use PostgreSQL transactions and automated tests.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap_4",
+            "description": "Collaborate on incident reviews without blame",
+            "evidence": "Collaborate on incident reviews without blame.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap_5",
+            "description": "Explain consistency and availability trade-offs",
+            "evidence": "Explain consistency and availability trade-offs.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap_6",
+            "description": "Experience designing APIs that preserve payment correctness under failures is likely expected.",
+            "evidence": "Build reliable payment APIs in Taipei.",
+            "kind": "inference"
+          },
+          {
+            "id": "cap_7",
+            "description": "The role likely values clear, constructive communication during operational incidents.",
+            "evidence": "Collaborate on incident reviews without blame.",
+            "kind": "inference"
+          }
+        ],
+        "questions": [
+          {
+            "id": "q_1",
+            "text": "Why does building reliable payment APIs interest you, and how does this Taipei-based role fit your goals?",
+            "rationale": "Assesses motivation for the role, domain, and stated location.",
+            "category": "role-fit",
+            "capabilityIds": [
+              "cap_1"
+            ],
+            "evidence": "Build reliable payment APIs in Taipei."
+          },
+          {
+            "id": "q_2",
+            "text": "Describe a payment or financial API you designed or improved. What made it reliable?",
+            "rationale": "Explores relevant API ownership and the candidate's concrete definition of reliability.",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap_6"
+            ],
+            "evidence": "Build reliable payment APIs in Taipei."
+          },
+          {
+            "id": "q_3",
+            "text": "Tell me about a failure scenario involving retries, duplicate requests, or partial completion. How did your API preserve payment correctness?",
+            "rationale": "Tests depth in failure handling and payment-specific correctness mechanisms.",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap_6"
+            ],
+            "evidence": "Build reliable payment APIs in Taipei."
+          },
+          {
+            "id": "q_4",
+            "text": "How would you structure a PostgreSQL transaction for a payment operation that updates several related records?",
+            "rationale": "Evaluates transactional design, atomicity, and database reasoning.",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap_2"
+            ],
+            "evidence": "Use PostgreSQL transactions and automated tests."
+          },
+          {
+            "id": "q_5",
+            "text": "What automated test strategy would you use for a payment API, including database failures and concurrency risks?",
+            "rationale": "Assesses test coverage across normal, failure, integration, and concurrent behavior.",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap_3"
+            ],
+            "evidence": "Use PostgreSQL transactions and automated tests."
+          },
+          {
+            "id": "q_6",
+            "text": "Tell me about an incident review in which you helped keep the discussion blameless while still identifying accountability and improvements.",
+            "rationale": "Looks for collaborative incident behavior grounded in learning and concrete follow-through.",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap_4"
+            ],
+            "evidence": "Collaborate on incident reviews without blame."
+          },
+          {
+            "id": "q_7",
+            "text": "Describe a time you disagreed with teammates about the cause or remediation of an incident. How did you resolve it?",
+            "rationale": "Evaluates constructive communication and decision-making under operational pressure.",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap_7"
+            ],
+            "evidence": "Collaborate on incident reviews without blame."
+          },
+          {
+            "id": "q_8",
+            "text": "Explain the consistency-versus-availability trade-off for a payment authorization service to a product manager.",
+            "rationale": "Tests whether distributed-systems reasoning can be communicated clearly to a non-specialist.",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap_5"
+            ],
+            "evidence": "Explain consistency and availability trade-offs."
+          },
+          {
+            "id": "q_9",
+            "text": "When might you favor consistency over availability in payments, and when might limited availability be acceptable?",
+            "rationale": "Probes nuanced application of trade-offs to concrete payment decisions.",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap_5"
+            ],
+            "evidence": "Explain consistency and availability trade-offs."
+          },
+          {
+            "id": "q_10",
+            "text": "How would you explain to stakeholders why automated tests reduce risk but cannot guarantee that a payment system will never fail?",
+            "rationale": "Assesses accurate, accessible communication about testing limits and operational risk.",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap_3"
+            ],
+            "evidence": "Use PostgreSQL transactions and automated tests."
+          }
+        ]
+      }
+    ],
+    [
+      "Analyze product experiments in Hsinchu.\nUse SQL and Python to investigate missing data.\nCommunicate uncertainty to product managers.\nExplain experiment assumptions and confidence intervals.",
+      {
+        "capabilities": [
+          {
+            "id": "cap_1",
+            "description": "Analyze product experiments in Hsinchu.",
+            "evidence": "Analyze product experiments in Hsinchu.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap_2",
+            "description": "Use SQL and Python to investigate missing data.",
+            "evidence": "Use SQL and Python to investigate missing data.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap_3",
+            "description": "Communicate uncertainty to product managers.",
+            "evidence": "Communicate uncertainty to product managers.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap_4",
+            "description": "Explain experiment assumptions and confidence intervals.",
+            "evidence": "Explain experiment assumptions and confidence intervals.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap_5",
+            "description": "The role likely requires diagnosing how missing data could bias experimental conclusions.",
+            "evidence": "Use SQL and Python to investigate missing data.",
+            "kind": "inference"
+          },
+          {
+            "id": "cap_6",
+            "description": "The role likely values translating statistical findings into decision-relevant language for nontechnical stakeholders.",
+            "evidence": "Communicate uncertainty to product managers.",
+            "kind": "inference"
+          }
+        ],
+        "questions": [
+          {
+            "id": "q_1",
+            "text": "How does your experience prepare you to analyze product experiments in Hsinchu?",
+            "rationale": "Assesses alignment with the role's experimental-analysis focus and stated location.",
+            "category": "role-fit",
+            "capabilityIds": [
+              "cap_1"
+            ],
+            "evidence": "Analyze product experiments in Hsinchu."
+          },
+          {
+            "id": "q_2",
+            "text": "Which parts of this role—experiment analysis, missing-data investigation, or stakeholder communication—best match your strengths, and why?",
+            "rationale": "Evaluates the candidate's fit with the role's combination of analytical and communication responsibilities.",
+            "category": "role-fit",
+            "capabilityIds": [
+              "cap_2"
+            ],
+            "evidence": "Use SQL and Python to investigate missing data."
+          },
+          {
+            "id": "q_3",
+            "text": "Walk me through a product experiment you analyzed, including the hypothesis, metrics, design, analysis, and resulting decision.",
+            "rationale": "Probes the depth of direct experience analyzing product experiments from formulation through decision-making.",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap_1"
+            ],
+            "evidence": "Analyze product experiments in Hsinchu."
+          },
+          {
+            "id": "q_4",
+            "text": "Describe a time you used both SQL and Python to investigate missing data. What did each tool contribute, and what did you conclude?",
+            "rationale": "Tests hands-on depth with the required tools and missing-data investigations.",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap_2"
+            ],
+            "evidence": "Use SQL and Python to investigate missing data."
+          },
+          {
+            "id": "q_5",
+            "text": "Tell me about a time a product manager wanted a definitive recommendation when the evidence was uncertain. How did you respond?",
+            "rationale": "Assesses judgment and stakeholder management when analytical evidence does not support certainty.",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap_3"
+            ],
+            "evidence": "Communicate uncertainty to product managers."
+          },
+          {
+            "id": "q_6",
+            "text": "Describe a situation in which you discovered that missing data might change an experiment's conclusion. What actions did you take?",
+            "rationale": "Explores ownership, escalation, and decision-making when data quality threatens experimental validity.",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap_5"
+            ],
+            "evidence": "Use SQL and Python to investigate missing data."
+          },
+          {
+            "id": "q_7",
+            "text": "How would you explain a 95% confidence interval to a product manager without implying that it guarantees the true effect lies inside the observed interval?",
+            "rationale": "Tests accurate, accessible communication of confidence intervals to a nontechnical stakeholder.",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap_4"
+            ],
+            "evidence": "Explain experiment assumptions and confidence intervals."
+          },
+          {
+            "id": "q_8",
+            "text": "How would you communicate an experiment result that is directionally positive but highly uncertain, and what decision options would you present?",
+            "rationale": "Evaluates whether the candidate can translate uncertainty into clear, decision-relevant guidance.",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap_6"
+            ],
+            "evidence": "Communicate uncertainty to product managers."
+          },
+          {
+            "id": "q_9",
+            "text": "What assumptions would you check before trusting an experiment's confidence interval, and how would you explain any violations?",
+            "rationale": "Assesses understanding of experimental assumptions and the ability to articulate their impact on inference.",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap_4"
+            ],
+            "evidence": "Explain experiment assumptions and confidence intervals."
+          },
+          {
+            "id": "q_10",
+            "text": "Suppose experiment records are missing disproportionately for one treatment group. How would you investigate the cause in SQL and Python and assess the potential bias?",
+            "rationale": "Tests structured technical reasoning about nonrandom missingness, tool selection, and bias in experimental conclusions.",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap_5"
+            ],
+            "evidence": "Use SQL and Python to investigate missing data."
+          }
+        ]
+      }
+    ],
+    [
+      "Build embedded sensor software in Hsinchu.\nDebug C firmware and serial communication.\nCoordinate hardware and software investigations.\nExplain timing and memory constraints.",
+      {
+        "capabilities": [
+          {
+            "id": "cap_1",
+            "description": "Build embedded sensor software",
+            "evidence": "Build embedded sensor software in Hsinchu.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap_2",
+            "description": "Debug C firmware and serial communication",
+            "evidence": "Debug C firmware and serial communication.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap_3",
+            "description": "Coordinate hardware and software investigations",
+            "evidence": "Coordinate hardware and software investigations.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap_4",
+            "description": "Explain timing and memory constraints",
+            "evidence": "Explain timing and memory constraints.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap_5",
+            "description": "The role likely requires systematic diagnosis across firmware, communication, and hardware boundaries.",
+            "evidence": "Coordinate hardware and software investigations.",
+            "kind": "inference"
+          }
+        ],
+        "questions": [
+          {
+            "id": "q_1",
+            "text": "Why are you interested in building embedded sensor software in Hsinchu, and how does this role fit your goals?",
+            "rationale": "Assesses motivation, location alignment, and interest in the role's core product domain.",
+            "category": "role-fit",
+            "capabilityIds": [
+              "cap_1"
+            ],
+            "evidence": "Build embedded sensor software in Hsinchu."
+          },
+          {
+            "id": "q_2",
+            "text": "Which parts of your background best prepare you to debug both C firmware and serial communication?",
+            "rationale": "Tests alignment between the candidate's prior experience and the role's primary debugging responsibilities.",
+            "category": "role-fit",
+            "capabilityIds": [
+              "cap_2"
+            ],
+            "evidence": "Debug C firmware and serial communication."
+          },
+          {
+            "id": "q_3",
+            "text": "Describe an embedded sensor software project you built, including your individual responsibilities and the result.",
+            "rationale": "Probes the depth, ownership, and outcomes of directly relevant development experience.",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap_1"
+            ],
+            "evidence": "Build embedded sensor software in Hsinchu."
+          },
+          {
+            "id": "q_4",
+            "text": "Walk me through the most difficult C firmware or serial communication defect you diagnosed and fixed.",
+            "rationale": "Explores hands-on debugging depth, investigative methods, and technical impact.",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap_2"
+            ],
+            "evidence": "Debug C firmware and serial communication."
+          },
+          {
+            "id": "q_5",
+            "text": "Tell me about a time hardware and software teams disagreed about the source of a defect. How did you coordinate the investigation?",
+            "rationale": "Evaluates cross-functional collaboration, conflict handling, and evidence-driven problem solving.",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap_3"
+            ],
+            "evidence": "Coordinate hardware and software investigations."
+          },
+          {
+            "id": "q_6",
+            "text": "Describe a time your initial diagnosis of an embedded-system problem was wrong. What did you do next?",
+            "rationale": "Assesses adaptability, accountability, and systematic diagnosis across component boundaries.",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap_5"
+            ],
+            "evidence": "Coordinate hardware and software investigations."
+          },
+          {
+            "id": "q_7",
+            "text": "How would you explain a firmware timing constraint to a hardware engineer and verify that both sides share the same assumptions?",
+            "rationale": "Tests the ability to communicate timing limitations precisely across disciplines.",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap_4"
+            ],
+            "evidence": "Explain timing and memory constraints."
+          },
+          {
+            "id": "q_8",
+            "text": "How would you present a memory-usage tradeoff to a non-firmware stakeholder deciding between product features?",
+            "rationale": "Assesses whether the candidate can translate low-level memory constraints into clear product implications.",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap_4"
+            ],
+            "evidence": "Explain timing and memory constraints."
+          }
+        ]
+      }
+    ],
+    [
+      "Build accessible web interfaces in Taipei.\nUse JavaScript and browser performance tools.\nCollaborate with designers on usability feedback.\nExplain accessibility and rendering trade-offs.",
+      {
+        "capabilities": [
+          {
+            "id": "cap_1",
+            "description": "Build accessible web interfaces in Taipei.",
+            "evidence": "Build accessible web interfaces in Taipei.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap_2",
+            "description": "Use JavaScript and browser performance tools.",
+            "evidence": "Use JavaScript and browser performance tools.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap_3",
+            "description": "Collaborate with designers on usability feedback.",
+            "evidence": "Collaborate with designers on usability feedback.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap_4",
+            "description": "Explain accessibility and rendering trade-offs.",
+            "evidence": "Explain accessibility and rendering trade-offs.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap_5",
+            "description": "The role likely expects practical knowledge of accessibility standards, testing, and remediation.",
+            "evidence": "Build accessible web interfaces in Taipei.",
+            "kind": "inference"
+          },
+          {
+            "id": "cap_6",
+            "description": "The role likely requires translating browser performance measurements into concrete interface improvements.",
+            "evidence": "Use JavaScript and browser performance tools.",
+            "kind": "inference"
+          }
+        ],
+        "questions": [
+          {
+            "id": "q_1",
+            "text": "What interests you about building accessible web interfaces in this Taipei-based role?",
+            "rationale": "Assesses motivation, location fit, and alignment with the role's accessibility focus.",
+            "category": "role-fit",
+            "capabilityIds": [
+              "cap_1"
+            ],
+            "evidence": "Build accessible web interfaces in Taipei."
+          },
+          {
+            "id": "q_2",
+            "text": "How does collaboration with designers fit into the way you prefer to develop user interfaces?",
+            "rationale": "Explores whether the candidate's working style matches the role's cross-functional expectations.",
+            "category": "role-fit",
+            "capabilityIds": [
+              "cap_3"
+            ],
+            "evidence": "Collaborate with designers on usability feedback."
+          },
+          {
+            "id": "q_3",
+            "text": "Describe an accessible web interface you built, including the standards, testing methods, and remediation work involved.",
+            "rationale": "Probes the depth of hands-on accessibility experience rather than general familiarity.",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap_5"
+            ],
+            "evidence": "Build accessible web interfaces in Taipei."
+          },
+          {
+            "id": "q_4",
+            "text": "Tell me about a performance problem you diagnosed with browser tools and the measurable improvement you achieved.",
+            "rationale": "Examines practical proficiency with browser diagnostics and performance optimization.",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap_6"
+            ],
+            "evidence": "Use JavaScript and browser performance tools."
+          },
+          {
+            "id": "q_5",
+            "text": "Tell me about a time usability feedback from a designer challenged your original implementation. How did you respond?",
+            "rationale": "Evaluates openness to feedback, collaboration, and decision-making under differing perspectives.",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap_3"
+            ],
+            "evidence": "Collaborate with designers on usability feedback."
+          },
+          {
+            "id": "q_6",
+            "text": "Describe a time accessibility requirements conflicted with schedule or scope. What did you do?",
+            "rationale": "Assesses prioritization and advocacy when accessibility competes with delivery constraints.",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap_1"
+            ],
+            "evidence": "Build accessible web interfaces in Taipei."
+          },
+          {
+            "id": "q_7",
+            "text": "How would you explain the trade-off between richer rendering behavior and accessibility to a non-technical stakeholder?",
+            "rationale": "Tests the ability to communicate nuanced technical trade-offs clearly to different audiences.",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap_4"
+            ],
+            "evidence": "Explain accessibility and rendering trade-offs."
+          },
+          {
+            "id": "q_8",
+            "text": "Walk me through how you would use JavaScript and browser performance tools to investigate a slow interaction.",
+            "rationale": "Tests whether the candidate can present a structured, technically credible diagnostic process.",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap_2"
+            ],
+            "evidence": "Use JavaScript and browser performance tools."
+          }
+        ]
+      }
+    ]
+  ]
+}

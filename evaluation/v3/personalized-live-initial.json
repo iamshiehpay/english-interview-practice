@@ -1,0 +1,712 @@
+{
+  "contractVersion": "3.0.0",
+  "generatedAt": "2026-09-18T14:37:19.787Z",
+  "synthetic": true,
+  "provider": "Codex / ChatGPT subscription / gpt-5.6-sol",
+  "sourceHashes": {
+    "src/model-contracts.js": "895b32857b662af147d4c0fdacec8d62205bab43ef5e86b9d605958ab501e8c7",
+    "src/model-schemas.js": "e0a9e3252f8b59ab2ccc9972c38a97e5fae608fd5136f925abc582194cb0ce4f",
+    "src/domain.js": "cf2346af141beceaab2cee1fb1961fa252a7cd9c0f90a87ae8054abd932cfdf7",
+    "src/codex-language.js": "8ae06ecc430b81574be3467bd176d247aaf36ff559c3cb5f314db98989200f45"
+  },
+  "analyses": [
+    {
+      "name": "jd-only",
+      "snapshot": {
+        "text": "Backend Engineer\nBuild Python REST APIs and PostgreSQL data models.\nInvestigate slow queries and explain engineering trade-offs.\nDeploy services using Kubernetes and collaborate with teammates."
+      },
+      "output": {
+        "capabilities": [
+          {
+            "id": "c1",
+            "description": "Backend Engineer",
+            "evidence": "Backend Engineer",
+            "kind": "fact"
+          },
+          {
+            "id": "c2",
+            "description": "Build Python REST APIs",
+            "evidence": "Build Python REST APIs and PostgreSQL data models.",
+            "kind": "fact"
+          },
+          {
+            "id": "c3",
+            "description": "PostgreSQL data models",
+            "evidence": "Build Python REST APIs and PostgreSQL data models.",
+            "kind": "fact"
+          },
+          {
+            "id": "c4",
+            "description": "Investigate slow queries",
+            "evidence": "Investigate slow queries and explain engineering trade-offs.",
+            "kind": "fact"
+          },
+          {
+            "id": "c5",
+            "description": "explain engineering trade-offs",
+            "evidence": "Investigate slow queries and explain engineering trade-offs.",
+            "kind": "fact"
+          },
+          {
+            "id": "c6",
+            "description": "Deploy services using Kubernetes",
+            "evidence": "Deploy services using Kubernetes and collaborate with teammates.",
+            "kind": "fact"
+          },
+          {
+            "id": "c7",
+            "description": "collaborate with teammates",
+            "evidence": "Deploy services using Kubernetes and collaborate with teammates.",
+            "kind": "fact"
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "text": "What interests you about this Backend Engineer role, and which parts of your background would help you contribute?",
+            "meaningZh": "這個後端工程師職位有哪些方面吸引你？你的哪些背景能幫助你做出貢獻？",
+            "rationale": "Assesses motivation and overall alignment without assuming specific prior experience.",
+            "rationaleZh": "評估應徵動機與整體契合度，同時不假設你具備特定的過往經驗。",
+            "category": "role-fit",
+            "capabilityIds": [
+              "c1"
+            ],
+            "evidence": "Backend Engineer"
+          },
+          {
+            "id": "q2",
+            "text": "How would you design a Python REST API for creating and retrieving customer orders, including validation, error handling, and status codes?",
+            "meaningZh": "你會如何設計一個用於建立及擷取客戶訂單的 Python REST API，包括驗證、錯誤處理與狀態碼？",
+            "rationale": "Tests practical API design fundamentals and the ability to turn a small requirement into a clear interface.",
+            "rationaleZh": "測試實務 API 設計基礎，以及將小型需求轉化為清楚介面的能力。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "c2"
+            ],
+            "evidence": "Build Python REST APIs and PostgreSQL data models."
+          },
+          {
+            "id": "q3",
+            "text": "How would you model customers, orders, and order items in PostgreSQL, and what constraints and indexes would you choose?",
+            "meaningZh": "你會如何在 PostgreSQL 中建立客戶、訂單與訂單項目的資料模型？你會選擇哪些約束與索引？",
+            "rationale": "Evaluates relational modeling, data integrity, and indexing decisions at the level expected for backend work.",
+            "rationaleZh": "評估關聯式資料建模、資料完整性與索引決策，深度符合後端工作的要求。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "c3"
+            ],
+            "evidence": "Build Python REST APIs and PostgreSQL data models."
+          },
+          {
+            "id": "q4",
+            "text": "Walk me through how you would investigate a PostgreSQL query that has become slow in production.",
+            "meaningZh": "請逐步說明你會如何調查一個在正式環境中變慢的 PostgreSQL 查詢。",
+            "rationale": "Assesses whether the candidate can diagnose performance systematically using evidence rather than guesses.",
+            "rationaleZh": "評估候選人能否依據證據而非猜測，有系統地診斷效能問題。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "c4"
+            ],
+            "evidence": "Investigate slow queries and explain engineering trade-offs."
+          },
+          {
+            "id": "q5",
+            "text": "Suppose an index speeds up reads but increases write latency and storage use. How would you explain the trade-off and recommend a decision?",
+            "meaningZh": "假設某個索引能加快讀取，卻會增加寫入延遲與儲存空間使用量。你會如何說明這項取捨並提出決策建議？",
+            "rationale": "Tests structured communication about competing engineering outcomes and the reasoning behind a recommendation.",
+            "rationaleZh": "測試針對相互競爭的工程結果進行結構化溝通，以及說明建議背後推理的能力。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "c5"
+            ],
+            "evidence": "Investigate slow queries and explain engineering trade-offs."
+          },
+          {
+            "id": "q6",
+            "text": "How would you prepare and deploy a Python API to Kubernetes, including configuration, health checks, and a safe rollout?",
+            "meaningZh": "你會如何準備 Python API 並將其部署至 Kubernetes，包括設定、健康檢查與安全發布？",
+            "rationale": "Evaluates understanding of the main operational concerns involved in deploying a backend service.",
+            "rationaleZh": "評估對部署後端服務時主要維運考量的理解。",
+            "category": "role-fit",
+            "capabilityIds": [
+              "c6"
+            ],
+            "evidence": "Deploy services using Kubernetes and collaborate with teammates."
+          },
+          {
+            "id": "q7",
+            "text": "If a Kubernetes deployment starts failing readiness checks, how would you investigate the problem and communicate your findings to teammates?",
+            "meaningZh": "如果 Kubernetes 部署開始無法通過就緒狀態檢查，你會如何調查問題，並向團隊成員溝通你的發現？",
+            "rationale": "Combines deployment troubleshooting with clear communication during an operational problem.",
+            "rationaleZh": "結合部署疑難排解，以及在維運問題發生時進行清楚溝通的能力。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "c6"
+            ],
+            "evidence": "Deploy services using Kubernetes and collaborate with teammates."
+          },
+          {
+            "id": "q8",
+            "text": "Describe a time you collaborated to resolve a technical issue, or explain how you would approach such a situation if you have not encountered one.",
+            "meaningZh": "請描述一次你透過協作解決技術問題的經歷；如果你未曾遇過這種情況，請說明你會如何處理。",
+            "rationale": "Assesses teamwork, shared problem-solving, and communication without presupposing prior professional experience.",
+            "rationaleZh": "評估團隊合作、共同解決問題與溝通能力，同時不預設你具備過往的專業經驗。",
+            "category": "behavioral",
+            "capabilityIds": [
+              "c7"
+            ],
+            "evidence": "Deploy services using Kubernetes and collaborate with teammates."
+          },
+          {
+            "id": "q9",
+            "text": "Imagine a teammate disagrees with your proposed fix for a slow query. How would you compare the options and work toward a decision?",
+            "meaningZh": "假設一位團隊成員不同意你針對慢查詢提出的修正方案。你會如何比較各個選項並推動團隊做出決策？",
+            "rationale": "Evaluates constructive disagreement, evidence-based decision-making, and collaborative behavior.",
+            "rationaleZh": "評估建設性處理分歧、依據證據做決策，以及協作行為。",
+            "category": "behavioral",
+            "capabilityIds": [
+              "c4"
+            ],
+            "evidence": "Investigate slow queries and explain engineering trade-offs."
+          },
+          {
+            "id": "q10",
+            "text": "How would you explain to a non-database specialist why a slow query may require changes to both the SQL and the data model?",
+            "meaningZh": "你會如何向非資料庫專家說明，為什麼慢查詢可能需要同時修改 SQL 與資料模型？",
+            "rationale": "Tests the ability to communicate a technical diagnosis and its broader design implications to a different audience.",
+            "rationaleZh": "測試向不同受眾溝通技術診斷及其更廣泛設計影響的能力。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "c4"
+            ],
+            "evidence": "Investigate slow queries and explain engineering trade-offs."
+          }
+        ]
+      }
+    },
+    {
+      "name": "resume-and-jd",
+      "snapshot": {
+        "text": "Backend Engineer\nBuild Python REST APIs and PostgreSQL data models.\nInvestigate slow queries and explain engineering trade-offs.\nDeploy services using Kubernetes and collaborate with teammates.",
+        "resume": {
+          "text": "Built a Python task manager with PostgreSQL. Implemented REST endpoints and unit tests for a class project."
+        }
+      },
+      "output": {
+        "capabilities": [
+          {
+            "id": "c1",
+            "description": "Build Python REST APIs",
+            "evidence": "Build Python REST APIs and PostgreSQL data models.",
+            "kind": "fact"
+          },
+          {
+            "id": "c2",
+            "description": "PostgreSQL data models",
+            "evidence": "Build Python REST APIs and PostgreSQL data models.",
+            "kind": "fact"
+          },
+          {
+            "id": "c3",
+            "description": "Investigate slow queries",
+            "evidence": "Investigate slow queries and explain engineering trade-offs.",
+            "kind": "fact"
+          },
+          {
+            "id": "c4",
+            "description": "explain engineering trade-offs",
+            "evidence": "Investigate slow queries and explain engineering trade-offs.",
+            "kind": "fact"
+          },
+          {
+            "id": "c5",
+            "description": "Deploy services using Kubernetes",
+            "evidence": "Deploy services using Kubernetes and collaborate with teammates.",
+            "kind": "fact"
+          },
+          {
+            "id": "c6",
+            "description": "collaborate with teammates",
+            "evidence": "Deploy services using Kubernetes and collaborate with teammates.",
+            "kind": "fact"
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "text": "Why does a backend role focused on Python REST APIs and PostgreSQL data models interest you?",
+            "meaningZh": "為什麼以 Python REST API 和 PostgreSQL 資料模型為重點的後端職位會吸引你？",
+            "rationale": "This assesses your motivation and alignment with the role's core backend responsibilities.",
+            "rationaleZh": "這題評估你的動機，以及你與此職位核心後端職責的契合度。",
+            "category": "role-fit",
+            "capabilityIds": [
+              "c1",
+              "c2"
+            ],
+            "evidence": "Build Python REST APIs and PostgreSQL data models."
+          },
+          {
+            "id": "q2",
+            "text": "Your resume mentions a Python task manager with REST endpoints. How did you structure one endpoint, including validation, error handling, and its interaction with PostgreSQL?",
+            "meaningZh": "你的履歷提到一個具有 REST 端點的 Python 任務管理器。你如何設計其中一個端點，包括驗證、錯誤處理，以及它與 PostgreSQL 的互動？",
+            "rationale": "This explores the depth of your stated REST API experience without assuming implementation details not provided in your resume.",
+            "rationaleZh": "這題探討你所陳述的 REST API 經驗深度，而不假設履歷中未提供的實作細節。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "c1"
+            ],
+            "evidence": "Build Python REST APIs and PostgreSQL data models."
+          },
+          {
+            "id": "q3",
+            "text": "For the task manager in your resume, what PostgreSQL tables and relationships did you design, and what alternatives did you consider?",
+            "meaningZh": "針對履歷中的任務管理器，你設計了哪些 PostgreSQL 資料表與關聯，又考慮過哪些替代方案？",
+            "rationale": "This examines your stated PostgreSQL experience and whether you can justify data-modeling decisions.",
+            "rationaleZh": "這題檢視你所陳述的 PostgreSQL 經驗，以及你是否能說明資料建模決策的理由。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "c2"
+            ],
+            "evidence": "Build Python REST APIs and PostgreSQL data models."
+          },
+          {
+            "id": "q4",
+            "text": "Suppose a PostgreSQL query behind an API endpoint becomes slow as the data grows. How would you investigate it step by step?",
+            "meaningZh": "假設某個 API 端點背後的 PostgreSQL 查詢隨著資料增長而變慢，你會如何逐步調查？",
+            "rationale": "This tests a systematic approach to diagnosing slow queries, including measurement before optimization.",
+            "rationaleZh": "這題測試你診斷慢查詢的系統化方法，包括在最佳化之前先進行衡量。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "c3"
+            ],
+            "evidence": "Investigate slow queries and explain engineering trade-offs."
+          },
+          {
+            "id": "q5",
+            "text": "When would you add an index to improve a slow query, and what read, write, and storage trade-offs would you explain to the team?",
+            "meaningZh": "你會在什麼情況下新增索引來改善慢查詢，又會向團隊說明哪些讀取、寫入與儲存空間方面的權衡？",
+            "rationale": "This assesses whether you can connect a database optimization to its operational costs and communicate the trade-offs clearly.",
+            "rationaleZh": "這題評估你是否能把資料庫最佳化與其營運成本連結起來，並清楚溝通其中的權衡。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "c4"
+            ],
+            "evidence": "Investigate slow queries and explain engineering trade-offs."
+          },
+          {
+            "id": "q6",
+            "text": "If you needed to deploy a Python API to Kubernetes for the first time, how would you package, configure, expose, and verify the service?",
+            "meaningZh": "如果你第一次需要將 Python API 部署到 Kubernetes，你會如何封裝、設定、對外開放並驗證該服務？",
+            "rationale": "This covers the Kubernetes requirement through an open scenario because the resume does not state Kubernetes experience.",
+            "rationaleZh": "由於履歷未陳述 Kubernetes 經驗，這題透過開放式情境涵蓋 Kubernetes 要求。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "c5"
+            ],
+            "evidence": "Deploy services using Kubernetes and collaborate with teammates."
+          },
+          {
+            "id": "q7",
+            "text": "Describe a time you collaborated with classmates or teammates to complete a software project. What did you contribute, and how did you coordinate the work?",
+            "meaningZh": "請描述一次你與同學或隊友合作完成軟體專案的經歷。你做出了什麼貢獻，又如何協調工作？",
+            "rationale": "This assesses concrete collaboration behavior while allowing experience from either academic or other team settings.",
+            "rationaleZh": "這題評估具體的協作行為，同時允許你採用學術或其他團隊情境中的經驗。",
+            "category": "behavioral",
+            "capabilityIds": [
+              "c6"
+            ],
+            "evidence": "Deploy services using Kubernetes and collaborate with teammates."
+          },
+          {
+            "id": "q8",
+            "text": "Tell me about a technical disagreement with a teammate, or explain how you would handle one if you have not encountered it. How would you reach and document a decision?",
+            "meaningZh": "請談談一次你與隊友之間的技術意見分歧；如果你尚未遇過，請說明你會如何處理。你會如何達成並記錄決策？",
+            "rationale": "This evaluates constructive teamwork, evidence-based decision-making, and communication without presupposing prior conflict.",
+            "rationaleZh": "這題評估建設性的團隊合作、以證據為基礎的決策與溝通，同時不預設你曾經歷過衝突。",
+            "category": "behavioral",
+            "capabilityIds": [
+              "c6"
+            ],
+            "evidence": "Deploy services using Kubernetes and collaborate with teammates."
+          },
+          {
+            "id": "q9",
+            "text": "Your resume mentions unit tests for your class project. How did those tests give you confidence that the REST endpoints behaved correctly?",
+            "meaningZh": "你的履歷提到為課堂專案撰寫單元測試。這些測試如何讓你確信 REST 端點的行為正確？",
+            "rationale": "This probes the depth of a stated resume skill in the context of the job's REST API responsibility.",
+            "rationaleZh": "這題在此職位的 REST API 職責情境下，深入探討履歷中所陳述技能的深度。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "c1"
+            ],
+            "evidence": "Build Python REST APIs and PostgreSQL data models."
+          },
+          {
+            "id": "q10",
+            "text": "Imagine an API is slow shortly before a release. How would you balance investigating the query, delivering on time, and explaining the available options to teammates?",
+            "meaningZh": "假設某個 API 在發布前不久變得緩慢。你會如何在調查查詢、準時交付，以及向隊友說明可行選項之間取得平衡？",
+            "rationale": "This assesses prioritization, trade-off communication, and collaboration in a realistic backend delivery scenario.",
+            "rationaleZh": "這題評估在真實的後端交付情境中進行優先順序安排、溝通權衡，以及協作的能力。",
+            "category": "role-fit",
+            "capabilityIds": [
+              "c3",
+              "c4"
+            ],
+            "evidence": "Investigate slow queries and explain engineering trade-offs."
+          }
+        ]
+      }
+    },
+    {
+      "name": "resume-gap",
+      "snapshot": {
+        "text": "Backend Engineer\nBuild Python REST APIs and PostgreSQL data models.\nInvestigate slow queries and explain engineering trade-offs.\nDeploy services using Kubernetes and collaborate with teammates.",
+        "resume": {
+          "text": "Built a Python task manager for a class project. I have not used Kubernetes."
+        },
+        "difficulty": "easier"
+      },
+      "output": {
+        "capabilities": [
+          {
+            "id": "cap_python_rest",
+            "description": "Build Python REST APIs",
+            "evidence": "Build Python REST APIs and PostgreSQL data models.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap_postgresql",
+            "description": "PostgreSQL data models",
+            "evidence": "Build Python REST APIs and PostgreSQL data models.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap_slow_queries",
+            "description": "Investigate slow queries",
+            "evidence": "Investigate slow queries and explain engineering trade-offs.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap_tradeoffs",
+            "description": "Ability to explain engineering trade-offs clearly.",
+            "evidence": "Investigate slow queries and explain engineering trade-offs.",
+            "kind": "inference"
+          },
+          {
+            "id": "cap_kubernetes",
+            "description": "Deploy services using Kubernetes",
+            "evidence": "Deploy services using Kubernetes and collaborate with teammates.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap_collaboration",
+            "description": "collaborate with teammates",
+            "evidence": "Deploy services using Kubernetes and collaborate with teammates.",
+            "kind": "fact"
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "text": "What interests you about building backend services with Python and PostgreSQL?",
+            "meaningZh": "使用 Python 和 PostgreSQL 建置後端服務的哪些方面吸引你？",
+            "rationale": "Assesses your motivation for the role and whether its core backend work matches your interests.",
+            "rationaleZh": "評估你對此職位的動機，以及其核心後端工作是否符合你的興趣。",
+            "category": "role-fit",
+            "capabilityIds": [
+              "cap_python_rest"
+            ],
+            "evidence": "Build Python REST APIs and PostgreSQL data models."
+          },
+          {
+            "id": "q2",
+            "text": "Using your Python task manager as an example, describe one simple REST endpoint you built or would add, including its request and response.",
+            "meaningZh": "以你的 Python 任務管理器為例，描述一個你已建置或會新增的簡單 REST 端點，包括其請求與回應。",
+            "rationale": "Explores how you apply basic REST API concepts while allowing you to use your stated class project as context.",
+            "rationaleZh": "探討你如何運用基本的 REST API 概念，同時讓你能以所述的課堂專案作為情境。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap_python_rest"
+            ],
+            "evidence": "Build Python REST APIs and PostgreSQL data models."
+          },
+          {
+            "id": "q3",
+            "text": "How would you model users and tasks in PostgreSQL for a small task manager?",
+            "meaningZh": "你會如何在 PostgreSQL 中為一個小型任務管理器設計使用者與任務的資料模型？",
+            "rationale": "Assesses foundational data-modeling choices through a small, concrete scenario.",
+            "rationaleZh": "透過一個小型且具體的情境，評估基礎資料建模的選擇。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap_postgresql"
+            ],
+            "evidence": "Build Python REST APIs and PostgreSQL data models."
+          },
+          {
+            "id": "q4",
+            "text": "Suppose a query that lists a user's tasks becomes slow. What would you check first?",
+            "meaningZh": "假設列出某位使用者任務的查詢變慢了，你會先檢查什麼？",
+            "rationale": "Tests whether you can begin investigating a slow query using a manageable scenario.",
+            "rationaleZh": "測試你是否能透過一個容易處理的情境，開始調查緩慢查詢。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap_slow_queries"
+            ],
+            "evidence": "Investigate slow queries and explain engineering trade-offs."
+          },
+          {
+            "id": "q5",
+            "text": "If adding an index speeds up reads but makes writes slightly slower, how would you explain that trade-off to a teammate?",
+            "meaningZh": "如果新增索引能加快讀取速度，但會讓寫入稍微變慢，你會如何向隊友解釋這項取捨？",
+            "rationale": "Assesses your ability to communicate a basic database trade-off clearly and practically.",
+            "rationaleZh": "評估你清楚且務實地溝通基本資料庫取捨的能力。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap_tradeoffs"
+            ],
+            "evidence": "Investigate slow queries and explain engineering trade-offs."
+          },
+          {
+            "id": "q6",
+            "text": "You have not used Kubernetes yet. How would you prepare to deploy a small Python service with it?",
+            "meaningZh": "你目前尚未使用過 Kubernetes。你會如何準備使用它來部署一個小型 Python 服務？",
+            "rationale": "Evaluates your learning approach without assuming prior Kubernetes experience.",
+            "rationaleZh": "在不假設你具備 Kubernetes 經驗的情況下，評估你的學習方法。",
+            "category": "role-fit",
+            "capabilityIds": [
+              "cap_kubernetes"
+            ],
+            "evidence": "Deploy services using Kubernetes and collaborate with teammates."
+          },
+          {
+            "id": "q7",
+            "text": "Imagine a teammate reports that your API is returning errors. How would you work with them to understand and fix the problem?",
+            "meaningZh": "假設一位隊友回報你的 API 正在傳回錯誤，你會如何與對方合作以了解並修正問題？",
+            "rationale": "Assesses collaboration, listening, and shared problem-solving in a straightforward engineering situation.",
+            "rationaleZh": "評估你在直接明確的工程情境中的協作、傾聽與共同解決問題能力。",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap_collaboration"
+            ],
+            "evidence": "Deploy services using Kubernetes and collaborate with teammates."
+          },
+          {
+            "id": "q8",
+            "text": "Tell me about a time you received feedback on a class or personal project. What did you do with it?",
+            "meaningZh": "請談談你在課堂或個人專案中收到回饋的一次經驗。你如何處理該回饋？",
+            "rationale": "Explores how you respond to input and collaborate during project work without assuming professional experience.",
+            "rationaleZh": "在不假設你具備職場經驗的情況下，探討你如何在專案工作中回應意見並進行協作。",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap_collaboration"
+            ],
+            "evidence": "Deploy services using Kubernetes and collaborate with teammates."
+          },
+          {
+            "id": "q9",
+            "text": "How would you explain the purpose of Kubernetes to a classmate who knows Python but has never deployed a service?",
+            "meaningZh": "你會如何向一位懂 Python、但從未部署過服務的同學解釋 Kubernetes 的用途？",
+            "rationale": "Tests whether you can communicate an unfamiliar deployment concept in simple, audience-appropriate language.",
+            "rationaleZh": "測試你是否能以簡單且適合聽眾的語言，溝通一個陌生的部署概念。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap_kubernetes"
+            ],
+            "evidence": "Deploy services using Kubernetes and collaborate with teammates."
+          }
+        ]
+      }
+    }
+  ],
+  "coaching": [
+    {
+      "mode": "hint",
+      "question": {
+        "id": "q2",
+        "text": "Your resume mentions a Python task manager with REST endpoints. How did you structure one endpoint, including validation, error handling, and its interaction with PostgreSQL?",
+        "meaningZh": "你的履歷提到一個具有 REST 端點的 Python 任務管理器。你如何設計其中一個端點，包括驗證、錯誤處理，以及它與 PostgreSQL 的互動？",
+        "rationale": "This explores the depth of your stated REST API experience without assuming implementation details not provided in your resume.",
+        "rationaleZh": "這題探討你所陳述的 REST API 經驗深度，而不假設履歷中未提供的實作細節。",
+        "category": "experience-depth",
+        "capabilityIds": [
+          "c1"
+        ],
+        "evidence": "Build Python REST APIs and PostgreSQL data models."
+      },
+      "transcript": "",
+      "output": {
+        "text": "你可以先選一個具體端點，例如建立任務，並依序說明：請求資料如何驗證、有效資料如何寫入 PostgreSQL，以及不同失敗情況如何轉成適當的 HTTP 錯誤回應。",
+        "explanationZh": "以單一端點為主軸，按照「驗證 → 資料庫互動 → 錯誤處理」組織回答；再補上你實際使用的框架、欄位規則、交易方式與狀態碼。"
+      }
+    },
+    {
+      "mode": "gap",
+      "question": {
+        "id": "q2",
+        "text": "Your resume mentions a Python task manager with REST endpoints. How did you structure one endpoint, including validation, error handling, and its interaction with PostgreSQL?",
+        "meaningZh": "你的履歷提到一個具有 REST 端點的 Python 任務管理器。你如何設計其中一個端點，包括驗證、錯誤處理，以及它與 PostgreSQL 的互動？",
+        "rationale": "This explores the depth of your stated REST API experience without assuming implementation details not provided in your resume.",
+        "rationaleZh": "這題探討你所陳述的 REST API 經驗深度，而不假設履歷中未提供的實作細節。",
+        "category": "experience-depth",
+        "capabilityIds": [
+          "c1"
+        ],
+        "evidence": "Build Python REST APIs and PostgreSQL data models."
+      },
+      "transcript": "",
+      "output": {
+        "text": "如果你尚未實際做過這類端點，可以先用假設情境回答：例如設計一個「建立任務」端點，依序說明你會如何驗證必填欄位與資料格式、將請求轉成資料庫操作、處理找不到資料或違反資料庫限制等錯誤，最後回傳合適的 HTTP 狀態碼。",
+        "explanationZh": "目前沒有逐字稿，無法確認你使用過的框架、驗證方式、SQL／ORM、交易處理或錯誤格式。回答時請明確標示為假設設計，並補上你能證實的技術細節。"
+      }
+    },
+    {
+      "mode": "ideas",
+      "question": {
+        "id": "q2",
+        "text": "Your resume mentions a Python task manager with REST endpoints. How did you structure one endpoint, including validation, error handling, and its interaction with PostgreSQL?",
+        "meaningZh": "你的履歷提到一個具有 REST 端點的 Python 任務管理器。你如何設計其中一個端點，包括驗證、錯誤處理，以及它與 PostgreSQL 的互動？",
+        "rationale": "This explores the depth of your stated REST API experience without assuming implementation details not provided in your resume.",
+        "rationaleZh": "這題探討你所陳述的 REST API 經驗深度，而不假設履歷中未提供的實作細節。",
+        "category": "experience-depth",
+        "capabilityIds": [
+          "c1"
+        ],
+        "evidence": "Build Python REST APIs and PostgreSQL data models."
+      },
+      "transcript": "我做過 Python 任務管理專案，負責 REST API 與單元測試。沒有用過 Kubernetes。",
+      "output": {
+        "text": "I worked on a Python task management project, where I was responsible for the REST API and unit tests.",
+        "explanationZh": "目前只能確認你負責 REST API 與單元測試；尚缺特定端點的用途、輸入驗證規則、錯誤回應，以及 PostgreSQL 查詢或交易方式。Kubernetes 與本題無關，因此不放入回答。"
+      }
+    },
+    {
+      "mode": "rewrite",
+      "question": {
+        "id": "q2",
+        "text": "Your resume mentions a Python task manager with REST endpoints. How did you structure one endpoint, including validation, error handling, and its interaction with PostgreSQL?",
+        "meaningZh": "你的履歷提到一個具有 REST 端點的 Python 任務管理器。你如何設計其中一個端點，包括驗證、錯誤處理，以及它與 PostgreSQL 的互動？",
+        "rationale": "This explores the depth of your stated REST API experience without assuming implementation details not provided in your resume.",
+        "rationaleZh": "這題探討你所陳述的 REST API 經驗深度，而不假設履歷中未提供的實作細節。",
+        "category": "experience-depth",
+        "capabilityIds": [
+          "c1"
+        ],
+        "evidence": "Build Python REST APIs and PostgreSQL data models."
+      },
+      "transcript": "I built a Python task manager for a class project. I implemented REST endpoints and wrote unit tests. I would inspect the query plan if an endpoint became slow.",
+      "output": {
+        "text": "I built a Python task manager as a class project, where I implemented REST endpoints and wrote unit tests. If an endpoint became slow, I would inspect its query plan. I haven’t included enough detail here to explain a specific endpoint’s validation, error handling, or database interaction.",
+        "explanationZh": "將內容整理成較自然的口語回答，並保留「若端點變慢」的假設語氣。現有逐字稿未說明特定端點的流程、輸入驗證、錯誤回應、PostgreSQL 查詢或交易處理，因此沒有補寫這些細節；正式回答時需加入實際實作方式。"
+      }
+    }
+  ],
+  "feedback": [
+    {
+      "question": {
+        "id": "q2",
+        "text": "Your resume mentions a Python task manager with REST endpoints. How did you structure one endpoint, including validation, error handling, and its interaction with PostgreSQL?",
+        "meaningZh": "你的履歷提到一個具有 REST 端點的 Python 任務管理器。你如何設計其中一個端點，包括驗證、錯誤處理，以及它與 PostgreSQL 的互動？",
+        "rationale": "This explores the depth of your stated REST API experience without assuming implementation details not provided in your resume.",
+        "rationaleZh": "這題探討你所陳述的 REST API 經驗深度，而不假設履歷中未提供的實作細節。",
+        "category": "experience-depth",
+        "capabilityIds": [
+          "c1"
+        ],
+        "evidence": "Build Python REST APIs and PostgreSQL data models."
+      },
+      "transcript": "I built a Python task manager for a class project. I implemented REST endpoints and wrote unit tests. I would inspect the query plan if an endpoint became slow.",
+      "output": {
+        "ratings": {
+          "relevance": {
+            "level": 2,
+            "quote": "I implemented REST endpoints and wrote unit tests.",
+            "reason": "This establishes relevant experience, but it does not describe a specific endpoint’s validation, error handling, or PostgreSQL interaction.",
+            "reasonZh": "這證明了相關經驗，但沒有說明特定端點的驗證、錯誤處理或與 PostgreSQL 的互動。"
+          },
+          "support": {
+            "level": 1,
+            "quote": "I would inspect the query plan if an endpoint became slow.",
+            "reason": "The answer offers one hypothetical troubleshooting action but no concrete implementation details, examples, or technical rationale from the project.",
+            "reasonZh": "回答提出了一項假設性的疑難排解行動，但沒有提供該專案的具體實作細節、例子或技術理由。"
+          },
+          "structure": {
+            "level": 2,
+            "quote": "I built a Python task manager for a class project. I implemented REST endpoints and wrote unit tests. I would inspect the query plan if an endpoint became slow.",
+            "reason": "The response is concise, but it moves from project context to testing and performance troubleshooting without organizing the explanation around the requested endpoint flow.",
+            "reasonZh": "回答很精簡，但從專案背景跳到測試與效能疑難排解，沒有依照題目要求的端點流程來組織說明。"
+          },
+          "englishExpression": {
+            "level": 4,
+            "quote": "I built a Python task manager for a class project.",
+            "reason": "The English is clear, grammatical, and easy to understand.",
+            "reasonZh": "英文表達清楚、文法正確且容易理解。"
+          }
+        },
+        "strength": {
+          "text": "You state the relevant project experience directly and concisely.",
+          "textZh": "你直接且精簡地陳述了相關的專案經驗。",
+          "quote": "I implemented REST endpoints and wrote unit tests."
+        },
+        "priorityImprovement": {
+          "text": "Focus on one actual endpoint and walk through its request validation, PostgreSQL operation, success response, and error paths; replace the hypothetical performance comment with concrete implementation evidence.",
+          "textZh": "聚焦於一個實際端點，依序說明其請求驗證、PostgreSQL 操作、成功回應與錯誤處理路徑；並以具體的實作證據取代假設性的效能說明。",
+          "quote": "I would inspect the query plan if an endpoint became slow."
+        }
+      }
+    },
+    {
+      "question": {
+        "id": "q2",
+        "text": "Your resume mentions a Python task manager with REST endpoints. How did you structure one endpoint, including validation, error handling, and its interaction with PostgreSQL?",
+        "meaningZh": "你的履歷提到一個具有 REST 端點的 Python 任務管理器。你如何設計其中一個端點，包括驗證、錯誤處理，以及它與 PostgreSQL 的互動？",
+        "rationale": "This explores the depth of your stated REST API experience without assuming implementation details not provided in your resume.",
+        "rationaleZh": "這題探討你所陳述的 REST API 經驗深度，而不假設履歷中未提供的實作細節。",
+        "category": "experience-depth",
+        "capabilityIds": [
+          "c1"
+        ],
+        "evidence": "Build Python REST APIs and PostgreSQL data models."
+      },
+      "transcript": "I built a Python task manager for a class project. I implemented REST endpoints and wrote unit tests. I would inspect the query plan if an endpoint became slow. My tests covered successful requests and invalid input. I would compare query plans before and after an index change, while considering its write cost.",
+      "output": {
+        "ratings": {
+          "relevance": {
+            "level": 2,
+            "quote": "I implemented REST endpoints and wrote unit tests.",
+            "reason": "This establishes relevant experience, but it does not identify one endpoint or explain its validation, error handling, and PostgreSQL interaction.",
+            "reasonZh": "這證明了相關經驗，但未指出一個具體端點，也未說明其驗證、錯誤處理及與 PostgreSQL 的互動。"
+          },
+          "support": {
+            "level": 2,
+            "quote": "My tests covered successful requests and invalid input.",
+            "reason": "The test coverage is useful supporting evidence, but the answer lacks a concrete request example, validation rules, database operation, error responses, and observed behavior.",
+            "reasonZh": "測試涵蓋範圍是有用的佐證，但回答缺少具體的請求範例、驗證規則、資料庫操作、錯誤回應及實際行為。"
+          },
+          "structure": {
+            "level": 2,
+            "quote": "I would inspect the query plan if an endpoint became slow.",
+            "reason": "The response shifts from implementation and testing to hypothetical performance analysis instead of walking through one endpoint from request to response.",
+            "reasonZh": "回答從實作與測試轉向假設性的效能分析，而非依照從請求到回應的順序說明一個端點。"
+          },
+          "englishExpression": {
+            "level": 4,
+            "quote": "I would compare query plans before and after an index change, while considering its write cost.",
+            "reason": "The English is clear, concise, and grammatically sound, with precise technical vocabulary.",
+            "reasonZh": "英文表達清楚、精簡且文法正確，並使用了精確的技術詞彙。"
+          }
+        },
+        "strength": {
+          "text": "You show awareness of both testing invalid input and evaluating the read-versus-write trade-off of an index change.",
+          "textZh": "你展現了對無效輸入測試，以及評估索引變更之讀取與寫入取捨的認知。",
+          "quote": "My tests covered successful requests and invalid input. I would compare query plans before and after an index change, while considering its write cost."
+        },
+        "priorityImprovement": {
+          "text": "The previous priority issue is only partially addressed: you now mention invalid-input testing, but you still do not walk through one actual endpoint's validation, PostgreSQL operation, success response, and error paths, and the query-plan discussion remains hypothetical.",
+          "textZh": "先前的優先改進問題僅獲得部分處理：你現在提到無效輸入測試，但仍未依序說明一個實際端點的驗證、PostgreSQL 操作、成功回應與錯誤處理路徑，而且查詢計畫的討論仍是假設性的。",
+          "quote": "My tests covered successful requests and invalid input. I would compare query plans before and after an index change, while considering its write cost."
+        }
+      }
+    }
+  ],
+  "status": "automatic-pass"
+}

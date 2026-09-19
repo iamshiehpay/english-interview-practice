@@ -1,0 +1,490 @@
+{
+  "schemaVersion": 2,
+  "contractVersion": "2.0.0",
+  "status": "completed-independent-ai-review",
+  "reviewerType": "ai",
+  "reviewer": "Independent AI reviewer /root/contracts (configured gpt-5.6-sol, high)",
+  "reviewedAt": "2026-09-18T11:34:53.822Z",
+  "reviews": [
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 1,
+      "outputChecksum": "045c1d9352970f44d150795b7c9b7b957017d3b0e2a7f090acab4bef2f830ec8",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the Mandarin retrieval-evaluation question, its role rationale, four rating assessments, user-centered strength, and proposed evaluation framework. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "ed9df927f353885e07e368440af52c4bf6000d129cd85d739fa11cae0497149f",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the Python inference-service experience question, its depth rationale, four evidence/relevance assessments, concise-language strength, and concrete-example advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 1,
+      "outputChecksum": "362c01cbb14c508985f4f065cd783bf6be2c6d9a6f1b4ab3d020b3410697b875",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the retrieval-metric versus user-experience question, investigative rationale, four assessment dimensions, collaborative strength, and mismatch-analysis advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "aa32fda35c4eceda4a877095435c8630308ef32d0944b9b5b4a070b0f34eee50",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the model-limitations communication question, product-partner rationale, four assessment dimensions, evidence-oriented strength, and calibrated-risk advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 1,
+      "outputChecksum": "1fbe872d3590207a623271b14778f33d4ebb73bb2cf2431d7467249ca16dc674",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the payment-API and Taipei motivation question, fit rationale, four assessment dimensions, language strength, and role-specific motivation advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "a4c4e3a87b3516aaf2706e980d96b027f7083e4c090183d92e9faf724ea11602",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the payment-API reliability question, experience-depth rationale, four assessment dimensions, idempotency strength, and verification advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 1,
+      "outputChecksum": "fa9c096e833dc53bc3a30c58d3ce8def8bc23cda9d110d30408180fc13867831",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the blameless incident-review question, psychological-safety rationale, four assessment dimensions, concise ownership strength, and concrete follow-through advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "1ac352a5126fcdfecc5443a997d9c8f37ab7ea0b99c83ed3bee1382da63f16cd",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the consistency-versus-availability question, product-consequence rationale, four assessment dimensions, duplicate-charge strength, and partition-policy advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 1,
+      "outputChecksum": "5928ed5592faf0077212f502caa8a36f62f4ac2da3185c3cbb0d36782b3b802e",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the product-experiment and Hsinchu motivation question, fit rationale, four assessment dimensions, causal-analysis strength, and role/location-specific advice. Shared rating levels and evidence quotes remain those in the frozen raw output. The Chinese question uses 「最吸引」 where English says “interests”; this is a minor natural emphasis and does not add a material condition, recommendation, or conflicting answer requirement.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "2f805de6e382d9e3484d507874332e9417be381d2772d66ce13db5d09613faff",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the complex experiment question, experience-impact rationale, four assessment dimensions, honest analytical-workflow strength, and decision-impact advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 1,
+      "outputChecksum": "b6b3f279337f8da03d76cd0facc0c445fcec8d6379a3c2a7990d85c4df234882",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the missing-data validity question, judgment rationale, four assessment dimensions, collaborative validation strength, and concrete-incident advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "0b6528d093fee4237f2fbc5dfd1c06885bca25cb7af0ecb78f4a7b64b85b9905",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the 95% confidence-interval question, accuracy rationale, four assessment dimensions, clear-language strength, and repeated-sampling explanation advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 1,
+      "outputChecksum": "45b37ac2ec9b2139535fd0f0271264ff17fa674809ef6dd54b2009e27ceb0ecc",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the embedded sensor-software and Hsinchu fit question, role rationale, four assessment dimensions, transferable-testing strength, and concrete-example advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "d4e8fc3363e81c6cd3142fbf0cf8e1b2994c776213d145bfdee243595166ba32",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the embedded sensor-system ownership question, depth rationale, four assessment dimensions, troubleshooting strength, and component/outcome advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 1,
+      "outputChecksum": "d82d4801dabb03ba4c26ca108284f124a4f4f7cc5a849d015b0f0b29a0eda3b3",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the hardware-software coordination question, collaboration rationale, four assessment dimensions, evidence-first strength, and specific-incident advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "857dcec672352cb5aad1005e76b7f264d497abad6df172fa44da4d9ebcca9328",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the intermittent serial-failure question, diagnostic rationale, four assessment dimensions, concise-language strength, and systematic isolation advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 1,
+      "outputChecksum": "4d49cc6b14223f9561d5bf2231b5e28f1f5a0fd5fc8b41b1f34f860c673264dc",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the accessible-interface and Taipei motivation question, fit rationale, four assessment dimensions, concise-language strength, and role/location-specific advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "54a0d5cd14b8f56aea7797123473965fd126af3e45d1a7df7ca51dad369528ac",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the accessible-interface experience question, validation rationale, four assessment dimensions, candid testing strength, and rigorous verification advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 1,
+      "outputChecksum": "ff0e3f1e0c63a131f3b0ab8879732a9cffd78ffb80d4e9234297cf9c410d9045",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the designer disagreement question, collaboration rationale, four assessment dimensions, controlled-comparison strength, and evidence-based decision advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "83b7dfbf5735a18c1d50cd5de3e9ccce750df7353f2de4463a3659a925f32f04",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the accessibility-versus-rendering-performance question, cross-functional rationale, four assessment dimensions, measurement-first strength, and designer-facing recommendation. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 2,
+      "outputChecksum": "c4943eca41d9204380f99afcce4525e394477ca7dab80acd6fa69883935214fa",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the Mandarin retrieval-evaluation question, its role rationale, four rating assessments, user-centered strength, and proposed evaluation framework. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "dddc11b505430b919eaddff70649f682b90b33d4c5e486d7afc141da89e8d5ae",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the Python inference-service experience question, its depth rationale, four evidence/relevance assessments, concise-language strength, and concrete-example advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 2,
+      "outputChecksum": "3e1987f1add4960a53159e84acf66ca5f2194912e8c97059da930a58b835d61a",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the retrieval-metric versus user-experience question, investigative rationale, four assessment dimensions, collaborative strength, and mismatch-analysis advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "8a731d4173a39ccb38a6a04157fa0c6e988c0b7fcbfe50c6134744d7db9a34ba",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the model-limitations communication question, product-partner rationale, four assessment dimensions, evidence-oriented strength, and calibrated-risk advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 2,
+      "outputChecksum": "498a82029e2f11f397d3de3694fcccaa6e7094f6bf2d85c6285c0921a7be5a78",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the payment-API and Taipei motivation question, fit rationale, four assessment dimensions, language strength, and role-specific motivation advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "72bee5afa03e8f502c7ace20d613e92d95df77e53c46a3081df41ab5ca77d955",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the payment-API reliability question, experience-depth rationale, four assessment dimensions, idempotency strength, and verification advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 2,
+      "outputChecksum": "f06014980d80f9ae13a674730652ea76b78d832b07ba9a1dfa317980fa367223",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the blameless incident-review question, psychological-safety rationale, four assessment dimensions, concise ownership strength, and concrete follow-through advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "86b0eaf3ff164388852e1c402b5899e1c5ef57f8a08e9d49024916ac07fbbccf",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the consistency-versus-availability question, product-consequence rationale, four assessment dimensions, duplicate-charge strength, and partition-policy advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 2,
+      "outputChecksum": "91c1d4c6ad972052e7e7c08d4e04eeb0be42c6210de5f55178f5f113b0b032f5",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the product-experiment and Hsinchu motivation question, fit rationale, four assessment dimensions, causal-analysis strength, and role/location-specific advice. Shared rating levels and evidence quotes remain those in the frozen raw output. The Chinese question uses 「最吸引」 where English says “interests”; this is a minor natural emphasis and does not add a material condition, recommendation, or conflicting answer requirement.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "de9cf5be2e9c38ac95fd486f574b7a6db48b53068fb8cadda7403ffdb3b9b076",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the complex experiment question, experience-impact rationale, four assessment dimensions, honest analytical-workflow strength, and decision-impact advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 2,
+      "outputChecksum": "eb0ce4aa4920badcf4e4f8adf797a496c42971127073a193cc5bfae535b7a2f4",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the missing-data validity question, judgment rationale, four assessment dimensions, collaborative validation strength, and concrete-incident advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "72703a7cafb9d0c12f6d0ba165990395723d5aa7ced8835da0738d28e1aeafda",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the 95% confidence-interval question, accuracy rationale, four assessment dimensions, clear-language strength, and repeated-sampling explanation advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 2,
+      "outputChecksum": "06b7b202d307fafbd8d3a8d563f266057492010d4e068dd748e06cdf58a3d598",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the embedded sensor-software and Hsinchu fit question, role rationale, four assessment dimensions, transferable-testing strength, and concrete-example advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "2600f5da40ce64c36583e02c356daa6ab7cabe5f5720c0bd307e0dcd55100f98",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the embedded sensor-system ownership question, depth rationale, four assessment dimensions, troubleshooting strength, and component/outcome advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 2,
+      "outputChecksum": "7dbd829b4c28386e138e95384519050681358631b91561ada251bda7aa91472e",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the hardware-software coordination question, collaboration rationale, four assessment dimensions, evidence-first strength, and specific-incident advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "91b18135b88b99eb713bad70b38cdb3e39a0c689db1dbc4a88c9ceaffd842150",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the intermittent serial-failure question, diagnostic rationale, four assessment dimensions, concise-language strength, and systematic isolation advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 2,
+      "outputChecksum": "ced54e3c3a35c464bbf694d87dff8100e726abef1362aaf1d558f1133036e5b7",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the accessible-interface and Taipei motivation question, fit rationale, four assessment dimensions, concise-language strength, and role/location-specific advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "761d0e81501af142a8893047c2c91e5f344541a44933bdf023bed62776f4d9d2",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the accessible-interface experience question, validation rationale, four assessment dimensions, candid testing strength, and rigorous verification advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 2,
+      "outputChecksum": "9826a17167a15bdd59c4d1b5c4f1f4caf53b96b82d4c7b2e8437ebaf22f10d8e",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the designer disagreement question, collaboration rationale, four assessment dimensions, controlled-comparison strength, and evidence-based decision advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "aa7df939283e83b437d0f12d63d9426547ae78d0e854a2746be961fcd366bb51",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the accessibility-versus-rendering-performance question, cross-functional rationale, four assessment dimensions, measurement-first strength, and designer-facing recommendation. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 3,
+      "outputChecksum": "7500b02fb0711b00bf2ec33d11bb15906fd138c79517a71f025520ac817e06d1",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the Mandarin retrieval-evaluation question, its role rationale, four rating assessments, user-centered strength, and proposed evaluation framework. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "b5ff88ad63a5d24ee28a304cfe47c13ce014040ebfb1eceb0138ad43d2146a03",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the Python inference-service experience question, its depth rationale, four evidence/relevance assessments, concise-language strength, and concrete-example advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 3,
+      "outputChecksum": "b3012e88f3bed83eac8d082653b0de791277dbdd2fb3b32fc724f7c7de4f824d",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the retrieval-metric versus user-experience question, investigative rationale, four assessment dimensions, collaborative strength, and mismatch-analysis advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "9d1f84f449485677fdddb1b64f9738729bb615ee679df0fe0ca7cc96858c37d1",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the model-limitations communication question, product-partner rationale, four assessment dimensions, evidence-oriented strength, and calibrated-risk advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 3,
+      "outputChecksum": "692a43f000029dbe4e01f4c92869d55bad28948d9cc769ec5ed2661547e10f6b",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the payment-API and Taipei motivation question, fit rationale, four assessment dimensions, language strength, and role-specific motivation advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "4b099a503a44322dd161889c068dce40fb3a7f3f230beda1d09e83b34331f720",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the payment-API reliability question, experience-depth rationale, four assessment dimensions, idempotency strength, and verification advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 3,
+      "outputChecksum": "5a607bb49f6a63079db471d92130b560ffc18bbf31e45d1ecc3375635072637b",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the blameless incident-review question, psychological-safety rationale, four assessment dimensions, concise ownership strength, and concrete follow-through advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "15d70dd2f17393123468980aed387ec70419aea2c5b810e925fbd2147e954601",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the consistency-versus-availability question, product-consequence rationale, four assessment dimensions, duplicate-charge strength, and partition-policy advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 3,
+      "outputChecksum": "d8dfe1f2647cefffe784aadf4ad9a4c85149dfbd3424ccb714015ff2f2503a7d",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the product-experiment and Hsinchu motivation question, fit rationale, four assessment dimensions, causal-analysis strength, and role/location-specific advice. Shared rating levels and evidence quotes remain those in the frozen raw output. The Chinese question uses 「最吸引」 where English says “interests”; this is a minor natural emphasis and does not add a material condition, recommendation, or conflicting answer requirement.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "e61712bc85f40ca607932ff15a020eead9dfc3ee0c5e2fadb00f869c845b2cb8",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the complex experiment question, experience-impact rationale, four assessment dimensions, honest analytical-workflow strength, and decision-impact advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 3,
+      "outputChecksum": "d278247b60901c6b8fa26988db14e8f42dac7bfd0e615f110b82c19036c0d4d7",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the missing-data validity question, judgment rationale, four assessment dimensions, collaborative validation strength, and concrete-incident advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "e78e3cbf47753c94922accf010e544fcaeab44765ffbda6325056535c5b6b837",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the 95% confidence-interval question, accuracy rationale, four assessment dimensions, clear-language strength, and repeated-sampling explanation advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 3,
+      "outputChecksum": "d8689e1c696008a74250e69a2db3d5d622773eb7d8672f7649049a4bdaaef0c2",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the embedded sensor-software and Hsinchu fit question, role rationale, four assessment dimensions, transferable-testing strength, and concrete-example advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "7e2f9dd29596fa07cc6a4235061770a0cd3c53e10e73872175f675752cec791d",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the embedded sensor-system ownership question, depth rationale, four assessment dimensions, troubleshooting strength, and component/outcome advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 3,
+      "outputChecksum": "3fb710be21b625955b957ac769ab04b6341797ae26ea20f9ae1eecdf553f3827",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the hardware-software coordination question, collaboration rationale, four assessment dimensions, evidence-first strength, and specific-incident advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "40de29994575455ee0660b3218a95a9a9d2ff07be4863e05763044b52e46eaff",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the intermittent serial-failure question, diagnostic rationale, four assessment dimensions, concise-language strength, and systematic isolation advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 3,
+      "outputChecksum": "2b318e99cdfd5714f15c86db9dbd6646cd1ace7cddee7eb3e2fddaf5e95893f1",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the accessible-interface and Taipei motivation question, fit rationale, four assessment dimensions, concise-language strength, and role/location-specific advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "1200db19e965980b97e13bd5c1fc52aef4eefccbfb9b0bfeff5103e59c28bf5b",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the accessible-interface experience question, validation rationale, four assessment dimensions, candid testing strength, and rigorous verification advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 3,
+      "outputChecksum": "6c8935095f6c55857c296e3fc4a4226796dd95bac3bfd1ca78d3d92d412b2ebf",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the designer disagreement question, collaboration rationale, four assessment dimensions, controlled-comparison strength, and evidence-based decision advice. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "1c0aa095b23c12fa6c537b1c5a824c42ab2a22b6baa4b10afb3fd86936615ad6",
+      "verdict": "consistent",
+      "rationale": "All eight English–Traditional Chinese pairs preserve the same coaching meaning for the accessibility-versus-rendering-performance question, cross-functional rationale, four assessment dimensions, measurement-first strength, and designer-facing recommendation. Shared rating levels and evidence quotes remain those in the frozen raw output.",
+      "contradictoryPairs": []
+    }
+  ]
+}

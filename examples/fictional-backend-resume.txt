@@ -1,0 +1,37 @@
+FICTIONAL RESUME — FOR APPLICATION TESTING ONLY
+All names, projects, education, and experience below are fictional.
+
+Alex Lin
+Junior Backend Software Engineer
+Taipei, Taiwan | alex.lin@example.com
+
+SUMMARY
+Entry-level developer interested in reliable backend services. Built a Python and PostgreSQL task management application as an individual learning project. Seeking a junior backend role with opportunities to improve API design, testing, and database performance.
+
+SKILLS
+Python, FastAPI, PostgreSQL, SQL, Git, pytest, basic Docker
+Languages: Mandarin; English for reading documentation and written technical communication
+
+PROJECTS
+Task Management API | Individual Learning Project | 2025–2026
+- Built REST endpoints for creating, updating, filtering, and listing tasks.
+- Designed PostgreSQL tables for users, projects, and tasks, using foreign keys to connect related records.
+- Added request validation and consistent error responses for invalid input and missing records.
+- Wrote pytest tests for successful requests, invalid input, and task filtering.
+- Investigated a slow task-list query using EXPLAIN ANALYZE on a local test dataset.
+- Added an index and pagination, then compared query plans before and after the changes. No formal production performance benchmark was conducted.
+- Packaged the application with Docker for local development.
+
+EDUCATION
+Fictional Example University
+B.S. in Computer Science | 2025
+Coursework: databases, data structures, software engineering
+
+EXPERIENCE BOUNDARIES
+- No full-time backend engineering employment yet.
+- No hands-on Kubernetes deployment experience.
+- No production on-call experience or large-scale traffic ownership.
+- The task management project was individual work, not a team project.
+
+LEARNING GOALS
+Explain API design trade-offs more clearly in English, deepen SQL performance analysis, and learn Kubernetes deployment basics.

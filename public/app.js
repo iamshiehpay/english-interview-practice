@@ -1,0 +1,986 @@
+import {mountVoice} from './voice.js';
+
+const $ = selector => document.querySelector(selector);
+const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const categories = {
+  'role-fit': '職務動機與適配',
+  'experience-depth': '經驗與專案深度',
+  behavioral: '行為與情境判斷',
+  'technical-communication': '技術說明'
+};
+const dimensions = {
+  relevance: '切題程度',
+  support: '論據與例子',
+  structure: '回答結構',
+  englishExpression: '英文表達'
+};
+const recordStates = {answer:'準備初答',feedback:'等待回饋',revise:'等待修改回答',compare:'等待比較與保存',completed:'已完成'};
+const operationNames = {analysis:'產生題目',questions:'新增題目',feedback:'取得回饋','follow-up':'產生追問題目','follow-up-feedback':'取得追問回饋',followUp:'產生追問題目',coaching:'準備練習建議',transcription:'語音轉成文字',discovery:'搜尋職缺',url:'取得職缺'};
+
+let workspace = {snapshots:{}, analyses:{}, records:{}};
+let providerInfo;
+let languageStatus = {ready:true};
+let currentView = 'home';
+let currentRecordId = null;
+let currentSnapshotId = null;
+let viewToken = 0;
+let disposeVoice = () => {};
+let draftSession = null;
+let operationsSignature = '';
+let captureBusy = false;
+const requestKeys = new Map();
+
+class ApiError extends Error {
+  constructor(message, status, retryable) { super(message); this.status = status; this.retryable = retryable; }
+}
+
+function localizeError(message, status) {
+  const rules = [
+    [/Paste a job description/i, '請先貼上職缺描述。'],
+    [/Operation cancelled|cancelled or superseded/i, '操作已取消；先前保存的內容仍在本機。'],
+    [/Operation already pending for this practice/i, '這筆練習的操作仍在進行，請等待或取消後再試。'],
+    [/timed out/i, '服務等待逾時。已保存的內容不受影響，請重試原操作。'],
+    [/rate limit/i, '服務目前請求過多，請稍後重試。'],
+    [/Invalid provider output|schema|citation/i, '服務回傳的內容格式無法使用，未寫入練習紀錄。請重試。'],
+    [/Provider or storage operation failed/i, '服務或本機儲存操作失敗；已成功保存的內容仍在，請重試。'],
+    [/Generate a Question Set first/i, '請先為這份職缺產生題目。'],
+    [/Question Set changed/i, '題組已更新，請重新載入後再試。'],
+    [/Enter a text draft/i, '草稿內容過長，請縮短後再儲存。'],
+    [/Practice changed|Transcript draft changed/i, '練習內容已在其他地方更新，請重新開啟後再試。'],
+    [/Enter an answer|Enter a follow-up answer/i, '請先寫下你的英文回答。'],
+    [/Finish feedback before/i, '請先完成目前回答的回饋，再進入下一步。'],
+    [/at most two follow-ups|follow-up limit|already has two follow-ups/i, '每道主問最多兩次追問，現在可以結束並保存。'],
+    [/previous follow-up|preceding follow-up|Complete follow-up feedback/i, '請先完成這次追問的回饋，再繼續追問。'],
+    [/Reference unavailable/i, '完成修改回答與第二次回饋後，才能查看參考表達。'],
+    [/Complete both/i, '請先完成兩次回答與回饋。'],
+    [/meaningful Focus Point|up to 500 characters/i, '請填寫一項有意義的下次練習重點（最多 500 字）。'],
+    [/Not found/i, '找不到這筆資料，可能已被刪除。'],
+    [/Codex subscription login required/i, '請先到設定完成 Codex 登入與驗證。'],
+    [/Type DELETE ALL LOCAL DATA/i, '請輸入 DELETE ALL LOCAL DATA 以確認刪除。']
+  ];
+  const match = rules.find(([pattern]) => pattern.test(message || ''));
+  if (match) return match[1];
+  if (status >= 500) return '服務暫時無法完成操作；已成功保存的內容仍在，請重試。';
+  if (/[\u3400-\u9fff]/u.test(message || '')) return message;
+  return '目前的輸入或操作狀態無法接受，請檢查畫面提示後重試。';
+}
+
+async function api(path, data, method) {
+  const followUpExternal = /\/records\/[^/]+\/follow-ups(?:\/[^/]+\/feedback)?$/.test(path);
+  const external = data !== undefined && (/\/(analysis|questions|feedback|transcription|coaching)$/.test(path) || followUpExternal || path === '/discovery' || path === '/snapshots/from-url');
+  const payload = data === undefined ? '' : JSON.stringify(data);
+  const digest = external ? Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(payload)))).map(n => n.toString(16).padStart(2, '0')).join('') : '';
+  const key = external ? `${path}|${digest}` : null;
+  if (external && !requestKeys.has(key)) requestKeys.set(key, crypto.randomUUID());
+  const options = {method: method || (data === undefined ? 'GET' : 'POST')};
+  if (data !== undefined) {
+    options.headers = {'Content-Type':'application/json', ...(external ? {'X-Request-Id':requestKeys.get(key)} : {})};
+    options.body = payload;
+  }
+  const response = await fetch(`/api${path}`, options);
+  const result = await response.json();
+  if (!response.ok) throw new ApiError(localizeError(result.error, response.status), response.status, result.retryable);
+  if (external) requestKeys.delete(key);
+  return result;
+}
+
+function setError(message = '') { $('#error').textContent = message; }
+function setNotice(message = '') {
+  $('#notice').textContent = message;
+  if (message) setTimeout(() => { if ($('#notice').textContent === message) $('#notice').textContent = ''; }, 4500);
+}
+function button(text, handler, parent, {kind='primary', id, attributes={}} = {}) {
+  const control = document.createElement('button');
+  control.type = 'button';
+  control.textContent = text;
+  control.className = kind;
+  if (id) control.id = id;
+  for (const [name, value] of Object.entries(attributes)) control.setAttribute(name, value);
+  control.addEventListener('click', async () => {
+    setError();
+    control.disabled = true;
+    try { await handler(); }
+    catch (error) { setError(error.message); }
+    finally { if (control.isConnected) control.disabled = false; }
+  });
+  parent.append(control);
+  return control;
+}
+function firstLine(text) { return String(text || '').split('\n').map(line => line.trim()).find(Boolean) || '未命名職缺'; }
+function dateLabel(value) {
+  const date = new Date(value);
+  return Number.isNaN(date.valueOf()) ? '' : new Intl.DateTimeFormat('zh-TW', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'}).format(date);
+}
+function sortRecent(records) { return [...records].sort((a,b) => new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0)); }
+function modelReady() { return !providerInfo?.languageModel?.subscription || languageStatus?.ready === true; }
+function providerName(info) { return info?.external ? info.name : '本機示範服務'; }
+function outboundLabel(value) {
+  const rules = [
+    [/JD text.*analysis/i, '產生題目時傳送職缺與你選用的履歷'],
+    [/JD.*question set/i, '新增題目時傳送職缺、選用履歷與現有題組'],
+    [/current question and transcript/i, '回饋或英文協助時傳送目前題目與你的回答／想法'],
+    [/recorded audio only/i, '語音轉錄時只傳送錄音'],
+    [/public board token/i, '取得公開職缺時傳送職缺板識別與職缺編號；搜尋條件留在本機']
+  ];
+  return rules.find(([pattern]) => pattern.test(value))?.[1] || '依這項服務的用途傳送必要資料';
+}
+
+function clearDraftSession() {
+  if (draftSession?.timer) clearTimeout(draftSession.timer);
+  draftSession = null;
+}
+async function saveDraft(session = draftSession, force = false) {
+  if (!session || session !== draftSession) return true;
+  if (session.timer) clearTimeout(session.timer);
+  const requestedValue = session.textarea.value;
+  if (!force && !session.dirty && requestedValue === session.savedValue && (session.ideas?.value || '') === session.savedIdeas) return true;
+  const run = session.queue.catch(() => {}).then(async () => {
+    if (session !== draftSession) return true;
+    const value = session.textarea.value;
+    const ideasText = session.ideas?.value || '';
+    if (!force && value === session.savedValue && ideasText === session.savedIdeas) { session.dirty = false; return true; }
+    session.status.textContent = '正在儲存草稿…';
+    session.status.classList.remove('error');
+    if ($('#retry-draft')) $('#retry-draft').hidden = true;
+    try {
+      const saved = await api(`/records/${session.recordId}/draft`, {transcript:value, ideasText, attemptIndex:session.attemptIndex});
+      session.savedValue = value; session.savedIdeas = ideasText;
+      if (session !== draftSession) return true;
+      if (session.textarea.value === value && (session.ideas?.value || '') === ideasText) {
+        session.dirty = false;
+        session.status.textContent = `已儲存草稿 · ${dateLabel(saved.savedAt)}`;
+      } else {
+        session.dirty = true;
+        scheduleDraftSave(session);
+      }
+      return true;
+    } catch (error) {
+      if (session === draftSession) {
+        session.dirty = true;
+        session.status.textContent = '草稿儲存失敗。請重試後再離開這一頁。';
+        session.status.classList.add('error');
+        if ($('#retry-draft')) $('#retry-draft').hidden = false;
+      }
+      throw error;
+    }
+  });
+  session.queue = run;
+  return run;
+}
+function scheduleDraftSave(session) {
+  if (session.timer) clearTimeout(session.timer);
+  session.status.textContent = '尚未儲存…';
+  session.status.classList.remove('error');
+  session.timer = setTimeout(() => saveDraft(session).catch(() => setError('草稿尚未成功儲存；請按「重試儲存草稿」。')), 550);
+}
+async function leaveEditor() {
+  if (!draftSession?.dirty) return true;
+  try { await saveDraft(draftSession, true); return true; }
+  catch { setError('草稿儲存失敗，已留在目前頁面。請重試儲存後再切換。'); return false; }
+}
+
+function markView(name) {
+  viewToken += 1;
+  currentView = name;
+  document.querySelectorAll('.view').forEach(view => view.classList.toggle('active', view.id === `${name}-view`));
+  document.querySelectorAll('[data-view]').forEach(control => {
+    if (control.closest('nav')) {
+      if (control.dataset.view === name) control.setAttribute('aria-current', 'page');
+      else control.removeAttribute('aria-current');
+    }
+  });
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+async function navigate(name) {
+  if (!(await leaveEditor())) return;
+  clearDraftSession();
+  disposeVoice();
+  disposeVoice = () => {};
+  if (name !== 'practice') currentRecordId = null;
+  markView(name);
+  if (name === 'home') renderHome();
+  if (name === 'history') renderHistory();
+  if (name === 'progress') await renderProgress();
+  if (name === 'evidence') await renderEvidence();
+  if (name === 'discovery') await renderDiscovery();
+  if (name === 'settings') renderSettings();
+}
+document.querySelectorAll('[data-view]').forEach(control => control.addEventListener('click', () => navigate(control.dataset.view).catch(error => setError(error.message))));
+
+async function refreshWorkspace() { workspace = await api('/workspace'); return workspace; }
+
+function stepper(stage) {
+  const labels = ['選擇職缺', '選一題', '試著回答', '回饋與收穫'];
+  return `<ol class="stepper">${labels.map((label,index) => `<li class="${index < stage ? 'done' : index === stage ? 'current' : ''}"${index === stage ? ' aria-current="step"' : ''}><span>${escape(label)}</span></li>`).join('')}</ol>`;
+}
+function practiceFrame({stage=1, snapshot, content}) {
+  const title = firstLine(snapshot?.text);
+  return `<article class="practice-shell"><header class="practice-header">${stepper(stage)}</header><div class="practice-body"><div class="job-line"><span class="job-label">職缺</span><strong class="job-title" title="${escape(title)}">${escape(title)}</strong><details class="job-source"><summary>查看原文</summary><div class="detail-panel"><p>${escape(snapshot?.text)}</p></div></details></div>${content}</div></article>`;
+}
+
+function renderHome() {
+  markView('home');
+  const parent = $('#resume-practice');
+  parent.replaceChildren();
+  const unfinished = sortRecent(Object.values(workspace.records || {}).filter(record => record.status !== 'completed'))[0];
+  if (unfinished) {
+    const snapshot = workspace.snapshots[unfinished.snapshotId];
+    const card = document.createElement('section');
+    card.className = 'resume-card';
+    card.innerHTML = `<p class="eyebrow">繼續上次練習</p><h2>${escape(firstLine(snapshot?.text))}</h2><p>${escape(recordStates[unfinished.status] || unfinished.status)} · ${escape(unfinished.question.text)}</p><div class="actions"></div>`;
+    button('繼續練習', () => showRecord(unfinished.id), card.querySelector('.actions'));
+    parent.append(card);
+  }
+  const resumeChoice = $('#resume-choice');
+  resumeChoice.innerHTML = workspace.resume ? `<label class="check-label"><input id="use-resume" type="checkbox" checked>搭配履歷：${escape(workspace.resume.name)}</label><p class="meta">取消勾選即可只用 JD 出題。</p>` : '<p class="meta">還沒有履歷？可以直接開始，或到「我的履歷」上傳。</p>';
+  const recent = sortRecent(Object.values(workspace.records || {}).filter(r=>r.status==='completed')).slice(0,3);
+  $('#home-progress').innerHTML = recent.length ? `<h2>下次，接著練這裡</h2>${recent.map(r=>`<article class="list-card"><p>${escape(r.focusPoint)}</p><button class="ghost" data-resume-record="${escape(r.id)}">回顧練習</button></article>`).join('')}` : '';
+  document.querySelectorAll('[data-resume-record]').forEach(b=>b.addEventListener('click',()=>showRecord(b.dataset.resumeRecord)));
+  const gate = $('#provider-gate');
+  gate.replaceChildren();
+  const capture = $('#capture');
+  if (!modelReady()) {
+    const warning = document.createElement('div');
+    warning.className = 'provider-warning';
+    warning.innerHTML = '<strong>產生題目前需要完成 Codex 登入與驗證。</strong><p>先到設定確認狀態，避免貼完內容後才發現無法送出。</p>';
+    button('前往設定', () => navigate('settings'), warning, {kind:'secondary'});
+    gate.append(warning);
+    capture.disabled = true;
+  } else capture.disabled = captureBusy;
+  if (captureBusy) capture.textContent = '正在保存職缺並產生題目…';
+  else capture.textContent = '儲存職缺並產生題目';
+  const outbound = providerInfo?.languageModel?.external;
+  $('#generation-disclosure').textContent = outbound ? `將把職缺與勾選的履歷內容傳送給 ${providerInfo.languageModel.name} 產生題目。職缺原文仍保存在本機工作區。` : '目前使用本機示範服務，不會把職缺內容傳送到外部。';
+}
+
+$('#capture').addEventListener('click', async event => {
+  const control = event.currentTarget;
+  setError();
+  if (captureBusy) { setError('這份職缺仍在處理中，請等待或取消後再試。'); return; }
+  const text = $('#jd').value;
+  if (!text.trim()) { setError('請先貼上職缺描述。'); $('#jd').focus(); return; }
+  if (!modelReady()) { await navigate('settings'); return; }
+  const originToken = viewToken;
+  captureBusy = true;
+  control.disabled = true;
+  control.textContent = '正在保存職缺…';
+  let snapshot;
+  try {
+    snapshot = await api('/snapshots', {text,useResume:$('#use-resume')?.checked ?? false,difficulty:$('#difficulty').value});
+    await refreshWorkspace();
+    control.textContent = '正在產生練習題…';
+    await api(`/snapshots/${snapshot.id}/analysis`, {});
+    await refreshWorkspace();
+    $('#jd').value = '';
+    if (currentView === 'home' && viewToken === originToken) await showRecommended(snapshot.id);
+    else setNotice('練習題已產生，可從練習紀錄開啟。');
+  } catch (error) {
+    setError(error.message);
+    if (snapshot && currentView === 'home' && viewToken === originToken) await showAnalysisFailure(snapshot.id, error);
+    else if (snapshot) setNotice('職缺已保存，但題目尚未產生；可從練習紀錄重試。');
+  } finally {
+    captureBusy = false;
+    control.disabled = !modelReady();
+    control.textContent = '儲存職缺並產生題目';
+  }
+});
+
+async function showAnalysisFailure(snapshotId, error) {
+  clearDraftSession(); disposeVoice(); markView('practice'); currentSnapshotId = snapshotId;
+  const snapshot = workspace.snapshots[snapshotId] || await api(`/snapshots/${snapshotId}`);
+  $('#practice').innerHTML = practiceFrame({stage:1, snapshot, content:`<div class="provider-warning"><h2>職缺已保存，題目尚未產生</h2><p>${escape(error.message)}</p><p>你不需要重新貼上職缺。可以直接重試這一步。</p><div id="analysis-retry"></div></div>`});
+  button('重試產生題目', async () => {
+    await api(`/snapshots/${snapshotId}/analysis`, {});
+    await refreshWorkspace();
+    await showRecommended(snapshotId);
+  }, $('#analysis-retry'));
+  button('回到首頁', () => navigate('home'), $('#analysis-retry'), {kind:'ghost'});
+}
+
+async function analysisView(snapshotId) {
+  try { return await api(`/snapshots/${snapshotId}/analysis`); }
+  catch (error) { if (error.status === 409) return null; throw error; }
+}
+async function showRecommended(snapshotId) {
+  if (!(await leaveEditor())) return;
+  clearDraftSession(); disposeVoice(); markView('practice'); currentSnapshotId = snapshotId;
+  const analysis = await analysisView(snapshotId);
+  if (!analysis) return showAnalysisFailure(snapshotId, new Error('這份職缺還沒有題目。'));
+  return showQuestion(snapshotId, analysis.recommendation.questionId, analysis);
+}
+
+function incompleteForQuestion(snapshotId, questionId) {
+  return sortRecent(Object.values(workspace.records || {}).filter(record => record.snapshotId === snapshotId && record.question.id === questionId && record.status !== 'completed'))[0];
+}
+async function showQuestion(snapshotId, questionId, suppliedAnalysis) {
+  if (!(await leaveEditor())) return;
+  clearDraftSession(); disposeVoice(); markView('practice'); currentSnapshotId = snapshotId; currentRecordId = null;
+  const snapshot = workspace.snapshots[snapshotId] || await api(`/snapshots/${snapshotId}`);
+  const analysis = suppliedAnalysis || await analysisView(snapshotId);
+  if (!analysis) return showAnalysisFailure(snapshotId, new Error('這份職缺還沒有題目。'));
+  const question = analysis.questions.find(item => item.id === questionId) || analysis.questions[0];
+  const recommended = question.id === analysis.recommendation.questionId;
+  const meaning = question.meaningZh || '這是舊版題目，目前沒有保存中文題意；英文原題完整保留。';
+  const previous = incompleteForQuestion(snapshotId, question.id);
+  const providerGate = modelReady() ? '' : `<div class="provider-warning"><strong>目前還不能取得模型回饋。</strong><p>請先到設定完成 Codex 登入與驗證；若要先整理想法，文字草稿仍會保存在本機。</p><div id="question-provider-gate"></div></div>`;
+  const content = `<div id="recommended-question"><p class="question-kicker">${recommended ? '建議先練' : '目前選擇'}｜${escape(categories[question.category] || question.category)}</p><h1 class="question-text" lang="en">${escape(question.text)}</h1><details open><summary>查看中文題意</summary><div class="detail-panel"><p>${escape(meaning)}</p></div></details>${providerGate}<div class="button-row" id="question-actions"></div></div>`;
+  $('#practice').innerHTML = practiceFrame({stage:1, snapshot, content});
+  const actions = $('#question-actions');
+  const begin = async () => {
+    const existing = incompleteForQuestion(snapshotId, question.id);
+    const record = existing || await api('/records', {snapshotId, questionId:question.id});
+    await refreshWorkspace();
+    await showRecord(record.id);
+  };
+  if (!modelReady()) {
+    button('前往設定完成登入', () => navigate('settings'), $('#question-provider-gate'));
+    button(previous ? '繼續本機草稿' : '先寫本機草稿', begin, actions, {kind:'secondary'});
+  } else button(previous ? '繼續回答' : '開始回答', begin, actions);
+  const index = analysis.questions.findIndex(item => item.id === question.id);
+  button('換一題', () => showQuestion(snapshotId, analysis.questions[(index + 1) % analysis.questions.length].id, analysis), actions, {kind:'secondary', id:'next-question'});
+  button(`查看全部（${analysis.questions.length}）`, () => showQuestionList(snapshotId, analysis), actions, {kind:'ghost', id:'view-all-questions'});
+}
+
+async function showQuestionList(snapshotId, suppliedAnalysis) {
+  if (!(await leaveEditor())) return;
+  clearDraftSession(); disposeVoice(); markView('practice'); currentSnapshotId = snapshotId;
+  const snapshot = workspace.snapshots[snapshotId];
+  const analysis = suppliedAnalysis || await analysisView(snapshotId);
+  const groups = Object.entries(categories).map(([category,label]) => {
+    const questions = analysis.questions.filter(question => question.category === category);
+    return `<section class="category-group"><h2>${escape(label)}</h2>${questions.map(question => {
+      const records = (analysis.history?.[question.id] || []).map(item => workspace.records?.[item.recordId]).filter(Boolean);
+      const answered = records.filter(record => record.attempts?.length > 0).length;
+      const hasDraft = records.some(record => record.attempts?.length === 0 && record.writtenDraft);
+      const progress = answered ? `已作答 ${answered} 次${hasDraft ? ' · 另有未送出草稿' : ''}` : hasDraft ? '有未送出草稿' : '尚未作答';
+      return `<article class="question-card ${answered || hasDraft ? 'practised' : ''}" data-question-id="${escape(question.id)}"><p class="english" lang="en">${escape(question.text)}</p><p class="meta">${progress}${question.id === analysis.recommendation.questionId ? ' · 本次推薦' : ''}</p><button type="button" class="secondary">選這一題</button></article>`;
+    }).join('')}</section>`;
+  }).join('');
+  const content = `<p class="eyebrow">完整題組</p><h1>選一題來練習</h1><p>題目依類型整理；切換題目不會重新呼叫模型。</p><div class="button-row" id="question-list-actions"></div><div id="question-list" class="question-list">${groups}</div>`;
+  $('#practice').innerHTML = practiceFrame({stage:1, snapshot, content});
+  button('回到推薦題', () => showRecommended(snapshotId), $('#question-list-actions'), {kind:'ghost'});
+  if (analysis.questions.length < 40) button('另外新增四題', async () => {
+    await api(`/snapshots/${snapshotId}/questions`, {});
+    await refreshWorkspace();
+    await showQuestionList(snapshotId);
+  }, $('#question-list-actions'), {kind:'ghost'});
+  document.querySelectorAll('[data-question-id] button').forEach(control => control.addEventListener('click', () => showQuestion(snapshotId, control.closest('[data-question-id]').dataset.questionId, analysis)));
+}
+
+function feedbackHtml(feedback, prefix = '') {
+  if (!feedback) return '<p class="provider-warning">回饋尚未完成。你的回答已保存，可以重試取得回饋。</p>';
+  const bilingual = feedback.strength?.textZh && feedback.priorityImprovement?.textZh && Object.values(feedback.ratings || {}).every(rating => rating.reasonZh);
+  const finding = (title, item, kind) => `<article class="feedback-card ${kind}"><h3>${escape(title)}</h3><p>${escape(item.textZh || '此筆舊紀錄沒有中文說明。')}</p><blockquote><strong>你的原句</strong><br>${escape(item.quote)}</blockquote></article>`;
+  const shownQuotes = new Set([feedback.strength?.quote, feedback.priorityImprovement?.quote].filter(Boolean));
+  const ratings = Object.entries(feedback.ratings || {}).map(([dimension,rating]) => {
+    const showQuote = rating.quote && !shownQuotes.has(rating.quote);
+    if (rating.quote) shownQuotes.add(rating.quote);
+    return `<div class="rating"><div class="rating-head"><strong>${escape(dimensions[dimension] || dimension)}</strong><span class="rating-level">${escape(rating.level)} / 4</span></div><p>${escape(rating.reasonZh || '此筆舊紀錄沒有中文評分理由。')}</p>${showQuote ? `<blockquote><strong>評分依據原句</strong><br>${escape(rating.quote)}</blockquote>` : ''}</div>`;
+  }).join('');
+  return `${bilingual ? '' : '<p class="legacy-note">此為舊版紀錄，部分中文說明尚未提供；原始資料保留，未自動重新評估。</p>'}<div class="feedback-feature">${finding('本次做得好的地方', feedback.strength, 'strength')}${finding('這次優先改進', feedback.priorityImprovement, 'priority')}</div><details class="ratings"><summary>查看四項評分與理由</summary><div class="detail-panel">${ratings}</div></details>${prefix}`;
+}
+
+function changedTextHtml(before,after) {
+  let start=0,end=0;
+  while(start<before.length && start<after.length && before[start]===after[start])start++;
+  while(end<before.length-start && end<after.length-start && before[before.length-1-end]===after[after.length-1-end])end++;
+  const excerpt=value=>`${start>60?'…':''}${escape(value.slice(Math.max(0,start-60),start))}<mark>${escape(value.slice(start,value.length-end)) || '（已移除）'}</mark>${escape(value.slice(value.length-end,value.length-end+60))}${end>60?'…':''}`;
+  return `<p class="meta">修改前</p><blockquote>${excerpt(before)}</blockquote><p class="meta">修改後</p><blockquote>${excerpt(after)}</blockquote>`;
+}
+
+function guidanceHtml() {
+  return `<details class="answer-help">
+    <summary>不知道怎麼回答？</summary>
+    <div class="answer-help-body">
+      <p class="meta">先拿一個提示、用沒有相關經驗的框架回答，或把自己的中文想法整理成英文。這些都只是輔助，不會算作正式回答。</p>
+      <div class="button-row" id="hint-actions"></div>
+      <div id="hint-result" aria-live="polite"></div>
+      <div class="ideas-panel">
+        <label for="ideas">中文或中英混合的想法</label>
+        <textarea id="ideas" rows="4" placeholder="只整理你真的想表達的內容，不需要先寫成完整英文。"></textarea>
+        <div id="ideas-actions"></div>
+        <div id="ideas-result" aria-live="polite"></div>
+      </div>
+    </div>
+  </details>`;
+}
+
+async function showCoaching(record, mode, parent, transcript) {
+  const token=viewToken;
+  parent.textContent='正在整理適合這一題的建議…';
+  try {
+    const result=await api(`/records/${record.id}/coaching`, {mode,...(transcript !== undefined ? {transcript} : {})});
+    if (viewToken!==token || !parent.isConnected) return;
+    parent.innerHTML=`<section class="detail-panel coaching-result"><p class="eyebrow">${mode==='rewrite'?'英文示範':mode==='ideas'?'想法整理成英文':mode==='gap'?'無相關經驗的回答框架':'回答提示'}</p>${['rewrite','ideas'].includes(mode)?`<details><summary>查看這次整理的原文</summary><blockquote>${escape(transcript ?? record.attempts.at(-1)?.transcript)}</blockquote></details>`:''}<p class="coaching-text" lang="${['rewrite','ideas'].includes(mode)?'en':'zh-Hant'}">${escape(result.text)}</p>${['rewrite','ideas'].includes(mode)?`<p class="meta">${escape(result.explanationZh)}</p>`:''}</section>`;
+  } catch(error) {if(parent.isConnected)parent.textContent='尚未取得建議，可再次按下按鈕重試。';throw error;}
+}
+
+function renderVoiceChoice(session, voiceDraft) {
+  if (draftSession !== session) return;
+  $('#voice-choice')?.remove();
+  session.voiceChoicePending = true;
+  const submit = $('#submit-answer');
+  if (submit) submit.disabled = true;
+  const choice = document.createElement('div');
+  choice.id = 'voice-choice';
+  choice.className = 'provider-warning';
+  choice.innerHTML = `<strong>語音已轉成文字</strong><p lang="en">${escape(voiceDraft.transcript)}</p><p>請選擇要採用這份語音轉錄，或保留目前的文字草稿。兩種草稿會分開保存。</p><div class="button-row"></div>`;
+  const finish = async useVoice => {
+    if (draftSession !== session) return;
+    if (useVoice) {
+      session.textarea.value = voiceDraft.transcript;
+      session.transcriptDraftId = voiceDraft.id;
+      session.dirty = false;
+      session.status.textContent = '目前採用語音轉錄草稿；修改內容會自動另存。';
+    } else {
+      if (session.dirty || session.textarea.value !== session.savedValue) await saveDraft(session, true);
+      session.transcriptDraftId = null;
+      session.status.textContent = '保留目前文字草稿；已儲存在本機。';
+    }
+    session.voiceChoicePending = false;
+    choice.remove();
+    if (modelReady()) submit.disabled = false;
+    session.textarea.focus({preventScroll:true});
+  };
+  button('採用語音轉錄', () => finish(true), choice.querySelector('.button-row'), {kind:'secondary'});
+  button('保留目前文字', () => finish(false), choice.querySelector('.button-row'), {kind:'ghost'});
+  $('#voice-entry').append(choice);
+}
+
+function installEditor(record, context) {
+  const attemptIndex = record.attempts.length;
+  const textarea = $('#answer');
+  const status = $('#draft-status');
+  const savedDraft = record.writtenDraft?.attemptIndex === attemptIndex ? record.writtenDraft : null;
+  const voiceDraft = record.transcriptDraft;
+  const ideas = $('#ideas');
+  if(ideas) ideas.value = savedDraft?.ideasText || '';
+  const fallback = attemptIndex === 1 ? record.attempts[0].transcript : '';
+  textarea.value = savedDraft?.transcript ?? fallback;
+  const session = {
+    recordId:record.id,
+    attemptIndex,
+    textarea,
+    ideas,
+    savedIdeas:savedDraft?.ideasText || '',
+    status,
+    savedValue:savedDraft?.transcript,
+    dirty:false,
+    queue:Promise.resolve(),
+    timer:null,
+    submissionId:crypto.randomUUID(),
+    transcriptDraftId:null,
+    voiceChoicePending:false,
+    frozen:false
+  };
+  draftSession = session;
+  if (savedDraft) status.textContent = `已儲存草稿 · ${dateLabel(savedDraft.savedAt)}`;
+  else if (voiceDraft) status.textContent = '語音已轉成文字；請先選擇要採用語音或保留文字。';
+  else if (attemptIndex === 1) status.textContent = '已帶入第一次回答；開始修改後會另存為新草稿。';
+  else status.textContent = '輸入後會自動保存在本機。';
+  session.inputHandler = () => { if (!session.frozen) { session.dirty = true; scheduleDraftSave(session); } };
+  textarea.addEventListener('input', session.inputHandler);
+  ideas?.addEventListener('input',session.inputHandler);
+  $('#retry-draft')?.addEventListener('click', async () => {
+    setError();
+    try { await saveDraft(session, true); }
+    catch (error) { setError(error.message); }
+  });
+  $('#submit-answer').addEventListener('click', () => submitAnswer(record, session));
+  if (providerInfo?.speech?.external) {
+    const host = $('#voice-entry');
+    disposeVoice = mountVoice(host, {
+      recordId:record.id,
+      api,
+      provider:providerInfo.speech,
+      beforeTranscription:async () => {
+        if (draftSession !== session) throw new Error('練習頁面已切換，未送出這段錄音。');
+        session.frozen = true;
+        textarea.readOnly = true;
+        $('#submit-answer').disabled = true;
+        await saveDraft(session, true);
+      },
+      onTranscript:draft => { if (draftSession === session) renderVoiceChoice(session, draft); },
+      onTranscriptionEnd:() => {
+        if (draftSession !== session) return;
+        session.frozen = false;
+        textarea.readOnly = false;
+        if (!session.voiceChoicePending && modelReady()) $('#submit-answer').disabled = false;
+      },
+      onError:error => { if (draftSession === session) setError(localizeError(error.message, error.status || 400)); }
+    });
+  }
+  if (voiceDraft) renderVoiceChoice(session, voiceDraft);
+  if (!modelReady()) $('#submit-answer').disabled = true;
+  requestAnimationFrame(() => textarea.focus({preventScroll:true}));
+  return context;
+}
+
+async function submitAnswer(record, session) {
+  const control = $('#submit-answer');
+  const originToken = viewToken;
+  setError();
+  if (!modelReady()) { setError('請先到設定完成 Codex 登入與驗證；目前草稿仍保存在本機。'); return; }
+  session.frozen = true;
+  session.textarea.readOnly = true;
+  if (session.timer) clearTimeout(session.timer);
+  const transcript = session.textarea.value;
+  if (!transcript.trim()) { session.frozen = false; session.textarea.readOnly = false; setError('請先寫下你的英文回答。'); session.textarea.focus(); return; }
+  control.disabled = true;
+  control.textContent = '正在保存回答…';
+  try {
+    if (!session.transcriptDraftId || session.dirty) await saveDraft(session, true);
+    const input = {transcript, attemptIndex:session.attemptIndex, submissionId:session.submissionId, ...(session.transcriptDraftId ? {transcriptDraftId:session.transcriptDraftId} : {})};
+    try { await api(`/records/${record.id}/attempts`, input); }
+    catch (error) {
+      const latest = await api(`/records/${record.id}`);
+      if (!latest.attempts[session.attemptIndex] || latest.attempts[session.attemptIndex].transcript !== transcript) throw error;
+    }
+    if (draftSession === session) clearDraftSession();
+    setNotice('回答已保存。正在取得回饋…');
+    control.textContent = '正在取得回饋…';
+    await api(`/records/${record.id}/feedback`, {});
+    await refreshWorkspace();
+    if (currentView === 'practice' && currentRecordId === record.id && viewToken === originToken) {setNotice();await showRecord(record.id, {focusFeedback:true});}
+    else setNotice('背景回饋已完成，可從練習紀錄開啟查看。');
+  } catch (error) {
+    await refreshWorkspace().catch(() => {});
+    const latest = workspace.records?.[record.id];
+    if (latest?.attempts?.[session.attemptIndex]) {
+      if (draftSession === session) clearDraftSession();
+      if (currentView === 'practice' && currentRecordId === record.id && viewToken === originToken) {
+        await showRecord(record.id);
+        setError(`回答已保存，但回饋尚未完成：${error.message}`);
+      } else setNotice('背景回饋尚未完成；回答已保存，可從練習紀錄重試。');
+    } else {
+      session.frozen = false;
+      session.textarea.readOnly = false;
+      if (control.isConnected) {
+        control.disabled = false;
+        control.textContent = session.attemptIndex ? '送出修改並取得回饋' : '送出並取得回饋';
+        session.textarea.focus({preventScroll:true});
+        setError(error.message);
+      } else setNotice('送出未完成；本機草稿仍保留在原練習紀錄。');
+    }
+  }
+}
+
+async function requestFeedback(recordId) {
+  const originToken = viewToken;
+  setError();
+  setNotice('回答已保存。正在重新取得回饋…');
+  try {
+    await api(`/records/${recordId}/feedback`, {});
+    await refreshWorkspace();
+    if (currentView === 'practice' && currentRecordId === recordId && viewToken === originToken) {setNotice();await showRecord(recordId, {focusFeedback:true});}
+    else setNotice('背景回饋已完成，可從練習紀錄開啟查看。');
+  } catch (error) {
+    await refreshWorkspace().catch(() => {});
+    if (currentView === 'practice' && currentRecordId === recordId && viewToken === originToken) {
+      await showRecord(recordId);
+      setError(`回答仍保存在本機；回饋尚未完成：${error.message}`);
+    } else setNotice('背景回饋尚未完成；回答已保存，可從練習紀錄重試。');
+  }
+}
+
+function followUpHistoryHtml(followUps) {
+  if (followUps.length < 2) return '';
+  const previous = followUps[followUps.length - 2];
+  return `<details class="follow-up-history"><summary>查看第 ${followUps.length - 1} 次追問與回答</summary>
+    <div class="detail-panel">
+      <p lang="en"><strong>${escape(previous.question.text)}</strong></p>
+      <p class="meaning">${escape(previous.question.meaningZh)}</p>
+      <blockquote lang="en">${escape(previous.attempt?.transcript || '尚未作答')}</blockquote>
+      ${previous.attempt?.feedback ? feedbackHtml(previous.attempt.feedback) : ''}
+    </div>
+  </details>`;
+}
+
+function followUpHtml(record, complete) {
+  const followUps = Array.isArray(record.followUps) ? record.followUps : [];
+  const current = followUps.at(-1);
+  if (!current) {
+    if (complete) return '';
+    return `<div class="follow-up-flow follow-up-invitation" aria-labelledby="follow-up-title">
+      <h3 id="follow-up-title">想練面試官接著會問什麼？</h3>
+      <p class="meta">依你剛才保存的正式回答產生一題追問，每道主問最多兩次。</p>
+      <div id="follow-up-actions" class="button-row"></div>
+    </div>`;
+  }
+  const number = followUps.length;
+  const attempt = current.attempt;
+  const feedback = attempt?.feedback;
+  let content = '';
+  if (!attempt && !complete) {
+    content = `<label for="follow-up-answer">你的追問回答</label>
+      <textarea id="follow-up-answer" rows="6" placeholder="只寫下你想在面試中正式說出的英文回答。"></textarea>
+      <p class="meta">這會另存為追問的正式回答；上方的提示與英文整理不會帶入。</p>
+      <div id="follow-up-actions" class="button-row"></div>`;
+  } else if (!attempt) {
+    content = '<p class="meta">這題尚未作答；你已提前結束並保存這次練習。</p>';
+  } else if (!feedback) {
+    content = `<h3>你的回答已保存</h3><blockquote lang="en">${escape(attempt.transcript)}</blockquote>
+      <p>中文回饋尚未完成。請重試取得回饋，再決定要繼續追問或結束；正式回答不會重複保存。</p>
+      ${complete ? '' : '<div id="follow-up-actions" class="button-row"></div>'}`;
+  } else {
+    content = `<details><summary>查看你的追問回答</summary><blockquote lang="en">${escape(attempt.transcript)}</blockquote></details>
+      <section class="follow-up-feedback" aria-labelledby="follow-up-feedback-title"><h3 id="follow-up-feedback-title" tabindex="-1">這次追問的中文回饋</h3>${feedbackHtml(feedback)}</section>
+      ${complete ? '' : '<div id="follow-up-actions" class="button-row"></div>'}`;
+  }
+  return `${followUpHistoryHtml(followUps)}<section class="follow-up-flow" aria-labelledby="follow-up-title">
+    <div class="follow-up-heading"><p class="eyebrow">追問 ${number} / 2</p><span class="follow-up-state">${feedback ? '回饋已完成' : attempt ? '等待回饋' : '等待回答'}</span></div>
+    <h2 id="follow-up-title" class="follow-up-question" lang="en">${escape(current.question.text)}</h2>
+    <details open><summary>中文題意</summary><p class="meaning">${escape(current.question.meaningZh)}</p></details>
+    ${content}
+  </section>`;
+}
+
+async function startFollowUp(recordId) {
+  const originToken = viewToken;
+  setNotice('正在準備下一題追問…');
+  await api(`/records/${recordId}/follow-ups`, {});
+  await refreshWorkspace();
+  if (currentView === 'practice' && currentRecordId === recordId && viewToken === originToken) {
+    setNotice();
+    await showRecord(recordId);
+  } else setNotice('追問題目已準備好，可從練習紀錄繼續。');
+}
+
+async function submitFollowUp(record, followUp, submissionId) {
+  const control = $('#submit-follow-up');
+  const textarea = $('#follow-up-answer');
+  const actionControls = [...control.parentElement.querySelectorAll('button')];
+  const originToken = viewToken;
+  const transcript = textarea.value;
+  setError();
+  if (!transcript.trim()) {
+    setError('請先寫下你的英文回答。');
+    textarea.focus();
+    return;
+  }
+  textarea.readOnly = true;
+  actionControls.forEach(item => { item.disabled = true; });
+  control.textContent = '正在保存回答…';
+  try {
+    try {
+      await api(`/records/${record.id}/follow-ups/${followUp.id}/attempt`, {transcript, submissionId});
+    } catch (error) {
+      const latest = await api(`/records/${record.id}`);
+      const saved = (latest.followUps || []).find(item => item.id === followUp.id)?.attempt;
+      if (!saved || saved.transcript !== transcript) throw error;
+    }
+    const stillCurrent = currentView === 'practice' && currentRecordId === record.id && viewToken === originToken;
+    const pendingActions = stillCurrent ? $('#follow-up-actions') : null;
+    if (pendingActions) {
+      pendingActions.replaceChildren();
+      const pending = document.createElement('p');
+      pending.className = 'draft-status';
+      pending.setAttribute('role','status');
+      pending.textContent = '追問回答已保存，正在取得中文回饋…';
+      pendingActions.append(pending);
+    }
+    if (stillCurrent) {
+      $('#complete-practice')?.remove();
+      const focusBox = $('#focus')?.closest('.focus-box');
+      if (focusBox && !focusBox.querySelector('.completion-lock')) {
+        const lock = document.createElement('p');
+        lock.className = 'completion-lock';
+        lock.setAttribute('role','status');
+        lock.textContent = '追問回答已保存；完成中文回饋後才能結束練習。';
+        focusBox.append(lock);
+      }
+    }
+    setNotice('追問回答已保存。正在取得中文回饋…');
+    control.textContent = '正在取得中文回饋…';
+    await api(`/records/${record.id}/follow-ups/${followUp.id}/feedback`, {});
+    await refreshWorkspace();
+    if (currentView === 'practice' && currentRecordId === record.id && viewToken === originToken) {
+      setNotice();
+      await showRecord(record.id);
+      $('#follow-up-feedback-title')?.focus({preventScroll:true});
+    } else setNotice('追問回饋已完成，可從練習紀錄開啟查看。');
+  } catch (error) {
+    await refreshWorkspace().catch(() => {});
+    const saved = (workspace.records?.[record.id]?.followUps || []).find(item => item.id === followUp.id)?.attempt;
+    if (saved) {
+      if (currentView === 'practice' && currentRecordId === record.id && viewToken === originToken) {
+        await showRecord(record.id);
+        setError(`追問回答已保存，但中文回饋尚未完成：${error.message}`);
+      } else setNotice('追問回答已保存；回饋可稍後從練習紀錄重試。');
+    } else if (control.isConnected) {
+      textarea.readOnly = false;
+      actionControls.forEach(item => { if (item.isConnected) item.disabled = false; });
+      control.textContent = '送出並取得中文回饋';
+      textarea.focus({preventScroll:true});
+      setError(error.message);
+    }
+  }
+}
+
+async function requestFollowUpFeedback(recordId, followUpId) {
+  const originToken = viewToken;
+  setNotice('追問回答已保存。正在重新取得中文回饋…');
+  try {
+    await api(`/records/${recordId}/follow-ups/${followUpId}/feedback`, {});
+    await refreshWorkspace();
+    if (currentView === 'practice' && currentRecordId === recordId && viewToken === originToken) {
+      setNotice();
+      await showRecord(recordId);
+      $('#follow-up-feedback-title')?.focus({preventScroll:true});
+    } else setNotice('追問回饋已完成，可從練習紀錄開啟查看。');
+  } catch (error) {
+    await refreshWorkspace().catch(() => {});
+    if (currentView === 'practice' && currentRecordId === recordId && viewToken === originToken) {
+      await showRecord(recordId);
+      setError(`追問回答仍保存在本機；中文回饋尚未完成：${error.message}`);
+    } else setNotice('追問回饋尚未完成；正式回答仍保存在本機。');
+  }
+}
+
+async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedback=false} = {}) {
+  if (!(await leaveEditor())) return;
+  clearDraftSession(); disposeVoice(); disposeVoice = () => {}; markView('practice'); currentRecordId = recordId;
+  const record = await api(`/records/${recordId}`);
+  const snapshot = workspace.snapshots[record.snapshotId] || await api(`/snapshots/${record.snapshotId}`);
+  currentSnapshotId = record.snapshotId;
+  const last = record.attempts.at(-1);
+  const complete = record.status === 'completed';
+  const followUps = Array.isArray(record.followUps) ? record.followUps : [];
+  const currentFollowUp = followUps.at(-1);
+  const followUpFeedbackPending = Boolean(currentFollowUp?.attempt && !currentFollowUp.attempt.feedback);
+  const editor = !complete && !feedbackOnly && (!last || (last.feedback && record.attempts.length===1 && (editing || record.writtenDraft)));
+  let body = `<p class="question-kicker">${escape(categories[record.question.category] || record.question.category)}</p><h1 class="question-text" lang="en">${escape(record.question.text)}</h1><details open><summary>中文題意</summary><p class="meaning">${escape(record.question.meaningZh || '舊版題目未保存中文題意。')}</p></details>`;
+  if (last && !last.feedback) {
+    body += `<section class="answer-area"><h2>你的回答已保存</h2><details><summary>查看回答</summary><blockquote>${escape(last.transcript)}</blockquote></details><p>回饋尚未完成，可以重試，不會重複提交回答。</p><div id="feedback-retry-actions"></div></section>`;
+  } else if (editor) {
+    if(last)body+=`<section class="answer-area"><h2>這次，試著改這一點</h2><p>${escape(last.feedback.priorityImprovement.textZh || '請選擇一項下次想練習的重點。')}</p><blockquote>${escape(last.feedback.priorityImprovement.quote)}</blockquote></section>`;
+    body+=`<section class="answer-area"><h2>${last?'自己再試一次':'先用自己的方式回答'}</h2>${guidanceHtml()}<label for="answer">${last?'修改你的回答':'你的回答'}</label><textarea id="answer" rows="7" placeholder="先說出你的想法，不用一次就完美。"></textarea><p id="draft-status" class="draft-status" aria-live="polite"></p><button id="retry-draft" class="ghost" hidden type="button">重試儲存草稿</button><div id="voice-entry"></div><button id="submit-answer" class="primary wide" type="button">${last?'送出修改並取得回饋':'送出並取得回饋'}</button></section>`;
+    if(last)body+='<div id="finish-while-editing"></div>';
+  } else if(last) {
+    if(complete)body+='<div id="practice-complete" class="complete-banner"><strong>今天又多練習了一點。</strong><p>本次回答與回饋已保存。</p></div>';
+    if(record.attempts.length===2) {
+      const first=record.attempts[0];
+      const same=first.transcript.trim()===last.transcript.trim();
+      body+=`<section class="answer-area"><h2>${same?'這次回答尚未修改':'看看這次的調整'}</h2><p>${same?'兩次內容相同，沒有文字修改可比較。':'先前的練習重點：'+escape(first.feedback.priorityImprovement.textZh || '此筆舊紀錄沒有中文說明。')}</p>${same?'':`<details open><summary>關鍵句前後對照</summary>${changedTextHtml(first.transcript,last.transcript)}</details>`}</section>`;
+    }
+    body+=`<section class="answer-area"><h2 id="feedback-heading" tabindex="-1">給這次回答的一點建議</h2>${feedbackHtml(last.feedback)}</section><details id="attempt-history"><summary>查看回答紀錄（${record.attempts.length} 個版本）</summary><label for="attempt-version">選擇回答版本</label><select id="attempt-version">${record.attempts.map((a,i)=>`<option value="${i}" ${i===record.attempts.length-1?'selected':''}>第 ${i+1} 次回答 · ${escape(dateLabel(a.submittedAt))}</option>`).join('')}</select><div id="attempt-detail"></div></details>`;
+    if(record.unsubmittedDraft)body+=`<details><summary>未送出的修改草稿（未評分）</summary><blockquote>${escape(record.unsubmittedDraft.transcript)}</blockquote></details>`;
+    const focus=record.focusPoint || last.feedback.priorityImprovement.textZh || '請選擇一項下次想練習的重點。';
+    const optional=`<div class="optional-actions">${complete?'':'<p class="optional-label">其他選擇</p>'}<div id="feedback-actions" class="button-row"></div><div id="rewrite-result" aria-live="polite"></div></div>`;
+    const completion=complete
+      ?`<div class="focus-box completed"><p class="eyebrow">下次可以接著練</p><p>${escape(focus)}</p><div id="completed-actions"></div></div>`
+      :`<div class="focus-box"><p class="eyebrow">完成這次練習</p><label for="focus">下次練習重點（可以修改）</label><textarea id="focus" rows="2" maxlength="500">${escape(focus)}</textarea>${followUpFeedbackPending?'<p class="completion-lock" role="status">追問回答已保存；完成中文回饋後才能結束練習。</p>':'<button id="complete-practice" class="primary" type="button">結束並保存</button>'}</div>`;
+    body+=`<section class="next-steps"><p class="eyebrow next-steps-title">接下來</p>${followUpHtml(record,complete)}${optional}${completion}</section>`;
+  }
+  $('#practice').innerHTML = practiceFrame({stage:last?.feedback?3:2,snapshot,content:body});
+  if ($('#attempt-version')) {
+    const renderAttempt = () => {
+      const index=Number($('#attempt-version').value), attempt=record.attempts[index];
+      $('#attempt-detail').innerHTML=`<h3>第 ${index+1} 次回答</h3><blockquote lang="en">${escape(attempt.transcript)}</blockquote>${index<record.attempts.length-1?feedbackHtml(attempt.feedback):'<p class="meta">此版本的回饋已顯示在上方。</p>'}`;
+    };
+    $('#attempt-version').addEventListener('change',renderAttempt);
+    renderAttempt();
+  }
+  const finish=async()=>{
+    if(!(await leaveEditor()))return;
+    const focus=$('#focus')?.value || last.feedback.priorityImprovement.textZh || '請選擇一項下次想練習的重點。';
+    await api(`/records/${record.id}/complete`,{focusPoint:focus.slice(0,500)});
+    clearDraftSession();await refreshWorkspace();await showRecord(record.id);
+  };
+  const followUpActions = $('#follow-up-actions');
+  if (last?.feedback && !complete && followUpActions) {
+    if (!currentFollowUp) {
+      const start = button('讓面試官追問',()=>startFollowUp(record.id),followUpActions);
+      start.disabled = !modelReady();
+    } else if (!currentFollowUp.attempt) {
+      const submissionId = crypto.randomUUID();
+      const submit = button('送出並取得中文回饋',()=>submitFollowUp(record,currentFollowUp,submissionId),followUpActions,{id:'submit-follow-up'});
+      submit.disabled = !modelReady();
+      button('結束並保存',finish,followUpActions,{kind:'ghost'});
+      requestAnimationFrame(() => $('#follow-up-answer')?.focus({preventScroll:true}));
+    } else if (!currentFollowUp.attempt.feedback) {
+      const retry = button('重試取得中文回饋',()=>requestFollowUpFeedback(record.id,currentFollowUp.id),followUpActions);
+      retry.disabled = !modelReady();
+    } else {
+      if (followUps.length < 2) {
+        const next = button('繼續追問',()=>startFollowUp(record.id),followUpActions);
+        next.disabled = !modelReady();
+      }
+      button('結束並保存',finish,followUpActions,{kind:followUps.length < 2?'secondary':'primary'});
+    }
+  }
+  if(last&&!last.feedback)button('重試取得回饋',()=>requestFeedback(record.id),$('#feedback-retry-actions'));
+  if(editor) {
+    installEditor(record, {});
+    button('給我一個提示',()=>showCoaching(record,'hint',$('#hint-result')),$('#hint-actions'),{kind:'ghost'});
+    button('沒有相關經驗的回答框架',()=>showCoaching(record,'gap',$('#hint-result')),$('#hint-actions'),{kind:'ghost'});
+    button('幫我整理成英文',()=>showCoaching(record,'ideas',$('#ideas-result'),$('#ideas').value),$('#ideas-actions'),{kind:'secondary'});
+    if(last){button('回到回饋，先不修改',()=>showRecord(record.id,{feedbackOnly:true}),$('#finish-while-editing'),{kind:'secondary'});button('保存草稿，稍後再練',()=>navigate('home'),$('#finish-while-editing'),{kind:'ghost'});}
+    const switcher=document.createElement('div');switcher.className='button-row';$('#practice .practice-body').append(switcher);
+    button('換一題',async()=>{if(!(await leaveEditor()))return;const analysis=await analysisView(record.snapshotId);const index=analysis.questions.findIndex(q=>q.id===record.question.id);await showQuestion(record.snapshotId,analysis.questions[(index+1)%analysis.questions.length].id,analysis);},switcher,{kind:'ghost',id:'next-question'});
+    button('查看全部題目',()=>showQuestionList(record.snapshotId),switcher,{kind:'ghost',id:'view-all-questions'});
+  } else if(last?.feedback) {
+    if(!complete && !followUpFeedbackPending && record.attempts.length<2)button('自己再試一次',()=>showRecord(record.id,{editing:true}),$('#feedback-actions'));
+    button('幫我講得更自然',()=>showCoaching(record,'rewrite',$('#rewrite-result')),$('#feedback-actions'),{kind:'secondary'});
+    if(!complete) {
+      if($('#complete-practice'))$('#complete-practice').addEventListener('click',async event=>{event.currentTarget.disabled=true;try{await finish();}catch(error){setError(error.message);if($('#complete-practice'))$('#complete-practice').disabled=false;}});
+    } else {button('再練一題',()=>showRecommended(record.snapshotId),$('#completed-actions'));button('回到首頁',()=>navigate('home'),$('#completed-actions'),{kind:'ghost'});}
+  }
+  if (focusFeedback) { const heading = $('#feedback-heading'); if (heading) requestAnimationFrame(() => { heading.scrollIntoView({behavior:'smooth', block:'start'}); heading.focus({preventScroll:true}); }); }
+}
+
+async function deleteRecord(recordId) {
+  if (!window.confirm('確定刪除這筆練習與它的文字草稿嗎？')) return;
+  clearDraftSession();
+  await api(`/records/${recordId}`, undefined, 'DELETE');
+  await refreshWorkspace();
+  setNotice('練習紀錄與相關草稿已刪除。');
+  await navigate('history');
+}
+
+function renderHistory() {
+  const records = $('#records'); records.replaceChildren();
+  const allRecords = sortRecent(Object.values(workspace.records || {}));
+  if (!allRecords.length) records.innerHTML = '<p class="empty">還沒有練習紀錄。從首頁貼一份職缺就能開始。</p>';
+  for (const record of allRecords) {
+    const card = document.createElement('article'); card.className = 'list-card'; card.dataset.recordId = record.id;
+    card.innerHTML = `<p class="eyebrow">${escape(recordStates[record.status] || record.status)}</p><h3 lang="en">${escape(record.question.text)}</h3><p class="meta">${escape(firstLine(workspace.snapshots[record.snapshotId]?.text))} · ${escape(dateLabel(record.updatedAt || record.createdAt))}</p><div class="button-row"></div>`;
+    button(record.status === 'completed' ? '查看紀錄' : '繼續練習', () => showRecord(record.id), card.querySelector('.button-row'), {kind:'secondary'});
+    button('刪除', () => deleteRecord(record.id), card.querySelector('.button-row'), {kind:'danger'});
+    records.append(card);
+  }
+  const snapshots = $('#snapshots'); snapshots.replaceChildren();
+  const allSnapshots = Object.values(workspace.snapshots || {}).sort((a,b) => new Date(b.capturedAt) - new Date(a.capturedAt));
+  if (!allSnapshots.length) snapshots.innerHTML = '<p class="empty">尚未保存職缺。</p>';
+  for (const snapshot of allSnapshots) {
+    const card = document.createElement('article'); card.className = 'list-card';
+    card.innerHTML = `<h3>${escape(firstLine(snapshot.text))}</h3><p class="meta">保存於 ${escape(dateLabel(snapshot.capturedAt))}</p><div class="button-row"></div>`;
+    button(workspace.analyses[snapshot.id] ? '查看推薦題' : '產生題目', async () => {
+      if (!workspace.analyses[snapshot.id]) { await api(`/snapshots/${snapshot.id}/analysis`, {}); await refreshWorkspace(); }
+      await showRecommended(snapshot.id);
+    }, card.querySelector('.button-row'), {kind:'secondary'});
+    button('刪除職缺', async () => {
+      if (!window.confirm('確定刪除這份職缺、相關練習與草稿嗎？')) return;
+      await api(`/snapshots/${snapshot.id}`, undefined, 'DELETE'); await refreshWorkspace(); renderHistory(); setNotice('職缺與相關練習已刪除。');
+    }, card.querySelector('.button-row'), {kind:'danger'});
+    snapshots.append(card);
+  }
+}
+
+async function renderProgress() {
+  const records=sortRecent(Object.values(workspace.records).filter(r=>r.status==='completed'));
+  $('#progress').innerHTML=records.length?records.map(r=>`<article class="list-card"><p>${escape(r.focusPoint)}</p><p class="meta">${escape(dateLabel(r.completedAt))}</p></article>`).join(''):'<p>完成一次練習後，這裡會留下你的下一步。</p>';
+}
+
+async function renderEvidence() {
+  const token=viewToken;
+  const parent=$('#evidence');
+  parent.textContent='正在讀取履歷…';
+  const resume=await api('/resume');
+  if(viewToken!==token)return;
+  parent.innerHTML=`<section class="settings-section"><h2>${resume?'目前使用的履歷':'讓問題更貼近你'}</h2><p>上傳一次，之後貼 JD 就會預設搭配這份履歷出題。</p><label class="field-label">上傳 PDF、DOCX 或 TXT（最多 5 MB）</label><div class="file-field"><label class="file-button" for="resume-file">選擇檔案</label><input type="file" id="resume-file" accept=".pdf,.docx,.txt" class="visually-hidden"><span id="resume-filename" class="file-name">尚未選擇檔案</span></div><p id="resume-extract-status" role="status"></p><label for="resume-name">檔名</label><input id="resume-name" value="${escape(resume?.name || '我的履歷')}"><label for="resume-text">履歷內容，可直接貼上或修正辨識結果</label><textarea id="resume-text" rows="14">${escape(resume?.text || '')}</textarea><p class="meta">保存在本機；搭配 JD 產題時才會傳送文字給模型。替換履歷不會改動舊練習。</p><div id="resume-actions"></div></section>`;
+  let extracting=false, extractionId=0;
+  $('#resume-file').addEventListener('change',async event=>{
+    const file=event.target.files[0];if(!file)return;
+    if($('#resume-filename'))$('#resume-filename').textContent=file.name;
+    if(file.size>5000000){setError('履歷檔案需小於 5 MB。');return;}
+    const extraction=++extractionId;
+    extracting=true;$('#save-resume').disabled=true;$('#resume-extract-status').textContent='正在辨識文字…';
+    try {
+      const bytes=new Uint8Array(await file.arrayBuffer());let binary='';for(let i=0;i<bytes.length;i+=8192)binary+=String.fromCharCode(...bytes.subarray(i,i+8192));
+      const result=await api('/resume/extract',{name:file.name,base64:btoa(binary)});
+      if(extraction!==extractionId||viewToken!==token||currentView!=='evidence')return;
+      $('#resume-name').value=result.name;$('#resume-text').value=result.text;$('#resume-extract-status').textContent='文字已辨識。可修正後儲存。';
+    }catch(error){if(extraction!==extractionId||viewToken!==token)return;setError(error.message);if($('#resume-extract-status'))$('#resume-extract-status').textContent='未替換原有履歷。可改為貼上文字。';}
+    finally{if(extraction===extractionId&&viewToken===token){extracting=false;if($('#save-resume'))$('#save-resume').disabled=false;}}
+  });
+  button('儲存履歷',async()=>{if(extracting)return;await api('/resume',{name:$('#resume-name').value,text:$('#resume-text').value});await refreshWorkspace();setNotice('履歷已儲存，新練習會預設使用。');await renderEvidence();},$('#resume-actions'),{id:'save-resume'});
+  if(resume)button('移除目前履歷',async()=>{if(!confirm('移除目前履歷？既有練習保留當時的履歷版本；可在設定刪除全部資料。'))return;await api('/resume',undefined,'DELETE');await refreshWorkspace();await renderEvidence();},$('#resume-actions'),{kind:'ghost'});
+}
+
+async function renderDiscovery() {
+  const parent = $('#discovery'); parent.replaceChildren();
+  const profile = await api('/job-search-profile');
+  const form = document.createElement('section'); form.className = 'settings-section';
+  form.innerHTML = '<p>搜尋只會在你按下按鈕時進行。Greenhouse 會提供公開職缺，條件篩選留在本機。</p>';
+  const labels = {roles:'想找的職務',locations:'地點',seniority:'年資層級',workArrangements:'工作方式',priorities:'重視條件',exclusions:'排除條件'};
+  for (const [field,text] of Object.entries(labels)) form.insertAdjacentHTML('beforeend', `<label for="profile-${field}">${escape(text)}（以逗號分隔）</label><input id="profile-${field}" value="${escape(profile[field].join(', '))}">`);
+  const save = () => api('/job-search-profile', Object.fromEntries(Object.keys(labels).map(field => [field,$(`#profile-${field}`).value.split(',').map(value => value.trim()).filter(Boolean)])));
+  button('儲存搜尋條件', save, form, {kind:'secondary'});
+  const results = document.createElement('div'); results.id = 'discovery-results';
+  button('搜尋公開職缺', async () => {
+    await save(); const run = await api('/discovery', {}); results.replaceChildren();
+    if (!run.results.length) results.innerHTML = '<p class="empty">沒有符合結果。調整條件，或回首頁直接貼上職缺描述。</p>';
+    for (const job of run.results) {
+      const card = document.createElement('article'); card.className = 'list-card'; card.innerHTML = `<h3>${escape(job.title)}</h3><p>${escape(job.location)} · ${escape(job.source)}</p><p class="meta">${escape(job.reasons.join('；'))}</p><details><summary>查看取得的職缺內容</summary><blockquote>${escape(job.text)}</blockquote></details><div class="button-row"></div>`;
+      button('保存並產生題目', async () => { const snapshot = await api(`/discovery/${run.id}/select`, {resultId:job.id}); await refreshWorkspace(); await api(`/snapshots/${snapshot.id}/analysis`, {}); await refreshWorkspace(); await showRecommended(snapshot.id); }, card.querySelector('.button-row'));
+      results.append(card);
+    }
+  }, form);
+  form.insertAdjacentHTML('beforeend', '<hr><label for="job-url">支援的 Greenhouse 職缺網址</label><input id="job-url" type="url" placeholder="https://job-boards.greenhouse.io/…">');
+  button('取得並保存職缺', async () => { const snapshot = await api('/snapshots/from-url', {url:$('#job-url').value}); await refreshWorkspace(); await api(`/snapshots/${snapshot.id}/analysis`, {}); await refreshWorkspace(); await showRecommended(snapshot.id); }, form, {kind:'secondary'});
+  parent.append(form, results);
+}
+
+function renderSettings() {
+  const parent = $('#provider-settings'); parent.replaceChildren();
+  const names = {languageModel:'題目與回饋',speech:'語音轉錄',jobSource:'公開職缺來源'};
+  for (const [role,info] of Object.entries(providerInfo || {})) {
+    const row = document.createElement('div'); row.className = 'provider-row';
+    row.innerHTML = `<h3>${escape(names[role] || role)}</h3><p>${escape(providerName(info))}</p><p class="meta">${info.external ? `可能送出：${escape(info.outbound.map(outboundLabel).join('；'))}` : '本機示範服務，不傳送資料到外部。'}</p>`;
+    parent.append(row);
+  }
+  if (providerInfo?.languageModel?.subscription) {
+    const status = document.createElement('div'); status.className = `provider-warning`; status.innerHTML = `<strong>${languageStatus.ready ? 'Codex 訂閱服務已可使用' : languageStatus.authenticated ? '已登入，尚未完成本機驗證' : '尚未完成 Codex 登入'}</strong><p>${languageStatus.ready ? '文字題目與回饋會使用你的方案用量。' : '請在專案終端依 README 完成登入與驗證，再回來檢查。已寫的本機草稿不受影響。'}</p>`;
+    button('重新檢查狀態', async () => { languageStatus = await api('/providers/language-status'); renderSettings(); }, status, {kind:'secondary'});
+    parent.append(status);
+  }
+  const deletion = $('#delete-workspace'); deletion.replaceChildren();
+  deletion.innerHTML = '<p>這會刪除所有職缺、題目、練習紀錄、文字草稿與進步項目。若要繼續，請輸入 <strong>DELETE ALL LOCAL DATA</strong>。</p><label for="delete-all">確認文字</label><input id="delete-all" autocomplete="off">';
+  button('刪除全部本機資料', async () => {
+    await api('/workspace/delete', {confirmation:$('#delete-all').value}); clearDraftSession(); disposeVoice(); await refreshWorkspace(); setNotice('所有本機資料已刪除。'); await navigate('home');
+  }, deletion, {kind:'danger'});
+}
+
+async function showOperations() {
+  const parent = $('#operations');
+  const operations = await api('/operations');
+  const visible = [...operations.filter(operation => operation.state === 'pending'), ...operations.filter(operation => ['failed','cancelled'].includes(operation.state)).slice(-2)];
+  const signature = JSON.stringify(visible.map(operation => [operation.id,operation.kind,operation.state,operation.retryable,operation.errorCode]));
+  if (signature === operationsSignature) return;
+  operationsSignature = signature;
+  parent.replaceChildren();
+  for (const operation of visible) {
+    const row = document.createElement('div'); row.className = 'operation-card';
+    const state = {pending:'進行中',succeeded:'已完成',failed:'失敗',cancelled:'已取消'}[operation.state] || operation.state;
+    row.innerHTML = `<p><strong>${escape(operationNames[operation.kind] || operation.kind)}</strong> · ${escape(state)}${operation.retryable ? ' · 可從原操作重試' : ''}</p>`;
+    if (operation.state === 'pending') button(['feedback','follow-up-feedback'].includes(operation.kind) ? '取消取得回饋' : '取消操作', () => api(`/operations/${operation.id}/cancel`, {}), row, {kind:'ghost'});
+    parent.append(row);
+  }
+}
+
+window.addEventListener('beforeunload', event => {
+  disposeVoice();
+  if (draftSession?.dirty) { event.preventDefault(); event.returnValue = ''; }
+});
+
+const operationsTimer = setInterval(() => showOperations().catch(() => {}), 800);
+window.addEventListener('pagehide', () => clearInterval(operationsTimer));
+
+async function initialize() {
+  try {
+    providerInfo = await api('/providers');
+    if (providerInfo.languageModel.subscription) {
+      try { languageStatus = await api('/providers/language-status'); }
+      catch { languageStatus = {ready:false,authenticated:false}; }
+    }
+    const health = await api('/health');
+    $('#provider').textContent = `${providerName(providerInfo.languageModel)} · ${providerInfo.speech.external ? '語音已配置' : '文字練習'}`;
+    await refreshWorkspace();
+    renderSettings();
+    renderHome();
+    await showOperations();
+  } catch (error) { setError(`無法開啟工作區：${error.message}`); }
+}
+
+await initialize();

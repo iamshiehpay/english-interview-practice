@@ -1,0 +1,3368 @@
+{
+  "schemaVersion": 2,
+  "contractVersion": "2.0.0",
+  "status": "pending-independent-ai-review",
+  "automaticPass": true,
+  "cases": [
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 1,
+      "outputChecksum": "938859d49ffa6e60452b4ab1fd2b4ec62762e9737652033f8594fa8c91c347ac",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Evaluate retrieval quality for a Mandarin support assistant.",
+          "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Evaluate retrieval quality for a Mandarin support assistant."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "e68b15dfdd7bc3a02a28f28eddac0ed0333056883c98b6ac870931461e3b208c",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Describe a relevant project or an honest hypothetical approach. Focus: Build Python inference services in Taipei.",
+          "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Build Python inference services in Taipei."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 1,
+      "outputChecksum": "11eb0bf7e4879538cd239840000174171d6e516b3416a5cda60fdd75ca6f9b1a",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "How would you handle disagreement with a teammate about this work? Focus: Discuss model limitations with product colleagues.",
+          "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Discuss model limitations with product colleagues."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "72b5be3481b6be7107c799647b53ea1db7d81903277f5287b6686c3b28093e9b",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain latency and accuracy trade-offs.",
+          "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain latency and accuracy trade-offs."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 1,
+      "outputChecksum": "98c6e0226f55ed87c0f0562907a7dab16659ce5da6df20f1643fd7e44f64d52c",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Build reliable payment APIs in Taipei.",
+          "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Build reliable payment APIs in Taipei."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "9863b02032697845a8c4c0bec7b5f64b8bc8b369dc21c7991de8a7f6d850be4e",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Describe a relevant project or an honest hypothetical approach. Focus: Use PostgreSQL transactions and automated tests.",
+          "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Use PostgreSQL transactions and automated tests."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 1,
+      "outputChecksum": "8d1dd77ab4d050b225f344f1ef5c2fe13809790ec8f793c874f23f930e4736f3",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "How would you handle disagreement with a teammate about this work? Focus: Collaborate on incident reviews without blame.",
+          "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Collaborate on incident reviews without blame."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "538f8df0235ccf1a5cffd52855f72e3aabcfff923d9e2026e8861dd69c72c556",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain consistency and availability trade-offs.",
+          "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain consistency and availability trade-offs."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 1,
+      "outputChecksum": "2a40d1129d9ed2542e0034a6d1dc049c93105cb9d6c8ce36898d61a9df841e85",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Analyze product experiments in Hsinchu.",
+          "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Analyze product experiments in Hsinchu."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "0e58330db26166835695c3625d6aafd1b4b289d05d34bd99e808b1a53acab3ba",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Describe a relevant project or an honest hypothetical approach. Focus: Use SQL and Python to investigate missing data.",
+          "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Use SQL and Python to investigate missing data."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 1,
+      "outputChecksum": "708cde864dfbf79af5ee02ad996bdf9dc58eca99fe0bab937b86df970af0dd41",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "How would you handle disagreement with a teammate about this work? Focus: Communicate uncertainty to product managers.",
+          "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Communicate uncertainty to product managers."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "dccdac786d1420ce4fe1c880339a67b94fb7adf072e9807d65123d736a0f7e8c",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain experiment assumptions and confidence intervals.",
+          "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain experiment assumptions and confidence intervals."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 1,
+      "outputChecksum": "e1e225816b6532789d071c9e70eefc0cb357b00ba73c17874d1bb8ff1ad16c44",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Build embedded sensor software in Hsinchu.",
+          "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Build embedded sensor software in Hsinchu."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "0f708b8248e084bf504b4ca4d0e8914f64598283280241569cedb7a6b3a0649f",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Describe a relevant project or an honest hypothetical approach. Focus: Debug C firmware and serial communication.",
+          "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Debug C firmware and serial communication."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 1,
+      "outputChecksum": "73f30a3091697378551ffdd15e8dec510143294fe7b158f02372b6b4b839eef1",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "How would you handle disagreement with a teammate about this work? Focus: Coordinate hardware and software investigations.",
+          "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Coordinate hardware and software investigations."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "3ceaa08c261ef2d1f07554951c9dffdfb4c9f01770c4e8bdd9583d1ec5e73843",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain timing and memory constraints.",
+          "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain timing and memory constraints."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 1,
+      "outputChecksum": "6bb1cbace74d2bca8670d00389708a267d5864e2569cf1f105683a1fc6edb2fb",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Build accessible web interfaces in Taipei.",
+          "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Build accessible web interfaces in Taipei."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "a159a6b3d84244cc2262a5038463ae56cae02c56a31e106aa788f12ac058883f",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Describe a relevant project or an honest hypothetical approach. Focus: Use JavaScript and browser performance tools.",
+          "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Use JavaScript and browser performance tools."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 1,
+      "outputChecksum": "59a863a6ac7dcee77208632a4c044918090d86926c325b8558a02c43088b1616",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "How would you handle disagreement with a teammate about this work? Focus: Collaborate with designers on usability feedback.",
+          "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Collaborate with designers on usability feedback."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "4328a27d3dc7397345e9d93914fabe5b827c60914641ef1cf2072645dc35735f",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain accessibility and rendering trade-offs.",
+          "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain accessibility and rendering trade-offs."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 2,
+      "outputChecksum": "4938252353db0672c007c009b722cda9e6872b4669d4115938ff422f8141d6fd",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Evaluate retrieval quality for a Mandarin support assistant.",
+          "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Evaluate retrieval quality for a Mandarin support assistant."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "fcdf73e1912609f8ec3dcd55421098cda55830c09c9168bdb046744cec2b8e30",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Describe a relevant project or an honest hypothetical approach. Focus: Build Python inference services in Taipei.",
+          "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Build Python inference services in Taipei."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 2,
+      "outputChecksum": "284c80c558fcb27ad6393d8f6d5a6740cf20c0ca1e5df18f0eca0a14d206ceb9",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "How would you handle disagreement with a teammate about this work? Focus: Discuss model limitations with product colleagues.",
+          "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Discuss model limitations with product colleagues."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "34ad0ab41a4f8258fdab9eb800c0f17c5ec3a6f3979cce1617530163d077384c",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain latency and accuracy trade-offs.",
+          "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain latency and accuracy trade-offs."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 2,
+      "outputChecksum": "2987ce8dbaa49758d4f99766f9bf9db43f0b2803056d5e6ab13c2266b8d5afe7",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Build reliable payment APIs in Taipei.",
+          "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Build reliable payment APIs in Taipei."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "9e87ba4452ca62af6cf9ed1be50cec984f4aa0637e522761ed715d2f93e4de37",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Describe a relevant project or an honest hypothetical approach. Focus: Use PostgreSQL transactions and automated tests.",
+          "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Use PostgreSQL transactions and automated tests."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 2,
+      "outputChecksum": "1677d8274dbf6b9b5c16aa4e0e64379399e4d5295bfb325eede0058fee1b9fa7",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "How would you handle disagreement with a teammate about this work? Focus: Collaborate on incident reviews without blame.",
+          "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Collaborate on incident reviews without blame."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "c70f5f8904378a4e1ad7b6ed6c45d86afc11aa291bf26e9a7fb06ba8724e88d9",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain consistency and availability trade-offs.",
+          "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain consistency and availability trade-offs."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 2,
+      "outputChecksum": "ac308a18732b28cbc5c10f8dcff72cbf0ac5d0c1cd275bf24f87073111d6ad6a",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Analyze product experiments in Hsinchu.",
+          "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Analyze product experiments in Hsinchu."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "98e421309b9a1dd892fd778cc6caf17ab7af73209a0226e65054458cdae35ff1",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Describe a relevant project or an honest hypothetical approach. Focus: Use SQL and Python to investigate missing data.",
+          "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Use SQL and Python to investigate missing data."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 2,
+      "outputChecksum": "08348013e469f9d45f0b2909da0a0b02a33ab36efe1d64d41e8e152569c884ab",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "How would you handle disagreement with a teammate about this work? Focus: Communicate uncertainty to product managers.",
+          "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Communicate uncertainty to product managers."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "bd0a0e79083de70e86e1dd7617e51f75302d19edc22aafabc767bdcabff4a75e",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain experiment assumptions and confidence intervals.",
+          "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain experiment assumptions and confidence intervals."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 2,
+      "outputChecksum": "781b92c2e5df73afd73dd59425aa342b98e9fcda9ed3818301cbe2fe451215bd",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Build embedded sensor software in Hsinchu.",
+          "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Build embedded sensor software in Hsinchu."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "1fbc468689140c7a1d23fa8afbddf09aad648fb749c467c5d28e9758cce2a105",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Describe a relevant project or an honest hypothetical approach. Focus: Debug C firmware and serial communication.",
+          "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Debug C firmware and serial communication."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 2,
+      "outputChecksum": "a22dfb50ad9d6770b8e0b153fa307b8b3e20f3ad71ad0ad3754ea4ec3f6eee57",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "How would you handle disagreement with a teammate about this work? Focus: Coordinate hardware and software investigations.",
+          "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Coordinate hardware and software investigations."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "56c3b3656e313d31e84fac6299510a5ab9356062c9e82af7c602f125dcd3eccc",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain timing and memory constraints.",
+          "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain timing and memory constraints."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 2,
+      "outputChecksum": "121a7175074f5691b6e104eca92b59117d2f0f196de2702a25eb83cc5f02701c",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Build accessible web interfaces in Taipei.",
+          "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Build accessible web interfaces in Taipei."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "316afa800130ee717533eabd7ff527d2326810b452766c4c9b9a7129a549a848",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Describe a relevant project or an honest hypothetical approach. Focus: Use JavaScript and browser performance tools.",
+          "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Use JavaScript and browser performance tools."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 2,
+      "outputChecksum": "849364ac15b5f1b29b5a7a524d25a6483a1d3a5a39924abcf26cc2f0ef70d849",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "How would you handle disagreement with a teammate about this work? Focus: Collaborate with designers on usability feedback.",
+          "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Collaborate with designers on usability feedback."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "41c390c7d11b60965f446591bcd847a4f02eb1e3542d14ef0bc929b547d78e5a",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain accessibility and rendering trade-offs.",
+          "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain accessibility and rendering trade-offs."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 3,
+      "outputChecksum": "630805c381112e161fb9ac69438e703a9f24e3067b29c87870179940833c4bb1",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Evaluate retrieval quality for a Mandarin support assistant.",
+          "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Evaluate retrieval quality for a Mandarin support assistant."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "e57208ccb6044144ef93017ddec9bf4c169ebaff0acff933ae7fbd7884d9893e",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Describe a relevant project or an honest hypothetical approach. Focus: Build Python inference services in Taipei.",
+          "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Build Python inference services in Taipei."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 3,
+      "outputChecksum": "7daf08d8aae52ad6770fa23d31f7120fd83b22b872dfa8659d60adf005a60400",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "How would you handle disagreement with a teammate about this work? Focus: Discuss model limitations with product colleagues.",
+          "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Discuss model limitations with product colleagues."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "d7192cc4b51ea4e0fae1c9c41c6e962d9960da9d8ca2e8cabed28e59a18b3f52",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain latency and accuracy trade-offs.",
+          "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain latency and accuracy trade-offs."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 3,
+      "outputChecksum": "a3f469852f73c12e2d4dfe73d7e2a52c9df222ef2f3b9798fffa40815d8edcce",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Build reliable payment APIs in Taipei.",
+          "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Build reliable payment APIs in Taipei."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "9396a5788801bd2cdb7f6f23e1c92b0de4f94402c42a83f8a50aebaa1fa18907",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Describe a relevant project or an honest hypothetical approach. Focus: Use PostgreSQL transactions and automated tests.",
+          "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Use PostgreSQL transactions and automated tests."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 3,
+      "outputChecksum": "9927b9296302719fbb4241437dea2f824ebe9bc51093f45311d24bb6c116cd1f",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "How would you handle disagreement with a teammate about this work? Focus: Collaborate on incident reviews without blame.",
+          "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Collaborate on incident reviews without blame."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "1459a80f016d7cfaf7e47659af3b7148d08d9ddc2dfd24541369a36fb4ee3ecc",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain consistency and availability trade-offs.",
+          "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain consistency and availability trade-offs."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 3,
+      "outputChecksum": "71023c51429ee2d581362051d4f8f8eaf98c506869efe0d8228d0976de3bdae2",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Analyze product experiments in Hsinchu.",
+          "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Analyze product experiments in Hsinchu."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "a152eaa238bfb54251a1b1f352b2dcda33d3b45a9286bee771befb0fdf64b528",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Describe a relevant project or an honest hypothetical approach. Focus: Use SQL and Python to investigate missing data.",
+          "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Use SQL and Python to investigate missing data."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 3,
+      "outputChecksum": "18ebdf4dca1b1ee1ecc9894860a6faba6a07f043fb1490f316bac7c75aa92598",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "How would you handle disagreement with a teammate about this work? Focus: Communicate uncertainty to product managers.",
+          "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Communicate uncertainty to product managers."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "07b685709332ec3f6cfca4e8d5a93e6abc5a0e3cd48dded32c7ad16f0dbc5f9e",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain experiment assumptions and confidence intervals.",
+          "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain experiment assumptions and confidence intervals."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 3,
+      "outputChecksum": "7e9436d7460dab73442f5b1e8c72da1951a371e6c996a112b535fd51b29cb796",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Build embedded sensor software in Hsinchu.",
+          "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Build embedded sensor software in Hsinchu."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "1df1c099c66688940cc764c78b8537344eb8547eddb8c8a82d42d36ff6aa38e5",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Describe a relevant project or an honest hypothetical approach. Focus: Debug C firmware and serial communication.",
+          "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Debug C firmware and serial communication."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 3,
+      "outputChecksum": "44f43ed7438bc1773d7d125df66592eed41420446d96dad2bf16f70eb8adde34",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "How would you handle disagreement with a teammate about this work? Focus: Coordinate hardware and software investigations.",
+          "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Coordinate hardware and software investigations."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "feefa4b7533bc4e84cc6ac17eaf85de2e93dd730552ad288f8778ac56988af95",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain timing and memory constraints.",
+          "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain timing and memory constraints."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 3,
+      "outputChecksum": "05c2a3caa30c2d936f3d62a3827ec36edcc77ce14512bedac3140f82f8fc7bcf",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Build accessible web interfaces in Taipei.",
+          "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Build accessible web interfaces in Taipei."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "41b872cb21f914875f10c4fafa6d60c71ff9b06de41792a7e68cc887b0fb6a7e",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Describe a relevant project or an honest hypothetical approach. Focus: Use JavaScript and browser performance tools.",
+          "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Use JavaScript and browser performance tools."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 3,
+      "outputChecksum": "476e8cdd198dcffd7de154e66ad947f42551c5b543e8c37c3325654b45328cd1",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "How would you handle disagreement with a teammate about this work? Focus: Collaborate with designers on usability feedback.",
+          "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Collaborate with designers on usability feedback."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "fe967a40a25329ee854df4058bdd0218c265e2da71bca4bab9a5bc5951394ea5",
+      "pass": true,
+      "automaticChecks": [
+        "both counterparts are nonempty",
+        "Chinese counterpart contains Han script",
+        "counterparts are not identical"
+      ],
+      "semanticReviewRequired": true,
+      "semanticStatus": "pending-human-review",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain accessibility and rendering trade-offs.",
+          "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain accessibility and rendering trade-offs."
+        },
+        {
+          "name": "question rationale",
+          "en": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "zh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "support reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "Demonstration rating only; configure a model provider for substantive coaching.",
+          "zh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+        },
+        {
+          "name": "strength",
+          "en": "You supplied an answer to review.",
+          "zh": "你提供了一段可供檢視的回答。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain one concrete example or trade-off supporting your approach.",
+          "zh": "請說明一個支持你做法的具體例子或取捨。"
+        }
+      ],
+      "errors": []
+    }
+  ]
+}

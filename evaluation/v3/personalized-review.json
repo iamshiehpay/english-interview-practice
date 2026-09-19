@@ -1,0 +1,14 @@
+{
+  "reviewer": "Independent agent /root/flow_spec_review",
+  "sourceReportChecksum": "5c9e0455acbf042a305e626f23047c7f3f2fbea61a5f414ddbc318dd13babce6",
+  "scope": {
+    "analyses": 3,
+    "questions": 30,
+    "coaching": 4,
+    "feedback": 2
+  },
+  "verdict": "No material fabrication or bilingual contradiction found in these samples; initial findings resolved.",
+  "limitation": "One strength quote covers the index trade-off but not the testing claim also present in the original answer.",
+  "humanReview": false,
+  "releaseGateSatisfied": false
+}
