@@ -877,13 +877,14 @@ async function renderProgress() {
   $('#progress').innerHTML=records.length?records.map(r=>`<article class="list-card"><p>${escape(r.focusPoint)}</p><p class="meta">${escape(dateLabel(r.completedAt))}</p></article>`).join(''):'<p>完成一次練習後，這裡會留下你的下一步。</p>';
 }
 
-async function renderEvidence() {
+async function renderEvidence({clearText=false}={}) {
   const token=viewToken;
   const parent=$('#evidence');
   parent.textContent='正在讀取履歷…';
   const resume=await api('/resume');
   if(viewToken!==token)return;
   parent.innerHTML=`<section class="settings-section"><h2>${resume?'目前使用的履歷':'讓問題更貼近你'}</h2><p>上傳一次，之後貼 JD 就會預設搭配這份履歷出題。</p><label class="field-label">上傳 PDF、DOCX 或 TXT（最多 5 MB）</label><div class="file-field"><label class="file-button" for="resume-file">選擇檔案</label><input type="file" id="resume-file" accept=".pdf,.docx,.txt" class="visually-hidden"><span id="resume-filename" class="file-name">尚未選擇檔案</span></div><p id="resume-extract-status" role="status"></p><label for="resume-name">檔名</label><input id="resume-name" value="${escape(resume?.name || '我的履歷')}"><label for="resume-text">履歷內容，可直接貼上或修正辨識結果</label><textarea id="resume-text" rows="14">${escape(resume?.text || '')}</textarea><p class="meta">保存在本機；搭配 JD 產題時才會傳送文字給模型。替換履歷不會改動舊練習。</p><div id="resume-actions"></div></section>`;
+  if(clearText)$('#resume-text').value='';
   let extracting=false, extractionId=0;
   $('#resume-file').addEventListener('change',async event=>{
     const file=event.target.files[0];if(!file)return;
@@ -899,7 +900,7 @@ async function renderEvidence() {
     }catch(error){if(extraction!==extractionId||viewToken!==token)return;setError(error.message);if($('#resume-extract-status'))$('#resume-extract-status').textContent='未替換原有履歷。可改為貼上文字。';}
     finally{if(extraction===extractionId&&viewToken===token){extracting=false;if($('#save-resume'))$('#save-resume').disabled=false;}}
   });
-  button('儲存履歷',async()=>{if(extracting)return;await api('/resume',{name:$('#resume-name').value,text:$('#resume-text').value});await refreshWorkspace();setNotice('履歷已儲存，新練習會預設使用。');await renderEvidence();},$('#resume-actions'),{id:'save-resume'});
+  button('儲存履歷',async()=>{if(extracting)return;await api('/resume',{name:$('#resume-name').value,text:$('#resume-text').value});await refreshWorkspace();setNotice('履歷已儲存，新練習會預設使用。');await renderEvidence({clearText:true});},$('#resume-actions'),{id:'save-resume'});
   if(resume)button('移除目前履歷',async()=>{if(!confirm('移除目前履歷？既有練習保留當時的履歷版本；可在設定刪除全部資料。'))return;await api('/resume',undefined,'DELETE');await refreshWorkspace();await renderEvidence();},$('#resume-actions'),{kind:'ghost'});
 }
 
