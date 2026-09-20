@@ -13,6 +13,10 @@ export class Operations {
     return this.store.transact(d=>{const o=d.operations?.[id];requireValue(o,'Operation not found',404);if(o.state==='pending'){o.state='cancelled';o.retryable=true;o.errorCode='CANCELLED';}return o;});
   }
   async cancelTarget(target){for(const [id,controller]of this.controllers){const o=this.store.data.operations?.[id];if(!target||o?.targetId===target)await this.cancel(id);}}
+  async dismiss(id){
+    requireValue(Object.hasOwn(this.store.data.operations||{},id),'Operation not found',404);
+    return this.store.transact(d=>{const o=d.operations?.[id];requireValue(o,'Operation not found',404);requireValue(o.state!=='pending','Cancel a pending operation before dismissing it',409);delete d.operations[id];return {dismissed:id};});
+  }
   async run({kind,targetId,requestId,input,execute,replay}){
     const id=requestId||randomUUID();requireValue(/^[a-zA-Z0-9_-]{8,100}$/.test(id) && !['__proto__','prototype','constructor'].includes(id),'Invalid request identifier');
     const fingerprint=createHash('sha256').update(JSON.stringify({kind,targetId,input})).digest('hex');

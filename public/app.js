@@ -214,8 +214,10 @@ function stepper(stage) {
   return `<ol class="stepper">${labels.map((label,index) => `<li class="${index < stage ? 'done' : index === stage ? 'current' : ''}"${index === stage ? ' aria-current="step"' : ''}><span>${escape(label)}</span></li>`).join('')}</ol>`;
 }
 function practiceFrame({stage=1, snapshot, content}) {
-  const title = firstLine(snapshot?.text);
-  return `<article class="practice-shell"><header class="practice-header">${stepper(stage)}</header><div class="practice-body"><div class="job-line"><span class="job-label">職缺</span><strong class="job-title" title="${escape(title)}">${escape(title)}</strong><details class="job-source"><summary>查看原文</summary><div class="detail-panel"><p>${escape(snapshot?.text)}</p></div></details></div>${content}</div></article>`;
+  const first = firstLine(snapshot?.text);
+  const shortTitle = first && first.length <= 48 ? first : '';
+  const jobLine = snapshot ? `<div class="job-line"><span class="job-label">職缺${shortTitle ? '：' : ''}</span>${shortTitle ? `<strong class="job-title">${escape(shortTitle)}</strong>` : ''}<details class="job-source"><summary>查看原文</summary><div class="detail-panel"><p>${escape(snapshot?.text)}</p></div></details></div>` : '';
+  return `<article class="practice-shell"><header class="practice-header">${stepper(stage)}</header>${jobLine}<div class="practice-body">${content}</div></article>`;
 }
 
 function renderHome() {
@@ -323,7 +325,7 @@ async function showQuestion(snapshotId, questionId, suppliedAnalysis) {
   const meaning = question.meaningZh || '這是舊版題目，目前沒有保存中文題意；英文原題完整保留。';
   const previous = incompleteForQuestion(snapshotId, question.id);
   const providerGate = modelReady() ? '' : `<div class="provider-warning"><strong>目前還不能取得模型回饋。</strong><p>請先到設定完成 Codex 登入與驗證；若要先整理想法，文字草稿仍會保存在本機。</p><div id="question-provider-gate"></div></div>`;
-  const content = `<div id="recommended-question"><p class="question-kicker">${recommended ? '建議先練' : '目前選擇'}｜${escape(categories[question.category] || question.category)}</p><h1 class="question-text" lang="en">${escape(question.text)}</h1><details open><summary>查看中文題意</summary><div class="detail-panel"><p>${escape(meaning)}</p></div></details>${providerGate}<div class="button-row" id="question-actions"></div></div>`;
+  const content = `<div id="recommended-question" class="question-phase"><p class="question-kicker">${recommended ? '建議先練' : '目前選擇'}｜${escape(categories[question.category] || question.category)}</p><h1 class="question-text" lang="en">${escape(question.text)}</h1><details open><summary>查看中文題意</summary><div class="detail-panel"><p>${escape(meaning)}</p></div></details>${providerGate}<div class="button-row" id="question-actions"></div></div>`;
   $('#practice').innerHTML = practiceFrame({stage:1, snapshot, content});
   const actions = $('#question-actions');
   const begin = async () => {
@@ -392,7 +394,7 @@ function guidanceHtml() {
   return `<details class="answer-help">
     <summary>不知道怎麼回答？</summary>
     <div class="answer-help-body">
-      <p class="meta">先拿一個提示、用沒有相關經驗的框架回答，或把自己的中文想法整理成英文。這些都只是輔助，不會算作正式回答。</p>
+      <p class="meta">先拿一個提示、用沒有相關經驗的框架回答、看一個假設的示範回答，或把自己的中文想法整理成英文。這些都只是輔助，不會算作正式回答。</p>
       <div class="button-row" id="hint-actions"></div>
       <div id="hint-result" aria-live="polite"></div>
       <div class="ideas-panel">
@@ -411,7 +413,9 @@ async function showCoaching(record, mode, parent, transcript) {
   try {
     const result=await api(`/records/${record.id}/coaching`, {mode,...(transcript !== undefined ? {transcript} : {})});
     if (viewToken!==token || !parent.isConnected) return;
-    parent.innerHTML=`<section class="detail-panel coaching-result"><p class="eyebrow">${mode==='rewrite'?'英文示範':mode==='ideas'?'想法整理成英文':mode==='gap'?'無相關經驗的回答框架':'回答提示'}</p>${['rewrite','ideas'].includes(mode)?`<details><summary>查看這次整理的原文</summary><blockquote>${escape(transcript ?? record.attempts.at(-1)?.transcript)}</blockquote></details>`:''}<p class="coaching-text" lang="${['rewrite','ideas'].includes(mode)?'en':'zh-Hant'}">${escape(result.text)}</p>${['rewrite','ideas'].includes(mode)?`<p class="meta">${escape(result.explanationZh)}</p>`:''}</section>`;
+    const english=['rewrite','ideas','illustrative'].includes(mode);
+    const eyebrow=mode==='rewrite'?'英文示範':mode==='ideas'?'想法整理成英文':mode==='gap'?'無相關經驗的回答框架':mode==='illustrative'?'示範回答（假設）':'回答提示';
+    parent.innerHTML=`<section class="detail-panel coaching-result"><p class="eyebrow">${eyebrow}</p>${['rewrite','ideas'].includes(mode)?`<details><summary>查看這次整理的原文</summary><blockquote>${escape(transcript ?? record.attempts.at(-1)?.transcript)}</blockquote></details>`:''}${mode==='illustrative'?'<p class="coaching-caveat" role="note">這是假設示範，請替換成你自己的經驗，不要當成你的真實經歷。</p>':''}<p class="coaching-text" lang="${english?'en':'zh-Hant'}">${escape(result.text)}</p>${english?`<p class="meta">${escape(result.explanationZh)}</p>`:''}</section>`;
   } catch(error) {if(parent.isConnected)parent.textContent='尚未取得建議，可再次按下按鈕重試。';throw error;}
 }
 
@@ -749,7 +753,7 @@ async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedb
   const currentFollowUp = followUps.at(-1);
   const followUpFeedbackPending = Boolean(currentFollowUp?.attempt && !currentFollowUp.attempt.feedback);
   const editor = !complete && !feedbackOnly && (!last || (last.feedback && record.attempts.length===1 && (editing || record.writtenDraft)));
-  let body = `<p class="question-kicker">${escape(categories[record.question.category] || record.question.category)}</p><h1 class="question-text" lang="en">${escape(record.question.text)}</h1><details open><summary>中文題意</summary><p class="meaning">${escape(record.question.meaningZh || '舊版題目未保存中文題意。')}</p></details>`;
+  let body = `<section class="question-phase"><p class="question-kicker">${escape(categories[record.question.category] || record.question.category)}</p><h1 class="question-text" lang="en">${escape(record.question.text)}</h1><details open><summary>中文題意</summary><p class="meaning">${escape(record.question.meaningZh || '舊版題目未保存中文題意。')}</p></details></section>`;
   if (last && !last.feedback) {
     body += `<section class="answer-area"><h2>你的回答已保存</h2><details><summary>查看回答</summary><blockquote>${escape(last.transcript)}</blockquote></details><p>回饋尚未完成，可以重試，不會重複提交回答。</p><div id="feedback-retry-actions"></div></section>`;
   } else if (editor) {
@@ -763,7 +767,7 @@ async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedb
       const same=first.transcript.trim()===last.transcript.trim();
       body+=`<section class="answer-area"><h2>${same?'這次回答尚未修改':'看看這次的調整'}</h2><p>${same?'兩次內容相同，沒有文字修改可比較。':'先前的練習重點：'+escape(first.feedback.priorityImprovement.textZh || '此筆舊紀錄沒有中文說明。')}</p>${same?'':`<details open><summary>關鍵句前後對照</summary>${changedTextHtml(first.transcript,last.transcript)}</details>`}</section>`;
     }
-    body+=`<section class="answer-area"><h2 id="feedback-heading" tabindex="-1">給這次回答的一點建議</h2>${feedbackHtml(last.feedback)}</section><details id="attempt-history"><summary>查看回答紀錄（${record.attempts.length} 個版本）</summary><label for="attempt-version">選擇回答版本</label><select id="attempt-version">${record.attempts.map((a,i)=>`<option value="${i}" ${i===record.attempts.length-1?'selected':''}>第 ${i+1} 次回答 · ${escape(dateLabel(a.submittedAt))}</option>`).join('')}</select><div id="attempt-detail"></div></details>`;
+    body+=`<section class="answer-area"><h2 id="feedback-heading" tabindex="-1">給這次回答的一點建議</h2>${feedbackHtml(last.feedback)}<details id="attempt-history"><summary>查看回答紀錄（${record.attempts.length} 個版本）</summary><label for="attempt-version">選擇回答版本</label><select id="attempt-version">${record.attempts.map((a,i)=>`<option value="${i}" ${i===record.attempts.length-1?'selected':''}>第 ${i+1} 次回答 · ${escape(dateLabel(a.submittedAt))}</option>`).join('')}</select><div id="attempt-detail"></div></details></section>`;
     if(record.unsubmittedDraft)body+=`<details><summary>未送出的修改草稿（未評分）</summary><blockquote>${escape(record.unsubmittedDraft.transcript)}</blockquote></details>`;
     const focus=record.focusPoint || last.feedback.priorityImprovement.textZh || '請選擇一項下次想練習的重點。';
     const optional=`<div class="optional-actions">${complete?'':'<p class="optional-label">其他選擇</p>'}<div id="feedback-actions" class="button-row"></div><div id="rewrite-result" aria-live="polite"></div></div>`;
@@ -814,6 +818,7 @@ async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedb
     installEditor(record, {});
     button('給我一個提示',()=>showCoaching(record,'hint',$('#hint-result')),$('#hint-actions'),{kind:'ghost'});
     button('沒有相關經驗的回答框架',()=>showCoaching(record,'gap',$('#hint-result')),$('#hint-actions'),{kind:'ghost'});
+    button('看一個示範回答',()=>showCoaching(record,'illustrative',$('#hint-result')),$('#hint-actions'),{kind:'ghost'});
     button('幫我整理成英文',()=>showCoaching(record,'ideas',$('#ideas-result'),$('#ideas').value),$('#ideas-actions'),{kind:'secondary'});
     if(last){button('回到回饋，先不修改',()=>showRecord(record.id,{feedbackOnly:true}),$('#finish-while-editing'),{kind:'secondary'});button('保存草稿，稍後再練',()=>navigate('home'),$('#finish-while-editing'),{kind:'ghost'});}
     const switcher=document.createElement('div');switcher.className='button-row';$('#practice .practice-body').append(switcher);
@@ -927,7 +932,8 @@ function renderSettings() {
   const names = {languageModel:'題目與回饋',speech:'語音轉錄',jobSource:'公開職缺來源'};
   for (const [role,info] of Object.entries(providerInfo || {})) {
     const row = document.createElement('div'); row.className = 'provider-row';
-    row.innerHTML = `<h3>${escape(names[role] || role)}</h3><p>${escape(providerName(info))}</p><p class="meta">${info.external ? `可能送出：${escape(info.outbound.map(outboundLabel).join('；'))}` : '本機示範服務，不傳送資料到外部。'}</p>`;
+    const access = !info.external ? '' : info.subscription ? '透過你的官方訂閱登入使用；用量依方案計算，不需在本機保存 API 金鑰。' : role === 'jobSource' ? '只讀取你指定的公開職缺板；不需金鑰，也不送出個人資料。' : '使用你在啟動時設定的 API 金鑰；金鑰不會存進本機資料或顯示在畫面上。呼叫可能依供應商方案產生費用。';
+    row.innerHTML = `<h3>${escape(names[role] || role)}</h3><p>${escape(providerName(info))}</p><p class="meta">${info.external ? `可能送出：${escape(info.outbound.map(outboundLabel).join('；'))}` : '本機示範服務，不傳送資料到外部。'}</p>${access ? `<p class="meta">${access}</p>` : ''}`;
     parent.append(row);
   }
   if (providerInfo?.languageModel?.subscription) {
@@ -955,6 +961,7 @@ async function showOperations() {
     const state = {pending:'進行中',succeeded:'已完成',failed:'失敗',cancelled:'已取消'}[operation.state] || operation.state;
     row.innerHTML = `<p><strong>${escape(operationNames[operation.kind] || operation.kind)}</strong> · ${escape(state)}${operation.retryable ? ' · 可從原操作重試' : ''}</p>`;
     if (operation.state === 'pending') button(['feedback','follow-up-feedback'].includes(operation.kind) ? '取消取得回饋' : '取消操作', () => api(`/operations/${operation.id}/cancel`, {}), row, {kind:'ghost'});
+    else button('✕ 清除', async () => { await api(`/operations/${operation.id}`, undefined, 'DELETE'); operationsSignature = null; await showOperations(); }, row, {kind:'ghost'});
     parent.append(row);
   }
 }

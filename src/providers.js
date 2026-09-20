@@ -68,7 +68,7 @@ export class FakeLanguageModel {
     ];
     return Array.from({length: count}, (_, i) => {
       const n = offset + i, c = capabilities[n % capabilities.length];
-      return {id: `q${n + 1}`, text: `${prompts[n % prompts.length]} Focus: ${c.evidence}${n >= prompts.length ? ` Consider scenario ${Math.floor(n / prompts.length) + 1}: limited time and incomplete information.` : ''}`, meaningZh:`${meaningsZh[n % meaningsZh.length]} 重點：${c.evidence}${n >= prompts.length ? ` 情境 ${Math.floor(n / prompts.length) + 1}：時間有限且資訊不完整。` : ''}`, category: categories[n % 4], capabilityIds: [c.id], evidence: c.evidence, rationale: 'Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.', rationaleZh:'這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。'};
+      return {id: `q${n + 1}`, text: `${prompts[n % prompts.length]}${n >= prompts.length ? ` Consider scenario ${Math.floor(n / prompts.length) + 1}: limited time and incomplete information.` : ''}`, meaningZh:`${meaningsZh[n % meaningsZh.length]}${n >= prompts.length ? `（情境 ${Math.floor(n / prompts.length) + 1}：時間有限且資訊不完整。）` : ''}`, category: categories[n % 4], capabilityIds: [c.id], evidence: c.evidence, rationale: 'Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.', rationaleZh:'這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。'};
     });
   }
   async additionalQuestions({analysis}) {
@@ -76,6 +76,7 @@ export class FakeLanguageModel {
   }
   async coach({question,transcript,mode}) {
     if (['hint','gap'].includes(mode)) return {text:`針對「${question.meaningZh || question.text}」，${mode === 'gap' ? '用「如果遇到這個情境，我會…」開始，說明第一步與理由。' : '先選一個具體情境，說出你的第一個決定與理由。'}`,explanationZh:'這是本機示範提示；實質建議需要設定模型服務。'};
+    if (mode === 'illustrative') return {text:'Demonstration only: if I faced this, I would first clarify the goal, outline one approach, and name a trade-off I would weigh. Replace this with your own experience.',explanationZh:'這是本機示範的假設回答，僅示意結構；請設定模型服務以取得針對此題的實質示範，並替換成你自己的經驗。'};
     return {text: /[A-Za-z]/.test(transcript || '') ? transcript : 'Demonstration only: configure a model provider for English assistance.', explanationZh:'本機示範不會實際翻譯或改寫，請設定模型服务。'};
   }
   async followUp({primaryAnswer, previousFollowUps = []}) {

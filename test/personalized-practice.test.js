@@ -46,6 +46,17 @@ test('coaching validates language and rejects invented numeric metrics',()=>{
   assert.equal(validateCoaching({text:'I tested 10 cases.',explanationZh:'保留事實。'},'rewrite','I tested 10 cases.').text,'I tested 10 cases.');
 });
 
+test('illustrative coaching returns explicitly hypothetical English before answering, never an attempt',async t=>{
+  const {api}=await harness(t);const {record}=await setup(api);const path=`/records/${record.id}`;
+  const shown=await api(path+'/coaching',{mode:'illustrative'});
+  assert.equal(shown.status,200);
+  assert.equal(shown.data.mode,'illustrative');
+  assert.match(shown.data.text,/[A-Za-z]/);
+  assert.ok(shown.data.explanationZh);
+  assert.equal((await api(path)).data.attempts.length,0);
+  assert.equal((await api(path+'/coaching',{mode:'nonsense'})).status,400);
+});
+
 test('resume extraction accepts text and rejects wrong formats without persisting uploads',async()=>{
   assert.equal((await extractResume({name:'resume.txt',base64:Buffer.from('Python developer').toString('base64')})).text,'Python developer');
   await assert.rejects(extractResume({name:'fake.pdf',base64:Buffer.from('not a PDF').toString('base64')}),/有效/);

@@ -34,6 +34,8 @@ export async function createApplication({directory = '.workspace', languageModel
     if (method === 'GET' && path === '/api/operations') return Object.values(store.data.operations || {});
     const cancel = path.match(/^\/api\/operations\/([^/]+)\/cancel$/);
     if (method === 'POST' && cancel) return operations.cancel(cancel[1]);
+    const dismissOp = path.match(/^\/api\/operations\/([^/]+)$/);
+    if (method === 'DELETE' && dismissOp) return operations.dismiss(dismissOp[1]);
     if (method === 'GET' && path === '/api/providers/language-status') return languageModel.status ? languageModel.status() : {provider:languageModel.name,authenticated:null,loginRequired:false};
     if (method === 'GET' && path === '/api/providers') return {languageModel:{name:languageModel.name,subscription:!!languageModel.status,external:!!languageModel.external,outbound:languageModel.external?['JD text and selected resume for analysis','JD, selected resume and existing capability/question set for additions','current question and transcript for feedback or English assistance','primary question, frozen formal answer and completed follow-ups for follow-up generation']:[]},speech:{name:speechProvider.name,external:!!speechProvider.external,outbound:speechProvider.external?['recorded audio only']:[]},jobSource:{name:jobSource.name,external:!!jobSource.external,outbound:!!jobSource.external?['public board token and requested job ID; profile filtering stays local']:[]}};
     if (path === '/api/resume') {
@@ -226,7 +228,7 @@ export async function createApplication({directory = '.workspace', languageModel
       if (method === 'GET' && action === 'evidence-context') return evidenceContext(store.data, record.snapshotId, record.question.capabilityIds);
       if (method === 'POST' && action === 'coaching') {
         const mode=input.mode;
-        requireValue(['hint','gap','rewrite','ideas'].includes(mode),'Invalid coaching mode');
+        requireValue(['hint','gap','rewrite','ideas','illustrative'].includes(mode),'Invalid coaching mode');
         const attempt=record.attempts.at(-1);
         if(mode==='rewrite')requireValue(attempt?.feedback,'請先回答並取得回饋，再看英文示範。',409);
         const transcript=mode==='rewrite'?attempt.transcript:mode==='ideas'?input.transcript:'';
@@ -356,7 +358,7 @@ export async function createApplication({directory = '.workspace', languageModel
   return {server, store};
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const {server} = await createApplication({directory: process.env.WORKSPACE_DIR || '.workspace', ...configuredProviders(), operationTimeoutMs: Number(process.env.COACH_TIMEOUT_MS || (process.env.COACH_LANGUAGE_PROVIDER==='codex'?90000:30000))});
+  const {server} = await createApplication({directory: process.env.WORKSPACE_DIR || '.workspace', ...configuredProviders(), operationTimeoutMs: Number(process.env.COACH_TIMEOUT_MS || (['codex','claude'].includes(process.env.COACH_LANGUAGE_PROVIDER)?90000:30000))});
   const port = Number(process.env.PORT || 4310);
   server.once('error', error => {
     if (error.code === 'EADDRINUSE') {

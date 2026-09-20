@@ -6,7 +6,8 @@ import {tmpdir} from 'node:os';
 import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
 import {AppError,requireValue} from './domain.js';
-export const supportedVersion='0.154.0';
+// Reviewed Codex CLI versions. Keep in step with codexBinaryHashes in codex-sandbox.js.
+export const supportedVersions=['0.154.0','0.155.1'];
 export const disabledFeatures=['shell_tool','unified_exec','unified_exec_tty','code_mode','code_mode_host','code_mode_only','code_mode_prewarm','apps','enable_mcp_apps','browser_use','browser_use_external','browser_use_full_cdp_access','computer_use','in_app_browser','in_app_local_automation','in_app_chat','in_app_dictation','image_generation','view_image','plugins','remote_plugin','plugin_sharing','hooks','skill_search','skill_mcp_dependency_install','multi_agent','multi_agent_v2','tool_suggest','goals','sleep_tool','request_permissions_tool','memories','shell_snapshot','shell_snapshot_v2','workspace_dependencies','worktrees','auth_elicitation','tool_call_mcp_elicitation','standalone_web_search','network_proxy','unbounded_connection_retries'];
 export const profileConfig=`forced_login_method = "chatgpt"
 cli_auth_credentials_store = "file"
@@ -37,7 +38,7 @@ export async function runtimeProfile({profile,binary='codex',verifyVersion=true}
   const home=await prepareProfile(profile),env=processEnvironment(home);
   if(verifyVersion)binary=await verifiedBinary(binary);
   if(verifyVersion){let version;try{version=(await promisify(execFile)(binary,['--version'],{env,timeout:5000,maxBuffer:10000})).stdout.trim();}catch{throw new AppError('Codex CLI unavailable; install the supported version',503);}
-    requireValue(version===`codex-cli ${supportedVersion}`,`Codex CLI ${supportedVersion} required for the reviewed isolation configuration`,503);
+    requireValue(supportedVersions.some(v=>version===`codex-cli ${v}`),`Codex CLI version is not one of the reviewed builds (${supportedVersions.join(', ')})`,503);
     let features;try{features=(await promisify(execFile)(binary,['features','list'],{env,timeout:5000,maxBuffer:50000})).stdout;}catch{throw new AppError('Codex isolation feature check failed',503);}
     const states=new Map(features.trim().split('\n').map(line=>{const parts=line.trim().split(/\s+/);return [parts[0],parts.at(-1)];}));
     requireValue(disabledFeatures.every(f=>states.get(f)===(f==='unified_exec'?'true':'false'))&&states.get('skip_host_skill_discovery')==='true','Codex tool isolation settings were not honored',503);

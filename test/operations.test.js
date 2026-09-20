@@ -72,3 +72,12 @@ test('reserved identifiers cannot mutate object prototypes or create operation r
  assert.equal((await keyed(base,`/snapshots/${snapshot.id}/analysis`,{},'__proto__')).status,400);
  assert.equal((await api('/operations/constructor/cancel',{})).status,404);
 });
+test('a failed operation can be dismissed; an unknown operation cannot',async t=>{
+ const provider=new FakeLanguageModel();provider.analyze=async()=>{throw new Error('boom');};
+ const {api}=await harness(t,provider);const s=(await api('/snapshots',{text:'Build APIs'})).data;
+ assert.equal((await api(`/snapshots/${s.id}/analysis`,{})).status,502);
+ const failed=(await api('/operations')).data.find(o=>o.state==='failed');assert.ok(failed);
+ assert.equal((await api(`/operations/${failed.id}`,undefined,'DELETE')).status,200);
+ assert.equal((await api('/operations')).data.find(o=>o.id===failed.id),undefined);
+ assert.equal((await api('/operations/does-not-exist',undefined,'DELETE')).status,404);
+});

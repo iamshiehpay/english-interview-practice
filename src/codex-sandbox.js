@@ -6,11 +6,16 @@ import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
 import {requireValue} from './domain.js';
 const exec=promisify(execFile);
-export const codexBinaryHash='4f85982624b3898c8991cb80c0981b2aa71070e3537046c9a95950318a95afcc';
+// SHA-256 of each reviewed, trusted Codex macOS build. Add a build here only
+// after reviewing it; the sandbox refuses any binary not on this list.
+export const codexBinaryHashes=[
+  '4f85982624b3898c8991cb80c0981b2aa71070e3537046c9a95950318a95afcc', // codex-cli 0.154.0
+  '8eaf1ad12fe6bf89b1710330f58900014322c7c5af677e43be116d8ac5fc0a9e', // codex-cli 0.155.1
+];
 export async function verifiedBinary(binary){
  requireValue(process.platform==='darwin','Subscription provider requires reviewed macOS isolation',503);
  const path=await realpath(binary==='codex'?join(homedir(),'.local/bin/codex'):binary);
- requireValue(createHash('sha256').update(await readFile(path)).digest('hex')===codexBinaryHash,'Codex executable differs from the reviewed0.154.0 macOS binary',503);return path;
+ requireValue(codexBinaryHashes.includes(createHash('sha256').update(await readFile(path)).digest('hex')),'Codex executable does not match any reviewed macOS build',503);return path;
 }
 export function sandboxPolicy({binary,profileDirectory,runtimeDirectory}){
  requireValue(basename(profileDirectory)==='.coach-codex'&&profileDirectory!==homedir(),'Use a dedicated directory named .coach-codex for subscription credentials/settings',503);

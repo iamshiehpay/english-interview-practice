@@ -118,6 +118,10 @@ _Avoid_: Resume-only questioning, employer's actual questions
 An on-demand English expression of the learner's supplied ideas or a rewrite of a submitted answer, with a Chinese explanation and no invented personal facts; it is distinct from the learner's Answer Attempts.
 _Avoid_: Learner answer, verified accomplishments, automatic improvement
 
+**Illustrative Answer（示範回答）**:
+An on-demand, explicitly hypothetical English answer that models concrete structure and reasoning for a Job-grounded Interview Question so a stuck learner has something to adapt; it never presents invented metrics, employers, ownership or outcomes as real, is always shown with an application-fixed hypothetical-replace-with-your-own-experience caveat, is not an Answer Attempt, and is never reused as the learner's history. It is distinct from English Assistance (which expresses the learner's own supplied ideas).
+_Avoid_: Sample answer, model answer, the learner's answer, verified experience
+
 **Follow-up Question（追問題）**:
 A question that probes the learner's preceding answer within the same interview topic; each main question permits at most two optional follow-ups, each with its own answer and feedback.
 _Avoid_: Answer revision, unrelated next question

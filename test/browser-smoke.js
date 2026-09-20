@@ -74,6 +74,8 @@ try {
  await run(`if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow');if(btn('查看參考表達'))throw Error('Old reference outline shown');click('nav [data-view="home"]');await wait(()=>el('#use-resume'),'home');el('#use-resume').checked=false;fill('#jd','Build services and discuss engineering trade-offs.');click('#capture');await wait(()=>el('#recommended-question'),'JD only');click('#recommended-question button');await wait(()=>el('#answer'),'editor');`);
  await browser('screenshot',resolve('docs/verification/learner-flow/mobile.png'),'--full');
  await run(`
+ click(btn('看一個示範回答'));await wait(()=>el('#hint-result .coaching-text'),'illustrative');
+ if(!el('#hint-result .coaching-caveat')||!el('#hint-result .coaching-caveat').textContent.includes('這是假設示範，請替換成你自己的經驗'))throw Error('Illustrative caveat missing');
  fill('#ideas','I would compare two approaches.');click(btn('幫我整理成英文'));await wait(()=>el('#ideas-result .coaching-text'),'ideas');
  const before=await ws();const fresh=Object.values(before.records).find(r=>r.attempts.length===0&&before.snapshots[r.snapshotId].resume===null);if(!fresh)throw Error('JD-only record missing');
  if(fresh.attempts.length)throw Error('Ideas counted as answer');

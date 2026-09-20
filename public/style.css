@@ -110,10 +110,7 @@ h3 { margin-bottom: 9px; font-size: 17px; }
 .english { color: #1b3a47; font-family: "Avenir Next", "PingFang TC", sans-serif; }
 .empty { padding: 22px; color: var(--ink-soft); background: rgba(255, 255, 255, .62); border: 1px dashed var(--line); border-radius: 24px; }
 
-.home-heading { width: min(760px, 100%); margin-bottom: 42px; }
-.home-heading > p:last-child { width: min(590px, 100%); color: var(--ink-soft); font-size: 17px; }
-
-.start-card, .resume-card, .practice-shell, .settings-section, .list-card, .feedback-card, .question-card, .operation-card {
+.start-card, .resume-card, .settings-section, .list-card, .question-card, .operation-card, .practice-header, .question-phase, .practice-body > .answer-area, .next-steps {
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: 28px;
@@ -180,18 +177,19 @@ button:focus-visible, summary:focus-visible, [tabindex]:focus-visible, a:focus-v
 .operation-card p { margin: 0; font-size: 13px; }
 .operation-card button { margin: 0; }
 
-.practice-shell { overflow: hidden; }
-.practice-header { padding: 22px clamp(22px, 5vw, 48px) 0; background: linear-gradient(180deg, #fffaf3, white); }
+.practice-shell { display: flex; flex-direction: column; gap: 16px; }
+.practice-header { padding: 16px clamp(20px, 4vw, 34px) 6px; border-radius: 22px; }
 .stepper { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; padding: 0; margin: 0; list-style: none; }
 .stepper li { position: relative; padding: 14px 10px 14px 24px; color: var(--ink-soft); border-top: 3px solid var(--line); font-size: 12px; }
 .stepper li::before { position: absolute; left: 0; content: "○"; }
 .stepper li.done, .stepper li.current { color: var(--teal-dark); border-color: var(--teal); font-weight: 700; }
 .stepper li.done::before { content: "✓"; }
 .stepper li.current::before { content: "●"; }
-.practice-body { padding: clamp(28px, 5vw, 54px); }
-.job-line { display: flex; align-items: center; gap: 8px; margin-bottom: 34px; color: var(--ink-soft); font-size: 13px; }
+.practice-body { display: flex; flex-direction: column; gap: 16px; padding: 0; }
+.question-phase, .practice-body > .answer-area, .next-steps { padding: clamp(22px, 4vw, 34px); }
+#attempt-history { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
+.job-line { display: flex; align-items: center; gap: 8px; margin: 0 6px; color: var(--ink-soft); font-size: 13px; }
 .job-line .job-label { flex: 0 0 auto; color: var(--ink-soft); font-weight: 650; }
-.job-line .job-label::after { content: "："; }
 .job-line .job-title { flex: 1 1 auto; min-width: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); font-size: 15px; font-weight: 650; }
 .job-line .job-source { flex: 0 0 auto; }
 .job-line .job-source summary { white-space: nowrap; cursor: pointer; }
@@ -215,7 +213,7 @@ summary { color: var(--teal-dark); cursor: pointer; font-weight: 700; }
   overflow-wrap: anywhere;
 }
 
-.answer-area { margin-top: 34px; padding-top: 28px; border-top: 1px solid var(--line); }
+.answer-area { margin: 0; }
 .answer-area textarea { min-height: 230px; font-family: "Avenir Next", "PingFang TC", sans-serif; font-size: 17px; line-height: 1.75; }
 .draft-status { min-height: 24px; margin-top: 6px; color: var(--ink-soft); font-size: 13px; }
 .draft-status.error { color: #8e3e31; font-weight: 700; }
@@ -223,10 +221,10 @@ summary { color: var(--teal-dark); cursor: pointer; font-weight: 700; }
 .prompt-grid details { margin: 0; padding: 14px 16px; background: var(--mist); border-radius: 16px; }
 .provider-warning { margin: 14px 0; padding: 14px 16px; background: #fff8e8; border: 1px solid #ecd8a4; border-radius: 16px; }
 
-.feedback-feature { display: grid; grid-template-columns: 1fr; gap: 16px; margin: 22px 0; }
-.feedback-card { padding: 22px; box-shadow: none; }
-.feedback-card.strength { border-top: 1px solid var(--line); }
-.feedback-card.priority { border-top: 1px solid var(--line); }
+.feedback-feature { display: grid; grid-template-columns: 1fr; gap: 22px; margin: 18px 0 4px; }
+.feedback-card { padding: 0 0 0 16px; border-left: 3px solid var(--line); box-shadow: none; }
+.feedback-card.strength { border-left-color: var(--teal); }
+.feedback-card.priority { border-left-color: var(--yellow); }
 .feedback-card blockquote { font-size: 13px; }
 .legacy-note { padding: 10px 13px; background: #f4f1ea; border-radius: 8px; }
 .ratings { margin-top: 18px; }
@@ -277,12 +275,12 @@ footer { padding: 24px; color: var(--ink-soft); border-top: 1px solid var(--line
   main { width: min(100% - 28px, 1120px); padding-top: 45px; }
   .start-card { grid-template-columns: 1fr; gap: 8px; padding: 24px 20px; }
   .section-number { font-size: 28px; }
-  .practice-header { padding-inline: 15px; }
+  .practice-header { padding: 12px 15px 4px; }
   .stepper li { padding: 10px 3px 10px 0; text-align: center; }
   .stepper li::before { display: block; position: static; }
-  .practice-body { padding: 28px 20px; }
+  .question-phase, .practice-body > .answer-area, .next-steps { padding: 22px 18px; }
   .job-line { align-items: flex-start; flex-direction: column; gap: 4px; }
-  .job-line .job-title { align-self: stretch; max-width: 100%; }
+  .job-line .job-title { align-self: stretch; max-width: 100%; white-space: normal; }
   .prompt-grid, .feedback-feature, .attempts, .split-list { grid-template-columns: 1fr; }
   .question-text { font-size: 25px; }
 }
@@ -300,8 +298,6 @@ footer { padding: 24px; color: var(--ink-soft); border-top: 1px solid var(--line
 /* Warm humanist practice: quiet surfaces, compact reading width, deliberate actions. */
 [hidden] { display: none !important; }
 p, h1, h2, h3 { text-wrap: pretty; overflow-wrap: anywhere; }
-.home-heading { margin: 0 auto 32px; text-align: center; }
-.home-heading > p:last-child { margin-inline: auto; }
 .brand-mark { background: var(--sky); color: var(--teal-dark); border-radius: 50%; }
 button.primary, button.secondary, button.ghost, button.danger { border-radius: 999px; padding: 12px 22px; min-height: 46px; transition: background .4s ease, transform .4s ease; }
 button.primary { box-shadow: none; }
@@ -317,8 +313,9 @@ button:not(:disabled):hover { transform: translateY(-1px); }
 .resume-card { margin-inline: auto; }
 .coaching-text { white-space: pre-wrap; line-height: 1.8; }
 .coaching-result { background: var(--mint); }
+.coaching-caveat { margin: 0 0 12px; padding: 9px 13px; background: #fff3e2; border: 1px solid #edc9b1; border-radius: 12px; color: var(--teal-dark); font-size: 13px; font-weight: 650; }
 .answer-area textarea { font-family: inherit; }
-.feedback-card { padding: 20px 24px; }
+.feedback-card { padding: 2px 0 2px 16px; }
 .feedback-card h3 { color: var(--teal-dark); }
 .feedback-card blockquote { font-size: 16px; }
 .ideas-panel { margin-top: 24px; }
@@ -329,7 +326,6 @@ button:not(:disabled):hover { transform: translateY(-1px); }
 main { padding-top: 48px; }
 button.primary { background: #f4a573; color: #38271e; }
 button.primary:hover { background: #ee935a; }
-.home-heading { margin-bottom: 28px; }
 
 /* Bounded follow-up practice extends the warm, low-density coaching flow. */
 .answer-help {
@@ -359,7 +355,7 @@ button.primary:hover { background: #ee935a; }
 .follow-up-invitation { background: transparent; border: 1px dashed #e6cdb4; }
 .follow-up-invitation h3 { margin-bottom: 4px; color: var(--teal-dark); font-size: 16px; }
 .follow-up-invitation > p:not(.eyebrow) { max-width: 650px; color: var(--ink-soft); }
-.next-steps { margin-top: 30px; padding-top: 26px; border-top: 1px solid var(--line); }
+.next-steps { margin: 0; }
 .next-steps-title { margin-bottom: 14px; }
 .next-steps > .follow-up-flow { margin-top: 0; }
 .optional-actions { margin: 8px 0 20px; }
