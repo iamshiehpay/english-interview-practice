@@ -58,6 +58,7 @@ function localizeError(message, status) {
     [/meaningful Focus Point|up to 500 characters/i, '請填寫一項有意義的下次練習重點（最多 500 字）。'],
     [/Not found/i, '找不到這筆資料，可能已被刪除。'],
     [/Codex subscription login required/i, '請先到設定完成 Codex 登入與驗證。'],
+    [/codex:verify|isolation verification/i, 'Codex 需要重新完成本機隔離驗證：請在專案終端執行 npm run codex:verify，完成後再重試（例如更新過程式或重啟服務後可能需要）。'],
     [/Type DELETE ALL LOCAL DATA/i, '請輸入 DELETE ALL LOCAL DATA 以確認刪除。']
   ];
   const match = rules.find(([pattern]) => pattern.test(message || ''));
