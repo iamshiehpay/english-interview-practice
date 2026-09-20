@@ -191,8 +191,6 @@ button:focus-visible, summary:focus-visible, [tabindex]:focus-visible, a:focus-v
 .job-line { display: flex; align-items: center; gap: 8px; margin: 0 6px; color: var(--ink-soft); font-size: 13px; }
 .job-line .job-label { flex: 0 0 auto; color: var(--ink-soft); font-weight: 650; }
 .job-line .job-title { flex: 1 1 auto; min-width: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); font-size: 15px; font-weight: 650; }
-.job-line .job-source { flex: 0 0 auto; }
-.job-line .job-source summary { white-space: nowrap; cursor: pointer; }
 .question-kicker { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 14px; color: var(--teal); font-size: 13px; font-weight: 700; }
 .question-kicker::before { width: 22px; height: 2px; background: var(--yellow); content: ""; }
 .question-text { max-width: 820px; margin-bottom: 18px; font-size: clamp(22px, 2.6vw, 28px); line-height: 1.28; }

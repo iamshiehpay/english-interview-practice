@@ -216,10 +216,12 @@ function stepper(stage) {
   const labels = ['選擇職缺', '選一題', '試著回答', '回饋與收穫'];
   return `<ol class="stepper">${labels.map((label,index) => `<li class="${index < stage ? 'done' : index === stage ? 'current' : ''}"${index === stage ? ' aria-current="step"' : ''}><span>${escape(label)}</span></li>`).join('')}</ol>`;
 }
+function truncate(text, max = 60) {
+  const value = String(text ?? '').replace(/\s+/g, ' ').trim();
+  return value.length > max ? value.slice(0, max).trimEnd() + '…' : value;
+}
 function practiceFrame({stage=1, snapshot, content}) {
-  const first = firstLine(snapshot?.text);
-  const shortTitle = first && first.length <= 48 ? first : '';
-  const jobLine = snapshot ? `<div class="job-line"><span class="job-label">職缺${shortTitle ? '：' : ''}</span>${shortTitle ? `<strong class="job-title">${escape(shortTitle)}</strong>` : ''}<details class="job-source"><summary>查看原文</summary><div class="detail-panel"><p>${escape(snapshot?.text)}</p></div></details></div>` : '';
+  const jobLine = snapshot ? `<div class="job-line"><span class="job-label">職缺：</span><span class="job-title">${escape(truncate(firstLine(snapshot.text)))}</span></div>` : '';
   return `<article class="practice-shell"><header class="practice-header">${stepper(stage)}</header>${jobLine}<div class="practice-body">${content}</div></article>`;
 }
 
