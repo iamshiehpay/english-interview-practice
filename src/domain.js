@@ -65,3 +65,16 @@ export function validateFollowUp(value) {
   requireValue(fields(value, ['text','meaningZh']) && hasLatin(value.text) && value.text.length <= 1000 && hasHan(value.meaningZh) && value.meaningZh.length <= 1000, 'Invalid provider output: bilingual follow-up schema', 502);
   return {text:value.text, meaningZh:value.meaningZh};
 }
+
+export function validateCorrections(value, transcript) {
+  const fail = () => requireValue(false, 'Invalid provider output: key-sentence correction schema, citation, or invented detail', 502);
+  if (!fields(value, ['corrections']) || !Array.isArray(value.corrections) || value.corrections.length > 2) fail();
+  const numbersIn = text => text.match(/\d+(?:[.,]\d+)*/g) || [];
+  for (const item of value.corrections) {
+    if (!fields(item, ['original','rewrite','reasonZh']) || !nonempty(item.original) || !transcript.includes(item.original) || !hasLatin(item.rewrite) || item.rewrite.length > 2000 || !hasHan(item.reasonZh) || item.reasonZh.length > 2000) fail();
+    // Evidence safety: a correction may only reuse numbers the learner already stated.
+    const allowed = numbersIn(item.original);
+    if (!numbersIn(item.rewrite).every(number => allowed.includes(number))) fail();
+  }
+  return {corrections: value.corrections.map(({original, rewrite, reasonZh}) => ({original, rewrite, reasonZh}))};
+}

@@ -9,7 +9,7 @@ async function responseJson(response){
   let size=0;const chunks=[];for await(const chunk of response.body){size+=chunk.length;requireValue(size<=2_000_000,'Provider response too large',502);chunks.push(chunk);}
   try{return JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw new AppError('Provider returned invalid JSON',502);}
 }
-import {analysisContract,feedbackContract,personalizationContract,coachingContract,followUpContract,MODEL_CONTRACT_VERSION} from './model-contracts.js';
+import {analysisContract,feedbackContract,personalizationContract,coachingContract,followUpContract,correctionsContract,MODEL_CONTRACT_VERSION} from './model-contracts.js';
 const followUpContext=({primaryQuestion,primaryAnswer,previousFollowUps=[]})=>({
   primaryQuestion:{text:primaryQuestion.text,...(primaryQuestion.meaningZh?{meaningZh:primaryQuestion.meaningZh}:{})},
   primaryAnswer:{transcript:primaryAnswer.transcript},
@@ -26,6 +26,7 @@ export class OpenAILanguageModel {
   additionalQuestions({snapshot,analysis,signal}){return this.json(analysisContract+personalizationContract+' Preserve supplied capabilities and existing questions byte-for-byte, including legacy questions that lack bilingual fields; append exactly four different grounded questions using the current bilingual shape. Return the full merged set; the initial 8–12 count no longer applies.',{jobDescription:snapshot.text,resume:snapshot.resume?.text,difficulty:snapshot.difficulty||'standard',analysis},signal);}
   coach({question,transcript,mode,signal}){return this.json(coachingContract,{question,transcript,mode},signal);}
   followUp({primaryQuestion,primaryAnswer,previousFollowUps,signal}){return this.json(followUpContract,followUpContext({primaryQuestion,primaryAnswer,previousFollowUps}),signal);}
+  corrections({question,transcript,signal}){return this.json(correctionsContract,{question:{text:question.text},transcript},signal);}
   feedback({question,transcript,previousAttempt,approvedEvidence,signal}){return this.json(feedbackContract,{question,transcript,...(previousAttempt?{previousAttempt:{transcript:previousAttempt.transcript,priorityImprovement:previousAttempt.feedback.priorityImprovement}}:{}),approvedEvidence:approvedEvidence.map(({excerpt})=>({excerpt}))},signal);}
 }
 export class ClaudeLanguageModel {
@@ -42,6 +43,7 @@ export class ClaudeLanguageModel {
   additionalQuestions({snapshot,analysis,signal}){return this.json(analysisContract+personalizationContract+' Preserve supplied capabilities and existing questions byte-for-byte, including legacy questions that lack bilingual fields; append exactly four different grounded questions using the current bilingual shape. Return the full merged set; the initial 8–12 count no longer applies.',{jobDescription:snapshot.text,resume:snapshot.resume?.text,difficulty:snapshot.difficulty||'standard',analysis},signal);}
   coach({question,transcript,mode,signal}){return this.json(coachingContract,{question,transcript,mode},signal);}
   followUp({primaryQuestion,primaryAnswer,previousFollowUps,signal}){return this.json(followUpContract,followUpContext({primaryQuestion,primaryAnswer,previousFollowUps}),signal);}
+  corrections({question,transcript,signal}){return this.json(correctionsContract,{question:{text:question.text},transcript},signal);}
   feedback({question,transcript,previousAttempt,approvedEvidence,signal}){return this.json(feedbackContract,{question,transcript,...(previousAttempt?{previousAttempt:{transcript:previousAttempt.transcript,priorityImprovement:previousAttempt.feedback.priorityImprovement}}:{}),approvedEvidence:approvedEvidence.map(({excerpt})=>({excerpt}))},signal);}
 }
 export class OpenAISpeechProvider {

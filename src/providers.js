@@ -86,6 +86,14 @@ export class FakeLanguageModel {
       ? {text:'Which failure case would you test first, and why?',meaningZh:'你會先測試哪一種失敗情境？為什麼？'}
       : {text:'What is the most important assumption behind that approach?',meaningZh:'這個做法背後最重要的假設是什麼？'};
   }
+  async corrections({transcript}) {
+    // Demonstration only: quote the learner's own first substantial sentence and
+    // keep it verbatim as a fact-preserving "rewrite". A short or non-English
+    // answer yields no correction (the evidence-safe no-change path).
+    const sentence = String(transcript || '').split(/(?<=[.!?。！？])\s+/).map(s => s.trim()).find(s => /[A-Za-z]/.test(s) && s.length >= 12);
+    if (!sentence) return {corrections: []};
+    return {corrections: [{original: sentence, rewrite: sentence, reasonZh: '這是本機示範修正：保留了你的原意與事實，僅示意呈現方式；請設定模型服務以取得針對此句的實質英文修正建議。'}]};
+  }
   async feedback({transcript, approvedEvidence = []}) {
     const quote = transcript.slice(0, 160);
     return {ratings: Object.fromEntries(dimensions.map(d => [d, {level: 2, quote, reason: 'Demonstration rating only; configure a model provider for substantive coaching.', reasonZh:'這只是示範評分；請設定模型供應商以取得實質回饋。'}])), strength: {text: 'You supplied an answer to review.', textZh:'你提供了一段可供檢視的回答。', quote}, priorityImprovement: {text: approvedEvidence.length ? 'If relevant, connect your reasoning to the approved experience shown beside this question. Use only details you can defend.' : 'Explain one concrete example or trade-off supporting your approach.', textZh:approvedEvidence.length?'若相關，請把你的推理連結到此題旁已核准的經驗，且只使用你能在面試中證明的細節。':'請說明一個支持你做法的具體例子或取捨。', quote}};

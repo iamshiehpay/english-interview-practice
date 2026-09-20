@@ -42,16 +42,24 @@ try {
  fill('#answer','I would measure query latency and compare the execution plans.');await wait(()=>!el('#retry-draft').hidden,'draft failure');
  click('#retry-draft');await wait(()=>el('#draft-status').textContent.includes('已儲存'),'draft retry');
  click('#next-question');await wait(()=>el('#recommended-question'),'switch');click('#recommended-question button');await wait(()=>el('#answer'),'new editor');
- click('[data-view="history"]');await wait(()=>el('[data-record-id]'),'history');
- const first=Object.values((await ws()).records).find(r=>r.writtenDraft);click('[data-record-id="'+first.id+'"] button');await wait(()=>el('#answer')?.value.includes('measure'),'restored draft');
+ click('[data-view="history"]');await wait(()=>el('[data-job-id]'),'job-centred history');
+ const first=Object.values((await ws()).records).find(r=>r.writtenDraft);
+ click('[data-job-id="'+first.snapshotId+'"] [aria-expanded]');await wait(()=>el('[data-record-id="'+first.id+'"]'),'job detail');
+ click('[data-record-id="'+first.id+'"] button');await wait(()=>el('#answer')?.value.includes('measure'),'restored draft');
  sessionStorage.setItem('record',first.id);
  `);
  await browser('open',url);
  await run(`
- await wait(()=>el('[data-view="history"]'),'load');click('[data-view="history"]');await wait(()=>el('[data-record-id]'),'history');
- click('[data-record-id="'+sessionStorage.getItem('record')+'"] button');await wait(()=>el('#answer')?.value.includes('measure'),'reload draft');
+ await wait(()=>el('[data-view="history"]'),'load');click('[data-view="history"]');await wait(()=>el('[data-job-id]'),'job-centred history');
+ const savedId=sessionStorage.getItem('record');const savedRec=(await ws()).records[savedId];
+ click('[data-job-id="'+savedRec.snapshotId+'"] [aria-expanded]');await wait(()=>el('[data-record-id="'+savedId+'"]'),'job detail reload');
+ click('[data-record-id="'+savedId+'"] button');await wait(()=>el('#answer')?.value.includes('measure'),'reload draft');
  const real=window.fetch.bind(window);let failed=false;window.fetch=async(...a)=>{if(!failed&&a[1]?.method==='POST'&&String(a[0]).endsWith('/feedback')){failed=true;return new Response(JSON.stringify({error:'synthetic failure'}),{status:503,headers:{'Content-Type':'application/json'}});}return real(...a);};
  click('#submit-answer');await wait(()=>btn('重試取得回饋'),'feedback failure');click(btn('重試取得回饋'));await wait(()=>el('#complete-practice'),'feedback retry');
+ await wait(()=>el('#corrections .correction-card')||el('#corrections .corrections-none'),'key-sentence corrections surface after feedback');
+ if(el('#corrections .correction-card')){const q=el('#corrections .correction-card blockquote[lang="en"]').textContent;if(!(await ws()).records[sessionStorage.getItem('record')].attempts.at(-1).transcript.includes(q))throw Error('Correction original is not a verbatim substring of the learner answer');}
+ if((await ws()).records[sessionStorage.getItem('record')].attempts.length!==1)throw Error('Corrections became an Answer Attempt');
+ if((await ws()).records[sessionStorage.getItem('record')].attempts[0].corrections)throw Error('Corrections must be stored separately from Answer Attempts');
  if(el('#answer'))throw Error('Revision is forced');
  click(btn('幫我講得更自然'));await wait(()=>el('#rewrite-result .coaching-text'),'rewrite');
  if((await ws()).records[sessionStorage.getItem('record')].attempts.length!==1)throw Error('AI assistance became attempt');
@@ -69,7 +77,19 @@ try {
 
  `);
  await browser('screenshot',resolve('docs/verification/learner-flow/feedback.png'),'--full');
- await run(`click('#complete-practice');await wait(()=>el('#practice-complete'),'saved');`);
+ await run(`
+ click('#complete-practice');await wait(()=>el('#practice-complete'),'saved');
+ const completedId=sessionStorage.getItem('record');const completedSnapshot=(await ws()).records[completedId].snapshotId;
+ click(btn('針對這個重點再練一次'));await wait(()=>el('.focus-origin-banner'),'focus-point practice started');
+ const focusRec=Object.values((await ws()).records).find(r=>r.focusOrigin&&r.focusOrigin.recordId===completedId);
+ if(!focusRec)throw Error('Focus-point practice did not create a new record');
+ if(focusRec.snapshotId!==completedSnapshot)throw Error('Focus-point practice left the same job');
+ const src=(await ws()).records[completedId];if(src.status!=='completed'||src.attempts.length!==2)throw Error('Focus-point practice overwrote the source record');
+ await wait(()=>el('#answer'),'focus practice editor');
+ fill('#answer','This time I add a concrete indexing example with its trade-offs to support the plan.');click('#submit-answer');await wait(()=>el('#complete-practice'),'focus practice feedback');
+ click('#complete-practice');await wait(()=>el('.focus-progress'),'focus progress shown');
+ if(!el('.focus-progress').textContent.includes('系統不會替你宣稱進步'))throw Error('Focus progress must not fabricate improvement');
+ `);
  await browser('set','viewport','390','844');
  await run(`if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow');if(btn('查看參考表達'))throw Error('Old reference outline shown');click('nav [data-view="home"]');await wait(()=>el('#use-resume'),'home');el('#use-resume').checked=false;fill('#jd','Build services and discuss engineering trade-offs.');click('#capture');await wait(()=>el('#recommended-question'),'JD only');click('#recommended-question button');await wait(()=>el('#answer'),'editor');`);
  await browser('screenshot',resolve('docs/verification/learner-flow/mobile.png'),'--full');
@@ -79,8 +99,12 @@ try {
  fill('#ideas','I would compare two approaches.');click(btn('幫我整理成英文'));await wait(()=>el('#ideas-result .coaching-text'),'ideas');
  const before=await ws();const fresh=Object.values(before.records).find(r=>r.attempts.length===0&&before.snapshots[r.snapshotId].resume===null);if(!fresh)throw Error('JD-only record missing');
  if(fresh.attempts.length)throw Error('Ideas counted as answer');
+ const realCorr=window.fetch.bind(window);let corrFail=true,corrEmpty=true;
+ window.fetch=async(...a)=>{const p=String(a[0]);if(a[1]?.method==='POST'&&p.endsWith('/corrections')){if(corrFail){corrFail=false;return new Response(JSON.stringify({error:'synthetic failure',retryable:true}),{status:503,headers:{'Content-Type':'application/json'}});}if(corrEmpty){corrEmpty=false;return new Response(JSON.stringify({id:'x',corrections:[],createdAt:new Date().toISOString()}),{headers:{'Content-Type':'application/json'}});}}return realCorr(...a);};
  fill('#answer','I would compare the cost and failure modes of both approaches.');click('#submit-answer');await wait(()=>btn('讓面試官追問'),'primary feedback');
  await wait(()=>document.activeElement&&document.activeElement.id==='feedback-heading','feedback heading focused after submit');
+ await wait(()=>btn('重試取得關鍵句修正'),'corrections retry offered after failure');click(btn('重試取得關鍵句修正'));await wait(()=>el('#corrections .corrections-none'),'corrections no-change path');
+ window.fetch=realCorr;
  if(btn('直接結束並保存'))throw Error('Duplicate end button still present after primary feedback');
  const endButtons=[...document.querySelectorAll('button')].filter(b=>b.textContent.trim()==='結束並保存');
  if(endButtons.length!==1||!el('#complete-practice'))throw Error('Expected exactly one completion button before follow-up, got '+endButtons.length);
@@ -116,5 +140,14 @@ try {
  fill('#answer','I would start by checking the logs.');click('#submit-answer');await wait(()=>started,'background feedback');click('#next-question');await wait(()=>el('#recommended-question'),'background switch');click('#recommended-question button');await wait(()=>el('#answer'),'background new editor');fill('#answer','This new draft must survive the previous feedback failure.');await wait(()=>el('#draft-status').textContent.includes('已儲存'),'background draft save');await new Promise(r=>setTimeout(r,1000));
  const records=Object.values((await ws()).records);if(!records.some(r=>r.writtenDraft?.transcript==='This new draft must survive the previous feedback failure.'))throw Error('Background feedback destroyed new draft');window.fetch=realFetch;
  `);
- console.log('Browser smoke PASS: resume default/opt-out, draft failure/reload recovery, feedback retry, optional revision, separate AI assistance, one-answer completion and mobile layout.');
+ await run(`
+ click('[data-view="history"]');await wait(()=>el('[data-job-id]'),'mobile job-centred history');
+ if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow on job list');
+ const toggle=el('[data-job-id] [aria-expanded]');if(!toggle)throw Error('No job with practice records to expand');
+ toggle.click();await wait(()=>el('.job-detail .record-card'),'mobile job detail');
+ if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow on job detail');
+ fill('#job-search','zzz-no-match');await wait(()=>el('.job-list .empty'),'search filters job list');
+ if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow on filtered job list');
+ `);
+ console.log('Browser smoke PASS: resume default/opt-out, draft failure/reload recovery, feedback retry, key-sentence corrections (normal/retry/no-change/evidence-safe), Focus-Point same-job practice, job-centred Records navigation, optional revision, separate AI assistance, one-answer completion and mobile layout.');
 }finally{await browser('close').catch(()=>{});if(server)await new Promise(r=>server.close(r));await rm(directory,{recursive:true,force:true});}

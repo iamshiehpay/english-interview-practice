@@ -13,8 +13,9 @@ Local issue tracker for the Adaptive English Interview Coach. All issues below w
 | [0007 — Harden the Local Workspace and provider controls](./0007-harden-the-local-workspace-and-provider-controls.md) | completed | 0001, 0003, 0004 |
 | [0008 — Ship the Evaluation Suite and portfolio release](./0008-ship-the-evaluation-suite-and-portfolio-release.md) | awaiting-human-validation | 0002, 0003, 0005, 0006, 0007 |
 | [0009 — Add bounded optional follow-ups](./0009-add-bounded-optional-follow-ups.md) | completed | None |
-| [0010 — Add evidence-safe key-sentence corrections](./0010-add-evidence-safe-key-sentence-corrections.md) | ready-for-agent | 0009 (completed) |
-| [0011 — Start Focus Point practice in the same job](./0011-start-focus-point-practice-in-the-same-job.md) | ready-for-agent | 0009, 0010 |
-| [0012 — Reorganize Records by job](./0012-reorganize-records-by-job.md) | ready-for-agent | 0009 |
+| [0010 — Add evidence-safe key-sentence corrections](./0010-add-evidence-safe-key-sentence-corrections.md) | ready-for-human | 0009 (completed) |
+| [0011 — Start Focus Point practice in the same job](./0011-start-focus-point-practice-in-the-same-job.md) | ready-for-human | 0009, 0010 |
+| [0012 — Reorganize Records by job](./0012-reorganize-records-by-job.md) | ready-for-human | 0009 |
+| [0013 — Refine Practice Loop UI clarity](./0013-refine-practice-loop-ui-clarity.md) | ready-for-human | 0001, 0009, 0010 |
 
 Implementation should proceed in dependency order. Start each issue in a fresh session with the PRD and only the selected issue as the implementation brief.

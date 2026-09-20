@@ -12,7 +12,7 @@ import {resolve, join} from 'node:path';
 import {FakeSpeechProvider, clearTemporaryAudio, transcribeTemporary} from './speech.js';
 import {LocalWorkspace} from './store.js';
 import {FakeLanguageModel} from './providers.js';
-import {AppError, requireValue, nonempty, validateAnalysis, validateFeedback, validateCoaching, validateFollowUp, dimensions, questionSetView} from './domain.js';
+import {AppError, requireValue, nonempty, validateAnalysis, validateFeedback, validateCoaching, validateFollowUp, validateCorrections, dimensions, questionSetView} from './domain.js';
 
 async function body(req, limit = 1000000) {
   let raw = '';
@@ -37,7 +37,7 @@ export async function createApplication({directory = '.workspace', languageModel
     const dismissOp = path.match(/^\/api\/operations\/([^/]+)$/);
     if (method === 'DELETE' && dismissOp) return operations.dismiss(dismissOp[1]);
     if (method === 'GET' && path === '/api/providers/language-status') return languageModel.status ? languageModel.status() : {provider:languageModel.name,authenticated:null,loginRequired:false};
-    if (method === 'GET' && path === '/api/providers') return {languageModel:{name:languageModel.name,subscription:!!languageModel.status,external:!!languageModel.external,outbound:languageModel.external?['JD text and selected resume for analysis','JD, selected resume and existing capability/question set for additions','current question and transcript for feedback or English assistance','primary question, frozen formal answer and completed follow-ups for follow-up generation']:[]},speech:{name:speechProvider.name,external:!!speechProvider.external,outbound:speechProvider.external?['recorded audio only']:[]},jobSource:{name:jobSource.name,external:!!jobSource.external,outbound:!!jobSource.external?['public board token and requested job ID; profile filtering stays local']:[]}};
+    if (method === 'GET' && path === '/api/providers') return {languageModel:{name:languageModel.name,subscription:!!languageModel.status,external:!!languageModel.external,outbound:languageModel.external?['JD text and selected resume for analysis','JD, selected resume and existing capability/question set for additions','current question and transcript for feedback or English assistance','primary question, frozen formal answer and completed follow-ups for follow-up generation','a question and one formal answer transcript for evidence-safe key-sentence corrections']:[]},speech:{name:speechProvider.name,external:!!speechProvider.external,outbound:speechProvider.external?['recorded audio only']:[]},jobSource:{name:jobSource.name,external:!!jobSource.external,outbound:!!jobSource.external?['public board token and requested job ID; profile filtering stays local']:[]}};
     if (path === '/api/resume') {
       if (method === 'GET') return store.data.resume || null;
       if (method === 'POST') { const resume=practiceResume(input); return commit(d => (d.resume=resume)); }
@@ -94,6 +94,13 @@ export async function createApplication({directory = '.workspace', languageModel
       const snapshot = {id: randomUUID(), text: input.text, sourceType: 'pasted-jd', capturedAt: new Date().toISOString(), practiceVersion:3, difficulty:input.difficulty || 'standard', resume:input.useResume === false ? null : structuredClone(store.data.resume || null)};
       return commit(d => (d.snapshots[snapshot.id] = snapshot));
     }
+    const renameMatch = path.match(/^\/api\/snapshots\/([^/]+)\/title$/);
+    if (method === 'POST' && renameMatch) {
+      const snapshot = item('snapshots', renameMatch[1]);
+      requireValue(typeof input.title === 'string' && input.title.length <= 120, 'Enter a job name up to 120 characters');
+      const title = input.title.trim();
+      return commit(d => { const s = d.snapshots[snapshot.id]; requireValue(s, 'Not found', 404); if (title) s.title = title; else delete s.title; return s; });
+    }
     let match = path.match(/^\/api\/snapshots\/([^/]+)(\/(?:analysis|questions))?$/);
     if (match) {
       const snapshot = item('snapshots', match[1]);
@@ -143,6 +150,24 @@ export async function createApplication({directory = '.workspace', languageModel
       requireValue(question, 'Select a generated question');
       const record = {id: randomUUID(), snapshotId: snapshot.id, question: structuredClone(question), attempts: [], followUps: [], status: 'answer', createdAt: new Date().toISOString(), focusPoint: null};
       return commit(d => {requireValue(d.snapshots[snapshot.id] && d.analyses[snapshot.id]?.questions.some(q=>q.id===question.id),'Job Snapshot changed or was deleted',409);return d.records[record.id]=record;});
+    }
+    if (method === 'POST' && path === '/api/records/from-focus') {
+      const source = item('records', input.recordId);
+      requireValue(source.status === 'completed' && nonempty(source.focusPoint), 'Complete a practice and choose a Focus Point before continuing it', 409);
+      const snapshot = item('snapshots', source.snapshotId);
+      const analysis = store.data.analyses[snapshot.id];
+      requireValue(analysis?.questions?.length, 'Generate a Question Set first', 409);
+      // Same-JD scenario: prefer an unpractised question in the source category, so
+      // the learner works the same focus in a fresh situation without new generation.
+      const snapRecords = Object.values(store.data.records).filter(r => r.snapshotId === snapshot.id);
+      const used = id => snapRecords.some(r => r.question.id === id);
+      const sameCategory = analysis.questions.filter(q => q.category === source.question.category && q.id !== source.question.id);
+      const question = sameCategory.find(q => !used(q.id)) || sameCategory[0] || analysis.questions.find(q => q.id !== source.question.id) || analysis.questions[0];
+      const record = {id: randomUUID(), snapshotId: snapshot.id, question: structuredClone(question), attempts: [], followUps: [], status: 'answer', createdAt: new Date().toISOString(), focusPoint: null, focusOrigin: {recordId: source.id, questionId: source.question.id, questionText: source.question.text, focusPoint: source.focusPoint}};
+      return commit(d => {
+        requireValue(d.records[source.id]?.status === 'completed' && d.snapshots[snapshot.id] && d.analyses[snapshot.id]?.questions.some(q => q.id === question.id), 'Practice changed; reload', 409);
+        return d.records[record.id] = record;
+      });
     }
     let followUpMatch = path.match(/^\/api\/records\/([^/]+)\/follow-ups(?:\/([^/]+)\/(attempt|feedback))?$/);
     if (followUpMatch) {
@@ -219,11 +244,32 @@ export async function createApplication({directory = '.workspace', languageModel
         });
       }
     }
-    match = path.match(/^\/api\/records\/([^/]+)(?:\/(draft|attempts|feedback|comparison|complete|reference|transcription|evidence-context|coaching))?$/);
+    match = path.match(/^\/api\/records\/([^/]+)(?:\/(draft|attempts|feedback|comparison|complete|reference|transcription|evidence-context|coaching|corrections))?$/);
     if (match) {
       const record = item('records', match[1]);
       const action = match[2];
       if (method === 'GET' && !action) return record;
+      if (method === 'POST' && action === 'corrections') {
+        requireValue(nonempty(input.attemptId), 'Select an answered attempt');
+        const primary = record.attempts.find(a => a.id === input.attemptId);
+        const followUpNode = (record.followUps || []).find(node => node.attempt?.id === input.attemptId);
+        const attempt = primary || followUpNode?.attempt;
+        requireValue(attempt, 'Answer attempt not found', 404);
+        requireValue(attempt.feedback, 'Complete feedback before requesting corrections', 409);
+        if (record.corrections?.[input.attemptId]) return record.corrections[input.attemptId];
+        const question = primary ? record.question : followUpNode.question;
+        const output = validateCorrections(await languageModel.corrections({question, transcript: attempt.transcript, signal: context?.signal}), attempt.transcript);
+        return commit(d => {
+          const r = d.records[record.id];
+          requireValue(r, 'Not found', 404);
+          const target = r.attempts.find(a => a.id === input.attemptId) || (r.followUps || []).find(node => node.attempt?.id === input.attemptId)?.attempt;
+          requireValue(target?.feedback, 'Practice changed; reload', 409);
+          r.corrections ??= {};
+          const result = {id: input.attemptId, corrections: output.corrections, createdAt: new Date().toISOString()};
+          r.corrections[input.attemptId] = result;
+          return result;
+        });
+      }
       if (method === 'DELETE' && !action) {await operations.cancelTarget(record.id);return commit(d => removeRecord(d, record.id));}
       if (method === 'GET' && action === 'evidence-context') return evidenceContext(store.data, record.snapshotId, record.question.capabilityIds);
       if (method === 'POST' && action === 'coaching') {
@@ -325,7 +371,7 @@ export async function createApplication({directory = '.workspace', languageModel
         const input = ['POST', 'PUT', 'PATCH'].includes(req.method) ? await body(req, (path.endsWith('/transcription') || path === '/api/resume/extract') ? 8_100_000 : 1_000_000) : {};
         let external;
         if(req.method==='POST'){
-          const standard=path.match(/^\/api\/(?:snapshots|records)\/([^/]+)\/(analysis|questions|feedback|transcription|coaching)$/);
+          const standard=path.match(/^\/api\/(?:snapshots|records)\/([^/]+)\/(analysis|questions|feedback|transcription|coaching|corrections)$/);
           const followUpGeneration=path.match(/^\/api\/records\/([^/]+)\/follow-ups$/);
           const followUpFeedback=path.match(/^\/api\/records\/([^/]+)\/follow-ups\/[^/]+\/feedback$/);
           if(standard)external={targetId:standard[1],kind:standard[2]};
@@ -336,6 +382,7 @@ export async function createApplication({directory = '.workspace', languageModel
         const replay = async op => {
           if (['analysis','questions'].includes(op.kind)) return route('GET',`/api/snapshots/${op.targetId}/analysis`,{});
           if (op.kind==='coaching') {const r=item('records',op.targetId); requireValue(r.coaching?.[op.resultId],'Assistance no longer available',409);return r.coaching[op.resultId];}
+          if (op.kind==='corrections') {const r=item('records',op.targetId); requireValue(r.corrections?.[op.resultId],'Corrections no longer available',409);return r.corrections[op.resultId];}
           if (['follow-up','follow-up-feedback'].includes(op.kind)) {const r=item('records',op.targetId);const node=r.followUps?.find(value=>value.id===op.resultId);requireValue(node,'Follow-up no longer available',409);return node;}
           if (op.kind==='feedback') return item('records',op.targetId);
           if (op.kind==='transcription') {const r=item('records',op.targetId);requireValue(r.transcriptDraft?.id===op.resultId,'Transcript already consumed; reopen saved record',409);return r.transcriptDraft;}

@@ -3,8 +3,8 @@ import {requireAudit,scanCanary} from './codex-audit.js';
 import {resolve} from 'node:path';
 import {CodexRPC} from './codex-rpc.js';
 import {runtimeProfile} from './codex-profile.js';
-import {analysisSchema,additionalAnalysisSchema,feedbackSchema,coachingSchema,followUpSchema} from './model-schemas.js';
-import {analysisContract,feedbackContract,personalizationContract,coachingContract,followUpContract,MODEL_CONTRACT_VERSION} from './model-contracts.js';
+import {analysisSchema,additionalAnalysisSchema,feedbackSchema,coachingSchema,followUpSchema,correctionsSchema} from './model-schemas.js';
+import {analysisContract,feedbackContract,personalizationContract,coachingContract,followUpContract,correctionsContract,MODEL_CONTRACT_VERSION} from './model-contracts.js';
 import {AppError,requireValue} from './domain.js';
 const followUpContext=({primaryQuestion,primaryAnswer,previousFollowUps=[]})=>({
   primaryQuestion:{text:primaryQuestion.text,...(primaryQuestion.meaningZh?{meaningZh:primaryQuestion.meaningZh}:{})},
@@ -52,5 +52,6 @@ export class CodexLanguageModel {
   additionalQuestions({snapshot,analysis,signal}){return this.json(analysisContract+personalizationContract+' Preserve capabilities and existing questions byte-for-byte, including legacy questions that lack bilingual fields; append exactly four different questions using the current bilingual shape. Return full merged set; initial count no longer applies.',{jobDescription:snapshot.text,resume:snapshot.resume?.text,difficulty:snapshot.difficulty||'standard',analysis},additionalAnalysisSchema,signal);}
   coach({question,transcript,mode,signal}){return this.json(coachingContract,{question,transcript,mode},coachingSchema,signal);}
   followUp({primaryQuestion,primaryAnswer,previousFollowUps,signal}){return this.json(followUpContract,followUpContext({primaryQuestion,primaryAnswer,previousFollowUps}),followUpSchema,signal);}
+  corrections({question,transcript,signal}){return this.json(correctionsContract,{question:{text:question.text},transcript},correctionsSchema,signal);}
   feedback({question,transcript,previousAttempt,approvedEvidence=[],signal}){return this.json(feedbackContract,{question,transcript,...(previousAttempt?{previousAttempt:{transcript:previousAttempt.transcript,priorityImprovement:previousAttempt.feedback.priorityImprovement}}:{}),approvedEvidence:approvedEvidence.map(({excerpt})=>({excerpt}))},feedbackSchema,signal);}
 }

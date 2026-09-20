@@ -125,3 +125,11 @@ _Avoid_: Sample answer, model answer, the learner's answer, verified experience
 **Follow-up Question（追問題）**:
 A question that probes the learner's preceding answer within the same interview topic; each main question permits at most two optional follow-ups, each with its own answer and feedback.
 _Avoid_: Answer revision, unrelated next question
+
+**Key-Sentence Correction（關鍵句修正）**:
+At most two necessary sentence-level English corrections offered after a formal Feedback Report, each quoting one of the learner's own sentences verbatim and pairing it with a fact-preserving rewrite and a Traditional Chinese reason; it preserves the original facts, uncertainty, limitations, and missing experience, is stored apart from Answer Attempts, and shows nothing when no correction is warranted.
+_Avoid_: Rewritten answer, English Assistance, invented experience, grammar score
+
+**Focus Point Continuation（重點延續練習）**:
+A new Practice Loop started from a completed Practice Record's Focus Point under the same Job Snapshot and frozen resume version, presenting a fresh same-job scenario question while preserving the source record; its completion shows evidence-grounded progress without claiming improvement.
+_Avoid_: Editing the earlier record, a new job, a learner-managed skills list

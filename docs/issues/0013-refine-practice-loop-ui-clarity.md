@@ -1,6 +1,14 @@
 ---
-status: ready-for-agent
+status: ready-for-human
 ---
+
+<!-- Verified 2026-09-20: the header single-line fix, single completion control,
+provider evidence trim, calmer question typography, scroll-to-feedback, compact
+deduplicated scorecard, and styled resume upload were confirmed present in the
+code and re-exercised by test/browser-smoke.js after 0010–0012 were integrated in
+the same warm visual language. Human learner acceptance is still pending; see
+docs/verification/second-round-0010-0013.md. -->
+
 
 # Refine Practice Loop interface clarity and fix header layout defects
 

@@ -15,7 +15,7 @@ const dimensions = {
   englishExpression: '英文表達'
 };
 const recordStates = {answer:'準備初答',feedback:'等待回饋',revise:'等待修改回答',compare:'等待比較與保存',completed:'已完成'};
-const operationNames = {analysis:'產生題目',questions:'新增題目',feedback:'取得回饋','follow-up':'產生追問題目','follow-up-feedback':'取得追問回饋',followUp:'產生追問題目',coaching:'準備練習建議',transcription:'語音轉成文字',discovery:'搜尋職缺',url:'取得職缺'};
+const operationNames = {analysis:'產生題目',questions:'新增題目',feedback:'取得回饋','follow-up':'產生追問題目','follow-up-feedback':'取得追問回饋',followUp:'產生追問題目',coaching:'準備練習建議',corrections:'整理關鍵句修正',transcription:'語音轉成文字',discovery:'搜尋職缺',url:'取得職缺'};
 
 let workspace = {snapshots:{}, analyses:{}, records:{}};
 let providerInfo;
@@ -28,6 +28,8 @@ let disposeVoice = () => {};
 let draftSession = null;
 let operationsSignature = '';
 let captureBusy = false;
+const historyState = {query:'', filter:'all', page:0, openJob:null, renaming:null};
+const JOBS_PER_PAGE = 6;
 const requestKeys = new Map();
 
 class ApiError extends Error {
@@ -67,7 +69,7 @@ function localizeError(message, status) {
 
 async function api(path, data, method) {
   const followUpExternal = /\/records\/[^/]+\/follow-ups(?:\/[^/]+\/feedback)?$/.test(path);
-  const external = data !== undefined && (/\/(analysis|questions|feedback|transcription|coaching)$/.test(path) || followUpExternal || path === '/discovery' || path === '/snapshots/from-url');
+  const external = data !== undefined && (/\/(analysis|questions|feedback|transcription|coaching|corrections)$/.test(path) || followUpExternal || path === '/discovery' || path === '/snapshots/from-url');
   const payload = data === undefined ? '' : JSON.stringify(data);
   const digest = external ? Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(payload)))).map(n => n.toString(16).padStart(2, '0')).join('') : '';
   const key = external ? `${path}|${digest}` : null;
@@ -382,6 +384,35 @@ function feedbackHtml(feedback, prefix = '') {
   return `${bilingual ? '' : '<p class="legacy-note">此為舊版紀錄，部分中文說明尚未提供；原始資料保留，未自動重新評估。</p>'}<div class="feedback-feature">${finding('本次做得好的地方', feedback.strength, 'strength')}${finding('這次優先改進', feedback.priorityImprovement, 'priority')}</div><details class="ratings"><summary>查看四項評分與理由</summary><div class="detail-panel">${ratings}</div></details>${prefix}`;
 }
 
+function correctionsHtml(result) {
+  const corrections = result?.corrections || [];
+  if (!corrections.length) return '<p class="corrections-none meta">這次沒有需要調整的關鍵句，你的英文已經能清楚表達。</p>';
+  return `<p class="eyebrow">關鍵句英文修正（${corrections.length}）</p><p class="meta">只列出必要的句子修正，保留你的原意、事實與語氣；這是修正建議，不會算作正式回答。</p>${corrections.map(item => `<article class="correction-card"><p class="meta">你的原句</p><blockquote lang="en">${escape(item.original)}</blockquote><p class="meta">建議的英文表達</p><blockquote class="correction-rewrite" lang="en">${escape(item.rewrite)}</blockquote><p class="correction-reason">${escape(item.reasonZh)}</p></article>`).join('')}`;
+}
+async function loadCorrections(recordId, attemptId, container) {
+  const token = viewToken;
+  container.innerHTML = '<p class="meta">正在整理關鍵句修正…</p>';
+  try {
+    const result = await api(`/records/${recordId}/corrections`, {attemptId});
+    if (viewToken !== token || !container.isConnected) return;
+    if (workspace.records?.[recordId]) { workspace.records[recordId].corrections ??= {}; workspace.records[recordId].corrections[attemptId] = result; }
+    container.innerHTML = correctionsHtml(result);
+  } catch (error) {
+    if (viewToken !== token || !container.isConnected) return;
+    container.innerHTML = '';
+    button('重試取得關鍵句修正', () => loadCorrections(recordId, attemptId, container), container, {kind:'ghost'});
+    setError(error.message);
+  }
+}
+function setupCorrections(record, attemptId, container, auto) {
+  if (!container) return;
+  const cached = record.corrections?.[attemptId];
+  if (cached) { container.innerHTML = correctionsHtml(cached); return; }
+  if (auto) { loadCorrections(record.id, attemptId, container); return; }
+  container.replaceChildren();
+  button('看關鍵句英文修正', () => loadCorrections(record.id, attemptId, container), container, {kind:'ghost'});
+}
+
 function changedTextHtml(before,after) {
   let start=0,end=0;
   while(start<before.length && start<after.length && before[start]===after[start])start++;
@@ -587,15 +618,17 @@ async function requestFeedback(recordId) {
   }
 }
 
-function followUpHistoryHtml(followUps) {
+function followUpHistoryHtml(followUps, corrections = {}) {
   if (followUps.length < 2) return '';
   const previous = followUps[followUps.length - 2];
+  const previousCorrections = previous.attempt && corrections[previous.attempt.id];
   return `<details class="follow-up-history"><summary>查看第 ${followUps.length - 1} 次追問與回答</summary>
     <div class="detail-panel">
       <p lang="en"><strong>${escape(previous.question.text)}</strong></p>
       <p class="meaning">${escape(previous.question.meaningZh)}</p>
       <blockquote lang="en">${escape(previous.attempt?.transcript || '尚未作答')}</blockquote>
       ${previous.attempt?.feedback ? feedbackHtml(previous.attempt.feedback) : ''}
+      ${previousCorrections ? `<div class="corrections-area">${correctionsHtml(previousCorrections)}</div>` : ''}
     </div>
   </details>`;
 }
@@ -628,15 +661,26 @@ function followUpHtml(record, complete) {
       ${complete ? '' : '<div id="follow-up-actions" class="button-row"></div>'}`;
   } else {
     content = `<details><summary>查看你的追問回答</summary><blockquote lang="en">${escape(attempt.transcript)}</blockquote></details>
-      <section class="follow-up-feedback" aria-labelledby="follow-up-feedback-title"><h3 id="follow-up-feedback-title" tabindex="-1">這次追問的中文回饋</h3>${feedbackHtml(feedback)}</section>
+      <section class="follow-up-feedback" aria-labelledby="follow-up-feedback-title"><h3 id="follow-up-feedback-title" tabindex="-1">這次追問的中文回饋</h3>${feedbackHtml(feedback)}<div id="follow-up-corrections" class="corrections-area" aria-live="polite"></div></section>
       ${complete ? '' : '<div id="follow-up-actions" class="button-row"></div>'}`;
   }
-  return `${followUpHistoryHtml(followUps)}<section class="follow-up-flow" aria-labelledby="follow-up-title">
+  return `${followUpHistoryHtml(followUps, record.corrections)}<section class="follow-up-flow" aria-labelledby="follow-up-title">
     <div class="follow-up-heading"><p class="eyebrow">追問 ${number} / 2</p><span class="follow-up-state">${feedback ? '回饋已完成' : attempt ? '等待回饋' : '等待回答'}</span></div>
     <h2 id="follow-up-title" class="follow-up-question" lang="en">${escape(current.question.text)}</h2>
     <details open><summary>中文題意</summary><p class="meaning">${escape(current.question.meaningZh)}</p></details>
     ${content}
   </section>`;
+}
+
+async function createFromFocus(sourceId) {
+  const originToken = viewToken;
+  setNotice('正在用這個重點準備新的同職缺練習…');
+  try {
+    const record = await api('/records/from-focus', {recordId:sourceId});
+    await refreshWorkspace();
+    if (viewToken === originToken) { setNotice(); await showRecord(record.id); }
+    else setNotice('已依這個重點建立新練習，可從練習紀錄開啟。');
+  } catch (error) { setError(error.message); }
 }
 
 async function startFollowUp(recordId) {
@@ -700,7 +744,7 @@ async function submitFollowUp(record, followUp, submissionId) {
     await refreshWorkspace();
     if (currentView === 'practice' && currentRecordId === record.id && viewToken === originToken) {
       setNotice();
-      await showRecord(record.id);
+      await showRecord(record.id, {followUpFresh:true});
       $('#follow-up-feedback-title')?.focus({preventScroll:true});
     } else setNotice('追問回饋已完成，可從練習紀錄開啟查看。');
   } catch (error) {
@@ -729,7 +773,7 @@ async function requestFollowUpFeedback(recordId, followUpId) {
     await refreshWorkspace();
     if (currentView === 'practice' && currentRecordId === recordId && viewToken === originToken) {
       setNotice();
-      await showRecord(recordId);
+      await showRecord(recordId, {followUpFresh:true});
       $('#follow-up-feedback-title')?.focus({preventScroll:true});
     } else setNotice('追問回饋已完成，可從練習紀錄開啟查看。');
   } catch (error) {
@@ -741,7 +785,7 @@ async function requestFollowUpFeedback(recordId, followUpId) {
   }
 }
 
-async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedback=false} = {}) {
+async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedback=false,followUpFresh=false} = {}) {
   if (!(await leaveEditor())) return;
   clearDraftSession(); disposeVoice(); disposeVoice = () => {}; markView('practice'); currentRecordId = recordId;
   const record = await api(`/records/${recordId}`);
@@ -753,7 +797,7 @@ async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedb
   const currentFollowUp = followUps.at(-1);
   const followUpFeedbackPending = Boolean(currentFollowUp?.attempt && !currentFollowUp.attempt.feedback);
   const editor = !complete && !feedbackOnly && (!last || (last.feedback && record.attempts.length===1 && (editing || record.writtenDraft)));
-  let body = `<section class="question-phase"><p class="question-kicker">${escape(categories[record.question.category] || record.question.category)}</p><h1 class="question-text" lang="en">${escape(record.question.text)}</h1><details open><summary>中文題意</summary><p class="meaning">${escape(record.question.meaningZh || '舊版題目未保存中文題意。')}</p></details></section>`;
+  let body = `${record.focusOrigin ? `<div class="focus-origin-banner"><p class="eyebrow">延續練習重點</p><p>這一題延續你上次的練習重點：<strong>${escape(record.focusOrigin.focusPoint)}</strong>，換一個情境、同一份職缺再練一次。</p></div>` : ''}<section class="question-phase"><p class="question-kicker">${escape(categories[record.question.category] || record.question.category)}</p><h1 class="question-text" lang="en">${escape(record.question.text)}</h1><details open><summary>中文題意</summary><p class="meaning">${escape(record.question.meaningZh || '舊版題目未保存中文題意。')}</p></details></section>`;
   if (last && !last.feedback) {
     body += `<section class="answer-area"><h2>你的回答已保存</h2><details><summary>查看回答</summary><blockquote>${escape(last.transcript)}</blockquote></details><p>回饋尚未完成，可以重試，不會重複提交回答。</p><div id="feedback-retry-actions"></div></section>`;
   } else if (editor) {
@@ -767,7 +811,8 @@ async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedb
       const same=first.transcript.trim()===last.transcript.trim();
       body+=`<section class="answer-area"><h2>${same?'這次回答尚未修改':'看看這次的調整'}</h2><p>${same?'兩次內容相同，沒有文字修改可比較。':'先前的練習重點：'+escape(first.feedback.priorityImprovement.textZh || '此筆舊紀錄沒有中文說明。')}</p>${same?'':`<details open><summary>關鍵句前後對照</summary>${changedTextHtml(first.transcript,last.transcript)}</details>`}</section>`;
     }
-    body+=`<section class="answer-area"><h2 id="feedback-heading" tabindex="-1">給這次回答的一點建議</h2>${feedbackHtml(last.feedback)}<details id="attempt-history"><summary>查看回答紀錄（${record.attempts.length} 個版本）</summary><label for="attempt-version">選擇回答版本</label><select id="attempt-version">${record.attempts.map((a,i)=>`<option value="${i}" ${i===record.attempts.length-1?'selected':''}>第 ${i+1} 次回答 · ${escape(dateLabel(a.submittedAt))}</option>`).join('')}</select><div id="attempt-detail"></div></details></section>`;
+    body+=`<section class="answer-area"><h2 id="feedback-heading" tabindex="-1">給這次回答的一點建議</h2>${feedbackHtml(last.feedback)}<div id="corrections" class="corrections-area" aria-live="polite"></div><details id="attempt-history"><summary>查看回答紀錄（${record.attempts.length} 個版本）</summary><label for="attempt-version">選擇回答版本</label><select id="attempt-version">${record.attempts.map((a,i)=>`<option value="${i}" ${i===record.attempts.length-1?'selected':''}>第 ${i+1} 次回答 · ${escape(dateLabel(a.submittedAt))}</option>`).join('')}</select><div id="attempt-detail"></div></details></section>`;
+    if(complete && record.focusOrigin){const priority=last.feedback.priorityImprovement;body+=`<section class="answer-area focus-progress"><h2>這個重點練得如何？</h2><p class="meta">上次的練習重點</p><blockquote>${escape(record.focusOrigin.focusPoint)}</blockquote><p class="meta">這次回答的優先改進</p><blockquote>${escape(priority.textZh || priority.text || '－')}</blockquote>${priority.quote?`<p class="meta">依據你這次的原句</p><blockquote lang="en">${escape(priority.quote)}</blockquote>`:''}<p>對照上次的重點與這次的回饋，由你判斷這個重點是否已改善；系統不會替你宣稱進步。</p></section>`;}
     if(record.unsubmittedDraft)body+=`<details><summary>未送出的修改草稿（未評分）</summary><blockquote>${escape(record.unsubmittedDraft.transcript)}</blockquote></details>`;
     const focus=record.focusPoint || last.feedback.priorityImprovement.textZh || '請選擇一項下次想練習的重點。';
     const optional=`<div class="optional-actions">${complete?'':'<p class="optional-label">其他選擇</p>'}<div id="feedback-actions" class="button-row"></div><div id="rewrite-result" aria-live="polite"></div></div>`;
@@ -829,8 +874,10 @@ async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedb
     button('幫我講得更自然',()=>showCoaching(record,'rewrite',$('#rewrite-result')),$('#feedback-actions'),{kind:'secondary'});
     if(!complete) {
       if($('#complete-practice'))$('#complete-practice').addEventListener('click',async event=>{event.currentTarget.disabled=true;try{await finish();}catch(error){setError(error.message);if($('#complete-practice'))$('#complete-practice').disabled=false;}});
-    } else {button('再練一題',()=>showRecommended(record.snapshotId),$('#completed-actions'));button('回到首頁',()=>navigate('home'),$('#completed-actions'),{kind:'ghost'});}
+    } else {button('針對這個重點再練一次',()=>createFromFocus(record.id),$('#completed-actions'),{kind:'secondary',id:'practice-focus'});button('再練一題',()=>showRecommended(record.snapshotId),$('#completed-actions'));button('回到首頁',()=>navigate('home'),$('#completed-actions'),{kind:'ghost'});}
   }
+  if (last?.feedback && $('#corrections')) setupCorrections(record, last.id, $('#corrections'), focusFeedback);
+  if (currentFollowUp?.attempt?.feedback && $('#follow-up-corrections')) setupCorrections(record, currentFollowUp.attempt.id, $('#follow-up-corrections'), followUpFresh);
   if (focusFeedback) { const heading = $('#feedback-heading'); if (heading) requestAnimationFrame(() => { heading.scrollIntoView({behavior:'smooth', block:'start'}); heading.focus({preventScroll:true}); }); }
 }
 
@@ -843,32 +890,114 @@ async function deleteRecord(recordId) {
   await navigate('history');
 }
 
-function renderHistory() {
-  const records = $('#records'); records.replaceChildren();
-  const allRecords = sortRecent(Object.values(workspace.records || {}));
-  if (!allRecords.length) records.innerHTML = '<p class="empty">還沒有練習紀錄。從首頁貼一份職缺就能開始。</p>';
-  for (const record of allRecords) {
-    const card = document.createElement('article'); card.className = 'list-card'; card.dataset.recordId = record.id;
-    card.innerHTML = `<p class="eyebrow">${escape(recordStates[record.status] || record.status)}</p><h3 lang="en">${escape(record.question.text)}</h3><p class="meta">${escape(firstLine(workspace.snapshots[record.snapshotId]?.text))} · ${escape(dateLabel(record.updatedAt || record.createdAt))}</p><div class="button-row"></div>`;
-    button(record.status === 'completed' ? '查看紀錄' : '繼續練習', () => showRecord(record.id), card.querySelector('.button-row'), {kind:'secondary'});
-    button('刪除', () => deleteRecord(record.id), card.querySelector('.button-row'), {kind:'danger'});
-    records.append(card);
+function jobTitle(snapshot) { return snapshot?.title || firstLine(snapshot?.text); }
+function jobActivity(snapshot, records) {
+  const times = [snapshot?.capturedAt, ...records.map(r => r.updatedAt || r.createdAt)].filter(Boolean).map(value => new Date(value).getTime()).filter(value => !Number.isNaN(value));
+  return times.length ? Math.max(...times) : 0;
+}
+async function startJob(snapshotId) {
+  if (!workspace.analyses[snapshotId]) { setNotice('正在產生練習題…'); await api(`/snapshots/${snapshotId}/analysis`, {}); await refreshWorkspace(); setNotice(); }
+  await showRecommended(snapshotId);
+}
+async function deleteJob(snapshotId) {
+  if (!window.confirm('確定刪除這份職缺、相關練習與草稿嗎？其他職缺不受影響。')) return;
+  await api(`/snapshots/${snapshotId}`, undefined, 'DELETE');
+  if (historyState.openJob === snapshotId) historyState.openJob = null;
+  await refreshWorkspace(); renderHistory(); setNotice('這份職缺與相關練習已刪除，其他資料保留。');
+}
+function renderJobDetail(container, snapshot) {
+  const records = sortRecent(Object.values(workspace.records || {}).filter(r => r.snapshotId === snapshot.id));
+  container.replaceChildren();
+  if (!records.length) { container.innerHTML = '<p class="empty">這份職缺還沒有練習紀錄，可以從上方開始新練習。</p>'; return; }
+  for (const record of records) {
+    const followUps = Array.isArray(record.followUps) ? record.followUps : [];
+    const card = document.createElement('article'); card.className = 'list-card record-card'; card.dataset.recordId = record.id;
+    const origin = record.focusOrigin ? ` · 延續重點：${escape(record.focusOrigin.focusPoint)}` : '';
+    const followUpNote = followUps.length ? ` · ${followUps.length} 則追問` : '';
+    card.innerHTML = `<p class="eyebrow">${escape(recordStates[record.status] || record.status)}</p><h4 lang="en">${escape(record.question.text)}</h4><p class="meta">${escape(dateLabel(record.updatedAt || record.createdAt))}${followUpNote}${origin}</p><div class="button-row"></div>`;
+    const actions = card.querySelector('.button-row');
+    button(record.status === 'completed' ? '查看紀錄' : '繼續練習', () => showRecord(record.id), actions, {kind:'secondary'});
+    const menu = document.createElement('details'); menu.className = 'more-menu';
+    menu.innerHTML = '<summary aria-label="更多動作">⋯</summary><div class="more-panel"></div>';
+    button('刪除這筆練習', () => deleteRecord(record.id), menu.querySelector('.more-panel'), {kind:'danger'});
+    actions.append(menu);
+    container.append(card);
   }
-  const snapshots = $('#snapshots'); snapshots.replaceChildren();
-  const allSnapshots = Object.values(workspace.snapshots || {}).sort((a,b) => new Date(b.capturedAt) - new Date(a.capturedAt));
-  if (!allSnapshots.length) snapshots.innerHTML = '<p class="empty">尚未保存職缺。</p>';
-  for (const snapshot of allSnapshots) {
-    const card = document.createElement('article'); card.className = 'list-card';
-    card.innerHTML = `<h3>${escape(firstLine(snapshot.text))}</h3><p class="meta">保存於 ${escape(dateLabel(snapshot.capturedAt))}</p><div class="button-row"></div>`;
-    button(workspace.analyses[snapshot.id] ? '查看推薦題' : '產生題目', async () => {
-      if (!workspace.analyses[snapshot.id]) { await api(`/snapshots/${snapshot.id}/analysis`, {}); await refreshWorkspace(); }
-      await showRecommended(snapshot.id);
-    }, card.querySelector('.button-row'), {kind:'secondary'});
-    button('刪除職缺', async () => {
-      if (!window.confirm('確定刪除這份職缺、相關練習與草稿嗎？')) return;
-      await api(`/snapshots/${snapshot.id}`, undefined, 'DELETE'); await refreshWorkspace(); renderHistory(); setNotice('職缺與相關練習已刪除。');
-    }, card.querySelector('.button-row'), {kind:'danger'});
-    snapshots.append(card);
+}
+function renderHistory() {
+  const host = $('#history'); if (!host) return; host.replaceChildren();
+  const snapshots = Object.values(workspace.snapshots || {});
+  const allRecords = Object.values(workspace.records || {});
+  if (!snapshots.length) { host.innerHTML = '<p class="empty">還沒有練習紀錄。從首頁貼一份職缺就能開始。</p>'; return; }
+
+  const unfinished = sortRecent(allRecords.filter(r => r.status !== 'completed'))[0];
+  if (unfinished) {
+    const snapshot = workspace.snapshots[unfinished.snapshotId];
+    const card = document.createElement('article'); card.className = 'list-card continue-card';
+    card.innerHTML = `<p class="eyebrow">繼續上次練習</p><h3>${escape(jobTitle(snapshot))}</h3><p class="meta">${escape(recordStates[unfinished.status] || unfinished.status)} · ${escape(unfinished.question.text)}</p><div class="button-row"></div>`;
+    button('繼續練習', () => showRecord(unfinished.id), card.querySelector('.button-row'), {kind:'primary'});
+    host.append(card);
+  }
+
+  const controls = document.createElement('div'); controls.className = 'history-controls';
+  controls.innerHTML = `<label for="job-search" class="visually-hidden">搜尋職缺</label><input id="job-search" type="search" placeholder="搜尋職缺名稱或內容" value="${escape(historyState.query)}"><label for="job-filter" class="visually-hidden">篩選</label><select id="job-filter"><option value="all">全部職缺</option><option value="active">有進行中的練習</option><option value="completed">已有完成練習</option></select>`;
+  host.append(controls);
+  const search = controls.querySelector('#job-search');
+  search.addEventListener('input', () => { historyState.query = search.value; historyState.page = 0; renderHistory(); const again = $('#job-search'); if (again) { again.focus(); const end = again.value.length; again.setSelectionRange(end, end); } });
+  const filter = controls.querySelector('#job-filter'); filter.value = historyState.filter;
+  filter.addEventListener('change', () => { historyState.filter = filter.value; historyState.page = 0; renderHistory(); });
+
+  const jobs = snapshots.map(snapshot => {
+    const records = allRecords.filter(r => r.snapshotId === snapshot.id);
+    return {snapshot, records, completed: records.filter(r => r.status === 'completed').length, hasUnfinished: records.some(r => r.status !== 'completed'), activity: jobActivity(snapshot, records), title: jobTitle(snapshot)};
+  });
+  const query = historyState.query.trim().toLowerCase();
+  const filtered = jobs.filter(job => {
+    if (query && !`${job.title} ${job.snapshot.text || ''}`.toLowerCase().includes(query)) return false;
+    if (historyState.filter === 'active' && !job.hasUnfinished) return false;
+    if (historyState.filter === 'completed' && !job.completed) return false;
+    return true;
+  }).sort((a, b) => b.activity - a.activity);
+
+  const list = document.createElement('div'); list.className = 'job-list'; host.append(list);
+  if (!filtered.length) { list.innerHTML = '<p class="empty">沒有符合的職缺。調整搜尋或篩選條件。</p>'; return; }
+  const pageCount = Math.max(1, Math.ceil(filtered.length / JOBS_PER_PAGE));
+  historyState.page = Math.min(Math.max(historyState.page, 0), pageCount - 1);
+  const pageJobs = filtered.slice(historyState.page * JOBS_PER_PAGE, (historyState.page + 1) * JOBS_PER_PAGE);
+
+  for (const job of pageJobs) {
+    const snapshot = job.snapshot;
+    const open = historyState.openJob === snapshot.id;
+    const renaming = historyState.renaming === snapshot.id;
+    const card = document.createElement('article'); card.className = 'list-card job-card'; card.dataset.jobId = snapshot.id;
+    card.innerHTML = `<div class="job-head"></div><div class="button-row job-actions"></div>${open ? '<div class="job-detail"></div>' : ''}`;
+    const head = card.querySelector('.job-head');
+    if (renaming) {
+      head.innerHTML = `<label for="rename-input" class="visually-hidden">職缺名稱</label><input id="rename-input" maxlength="120" value="${escape(job.title)}"><div class="button-row rename-actions"></div>`;
+      const input = head.querySelector('#rename-input');
+      button('儲存名稱', async () => { await api(`/snapshots/${snapshot.id}/title`, {title: input.value}); historyState.renaming = null; await refreshWorkspace(); renderHistory(); setNotice('職缺名稱已更新。'); }, head.querySelector('.rename-actions'), {kind:'secondary'});
+      button('取消', () => { historyState.renaming = null; renderHistory(); }, head.querySelector('.rename-actions'), {kind:'ghost'});
+    } else {
+      head.innerHTML = `<h3>${escape(job.title)}</h3><p class="meta">最近活動 ${escape(dateLabel(job.activity))} · 已完成 ${job.completed} 次主練習${job.hasUnfinished ? ' · 有進行中的練習' : ''}</p>`;
+    }
+    const actions = card.querySelector('.job-actions');
+    button(workspace.analyses[snapshot.id] ? '開始新練習' : '產生題目', () => startJob(snapshot.id), actions, {kind:'primary'});
+    if (job.records.length) button(open ? '收合練習' : `查看練習（${job.records.length}）`, () => { historyState.openJob = open ? null : snapshot.id; renderHistory(); }, actions, {kind:'secondary', attributes:{'aria-expanded': String(open)}});
+    const menu = document.createElement('details'); menu.className = 'more-menu'; menu.innerHTML = '<summary aria-label="更多動作">⋯</summary><div class="more-panel"></div>';
+    const panel = menu.querySelector('.more-panel');
+    button('重新命名', () => { historyState.renaming = snapshot.id; renderHistory(); requestAnimationFrame(() => $('#rename-input')?.focus()); }, panel, {kind:'ghost'});
+    button('刪除職缺', () => deleteJob(snapshot.id), panel, {kind:'danger'});
+    actions.append(menu);
+    if (open) renderJobDetail(card.querySelector('.job-detail'), snapshot);
+    list.append(card);
+  }
+
+  if (pageCount > 1) {
+    const pager = document.createElement('div'); pager.className = 'button-row pager';
+    button('上一頁', () => { historyState.page -= 1; renderHistory(); }, pager, {kind:'ghost'}).disabled = historyState.page === 0;
+    const label = document.createElement('span'); label.className = 'meta'; label.textContent = `第 ${historyState.page + 1} / ${pageCount} 頁`; pager.append(label);
+    button('下一頁', () => { historyState.page += 1; renderHistory(); }, pager, {kind:'ghost'}).disabled = historyState.page >= pageCount - 1;
+    host.append(pager);
   }
 }
 

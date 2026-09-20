@@ -391,3 +391,44 @@ button.primary:hover { background: #ee935a; }
 }
 
 mark { background: #ffe2c5; color: #1b3a47; border-radius: 4px; }
+
+/* 0010 — evidence-safe key-sentence corrections: quiet, secondary to the report. */
+.corrections-area { margin-top: 22px; }
+.corrections-area:empty { margin-top: 0; }
+.corrections-none { margin: 14px 0 0; }
+.correction-card { margin-top: 14px; padding: 16px 18px; background: #fff8ef; border: 1px solid var(--line); border-radius: 18px; }
+.correction-card .meta { margin-bottom: 4px; }
+.correction-card blockquote { margin: 2px 0 10px; }
+.correction-rewrite { border-left: 3px solid var(--teal); background: #fffdf9; }
+.correction-reason { margin: 4px 0 0; color: var(--ink); font-size: 14px; line-height: 1.6; }
+
+/* 0011 — continue a Focus Point in the same job. */
+.focus-origin-banner { margin-bottom: 20px; padding: 14px 18px; background: var(--mint); border: 1px solid #edc9b1; border-radius: 18px; }
+.focus-origin-banner .eyebrow { margin-bottom: 4px; }
+.focus-origin-banner strong { color: var(--teal-dark); }
+.focus-progress { border-left: 4px solid var(--yellow); }
+
+/* 0012 — job-centred Records: one warm single column. */
+.history-controls { display: flex; flex-wrap: wrap; gap: 10px; margin: 6px 0 18px; }
+.history-controls input[type="search"] { flex: 1 1 220px; margin: 0; min-width: 0; }
+.history-controls select { flex: 0 0 auto; width: auto; margin: 0; }
+.job-list { display: block; }
+.continue-card { border-left: 4px solid var(--teal); }
+.job-card { padding: 20px; }
+.job-head h3 { margin-bottom: 4px; overflow-wrap: anywhere; }
+.job-head input { margin: 0 0 8px; }
+.job-actions { margin-top: 14px; gap: 8px; }
+.more-menu { position: relative; margin-left: auto; }
+.more-menu > summary { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; border: 1px solid var(--line); border-radius: 999px; list-style: none; color: var(--ink-soft); }
+.more-menu > summary::-webkit-details-marker { display: none; }
+.more-menu[open] > summary { background: var(--mist); }
+.more-panel { position: absolute; right: 0; z-index: 5; display: flex; flex-direction: column; align-items: stretch; gap: 6px; margin-top: 6px; padding: 10px; min-width: 180px; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); }
+.more-panel button { width: 100%; margin: 0; }
+.job-detail { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+.record-card { background: var(--mist); }
+.record-card h4 { margin: 4px 0; font-size: 16px; }
+.pager { justify-content: center; margin-top: 18px; }
+.pager .meta { padding: 0 8px; }
+@media (max-width: 480px) {
+  .more-panel { right: auto; left: 0; }
+}

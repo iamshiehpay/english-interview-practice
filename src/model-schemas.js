@@ -17,3 +17,4 @@ export const feedbackSchema=object({ratings:object({relevance:rating,support:rat
 
 export const coachingSchema=object({text,explanationZh:text});
 export const followUpSchema=object({text,meaningZh:text});
+export const correctionsSchema=object({corrections:{type:'array',maxItems:2,items:object({original:text,rewrite:text,reasonZh:text})}});
