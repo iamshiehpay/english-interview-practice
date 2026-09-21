@@ -1,5 +1,5 @@
 import {randomUUID} from 'node:crypto';
-import {requireValue, nonempty, categories} from './domain.js';
+import {requireValue, categories} from './domain.js';
 
 // A Short Mock Session is stored apart from Practice Records on purpose. The Practice
 // Loop's invariants — feedback after every attempt, completion requires a Focus Point,
@@ -50,7 +50,6 @@ export function createSession(data, snapshot) {
 
 // The current question is the first entry with neither an answer nor a skip.
 export const currentEntry = session => session.entries.find(entry => !entry.answer && !entry.skipped);
-export const sessionTranscripts = session => session.entries.filter(entry => entry.answer).map(entry => entry.answer.transcript);
 export const sessionFinished = session => session.entries.every(entry => entry.answer || entry.skipped);
 
 export function requireCurrentEntry(session, entryId) {
@@ -62,12 +61,8 @@ export function requireCurrentEntry(session, entryId) {
 }
 
 // Assistance is deliberately unavailable while a session runs: the session measures what
-// the learner can produce unaided. It becomes available once the session is finished.
-export function assertCoachingAllowed(data, attemptId) {
-  const blocking = sessionsFor(data, session => session.status === 'in-progress' && session.entries.some(entry => entry.answer?.id === attemptId));
-  requireValue(!blocking.length, 'Assistance is available after the mock session ends', 409);
-}
-
+// the learner can produce unaided. The gate lives on the session entry routes, which
+// require `status === 'completed'` before any feedback, correction or rewrite.
 export function sessionView(session) {
   const current = currentEntry(session);
   return {
@@ -78,8 +73,4 @@ export function sessionView(session) {
     currentEntryId: current?.id ?? null,
     currentPosition: current ? session.entries.indexOf(current) + 1 : null
   };
-}
-
-export function emptySummaryReason(session) {
-  return nonempty(sessionTranscripts(session)[0]) ? null : 'nothing-to-assess';
 }

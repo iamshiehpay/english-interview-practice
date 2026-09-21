@@ -11,7 +11,7 @@ import {fileURLToPath} from 'node:url';
 import {resolve, join} from 'node:path';
 import {FakeSpeechProvider, clearTemporaryAudio, readAloud, canSpeak, RECORDING_LIMIT_SECONDS, RECORDING_WARNING_SECONDS, RECORDING_MAX_BYTES, RECORDING_MAX_REQUEST_BYTES} from './speech.js';
 import {RecordingStore, captureRecording, transcribeRecording, recordingsFor} from './recordings.js';
-import {createSession, sessionsFor, sessionView, currentEntry, requireCurrentEntry, sessionTranscripts, sessionFinished, assertCoachingAllowed} from './mock-sessions.js';
+import {createSession, sessionsFor, sessionView, requireCurrentEntry, sessionFinished} from './mock-sessions.js';
 import {LocalWorkspace} from './store.js';
 import {FakeLanguageModel} from './providers.js';
 import {AppError, requireValue, nonempty, validateAnalysis, validateFeedback, validateCoaching, validateFollowUp, validateCorrections, validateMockSummary, dimensions, questionSetView} from './domain.js';
