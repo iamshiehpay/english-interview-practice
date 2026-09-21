@@ -1,5 +1,5 @@
 ---
-status: ready-for-agent
+status: ready-for-human
 ---
 
 # Run a three-question Short Mock Session
@@ -72,55 +72,55 @@ summary". Deleting the job or the workspace removes sessions and their recording
 
 ## Acceptance criteria
 
-- [ ] A learner can start a session from a saved job whose Question Set exists, and
+- [x] A learner can start a session from a saved job whose Question Set exists, and
       is told up front it is three questions with feedback at the end.
-- [ ] The three questions come from three different Question Categories, prefer
+- [x] The three questions come from three different Question Categories, prefer
       unpractised questions, and are copied into the session at creation.
-- [ ] A job with no Question Set, and a Question Set spanning fewer than three
+- [x] A job with no Question Set, and a Question Set spanning fewer than three
       categories, are both refused with an actionable message.
-- [ ] A second unfinished session on the same job is refused.
-- [ ] The session records the resume version frozen on the Job Snapshot.
-- [ ] Progress through the three questions is shown, each question in English with
+- [x] A second unfinished session on the same job is refused.
+- [x] The session records the resume version frozen on the Job Snapshot.
+- [x] Progress through the three questions is shown, each question in English with
       its Traditional Chinese meaning.
-- [ ] The learner can answer by speaking or typing under the same three-minute
+- [x] The learner can answer by speaking or typing under the same three-minute
       recording cap, and can replay a session answer's recording.
-- [ ] No Feedback Report is shown between questions.
-- [ ] The learner can skip a question; a skipped question is recorded as skipped and
+- [x] No Feedback Report is shown between questions.
+- [x] The learner can skip a question; a skipped question is recorded as skipped and
       never receives a fabricated assessment.
-- [ ] Illustrative Answer, hint, gap-framing, English Assistance and Key-Sentence
+- [x] Illustrative Answer, hint, gap-framing, English Assistance and Key-Sentence
       Corrections are unavailable during a session, refused by the API, and the
       interface says they are available afterwards.
-- [ ] A submitted session answer cannot be replaced; a repeated submission with the
+- [x] A submitted session answer cannot be replaced; a repeated submission with the
       same submission identifier is idempotent; answering out of order is refused.
-- [ ] Progress is saved as the session runs; the learner resumes at the next
+- [x] Progress is saved as the session runs; the learner resumes at the next
       unanswered question after a reload.
-- [ ] An in-progress session is labelled in progress everywhere and is excluded from
+- [x] An in-progress session is labelled in progress everywhere and is excluded from
       any count of completed practice.
-- [ ] Abandoning a session warns first and removes its answers and recordings.
-- [ ] Completing the session yields exactly one overall strength and one overall
+- [x] Abandoning a session warns first and removes its answers and recordings.
+- [x] Completing the session yields exactly one overall strength and one overall
       priority improvement, each quoting one of the learner's own session answers
       verbatim, in Traditional Chinese with the English quotation preserved.
-- [ ] A summary quoting text the learner never said is rejected as invalid provider
+- [x] A summary quoting text the learner never said is rejected as invalid provider
       output and the session stays retryable with its answers intact.
-- [ ] An all-skipped session completes with an honest "nothing to assess" state and
+- [x] An all-skipped session completes with an honest "nothing to assess" state and
       makes no model call.
-- [ ] A summary covering one or two skipped questions still works.
-- [ ] Per-question feedback is generated only when opened, uses the four existing
+- [x] A summary covering one or two skipped questions still works.
+- [x] Per-question feedback is generated only when opened, uses the four existing
       assessment dimensions, is cached, and is refused for a skipped question.
-- [ ] After completion, English Assistance and Key-Sentence Corrections work on
+- [x] After completion, English Assistance and Key-Sentence Corrections work on
       session answers.
-- [ ] A provider failure or cancellation during the summary leaves every answer
+- [x] A provider failure or cancellation during the summary leaves every answer
       intact and the summary retryable.
-- [ ] Sessions are listed under their job, distinguishable from Practice Records, and
+- [x] Sessions are listed under their job, distinguishable from Practice Records, and
       never change, complete or overwrite a Practice Record.
-- [ ] A session never requires or produces a Focus Point and contributes nothing to
+- [x] A session never requires or produces a Focus Point and contributes nothing to
       the progress view.
-- [ ] Deleting the job and deleting all local data remove sessions and their
+- [x] Deleting the job and deleting all local data remove sessions and their
       recordings with no dangling references.
-- [ ] `CONTEXT.md` defines Short Mock Session and Session Summary.
-- [ ] API-level tests cover every rule above, including the isolation assertion that
+- [x] `CONTEXT.md` defines Short Mock Session and Session Summary.
+- [x] API-level tests cover every rule above, including the isolation assertion that
       existing Practice Records are byte-identical after a full session.
-- [ ] Browser smoke walks one full session: start, answer, skip, reach the summary,
+- [x] Browser smoke walks one full session: start, answer, skip, reach the summary,
       open one question's feedback, confirm the skipped question shows as skipped,
       confirm assistance is absent during and present after, confirm resume after
       reload, and confirm no horizontal overflow at phone width.
@@ -128,3 +128,10 @@ summary". Deleting the job or the workspace removes sessions and their recording
 ## Blocked by
 
 - [Issue 0017](./0017-answer-by-voice-in-every-answer-path.md)
+
+## Verification
+
+Implemented and verified through the API and browser seams.
+[Evidence](../verification/0018.md). Whether a three-question run feels like a
+screening call, and whether the Session Summary is useful coaching, are pending
+learner acceptance.

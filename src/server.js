@@ -11,9 +11,10 @@ import {fileURLToPath} from 'node:url';
 import {resolve, join} from 'node:path';
 import {FakeSpeechProvider, clearTemporaryAudio, readAloud, canSpeak, RECORDING_LIMIT_SECONDS, RECORDING_WARNING_SECONDS, RECORDING_MAX_BYTES, RECORDING_MAX_REQUEST_BYTES} from './speech.js';
 import {RecordingStore, captureRecording, transcribeRecording, recordingsFor} from './recordings.js';
+import {createSession, sessionsFor, sessionView, currentEntry, requireCurrentEntry, sessionTranscripts, sessionFinished, assertCoachingAllowed} from './mock-sessions.js';
 import {LocalWorkspace} from './store.js';
 import {FakeLanguageModel} from './providers.js';
-import {AppError, requireValue, nonempty, validateAnalysis, validateFeedback, validateCoaching, validateFollowUp, validateCorrections, dimensions, questionSetView} from './domain.js';
+import {AppError, requireValue, nonempty, validateAnalysis, validateFeedback, validateCoaching, validateFollowUp, validateCorrections, validateMockSummary, dimensions, questionSetView} from './domain.js';
 
 async function body(req, limit = 1000000) {
   let raw = '';
@@ -38,7 +39,7 @@ export async function createApplication({directory = '.workspace', languageModel
   // Removing files only after the transaction that dropped their references commits
   // means a crash can leave an unreferenced file (swept above), never a dead reference.
   const commitThenDelete = async (doomed, update) => { const result = await update(); await recordings.remove(doomed); return result; };
-  const item = (collection, id) => { const value = Object.hasOwn(store.data[collection],id) ? store.data[collection][id] : undefined; requireValue(value, 'Not found', 404); return structuredClone(value); };
+  const item = (collection, id) => { const held = store.data[collection] || {}; const value = typeof id === 'string' && Object.hasOwn(held,id) ? held[id] : undefined; requireValue(value, 'Not found', 404); return structuredClone(value); };
   // Read-aloud resolves English text from stored content; the browser may only send a
   // reference. Chinese-by-contract fields (meaningZh, reasonZh, explanationZh…) are not
   // addressable at all, which is what keeps them from ever being spoken.
@@ -162,8 +163,10 @@ export async function createApplication({directory = '.workspace', languageModel
         await operations.cancelTarget(snapshot.id);
         const recordIds = Object.values(store.data.records).filter(r => r.snapshotId === snapshot.id).map(r => r.id);
         for (const id of recordIds) await operations.cancelTarget(id);
-        const owned = recordingsFor(store.data, entry => recordIds.includes(entry.recordId));
-        return commitThenDelete(owned, () => commit(d => {for (const r of Object.values(d.records)) if (r.snapshotId===snapshot.id) removeRecord(d,r.id);delete d.snapshots[snapshot.id];delete d.analyses[snapshot.id];for (const c of Object.values(d.evidenceClaims||{})) c.capabilityLinks=c.capabilityLinks.filter(l=>l.snapshotId!==snapshot.id);cleanDerivedState(d);return {deleted:snapshot.id};}));
+        const sessionIds = sessionsFor(store.data, s => s.snapshotId === snapshot.id).map(s => s.id);
+        for (const id of sessionIds) await operations.cancelTarget(id);
+        const owned = recordingsFor(store.data, entry => recordIds.includes(entry.recordId) || sessionIds.includes(entry.sessionId));
+        return commitThenDelete(owned, () => commit(d => {for (const r of Object.values(d.records)) if (r.snapshotId===snapshot.id) removeRecord(d,r.id);for (const id of sessionIds){delete d.mockSessions?.[id];}for (const entry of owned) delete d.recordings?.[entry.id];delete d.snapshots[snapshot.id];delete d.analyses[snapshot.id];for (const c of Object.values(d.evidenceClaims||{})) c.capabilityLinks=c.capabilityLinks.filter(l=>l.snapshotId!==snapshot.id);cleanDerivedState(d);return {deleted:snapshot.id};}));
       }
       const current = store.data.analyses[snapshot.id];
       const view = analysis => ({...recommendWithFocus(questionSetView(analysis, Object.values(store.data.records), snapshot.id), store.data, snapshot.id), evidenceContext: evidenceContext(store.data, snapshot.id, analysis.capabilities.map(c => c.id))});
@@ -196,6 +199,150 @@ export async function createApplication({directory = '.workspace', languageModel
           d.analyses[snapshot.id] = analysis;
         });
         return view(analysis);
+      }
+    }
+    // Short Mock Session: three questions in a row, no feedback or coaching between
+    // them, assessed once at the end. Stored apart from Practice Records so neither
+    // has to bend its rules; a session never creates, completes or edits a record.
+    if (method === 'GET' && path === '/api/mock-sessions') return sessionsFor(store.data, () => true).map(sessionView);
+    if (method === 'POST' && path === '/api/mock-sessions') {
+      const snapshot = item('snapshots', input.snapshotId);
+      const session = createSession(store.data, snapshot);
+      return commit(d => {
+        requireValue(d.snapshots[snapshot.id] && d.analyses[snapshot.id], 'Job Snapshot changed or was deleted', 409);
+        requireValue(!sessionsFor(d, s => s.snapshotId === snapshot.id && s.status === 'in-progress').length, 'Finish or leave the mock session you already have for this job', 409);
+        d.mockSessions ??= {};
+        return sessionView(d.mockSessions[session.id] = session);
+      });
+    }
+    const sessionEntryMatch = path.match(/^\/api\/mock-sessions\/([^/]+)\/entries\/([^/]+)\/(feedback|transcription|corrections|coaching)$/);
+    if (method === 'POST' && sessionEntryMatch) {
+      const session = item('mockSessions', sessionEntryMatch[1]);
+      const entry = session.entries.find(e => e.id === sessionEntryMatch[2]);
+      requireValue(entry, 'Not found', 404);
+      const entryAction = sessionEntryMatch[3];
+      if (entryAction === 'transcription') {
+        requireCurrentEntry(session, entry.id);
+        const captured = await captureRecording({store: recordings, audio: input.audio, mimeType: input.mimeType});
+        let transcript;
+        try { transcript = await transcribeRecording({store: recordings, provider: speechProvider, entry: captured, signal: context?.signal}); }
+        catch (error) { await recordings.remove([captured]); throw error; }
+        const superseded = recordingsFor(store.data, e => e.state === 'pending' && e.sessionId === session.id);
+        try {
+          return await commitThenDelete(superseded, () => commit(d => {
+            const current = d.mockSessions[session.id];
+            requireCurrentEntry(current, entry.id);
+            d.recordings ??= {};
+            for (const e of superseded) delete d.recordings[e.id];
+            d.recordings[captured.id] = {...captured, sessionId: session.id, state: 'pending'};
+            current.transcriptDraft = {id: randomUUID(), transcript, inputMode: 'voice', recordingId: captured.id, entryId: entry.id};
+            return current.transcriptDraft;
+          }));
+        } catch (error) { await recordings.remove([captured]); throw error; }
+      }
+      // Everything below is coaching on a finished session; during a run it is refused.
+      requireValue(session.status === 'completed', 'Feedback and assistance are available after the mock session ends', 409);
+      requireValue(entry.answer, 'A skipped question has no answer to assess', 409);
+      if (entryAction === 'feedback') {
+        if (entry.feedback) return entry;
+        const feedback = validateFeedback(await languageModel.feedback({question: entry.question, transcript: entry.answer.transcript, approvedEvidence: [], signal: context?.signal}), entry.answer.transcript);
+        return commit(d => {
+          const target = d.mockSessions[session.id]?.entries.find(e => e.id === entry.id);
+          requireValue(target?.answer?.id === entry.answer.id, 'Session changed; reload', 409);
+          target.feedback = feedback;
+          return target;
+        });
+      }
+      if (entryAction === 'corrections') {
+        if (entry.corrections) return entry.corrections;
+        const output = validateCorrections(await languageModel.corrections({question: entry.question, transcript: entry.answer.transcript, signal: context?.signal}), entry.answer.transcript);
+        return commit(d => {
+          const target = d.mockSessions[session.id]?.entries.find(e => e.id === entry.id);
+          requireValue(target?.answer?.id === entry.answer.id, 'Session changed; reload', 409);
+          return target.corrections = {id: entry.answer.id, corrections: output.corrections, createdAt: new Date().toISOString()};
+        });
+      }
+      // English Assistance on a finished session answer: rewrite only, same contract.
+      requireValue(input.mode === 'rewrite', 'Only an English rewrite is available for a session answer');
+      const key = createHash('sha256').update(JSON.stringify({mode: 'rewrite', transcript: entry.answer.transcript})).digest('hex');
+      if (entry.coaching?.[key]) return entry.coaching[key];
+      const output = validateCoaching(await languageModel.coach({question: entry.question, transcript: entry.answer.transcript, mode: 'rewrite', signal: context?.signal}), 'rewrite', entry.answer.transcript);
+      return commit(d => {
+        const target = d.mockSessions[session.id]?.entries.find(e => e.id === entry.id);
+        requireValue(target?.answer?.id === entry.answer.id, 'Session changed; reload', 409);
+        target.coaching ??= {};
+        return target.coaching[key] = {id: key, mode: 'rewrite', ...output, createdAt: new Date().toISOString()};
+      });
+    }
+    const sessionMatch = path.match(/^\/api\/mock-sessions\/([^/]+)(?:\/(answer|skip|summary))?$/);
+    if (sessionMatch) {
+      const session = item('mockSessions', sessionMatch[1]);
+      const action = sessionMatch[2];
+      if (method === 'GET' && !action) return sessionView(session);
+      if (method === 'DELETE' && !action) {
+        await operations.cancelTarget(session.id);
+        const owned = recordingsFor(store.data, entry => entry.sessionId === session.id);
+        return commitThenDelete(owned, () => commit(d => {
+          requireValue(d.mockSessions?.[session.id], 'Not found', 404);
+          for (const entry of owned) delete d.recordings[entry.id];
+          delete d.mockSessions[session.id];
+          return {deleted: session.id};
+        }));
+      }
+      if (method === 'POST' && (action === 'answer' || action === 'skip')) {
+        // An idempotent resubmit is answered before the ordering guard: the learner has
+        // already moved on, so "answer in order" would wrongly reject their own retry.
+        const replayed = action === 'answer' && nonempty(input.submissionId) && session.entries.find(e => e.answer?.submissionId === input.submissionId);
+        if (replayed) { requireValue(replayed.answer.transcript === input.transcript && replayed.id === input.entryId, 'Submission identifier already used for another answer', 409); return sessionView(session); }
+        const entry = requireCurrentEntry(session, input.entryId);
+        if (action === 'skip') {
+          const stranded = recordingsFor(store.data, e => e.state === 'pending' && e.sessionId === session.id);
+          return commitThenDelete(stranded, () => commit(d => {
+            const current = d.mockSessions[session.id];
+            const target = requireCurrentEntry(current, input.entryId);
+            for (const e of stranded) delete d.recordings[e.id];
+            delete current.transcriptDraft;
+            target.skipped = true; target.skippedAt = new Date().toISOString(); current.updatedAt = target.skippedAt;
+            if (sessionFinished(current)) current.status = 'awaiting-summary';
+            return sessionView(current);
+          }));
+        }
+        requireValue(nonempty(input.transcript) && input.transcript.length <= 100000, 'Enter an answer up to 100000 characters');
+        if (input.submissionId !== undefined) requireValue(nonempty(input.submissionId) && input.submissionId.length <= 100, 'Invalid submission identifier');
+        const voice = input.transcriptDraftId !== undefined;
+        if (voice) requireValue(session.transcriptDraft?.id === input.transcriptDraftId && session.transcriptDraft.entryId === entry.id, 'Transcript draft changed; review again', 409);
+        const promotedId = voice ? session.transcriptDraft.recordingId : undefined;
+        const abandoned = recordingsFor(store.data, e => e.state === 'pending' && e.sessionId === session.id && e.id !== promotedId);
+        const answer = {id: randomUUID(), transcript: input.transcript, inputMode: voice ? 'voice' : 'text', submittedAt: new Date().toISOString(), ...(input.submissionId ? {submissionId: input.submissionId} : {}),
+          ...(promotedId ? {recordingId: promotedId, transcriptEdited: session.transcriptDraft.transcript !== input.transcript} : {})};
+        return commitThenDelete(abandoned, () => commit(d => {
+          const current = d.mockSessions[session.id];
+          const target = requireCurrentEntry(current, input.entryId);
+          if (input.submissionId) requireValue(!current.entries.some(e => e.answer?.submissionId === input.submissionId), 'Submission identifier already used for another answer', 409);
+          for (const e of abandoned) delete d.recordings[e.id];
+          if (promotedId) { const kept = d.recordings?.[promotedId]; requireValue(kept, 'Recording is no longer available; record again', 409); kept.state = 'retained'; kept.attemptId = answer.id; }
+          delete current.transcriptDraft;
+          target.answer = answer; current.updatedAt = answer.submittedAt;
+          if (sessionFinished(current)) current.status = 'awaiting-summary';
+          return sessionView(current);
+        }));
+      }
+      if (method === 'POST' && action === 'summary') {
+        requireValue(sessionFinished(session), 'Answer or skip every question before ending the session', 409);
+        if (session.summary || session.status === 'completed') return sessionView(session);
+        const answered = session.entries.filter(entry => entry.answer);
+        const completedAt = new Date().toISOString();
+        // Every question skipped: no provider call, and no invented assessment.
+        if (!answered.length) {
+          return commit(d => { const current = d.mockSessions[session.id]; requireValue(sessionFinished(current), 'Session changed; reload', 409); current.status = 'completed'; current.completedAt ??= completedAt; current.summary = {nothingToAssess: true}; return sessionView(current); });
+        }
+        const summary = validateMockSummary(await languageModel.mockSummary({answers: answered.map(entry => ({question: entry.question, transcript: entry.answer.transcript})), signal: context?.signal}), answered.map(entry => entry.answer.transcript));
+        return commit(d => {
+          const current = d.mockSessions[session.id];
+          requireValue(current && sessionFinished(current) && JSON.stringify(current.entries.map(e => e.answer?.id ?? null)) === JSON.stringify(session.entries.map(e => e.answer?.id ?? null)), 'Session changed; reload', 409);
+          current.summary = summary; current.status = 'completed'; current.completedAt ??= completedAt;
+          return sessionView(current);
+        });
       }
     }
     if (method === 'POST' && path === '/api/records') {
@@ -495,7 +642,11 @@ export async function createApplication({directory = '.workspace', languageModel
           const followUpGeneration=path.match(/^\/api\/records\/([^/]+)\/follow-ups$/);
           const followUpFeedback=path.match(/^\/api\/records\/([^/]+)\/follow-ups\/[^/]+\/feedback$/);
           const followUpTranscription=path.match(/^\/api\/records\/([^/]+)\/follow-ups\/([^/]+)\/transcription$/);
-          if(standard)external={targetId:standard[1],kind:standard[2]};
+          const sessionSummary=path.match(/^\/api\/mock-sessions\/([^/]+)\/summary$/);
+          const sessionEntry=path.match(/^\/api\/mock-sessions\/([^/]+)\/entries\/[^/]+\/(feedback|transcription|corrections|coaching)$/);
+          if(sessionSummary)external={targetId:sessionSummary[1],kind:'session-summary'};
+          else if(sessionEntry)external={targetId:sessionEntry[1],kind:`session-${sessionEntry[2]}`};
+          else if(standard)external={targetId:standard[1],kind:standard[2]};
           else if(followUpGeneration)external={targetId:followUpGeneration[1],kind:'follow-up'};
           else if(followUpFeedback)external={targetId:followUpFeedback[1],kind:'follow-up-feedback'};
           else if(followUpTranscription)external={targetId:followUpTranscription[1],kind:'follow-up-transcription'};
@@ -509,6 +660,11 @@ export async function createApplication({directory = '.workspace', languageModel
           if (op.kind==='feedback') return item('records',op.targetId);
           if (op.kind==='transcription') {const r=item('records',op.targetId);requireValue(r.transcriptDraft?.id===op.resultId,'Transcript already consumed; reopen saved record',409);return r.transcriptDraft;}
           if (op.kind==='follow-up-transcription') {const r=item('records',op.targetId);const draft=(r.followUps||[]).map(n=>n.transcriptDraft).find(d=>d?.id===op.resultId);requireValue(draft,'Transcript already consumed; reopen saved record',409);return draft;}
+          if (op.kind==='session-summary') return sessionView(item('mockSessions',op.targetId));
+          if (op.kind==='session-transcription') {const s=item('mockSessions',op.targetId);requireValue(s.transcriptDraft?.id===op.resultId,'Transcript already consumed; reopen the session',409);return s.transcriptDraft;}
+          if (op.kind==='session-feedback') {const s=item('mockSessions',op.targetId);const entry=s.entries.find(e=>e.id===op.resultId);requireValue(entry,'Session answer no longer available',409);return entry;}
+          if (op.kind==='session-corrections') {const s=item('mockSessions',op.targetId);const saved=s.entries.map(e=>e.corrections).find(c=>c?.id===op.resultId);requireValue(saved,'Corrections no longer available',409);return saved;}
+          if (op.kind==='session-coaching') {const s=item('mockSessions',op.targetId);const saved=s.entries.flatMap(e=>Object.values(e.coaching||{})).find(c=>c.id===op.resultId);requireValue(saved,'Assistance no longer available',409);return saved;}
           if (op.kind==='url') return item('snapshots',op.resultId);
           const run=store.data.discoveryRuns?.[op.resultId];requireValue(run,'Discovery run expired; start a new request',409);return run;
         };

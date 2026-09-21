@@ -1,8 +1,22 @@
 import {AppError, requireValue, nonempty} from './domain.js';
-export const profileFields = ['roles', 'locations', 'seniority', 'workArrangements', 'priorities', 'exclusions'];
+export const profileFields = ['roles', 'locations', 'seniority', 'workArrangements', 'priorities', 'exclusions', 'salary'];
+// `salary` was added after the first release. A profile saved without it still loads
+// and still validates; only the six original fields are required on a write.
+const requiredProfileFields = profileFields.filter(key => key !== 'salary');
+export const emptyProfile = () => Object.fromEntries(profileFields.map(key => [key, []]));
 export function validateProfile(input) {
-  requireValue(input && Object.keys(input).length === profileFields.length && profileFields.every(key => Array.isArray(input[key]) && input[key].length <= 20 && input[key].every(v => nonempty(v) && v.length <= 100)), 'Provide all six profile fields as lists (up to 20 terms each)');
-  return Object.fromEntries(profileFields.map(key => [key, [...new Set(input[key].map(s => s.trim()))]]));
+  requireValue(input && typeof input === 'object' && !Array.isArray(input), 'Provide the job search criteria as lists');
+  const keys = Object.keys(input);
+  requireValue(requiredProfileFields.every(key => keys.includes(key)) && keys.every(key => profileFields.includes(key)), 'Provide all job search criteria as lists (up to 20 terms each)');
+  requireValue(profileFields.every(key => input[key] === undefined || (Array.isArray(input[key]) && input[key].length <= 20 && input[key].every(v => nonempty(v) && v.length <= 100))), 'Provide all job search criteria as lists (up to 20 terms each)');
+  return Object.fromEntries(profileFields.map(key => [key, [...new Set((input[key] ?? []).map(s => s.trim()))]]));
+}
+// A proposal comes from a model, so a malformed one is invalid provider output (502),
+// not a learner mistake (400); it is shown for confirmation and never saved directly.
+export function validateProfileProposal(value) {
+  requireValue(value && typeof value === 'object' && !Array.isArray(value) && Object.keys(value).length === profileFields.length && profileFields.every(key => Object.hasOwn(value, key)), 'Invalid provider output: search profile schema', 502);
+  try { return validateProfile(value); }
+  catch { return requireValue(false, 'Invalid provider output: search profile schema', 502); }
 }
 export class FakeJobSource {
   name = 'Synthetic demonstration jobs';

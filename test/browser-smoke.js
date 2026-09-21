@@ -218,6 +218,61 @@ try {
  fill('#job-search','zzz-no-match');await wait(()=>el('.job-list .empty'),'search filters job list');
  if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow on filtered job list');
  `);
+ // Short Mock Session: three questions in a row, no coaching during, summary at the end.
+ await run(`
+ click('[data-view="history"]');await wait(()=>el('#job-search'),'history for the mock session');
+ fill('#job-search','');await wait(()=>el('[data-job-id]'),'job list restored after clearing the search');
+ const jobId=el('[data-job-id]').dataset.jobId;
+ click('[data-job-id="'+jobId+'"] #mock-'+jobId);await wait(()=>el('#mock-answer'),'mock session started');
+ if(!el('.mock-progress').textContent.includes('第 1 / 3 題'))throw Error('Session progress not shown: '+el('.mock-progress').textContent);
+ const mockBtn=t=>[...document.querySelectorAll('#mock-view button')].find(b=>b.textContent.trim()===t);
+ if(mockBtn('看一個示範回答')||mockBtn('給我一個提示')||mockBtn('幫我整理成英文')||mockBtn('幫我講得更自然'))throw Error('Assistance offered during a mock session');
+ if(!document.body.innerText.includes('整場結束後才會給回饋'))throw Error('Session does not explain that feedback comes at the end');
+ const sess=()=>fetch('/api/mock-sessions').then(r=>r.json()).then(list=>list[0]);
+ let s=await sess();
+ if(s.entries.length!==3)throw Error('Session does not have three questions');
+ if(new Set(s.entries.map(e=>e.question.category)).size!==3)throw Error('Session questions do not span three categories');
+ fill('#mock-answer','I would restate the problem, then name the assumption I am least sure about.');
+ click('#mock-submit');await wait(()=>el('.mock-progress').textContent.includes('第 2 / 3 題'),'advanced to the second question');
+ if(document.body.innerText.includes('本次做得好的地方'))throw Error('A Feedback Report appeared between questions');
+ // Voice works inside a session too.
+ fakeMicrophone();
+ click(mockBtn('開始錄音'));await wait(()=>el('#mock-view .recording-clock')&&!el('#mock-view .recording-clock').hidden,'session recording started');
+ click(mockBtn('停止並轉成文字'));await wait(()=>el('#mock-answer').value.includes('demonstration transcript'),'session transcript lands in the answer box');
+ click('#mock-submit');await wait(()=>el('.mock-progress').textContent.includes('第 3 / 3 題'),'advanced to the third question');
+ // Skipping is honest: recorded as skipped, never assessed.
+ window.confirm=()=>true;
+ click('#mock-skip');await wait(()=>el('#mock-summary-heading'),'session summary');
+ s=await sess();
+ if(s.status!=='completed')throw Error('Session did not complete');
+ if(s.entries[1].answer.inputMode!=='voice'||!s.entries[1].answer.recordingId)throw Error('Session answer kept no recording');
+ if(!s.entries[2].skipped||s.entries[2].feedback)throw Error('Skipped question was assessed');
+ if(s.entries.some(e=>e.feedback))throw Error('Per-question feedback was generated without being opened');
+ const strengths=document.querySelectorAll('#mock-summary-heading ~ .feedback-feature .feedback-card');
+ if(strengths.length!==2)throw Error('Expected exactly one strength and one priority, got '+strengths.length);
+ if(!document.body.innerText.includes('不是分數'))throw Error('Summary does not disclaim a score');
+ if(!document.body.innerText.includes('已跳過'))throw Error('Skipped question is not shown as skipped');
+ const answered=[...document.querySelectorAll('.mock-entry[data-entry-id]')];
+ if(answered.length!==2)throw Error('Expected two answered questions in the per-question list');
+ // The summary must quote one of the learner's own session answers.
+ const transcripts=s.entries.filter(e=>e.answer).map(e=>e.answer.transcript);
+ for(const f of [s.summary.strength,s.summary.priorityImprovement])if(!transcripts.some(t=>t.includes(f.quote)))throw Error('Session Summary quoted something the learner never said');
+ // Per-question feedback and assistance become available only now.
+ click(answered[0].querySelector('button'));await wait(()=>answered[0].querySelector('.feedback-feature'),'per-question feedback on demand');
+ if((await sess()).entries.filter(e=>e.feedback).length!==1)throw Error('Opening one question generated feedback for others');
+ if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow on the mock summary');
+ // A completed session is listed under its job and never became a Practice Record.
+ const wsNow=await ws();
+ const sessionTexts=new Set(s.entries.filter(e=>e.answer).map(e=>e.answer.transcript));
+ if(Object.values(wsNow.records).some(r=>(r.attempts||[]).some(a=>sessionTexts.has(a.transcript))))throw Error('Session answer leaked into a Practice Record');
+ if(Object.values(wsNow.records).some(r=>r.focusPoint&&sessionTexts.has(r.focusPoint)))throw Error('Session produced a Focus Point');
+ click('[data-view="history"]');await wait(()=>el('[data-job-id]'),'history after the session');
+ const jobToggle=el('[data-job-id="'+jobId+'"] [aria-expanded]');
+ if(!jobToggle)throw Error('Job has no practice to expand after the session');
+ if(jobToggle.getAttribute('aria-expanded')!=='true')jobToggle.click();
+ await wait(()=>el('[data-session-id]'),'session listed under its job');
+ if(!el('[data-session-id]').textContent.includes('三題短場模擬'))throw Error('Session is not distinguishable from a Practice Record');
+ `);
  // Answer Recordings: submit a spoken answer, replay it, then delete the practice.
  await run(`
  fakeMicrophone();
@@ -246,5 +301,5 @@ try {
  if((await ws()).recordings[rid])throw Error('Deleting the practice left the recording behind');
  if((await fetch('/api/recordings/'+rid)).status!==404)throw Error('A deleted recording is still playable');
  `);
- console.log('Browser smoke PASS: resume default/opt-out, read-aloud (no autoplay, replay, speed, no overlap), three-minute recording with a visible clock, transcript replace/append handoff, retained Answer Recordings with playback and deletion, draft failure/reload recovery, feedback retry, key-sentence corrections (normal/retry/no-change/evidence-safe), Focus-Point same-job practice, job-centred Records navigation, optional revision, separate AI assistance, one-answer completion and mobile layout.');
+ console.log('Browser smoke PASS: resume default/opt-out, read-aloud (no autoplay, replay, speed, no overlap), three-minute recording with a visible clock, transcript replace/append handoff, retained Answer Recordings with playback and deletion, a full three-question Short Mock Session (no coaching during, skip, summary quoting the learner, per-question feedback on demand), draft failure/reload recovery, feedback retry, key-sentence corrections (normal/retry/no-change/evidence-safe), Focus-Point same-job practice, job-centred Records navigation, optional revision, separate AI assistance, one-answer completion and mobile layout.');
 }finally{await browser('close').catch(()=>{});if(server)await new Promise(r=>server.close(r));await rm(directory,{recursive:true,force:true});}

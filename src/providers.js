@@ -79,6 +79,33 @@ export class FakeLanguageModel {
     if (mode === 'illustrative') return {text:'Demonstration only: if I faced this, I would first clarify the goal, outline one approach, and name a trade-off I would weigh. Replace this with your own experience.',explanationZh:'這是本機示範的假設回答，僅示意結構；請設定模型服務以取得針對此題的實質示範，並替換成你自己的經驗。'};
     return {text: /[A-Za-z]/.test(transcript || '') ? transcript : 'Demonstration only: configure a model provider for English assistance.', explanationZh:'本機示範不會實際翻譯或改寫，請設定模型服务。'};
   }
+  // Demonstration only: quote the learner's own longest session answer so the citation
+  // rule holds, and label the assessment as a demonstration rather than coaching.
+  async mockSummary({answers}) {
+    const longest = [...answers].sort((a, b) => b.transcript.length - a.transcript.length)[0];
+    const quote = longest.transcript.slice(0, 160);
+    return {
+      strength: {text: 'You answered the session questions in your own words without stopping for help.', textZh: '你在沒有中途求助的情況下，用自己的話回答完這場模擬。', quote},
+      priorityImprovement: {text: 'Demonstration summary only: configure a model provider for substantive session coaching.', textZh: '這只是示範的整場回饋；請設定模型服務以取得針對整場模擬的實質建議。', quote}
+    };
+  }
+  // Demonstration only: pull a few obvious terms out of the request with fixed rules,
+  // so the confirm-before-search flow works with no provider. It never guesses a field
+  // the learner did not mention — the same rule the real contract states.
+  async interpretSearch({request}) {
+    const text = String(request || '');
+    const has = (...terms) => terms.filter(term => text.toLowerCase().includes(term.toLowerCase()));
+    const found = (terms, mapped) => has(...terms).length ? mapped : [];
+    return {
+      roles: [...found(['AI', '人工智慧'], ['AI Engineer']), ...found(['後端', 'backend'], ['Backend Engineer']), ...found(['前端', 'frontend'], ['Frontend Engineer']), ...found(['資料', 'data'], ['Data Engineer'])],
+      locations: [...found(['台灣', 'Taiwan'], ['Taiwan']), ...found(['台北', 'Taipei'], ['Taipei']), ...found(['新竹', 'Hsinchu'], ['Hsinchu'])],
+      seniority: [...found(['資深', 'senior'], ['Senior']), ...found(['轉職', '初階', 'junior', 'entry'], ['Entry'])],
+      workArrangements: [...found(['遠端', 'remote'], ['Remote']), ...found(['混合', 'hybrid'], ['Hybrid'])],
+      priorities: found(['Python'], ['Python']),
+      exclusions: [],
+      salary: (text.match(/\d+\s*(?:k|K|萬|萬元)/g) || []).slice(0, 3)
+    };
+  }
   async followUp({primaryAnswer, previousFollowUps = []}) {
     if (previousFollowUps.length) return {text:'What trade-off would you revisit after seeing the result of that decision?',meaningZh:'看到那項決定的結果後，你會重新考量哪個取捨？'};
     const mentionedTesting=/test|validat/i.test(primaryAnswer.transcript);

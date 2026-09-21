@@ -447,3 +447,10 @@ mark { background: #ffe2c5; color: #1b3a47; border-radius: 4px; }
 .answer-recording { margin: 12px 0 16px; }
 .answer-recording .meta { margin-bottom: 6px; }
 .answer-recording audio { width: 100%; max-width: 420px; }
+
+/* Short Mock Session: one question at a time, clearly not a Practice Loop. */
+.mock-progress { margin: 0; color: var(--ink-soft); font-size: 14px; font-weight: 600; }
+.mock-card { border-left: 4px solid #d98b5f; }
+.mock-entry { margin-bottom: 14px; }
+.mock-entry h3 { margin: 4px 0 8px; font-size: 16px; }
+.mock-skipped { display: inline-block; margin-bottom: 6px; padding: 3px 10px; border-radius: 999px; background: var(--mist); color: var(--ink-soft); font-size: 13px; }

@@ -15,7 +15,7 @@ const dimensions = {
   englishExpression: '英文表達'
 };
 const recordStates = {answer:'準備初答',feedback:'等待回饋',revise:'等待修改回答',compare:'等待比較與保存',completed:'已完成'};
-const operationNames = {analysis:'產生題目',questions:'新增題目',feedback:'取得回饋','follow-up':'產生追問題目','follow-up-feedback':'取得追問回饋','follow-up-transcription':'追問語音轉成文字',followUp:'產生追問題目',coaching:'準備練習建議',corrections:'整理關鍵句修正',transcription:'語音轉成文字',discovery:'搜尋職缺',url:'取得職缺'};
+const operationNames = {analysis:'產生題目',questions:'新增題目',feedback:'取得回饋','follow-up':'產生追問題目','follow-up-feedback':'取得追問回饋','follow-up-transcription':'追問語音轉成文字','session-summary':'整理整場回饋','session-feedback':'取得逐題回饋','session-transcription':'模擬語音轉成文字','session-corrections':'整理關鍵句修正','session-coaching':'準備英文示範',followUp:'產生追問題目',coaching:'準備練習建議',corrections:'整理關鍵句修正',transcription:'語音轉成文字',discovery:'搜尋職缺',url:'取得職缺'};
 
 let workspace = {snapshots:{}, analyses:{}, records:{}};
 let providerInfo;
@@ -229,6 +229,7 @@ async function navigate(name) {
   disposeVoice(); followUpVoice.dispose(); followUpVoice.dispose = () => {}; followUpVoice.draftId = null; resetReadAloud();
   disposeVoice = () => {};
   if (name !== 'practice') currentRecordId = null;
+  disposeMockVoice();
   markView(name);
   if (name === 'home') renderHome();
   if (name === 'history') renderHistory();
@@ -973,6 +974,152 @@ async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedb
   if (focusFeedback) { const heading = $('#feedback-heading'); if (heading) requestAnimationFrame(() => { heading.scrollIntoView({behavior:'smooth', block:'start'}); heading.focus({preventScroll:true}); }); }
 }
 
+// Short Mock Session: three questions in a row, no coaching in between, one overall
+// read at the end. It is not a Practice Loop and never produces a Focus Point.
+let mockVoice = {draftId: null, dispose: () => {}};
+function disposeMockVoice() { mockVoice.dispose(); mockVoice = {draftId: null, dispose: () => {}}; }
+
+async function startMockSession(snapshotId) {
+  setError();
+  setNotice('正在準備三題短場模擬…');
+  try {
+    const session = await api('/mock-sessions', {snapshotId});
+    setNotice();
+    await showMockSession(session.id);
+  } catch (error) { setNotice(); setError(error.message); }
+}
+
+async function showMockSession(sessionId, {summaryFresh = false} = {}) {
+  if (!(await leaveEditor())) return;
+  clearDraftSession(); disposeVoice(); disposeMockVoice(); resetReadAloud();
+  markView('mock');
+  const session = await api(`/mock-sessions/${sessionId}`);
+  // Keep the cached workspace current so Records shows this session without a reload.
+  await refreshWorkspace().catch(() => {});
+  const snapshot = workspace.snapshots[session.snapshotId];
+  const jobLine = snapshot ? `<div class="job-line"><span class="job-label">職缺：</span><span class="job-title">${escape(truncate(jobTitle(snapshot)))}</span></div>` : '';
+  const host = $('#mock');
+  if (session.status === 'in-progress') {
+    const index = session.entries.findIndex(entry => entry.id === session.currentEntryId);
+    const entry = session.entries[index];
+    host.innerHTML = `<article class="practice-shell"><header class="practice-header"><p class="eyebrow">三題短場模擬</p><p class="mock-progress">第 ${session.currentPosition} / ${session.questionCount} 題</p></header>${jobLine}<div class="practice-body">
+      <section class="question-phase"><p class="question-kicker">${escape(categories[entry.question.category] || entry.question.category)}</p><h1 class="question-text" lang="en">${escape(entry.question.text)}</h1><div id="question-read-aloud"></div><details open><summary>中文題意</summary><p class="meaning">${escape(entry.question.meaningZh || '舊版題目未保存中文題意。')}</p></details></section>
+      <section class="answer-area"><p class="meta">模擬進行中不提供提示、示範或英文協助；整場結束後才會給回饋，也才能請教練幫忙。答不出來可以跳過，不會被當成錯誤答案。</p>
+        <label for="mock-answer">你的回答</label><textarea id="mock-answer" rows="7" placeholder="像面試一樣，先把想說的講出來。">${escape(session.transcriptDraft?.entryId === entry.id ? session.transcriptDraft.transcript : '')}</textarea>
+        <p id="mock-answer-status" class="draft-status" aria-live="polite">${session.transcriptDraft?.entryId === entry.id ? '已帶入這次的語音轉錄，可以直接送出，或先修改。' : '可以打字，也可以用語音回答。'}</p>
+        <div id="mock-voice-entry"></div>
+        <div class="button-row" id="mock-actions"></div>
+      </section></div></article>`;
+    readAloud($('#question-read-aloud'), {snapshotId: session.snapshotId, questionId: entry.question.id}, '朗讀題目');
+    mountMockVoice(session, entry);
+    const submissionId = crypto.randomUUID();
+    button(session.currentPosition === session.questionCount ? '送出並結束這場模擬' : '送出，下一題', async () => {
+      const transcript = $('#mock-answer').value;
+      if (!transcript.trim()) { setError('請先寫下你的英文回答，或選擇跳過這一題。'); $('#mock-answer').focus(); return; }
+      await api(`/mock-sessions/${session.id}/answer`, {entryId: entry.id, transcript, submissionId, ...(mockVoice.draftId ? {transcriptDraftId: mockVoice.draftId} : {})});
+      await advanceMockSession(session.id);
+    }, $('#mock-actions'), {id: 'mock-submit'});
+    button('跳過這一題', async () => {
+      if (!window.confirm('跳過這一題？這一題會記成「跳過」，不會有回饋，也不會被當成錯誤答案。')) return;
+      await api(`/mock-sessions/${session.id}/skip`, {entryId: entry.id});
+      await advanceMockSession(session.id);
+    }, $('#mock-actions'), {kind: 'secondary', id: 'mock-skip'});
+    button('先離開，稍後繼續', () => navigate('history'), $('#mock-actions'), {kind: 'ghost'});
+    requestAnimationFrame(() => $('#mock-answer')?.focus({preventScroll: true}));
+    return;
+  }
+  if (session.status === 'awaiting-summary') {
+    host.innerHTML = `<article class="practice-shell"><header class="practice-header"><p class="eyebrow">三題短場模擬</p><p class="mock-progress">三題都完成了</p></header>${jobLine}<div class="practice-body">
+      <section class="answer-area"><h1>正在整理整場回饋</h1><p>回答已保存在本機。這一步會用整場的回答產生一項優點與一項優先重點。</p><div class="button-row" id="mock-actions"></div></section></div></article>`;
+    const run = async () => { await api(`/mock-sessions/${session.id}/summary`, {}); await showMockSession(session.id, {summaryFresh: true}); };
+    button('取得整場回饋', run, $('#mock-actions'));
+    button('先離開，稍後再看', () => navigate('history'), $('#mock-actions'), {kind: 'ghost'});
+    if (summaryFresh) return;
+    run().catch(error => setError(error.message));
+    return;
+  }
+  renderMockSummary(session, jobLine);
+}
+
+function renderMockSummary(session, jobLine) {
+  const nothing = session.summary?.nothingToAssess;
+  const finding = (title, item, kind) => `<article class="feedback-card ${kind}"><h3>${escape(title)}</h3><p>${escape(item.textZh)}</p><blockquote><strong>你的原句</strong><br>${escape(item.quote)}</blockquote></article>`;
+  const overall = nothing
+    ? '<p class="provider-warning">這場模擬三題都跳過了，沒有可以評的內容。下一次挑一題先講三句也好。</p>'
+    : `<div class="feedback-feature">${finding('整場做得好的地方', session.summary.strength, 'strength')}${finding('整場優先改進', session.summary.priorityImprovement, 'priority')}</div>`;
+  const entries = session.entries.map((entry, index) => {
+    const head = `<p class="eyebrow">第 ${index + 1} 題・${escape(categories[entry.question.category] || entry.question.category)}</p><h3 lang="en">${escape(entry.question.text)}</h3>`;
+    if (entry.skipped) return `<article class="list-card mock-entry"><span class="mock-skipped">已跳過</span>${head}<p class="meta">這一題你選擇跳過，沒有回答，因此沒有評分。</p></article>`;
+    return `<article class="list-card mock-entry" data-entry-id="${escape(entry.id)}">${head}<details><summary>查看你的回答</summary><blockquote lang="en">${escape(entry.answer.transcript)}</blockquote>${playerHtml(entry.answer, {label: '回聽這一題的錄音'})}</details><div class="mock-entry-feedback" aria-live="polite"></div></article>`;
+  }).join('');
+  $('#mock').innerHTML = `<article class="practice-shell"><header class="practice-header"><p class="eyebrow">三題短場模擬</p><p class="mock-progress">已完成 · ${escape(dateLabel(session.completedAt))}</p></header>${jobLine}<div class="practice-body">
+    <section class="answer-area"><h1 id="mock-summary-heading" tabindex="-1">整場回饋</h1><p class="meta">這是整場的一項優點與一項優先重點，不是分數，也不是錄取判斷。逐題回饋要看再展開。</p>${overall}</section>
+    <section class="answer-area"><h2>逐題</h2>${entries}</section>
+    <div class="button-row" id="mock-summary-actions"></div></div></article>`;
+  document.querySelectorAll('.mock-entry[data-entry-id]').forEach(card => {
+    const panel = card.querySelector('.mock-entry-feedback');
+    const entryId = card.dataset.entryId;
+    const entry = session.entries.find(item => item.id === entryId);
+    if (entry.feedback) { panel.innerHTML = feedbackHtml(entry.feedback); return; }
+    button('看這一題的回饋', async () => {
+      panel.innerHTML = '<p class="meta">正在整理這一題的回饋…</p>';
+      try { const updated = await api(`/mock-sessions/${session.id}/entries/${entryId}/feedback`, {}); panel.innerHTML = feedbackHtml(updated.feedback); }
+      catch (error) { panel.replaceChildren(); button('重試取得這一題的回饋', () => {}, panel, {kind: 'ghost'}).remove(); panel.innerHTML = '<p class="meta">尚未取得回饋，可再按一次重試。</p>'; throw error; }
+    }, panel, {kind: 'ghost'});
+    button('幫我講得更自然', async () => {
+      const result = await api(`/mock-sessions/${session.id}/entries/${entryId}/coaching`, {mode: 'rewrite'});
+      const box = document.createElement('section');
+      box.className = 'detail-panel coaching-result';
+      box.innerHTML = `<p class="eyebrow">英文示範</p><p class="coaching-text" lang="en">${escape(result.text)}</p><p class="meta">${escape(result.explanationZh)}</p>`;
+      panel.append(box);
+    }, panel, {kind: 'ghost'});
+  });
+  button('回到練習紀錄', () => navigate('history'), $('#mock-summary-actions'), {kind: 'secondary'});
+  button('回到首頁', () => navigate('home'), $('#mock-summary-actions'), {kind: 'ghost'});
+  requestAnimationFrame(() => $('#mock-summary-heading')?.focus({preventScroll: true}));
+}
+
+function mountMockVoice(session, entry) {
+  const host = $('#mock-voice-entry');
+  const textarea = $('#mock-answer');
+  if (!host || !textarea) return;
+  mockVoice.draftId = session.transcriptDraft?.entryId === entry.id ? session.transcriptDraft.id : null;
+  const status = $('#mock-answer-status');
+  mockVoice.dispose = mountVoice(host, {
+    path: `/mock-sessions/${session.id}/entries/${entry.id}/transcription`,
+    api,
+    provider: providerInfo?.speech,
+    beforeTranscription: async () => { textarea.readOnly = true; $('#mock-submit').disabled = true; },
+    onTranscript: draft => {
+      const existing = textarea.value;
+      mockVoice.draftId = draft.id;
+      if (!existing.trim() || existing.includes(draft.transcript)) {
+        textarea.value = existing.includes(draft.transcript) ? existing : draft.transcript;
+        if (status) status.textContent = '語音轉錄已放進回答框，可以直接送出，或先修改。';
+        return;
+      }
+      textarea.value = `${existing.replace(/\s+$/, '')}\n${draft.transcript}`;
+      if (status) status.textContent = '語音轉錄已接在原本的文字後面。';
+    },
+    onTranscriptionEnd: () => { textarea.readOnly = false; $('#mock-submit').disabled = false; },
+    onError: error => setError(localizeError(error.message, error.status || 400))
+  });
+}
+
+async function advanceMockSession(sessionId) {
+  disposeMockVoice();
+  await refreshWorkspace();
+  await showMockSession(sessionId);
+}
+
+async function abandonMockSession(sessionId) {
+  if (!window.confirm('放棄這場模擬？這場的回答與錄音會一起刪除，其他練習不受影響。')) return;
+  await api(`/mock-sessions/${sessionId}`, undefined, 'DELETE');
+  await refreshWorkspace();
+  renderHistory();
+  setNotice('這場模擬已刪除。');
+}
+
 async function deleteRecord(recordId) {
   if (!window.confirm('確定刪除這筆練習與它的文字草稿嗎？')) return;
   clearDraftSession();
@@ -999,8 +1146,22 @@ async function deleteJob(snapshotId) {
 }
 function renderJobDetail(container, snapshot) {
   const records = sortRecent(Object.values(workspace.records || {}).filter(r => r.snapshotId === snapshot.id));
+  const sessions = sortRecent(Object.values(workspace.mockSessions || {}).filter(s => s.snapshotId === snapshot.id));
   container.replaceChildren();
-  if (!records.length) { container.innerHTML = '<p class="empty">這份職缺還沒有練習紀錄，可以從上方開始新練習。</p>'; return; }
+  for (const session of sessions) {
+    const done = session.status === 'completed';
+    const answered = session.entries.filter(entry => entry.answer).length;
+    const card = document.createElement('article'); card.className = 'list-card record-card mock-card'; card.dataset.sessionId = session.id;
+    card.innerHTML = `<p class="eyebrow">三題短場模擬 · ${done ? '已完成' : '進行中'}</p><p class="meta">${escape(dateLabel(session.completedAt || session.updatedAt || session.createdAt))} · 已作答 ${answered} / ${session.entries.length} 題${session.entries.some(entry => entry.skipped) ? ' · 有跳過的題目' : ''}</p><div class="button-row"></div>`;
+    const actions = card.querySelector('.button-row');
+    button(done ? '查看整場回饋' : '繼續這場模擬', () => showMockSession(session.id), actions, {kind: 'secondary'});
+    const menu = document.createElement('details'); menu.className = 'more-menu';
+    menu.innerHTML = '<summary aria-label="更多動作">⋯</summary><div class="more-panel"></div>';
+    button(done ? '刪除這場模擬' : '放棄這場模擬', () => abandonMockSession(session.id), menu.querySelector('.more-panel'), {kind: 'danger'});
+    actions.append(menu);
+    container.append(card);
+  }
+  if (!records.length) { container.insertAdjacentHTML('beforeend', '<p class="empty">這份職缺還沒有單題練習紀錄，可以從上方開始新練習。</p>'); return; }
   for (const record of records) {
     const followUps = Array.isArray(record.followUps) ? record.followUps : [];
     const card = document.createElement('article'); card.className = 'list-card record-card'; card.dataset.recordId = record.id;
@@ -1039,9 +1200,13 @@ function renderHistory() {
   const filter = controls.querySelector('#job-filter'); filter.value = historyState.filter;
   filter.addEventListener('change', () => { historyState.filter = filter.value; historyState.page = 0; renderHistory(); });
 
+  const allSessions = Object.values(workspace.mockSessions || {});
   const jobs = snapshots.map(snapshot => {
     const records = allRecords.filter(r => r.snapshotId === snapshot.id);
-    return {snapshot, records, completed: records.filter(r => r.status === 'completed').length, hasUnfinished: records.some(r => r.status !== 'completed'), activity: jobActivity(snapshot, records), title: jobTitle(snapshot)};
+    const sessions = allSessions.filter(s => s.snapshotId === snapshot.id);
+    // An unfinished session counts as work in progress, never as completed practice.
+    return {snapshot, records, sessions, completed: records.filter(r => r.status === 'completed').length, completedSessions: sessions.filter(s => s.status === 'completed').length,
+      hasUnfinished: records.some(r => r.status !== 'completed') || sessions.some(s => s.status !== 'completed'), activity: jobActivity(snapshot, [...records, ...sessions]), title: jobTitle(snapshot)};
   });
   const query = historyState.query.trim().toLowerCase();
   const filtered = jobs.filter(job => {
@@ -1070,11 +1235,16 @@ function renderHistory() {
       button('儲存名稱', async () => { await api(`/snapshots/${snapshot.id}/title`, {title: input.value}); historyState.renaming = null; await refreshWorkspace(); renderHistory(); setNotice('職缺名稱已更新。'); }, head.querySelector('.rename-actions'), {kind:'secondary'});
       button('取消', () => { historyState.renaming = null; renderHistory(); }, head.querySelector('.rename-actions'), {kind:'ghost'});
     } else {
-      head.innerHTML = `<h3>${escape(job.title)}</h3><p class="meta">最近活動 ${escape(dateLabel(job.activity))} · 已完成 ${job.completed} 次主練習${job.hasUnfinished ? ' · 有進行中的練習' : ''}</p>`;
+      head.innerHTML = `<h3>${escape(job.title)}</h3><p class="meta">最近活動 ${escape(dateLabel(job.activity))} · 已完成 ${job.completed} 次主練習${job.completedSessions ? ` · ${job.completedSessions} 場模擬` : ''}${job.hasUnfinished ? ' · 有進行中的練習' : ''}</p>`;
     }
     const actions = card.querySelector('.job-actions');
     button(workspace.analyses[snapshot.id] ? '開始新練習' : '產生題目', () => startJob(snapshot.id), actions, {kind:'primary'});
-    if (job.records.length) button(open ? '收合練習' : `查看練習（${job.records.length}）`, () => { historyState.openJob = open ? null : snapshot.id; renderHistory(); }, actions, {kind:'secondary', attributes:{'aria-expanded': String(open)}});
+    if (workspace.analyses[snapshot.id]) {
+      const running = job.sessions.find(session => session.status !== 'completed');
+      button(running ? '繼續三題模擬' : '三題短場模擬', () => running ? showMockSession(running.id) : startMockSession(snapshot.id), actions, {kind:'secondary', id:`mock-${snapshot.id}`});
+    }
+    const items = job.records.length + job.sessions.length;
+    if (items) button(open ? '收合練習' : `查看練習（${items}）`, () => { historyState.openJob = open ? null : snapshot.id; renderHistory(); }, actions, {kind:'secondary', attributes:{'aria-expanded': String(open)}});
     const menu = document.createElement('details'); menu.className = 'more-menu'; menu.innerHTML = '<summary aria-label="更多動作">⋯</summary><div class="more-panel"></div>';
     const panel = menu.querySelector('.more-panel');
     button('重新命名', () => { historyState.renaming = snapshot.id; renderHistory(); requestAnimationFrame(() => $('#rename-input')?.focus()); }, panel, {kind:'ghost'});

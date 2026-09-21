@@ -134,6 +134,14 @@ _Avoid_: Answer revision, unrelated next question
 At most two necessary sentence-level English corrections offered after a formal Feedback Report, each quoting one of the learner's own sentences verbatim and pairing it with a fact-preserving rewrite and a Traditional Chinese reason; it preserves the original facts, uncertainty, limitations, and missing experience, is stored apart from Answer Attempts, and shows nothing when no correction is warranted.
 _Avoid_: Rewritten answer, English Assistance, invented experience, grammar score
 
+**Short Mock Session（三題短場模擬）**:
+A single-sitting run of three Job-grounded Interview Questions from one Job Snapshot and its frozen resume version, answered without intervening feedback or coaching and assessed once at the end. A question may be skipped, and a skipped question is recorded as skipped rather than assessed. It is not a Practice Loop, never produces a Focus Point, and never alters a Practice Record.
+_Avoid_: Practice Loop, real interview, timed exam
+
+**Session Summary（整場回饋）**:
+The single overall strength and single overall priority improvement produced for one completed Short Mock Session, each quoting one of the learner's own session answers verbatim. It does not replace per-question Feedback Reports and produces no score, grade or hiring verdict; a session in which every question was skipped yields an explicit nothing-to-assess state rather than an invented summary.
+_Avoid_: Overall score, interview verdict, pass/fail
+
 **Focus Point Continuation（重點延續練習）**:
 A new Practice Loop started from a completed Practice Record's Focus Point under the same Job Snapshot and frozen resume version, presenting a fresh same-job scenario question while preserving the source record; its completion shows evidence-grounded progress without claiming improvement.
 _Avoid_: Editing the earlier record, a new job, a learner-managed skills list

@@ -21,7 +21,7 @@ Local issue tracker for the Adaptive English Interview Coach. All issues below w
 | [0015 — Record a three-minute answer](./0015-record-a-three-minute-answer.md) | ready-for-human | None |
 | [0016 — Retain and replay Answer Recordings](./0016-retain-and-replay-answer-recordings.md) | ready-for-human | 0015 |
 | [0017 — Answer by voice in every answer path](./0017-answer-by-voice-in-every-answer-path.md) | ready-for-human | 0015, 0016 |
-| [0018 — Run a three-question Short Mock Session](./0018-run-a-three-question-short-mock-session.md) | ready-for-agent | 0017 |
+| [0018 — Run a three-question Short Mock Session](./0018-run-a-three-question-short-mock-session.md) | ready-for-human | 0017 |
 | [0019 — Interpret a natural-language job request](./0019-interpret-a-natural-language-job-request.md) | ready-for-agent | None |
 | [0020 — Curate five jobs with a Fit Breakdown](./0020-curate-five-jobs-with-a-fit-breakdown.md) | ready-for-agent | 0019 |
 

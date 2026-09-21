@@ -3,10 +3,16 @@ import assert from 'node:assert/strict';
 import {harness} from './helpers.js';
 import {FakeJobSource,GreenhouseJobSource} from '../src/jobs.js';
 import {AppError} from '../src/domain.js';
-const profile={roles:['engineer'],locations:['Taipei'],seniority:['mid'],workArrangements:['hybrid'],priorities:['Python'],exclusions:['Senior']};
+// The six original fields; `salary` was added later and is optional on a write, so a
+// profile saved by an earlier version still loads and still validates.
+const legacyProfile={roles:['engineer'],locations:['Taipei'],seniority:['mid'],workArrangements:['hybrid'],priorities:['Python'],exclusions:['Senior']};
+const profile={...legacyProfile,salary:[]};
 test('editable profile filters with explanations; immutable selection uses captured server result',async t=>{
  const source=new FakeJobSource();let calls=0;const original=source.search.bind(source);source.search=async()=>{calls++;return original();};const {api}=await harness(t,undefined,{jobSource:source});
- assert.deepEqual((await api('/job-search-profile',profile)).data,profile);assert.deepEqual((await api('/job-search-profile')).data,profile);
+ assert.deepEqual((await api('/job-search-profile',legacyProfile)).data,profile,'a legacy six-field profile loads with an empty salary');
+ assert.deepEqual((await api('/job-search-profile')).data,profile);
+ assert.deepEqual((await api('/job-search-profile',{...profile,salary:['月薪 70k 以上']})).data,{...profile,salary:['月薪 70k 以上']});
+ assert.deepEqual((await api('/job-search-profile',profile)).data,profile);
  const run=(await api('/discovery',{})).data;assert.equal(run.results.length,1);assert.ok(run.results[0].reasons.some(r=>r.includes('Python')));assert.equal(calls,1);
  const s=(await api(`/discovery/${run.id}/select`,{resultId:run.results[0].id,text:'tampered'})).data;assert.equal(s.text,run.results[0].text);assert.equal(s.sourceUrl,run.results[0].sourceUrl);assert.ok(Date.parse(s.capturedAt));assert.equal(calls,1);
  assert.deepEqual((await api(`/discovery/${run.id}/select`,{resultId:run.results[0].id})).data,s);

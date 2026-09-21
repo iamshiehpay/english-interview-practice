@@ -9,7 +9,7 @@ async function responseJson(response){
   let size=0;const chunks=[];for await(const chunk of response.body){size+=chunk.length;requireValue(size<=2_000_000,'Provider response too large',502);chunks.push(chunk);}
   try{return JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw new AppError('Provider returned invalid JSON',502);}
 }
-import {analysisContract,feedbackContract,personalizationContract,coachingContract,followUpContract,correctionsContract,MODEL_CONTRACT_VERSION} from './model-contracts.js';
+import {analysisContract,feedbackContract,personalizationContract,coachingContract,followUpContract,correctionsContract,searchProfileContract,mockSummaryContract,MODEL_CONTRACT_VERSION} from './model-contracts.js';
 const followUpContext=({primaryQuestion,primaryAnswer,previousFollowUps=[]})=>({
   primaryQuestion:{text:primaryQuestion.text,...(primaryQuestion.meaningZh?{meaningZh:primaryQuestion.meaningZh}:{})},
   primaryAnswer:{transcript:primaryAnswer.transcript},
@@ -27,6 +27,8 @@ export class OpenAILanguageModel {
   coach({question,transcript,mode,signal}){return this.json(coachingContract,{question,transcript,mode},signal);}
   followUp({primaryQuestion,primaryAnswer,previousFollowUps,signal}){return this.json(followUpContract,followUpContext({primaryQuestion,primaryAnswer,previousFollowUps}),signal);}
   corrections({question,transcript,signal}){return this.json(correctionsContract,{question:{text:question.text},transcript},signal);}
+  interpretSearch({request,signal}){return this.json(searchProfileContract,{request},signal);}
+  mockSummary({answers,signal}){return this.json(mockSummaryContract,{answers:answers.map(({question,transcript})=>({question:{text:question.text},transcript}))},signal);}
   feedback({question,transcript,previousAttempt,approvedEvidence,signal}){return this.json(feedbackContract,{question,transcript,...(previousAttempt?{previousAttempt:{transcript:previousAttempt.transcript,priorityImprovement:previousAttempt.feedback.priorityImprovement}}:{}),approvedEvidence:approvedEvidence.map(({excerpt})=>({excerpt}))},signal);}
 }
 export class ClaudeLanguageModel {
@@ -44,6 +46,8 @@ export class ClaudeLanguageModel {
   coach({question,transcript,mode,signal}){return this.json(coachingContract,{question,transcript,mode},signal);}
   followUp({primaryQuestion,primaryAnswer,previousFollowUps,signal}){return this.json(followUpContract,followUpContext({primaryQuestion,primaryAnswer,previousFollowUps}),signal);}
   corrections({question,transcript,signal}){return this.json(correctionsContract,{question:{text:question.text},transcript},signal);}
+  interpretSearch({request,signal}){return this.json(searchProfileContract,{request},signal);}
+  mockSummary({answers,signal}){return this.json(mockSummaryContract,{answers:answers.map(({question,transcript})=>({question:{text:question.text},transcript}))},signal);}
   feedback({question,transcript,previousAttempt,approvedEvidence,signal}){return this.json(feedbackContract,{question,transcript,...(previousAttempt?{previousAttempt:{transcript:previousAttempt.transcript,priorityImprovement:previousAttempt.feedback.priorityImprovement}}:{}),approvedEvidence:approvedEvidence.map(({excerpt})=>({excerpt}))},signal);}
 }
 async function responseBytes(response,limit=4_000_000){

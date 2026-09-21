@@ -3,8 +3,8 @@ import {requireAudit,scanCanary} from './codex-audit.js';
 import {resolve} from 'node:path';
 import {CodexRPC} from './codex-rpc.js';
 import {runtimeProfile} from './codex-profile.js';
-import {analysisSchema,additionalAnalysisSchema,feedbackSchema,coachingSchema,followUpSchema,correctionsSchema} from './model-schemas.js';
-import {analysisContract,feedbackContract,personalizationContract,coachingContract,followUpContract,correctionsContract,MODEL_CONTRACT_VERSION} from './model-contracts.js';
+import {analysisSchema,additionalAnalysisSchema,feedbackSchema,coachingSchema,followUpSchema,correctionsSchema,searchProfileSchema,mockSummarySchema} from './model-schemas.js';
+import {analysisContract,feedbackContract,personalizationContract,coachingContract,followUpContract,correctionsContract,searchProfileContract,mockSummaryContract,MODEL_CONTRACT_VERSION} from './model-contracts.js';
 import {AppError,requireValue} from './domain.js';
 const followUpContext=({primaryQuestion,primaryAnswer,previousFollowUps=[]})=>({
   primaryQuestion:{text:primaryQuestion.text,...(primaryQuestion.meaningZh?{meaningZh:primaryQuestion.meaningZh}:{})},
@@ -53,5 +53,7 @@ export class CodexLanguageModel {
   coach({question,transcript,mode,signal}){return this.json(coachingContract,{question,transcript,mode},coachingSchema,signal);}
   followUp({primaryQuestion,primaryAnswer,previousFollowUps,signal}){return this.json(followUpContract,followUpContext({primaryQuestion,primaryAnswer,previousFollowUps}),followUpSchema,signal);}
   corrections({question,transcript,signal}){return this.json(correctionsContract,{question:{text:question.text},transcript},correctionsSchema,signal);}
+  interpretSearch({request,signal}){return this.json(searchProfileContract,{request},searchProfileSchema,signal);}
+  mockSummary({answers,signal}){return this.json(mockSummaryContract,{answers:answers.map(({question,transcript})=>({question:{text:question.text},transcript}))},mockSummarySchema,signal);}
   feedback({question,transcript,previousAttempt,approvedEvidence=[],signal}){return this.json(feedbackContract,{question,transcript,...(previousAttempt?{previousAttempt:{transcript:previousAttempt.transcript,priorityImprovement:previousAttempt.feedback.priorityImprovement}}:{}),approvedEvidence:approvedEvidence.map(({excerpt})=>({excerpt}))},feedbackSchema,signal);}
 }

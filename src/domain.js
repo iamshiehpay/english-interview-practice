@@ -61,6 +61,17 @@ export function validateCoaching(value, mode, transcript = '') {
   return {text:value.text, explanationZh:value.explanationZh};
 }
 
+// A Session Summary assesses one Short Mock Session as a whole. Both findings must
+// quote one of the learner's own session answers verbatim, so the summary is evidence
+// rather than flattery; skipped questions supply no transcript and are never assessed.
+export function validateMockSummary(value, transcripts) {
+  const valid = v => fields(v, ['text','textZh','quote']) && hasLatin(v.text) && v.text.length <= 2000 && hasHan(v.textZh) && v.textZh.length <= 2000 && nonempty(v.quote) && transcripts.some(transcript => transcript.includes(v.quote));
+  requireValue(Array.isArray(transcripts) && transcripts.length > 0, 'A session with no answers has nothing to assess', 409);
+  requireValue(fields(value, ['strength','priorityImprovement']) && valid(value.strength) && valid(value.priorityImprovement), 'Invalid provider output: session summary schema or answer citation', 502);
+  const finding = v => ({text: v.text, textZh: v.textZh, quote: v.quote});
+  return {strength: finding(value.strength), priorityImprovement: finding(value.priorityImprovement)};
+}
+
 export function validateFollowUp(value) {
   requireValue(fields(value, ['text','meaningZh']) && hasLatin(value.text) && value.text.length <= 1000 && hasHan(value.meaningZh) && value.meaningZh.length <= 1000, 'Invalid provider output: bilingual follow-up schema', 502);
   return {text:value.text, meaningZh:value.meaningZh};
