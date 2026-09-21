@@ -1,4 +1,4 @@
-import {mountVoice, mountReadAloud, resetReadAloud} from './voice.js';
+import {mountVoice, mountReadAloud, resetReadAloud, hasPendingRecording} from './voice.js';
 
 const $ = selector => document.querySelector(selector);
 const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -42,6 +42,8 @@ function localizeError(message, status) {
     [/Operation cancelled|cancelled or superseded/i, '操作已取消；先前保存的內容仍在本機。'],
     [/Operation already pending for this practice/i, '這筆練習的操作仍在進行，請等待或取消後再試。'],
     [/timed out/i, '服務等待逾時。已保存的內容不受影響，請重試原操作。'],
+    [/readings are already in progress/i, '同時朗讀的數量已達上限，請等前一段朗讀結束再試。'],
+    [/cannot read text aloud|read aloud takes a reference|Only an Illustrative Answer can be read aloud|Only English practice text is read aloud|supported reading speed|Nothing to read aloud/i, '這段內容目前無法朗讀；英文題目、示範回答與關鍵句修正才支援朗讀。'],
     [/rate limit/i, '服務目前請求過多，請稍後重試。'],
     [/Invalid provider output|schema|citation/i, '服務回傳的內容格式無法使用，未寫入練習紀錄。請重試。'],
     [/Provider or storage operation failed/i, '服務或本機儲存操作失敗；已成功保存的內容仍在，請重試。'],
@@ -466,35 +468,50 @@ async function showCoaching(record, mode, parent, transcript) {
   } catch(error) {if(parent.isConnected)parent.textContent='尚未取得建議，可再次按下按鈕重試。';throw error;}
 }
 
+// The transcript goes into the normal answer box so it can be submitted in one
+// click. Existing typing is never silently overwritten: the learner picks.
+async function applyTranscript(session, voiceDraft, {mode = 'replace'} = {}) {
+  if (draftSession !== session) return;
+  const existing = session.textarea.value;
+  session.textarea.value = mode === 'append' && existing.trim() ? `${existing.replace(/\s+$/, '')}\n${voiceDraft.transcript}` : voiceDraft.transcript;
+  session.transcriptDraftId = voiceDraft.id;
+  session.dirty = true;
+  $('#voice-choice')?.remove();
+  // Set the status before saving. saveDraft owns the status from here on, so a
+  // keystroke landing during the save is not overwritten by a stale "saved" message.
+  session.status.textContent = mode === 'append' ? '語音轉錄已接在原本的文字後面，正在存成本機草稿…' : '語音轉錄已放進回答框，可以直接送出或先修改；正在存成本機草稿…';
+  const submit = $('#submit-answer');
+  if (submit && modelReady()) submit.disabled = false;
+  session.textarea.focus({preventScroll:true});
+  await saveDraft(session, true).catch(() => {});
+}
+
 function renderVoiceChoice(session, voiceDraft) {
   if (draftSession !== session) return;
   $('#voice-choice')?.remove();
-  session.voiceChoicePending = true;
+  const existing = session.textarea.value;
+  if (!existing.trim()) { applyTranscript(session, voiceDraft); return; }
+  // Reopening a record whose draft already contains this transcript: nothing to offer.
+  if (existing.includes(voiceDraft.transcript)) { session.transcriptDraftId = voiceDraft.id; return; }
+  // Text is already there, so nothing is applied until the learner chooses. The choice
+  // is an offer, not a gate: submitting the text as it stands stays available.
   const submit = $('#submit-answer');
-  if (submit) submit.disabled = true;
   const choice = document.createElement('div');
   choice.id = 'voice-choice';
   choice.className = 'provider-warning';
-  choice.innerHTML = `<strong>語音已轉成文字</strong><p lang="en">${escape(voiceDraft.transcript)}</p><p>請選擇要採用這份語音轉錄，或保留目前的文字草稿。兩種草稿會分開保存。</p><div class="button-row"></div>`;
-  const finish = async useVoice => {
+  choice.innerHTML = `<strong>語音已轉成文字</strong><p lang="en">${escape(voiceDraft.transcript)}</p><p>回答框裡已經有文字。要取代它、接在後面，還是保留原本的文字？在你決定前，回答框裡的內容仍然可以直接送出。</p><div class="button-row"></div>`;
+  const keep = async () => {
     if (draftSession !== session) return;
-    if (useVoice) {
-      session.textarea.value = voiceDraft.transcript;
-      session.transcriptDraftId = voiceDraft.id;
-      session.dirty = false;
-      session.status.textContent = '目前採用語音轉錄草稿；修改內容會自動另存。';
-    } else {
-      if (session.dirty || session.textarea.value !== session.savedValue) await saveDraft(session, true);
-      session.transcriptDraftId = null;
-      session.status.textContent = '保留目前文字草稿；已儲存在本機。';
-    }
-    session.voiceChoicePending = false;
+    if (session.dirty || session.textarea.value !== session.savedValue) await saveDraft(session, true);
+    session.transcriptDraftId = null;
+    session.status.textContent = '保留原本的文字草稿；已儲存在本機。';
     choice.remove();
-    if (modelReady()) submit.disabled = false;
+    if (submit && modelReady()) submit.disabled = false;
     session.textarea.focus({preventScroll:true});
   };
-  button('採用語音轉錄', () => finish(true), choice.querySelector('.button-row'), {kind:'secondary'});
-  button('保留目前文字', () => finish(false), choice.querySelector('.button-row'), {kind:'ghost'});
+  button('取代目前文字', () => applyTranscript(session, voiceDraft, {mode:'replace'}), choice.querySelector('.button-row'), {kind:'secondary'});
+  button('接在後面', () => applyTranscript(session, voiceDraft, {mode:'append'}), choice.querySelector('.button-row'), {kind:'secondary'});
+  button('保留原本的文字', keep, choice.querySelector('.button-row'), {kind:'ghost'});
   $('#voice-entry').append(choice);
 }
 
@@ -521,7 +538,6 @@ function installEditor(record, context) {
     timer:null,
     submissionId:crypto.randomUUID(),
     transcriptDraftId:null,
-    voiceChoicePending:false,
     frozen:false
   };
   draftSession = session;
@@ -538,7 +554,9 @@ function installEditor(record, context) {
     catch (error) { setError(error.message); }
   });
   $('#submit-answer').addEventListener('click', () => submitAnswer(record, session));
-  if (providerInfo?.speech?.external) {
+  {
+    // Voice is offered with every speech provider; the demonstration one says in the
+    // panel that it does not really transcribe, rather than hiding the whole feature.
     const host = $('#voice-entry');
     disposeVoice = mountVoice(host, {
       recordId:record.id,
@@ -556,7 +574,7 @@ function installEditor(record, context) {
         if (draftSession !== session) return;
         session.frozen = false;
         textarea.readOnly = false;
-        if (!session.voiceChoicePending && modelReady()) $('#submit-answer').disabled = false;
+        if (modelReady()) $('#submit-answer').disabled = false;
       },
       onError:error => { if (draftSession === session) setError(localizeError(error.message, error.status || 400)); }
     });
@@ -644,7 +662,7 @@ function followUpHistoryHtml(followUps, corrections = {}) {
       <p class="meaning">${escape(previous.question.meaningZh)}</p>
       <blockquote lang="en">${escape(previous.attempt?.transcript || '尚未作答')}</blockquote>
       ${previous.attempt?.feedback ? feedbackHtml(previous.attempt.feedback) : ''}
-      ${previousCorrections ? `<div class="corrections-area">${correctionsHtml(previousCorrections)}</div>` : ''}
+      ${previousCorrections ? `<div class="corrections-area" data-history-attempt="${escape(previous.attempt.id)}">${correctionsHtml(previousCorrections)}</div>` : ''}
     </div>
   </details>`;
 }
@@ -841,6 +859,9 @@ async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedb
   $('#practice').innerHTML = practiceFrame({stage:last?.feedback?3:2,snapshot,content:body});
   readAloud($('#question-read-aloud'), {recordId:record.id}, '朗讀題目');
   if (currentFollowUp) readAloud($('#follow-up-read-aloud'), {recordId:record.id, followUpId:currentFollowUp.id}, '朗讀追問題目');
+  // Corrections rendered inside the collapsed follow-up history are static markup, so
+  // they need mounting here; the live panels mount through setupCorrections.
+  document.querySelectorAll('[data-history-attempt]').forEach(area => mountCorrectionReadAloud(area, record.id, area.dataset.historyAttempt));
   if ($('#attempt-version')) {
     const renderAttempt = () => {
       const index=Number($('#attempt-version').value), attempt=record.attempts[index];
@@ -1117,8 +1138,9 @@ async function showOperations() {
 }
 
 window.addEventListener('beforeunload', event => {
+  // A captured-but-unsubmitted recording lives only in this page, so warn before it goes.
+  if (draftSession?.dirty || hasPendingRecording()) { event.preventDefault(); event.returnValue = ''; }
   disposeVoice(); resetReadAloud();
-  if (draftSession?.dirty) { event.preventDefault(); event.returnValue = ''; }
 });
 
 const operationsTimer = setInterval(() => showOperations().catch(() => {}), 800);

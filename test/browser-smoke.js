@@ -13,6 +13,17 @@ const wait=async(p,label)=>{for(let i=0;i<300;i++){if(p())return;await new Promi
 const click=n=>{if(typeof n==='string')n=el(n);if(!n)throw Error('Missing button');n.click();};
 const fill=(s,v)=>{const n=el(s);if(!n)throw Error('Missing '+s);n.value=v;n.dispatchEvent(new InputEvent('input',{bubbles:true}));};
 const ws=()=>fetch('/api/workspace').then(r=>r.json());
+// Synthetic microphone: no hardware, no recognition. Proves the recording workflow only.
+const fakeMicrophone=()=>{
+  window.__recorders=[];
+  Object.defineProperty(navigator,'mediaDevices',{configurable:true,value:{getUserMedia:async()=>({getTracks:()=>[{stop(){}}]})}});
+  window.MediaRecorder=class{
+    static isTypeSupported(type){return type==='audio/webm';}
+    constructor(stream,options){this.stream=stream;this.mimeType=options?.mimeType||'audio/webm';this.state='inactive';window.__recorders.push(this);}
+    start(){this.state='recording';}
+    stop(){this.state='inactive';this.ondataavailable?.({data:new Blob([new Uint8Array(2048)],{type:this.mimeType})});this.onstop?.();}
+  };
+};
 `;
 const run=code=>browser('eval',`(async()=>{${helpers}${code}})()`);
 try {
@@ -42,8 +53,42 @@ try {
  el('#question-read-aloud .read-aloud-speed').value='slow';el('#question-read-aloud .read-aloud-speed').dispatchEvent(new Event('change',{bubbles:true}));
  click('#question-read-aloud .read-aloud-replay');await wait(()=>window.__played.length===2,'read aloud replays at the chosen speed');
  if(window.__played[0]===window.__played[1])throw Error('Speed change did not request different audio');
+ // Rapid repeat clicks must never start two overlapping readings.
+ const beforeBurst=window.__played.length;
+ for(let i=0;i<4;i++){el('#question-read-aloud .read-aloud-replay').click();el('#question-read-aloud .read-aloud-play').click();}
+ await new Promise(r=>setTimeout(r,600));
+ if(window.__played.length>beforeBurst+1)throw Error('Overlapping readings started: '+(window.__played.length-beforeBurst));
  click('#question-actions button');await wait(()=>el('#answer'),'editor');
  if(!el('#retry-draft').hidden)throw Error('Retry visible before failure');
+
+ // Voice: three-minute budget, visible clock, and a transcript that lands in the answer box.
+ fakeMicrophone();
+ if(!el('.voice-panel'))throw Error('Voice panel missing');
+ const limits=await fetch('/api/providers').then(r=>r.json()).then(p=>p.speech);
+ if(limits.recordingLimitSeconds!==180)throw Error('Recording limit is not three minutes: '+limits.recordingLimitSeconds);
+ if(!el('.voice-panel').textContent.includes('3 分鐘'))throw Error('Panel does not state the three-minute limit');
+ if(!el('.voice-panel').textContent.includes('不評發音'))throw Error('Panel does not say pronunciation is not assessed');
+ if(!el('.voice-panel').textContent.includes('重新整理會失去'))throw Error('Panel does not warn that a reload loses an unsubmitted recording');
+ if(el('.voice-panel').textContent.includes('90 秒')||el('.voice-panel').textContent.includes('6 MB'))throw Error('Stale 90-second / 6 MB wording still shown');
+ click(btn('開始錄音'));await wait(()=>el('.recording-clock')&&!el('.recording-clock').hidden,'recording clock visible');
+ if(!/已錄 \\d:\\d\\d \\/ 3:00/.test(el('.recording-clock').textContent))throw Error('Elapsed time not shown: '+el('.recording-clock').textContent);
+ // Force the near-limit state without waiting three real minutes.
+ const rec=window.__recorders.at(-1);
+ click(btn('停止並轉成文字'));await wait(()=>el('#answer').value.includes('demonstration transcript'),'transcript lands in the answer box');
+ if(el('#voice-choice'))throw Error('An empty answer box must not ask replace-or-append');
+ await wait(()=>el('#draft-status').textContent.includes('草稿'),'transcript saved as a local draft');
+ // With different text already present the learner chooses; nothing is overwritten silently.
+ const typed='I typed this sentence myself before recording.';
+ fill('#answer',typed);await wait(()=>el('#draft-status').textContent.includes('已儲存'),'typed draft saved');
+ click(btn('開始錄音'));await wait(()=>!el('.recording-clock').hidden,'second recording started');
+ click(btn('停止並轉成文字'));await wait(()=>el('#voice-choice'),'replace-or-append offered when text exists');
+ if(el('#answer').value!==typed)throw Error('Existing text changed before the learner chose');
+ if(el('#submit-answer').disabled)throw Error('Submitting the existing text must stay available while choosing');
+ click(btn('接在後面'));await wait(()=>el('#answer').value.length>typed.length,'append keeps the existing text');
+ if(!el('#answer').value.startsWith(typed))throw Error('Append lost the existing text');
+ if(!el('#answer').value.includes('demonstration transcript'))throw Error('Append did not add the transcript');
+ el('#answer').value='';el('#answer').dispatchEvent(new InputEvent('input',{bubbles:true}));
+ await wait(()=>el('#draft-status').textContent.includes('已儲存'),'cleared draft settles; status='+el('#draft-status').textContent);
  const originalFetch=window.fetch.bind(window);let failDraft=true,failFeedback=true;
  window.fetch=async(...a)=>{const path=String(a[0]);if(a[1]?.method==='POST'&&((path.endsWith('/draft')&&failDraft)||(path.endsWith('/feedback')&&failFeedback))){if(path.endsWith('/draft'))failDraft=false;else failFeedback=false;return new Response(JSON.stringify({error:'synthetic failure'}),{status:503,headers:{'Content-Type':'application/json'}});}return originalFetch(...a);};
  fill('#answer','I would measure query latency and compare the execution plans.');await wait(()=>!el('#retry-draft').hidden,'draft failure');

@@ -56,10 +56,16 @@ test('read aloud takes references only, and unknown or Chinese-only references a
   assert.equal((await api('/speech', {recordId: record.id, coachingId: illustrative.id})).status, 200);
   assert.equal(calls.at(-1).text, illustrative.text);
 
-  // Defence in depth for legacy stored data: a question with no Latin script is refused.
+  // Defence in depth for legacy stored data: a question with no Latin script is refused,
+  // and so is one that is mostly Han with a stray Latin token.
   await store.transact(d => { d.records[record.id].question.text = '請說明你的做法與取捨。'; });
   assert.equal((await api('/speech', {recordId: record.id})).status, 400);
-  assert.ok(calls.every(call => !/\p{Script=Han}/u.test(call.text)));
+  await store.transact(d => { d.records[record.id].question.text = '請說明你的做法與取捨，並比較兩種方案的成本與風險 API。'; });
+  assert.equal((await api('/speech', {recordId: record.id})).status, 400);
+  // An English question may still quote a short Chinese resume line.
+  await store.transact(d => { d.records[record.id].question.text = 'Your resume mentions “資料庫最佳化”. How would you connect that background to this role?'; });
+  assert.equal((await api('/speech', {recordId: record.id})).status, 200);
+  assert.ok(calls.every(call => /\p{Script=Latin}/u.test(call.text)));
 });
 
 test('a follow-up question and a key-sentence rewrite are readable, the learner transcript is not', async t => {
