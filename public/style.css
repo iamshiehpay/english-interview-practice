@@ -430,3 +430,10 @@ mark { background: #ffe2c5; color: #1b3a47; border-radius: 4px; }
 @media (max-width: 480px) {
   .more-panel { right: auto; left: 0; }
 }
+
+/* Read aloud: a quiet inline control that never competes with the question. */
+.read-aloud { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 10px 0 4px; }
+.read-aloud button { margin: 0; padding: 8px 16px; min-height: 38px; font-size: 14px; }
+.read-aloud select { padding: 7px 10px; color: var(--ink-soft); background: var(--paper); border: 1px solid var(--line); border-radius: 999px; font-size: 14px; }
+.read-aloud .meta { margin: 0; }
+.correction-card .read-aloud { margin: 6px 0 10px; }

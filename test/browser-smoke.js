@@ -35,13 +35,20 @@ try {
  fill('#jd','Build reliable Python APIs.\\nOperate Kubernetes services.');click('#capture');await wait(()=>el('#recommended-question'),'question');
  if(document.body.innerText.includes('查看出題依據'))throw Error('Redundant evidence shown');
  const data=await ws();if(!Object.values(data.snapshots)[0].resume)throw Error('Resume not selected');
- click('#recommended-question button');await wait(()=>el('#answer'),'editor');
+ if(!el('#question-read-aloud .read-aloud-play'))throw Error('Read-aloud control missing on the question screen');
+ if(document.querySelector('audio'))throw Error('Audio element created before any learner action');
+ window.__played=[];HTMLMediaElement.prototype.play=function(){window.__played.push(this.src);this.dispatchEvent(new Event('ended'));return Promise.resolve();};
+ click('#question-read-aloud .read-aloud-play');await wait(()=>window.__played.length===1,'read aloud plays on click');
+ el('#question-read-aloud .read-aloud-speed').value='slow';el('#question-read-aloud .read-aloud-speed').dispatchEvent(new Event('change',{bubbles:true}));
+ click('#question-read-aloud .read-aloud-replay');await wait(()=>window.__played.length===2,'read aloud replays at the chosen speed');
+ if(window.__played[0]===window.__played[1])throw Error('Speed change did not request different audio');
+ click('#question-actions button');await wait(()=>el('#answer'),'editor');
  if(!el('#retry-draft').hidden)throw Error('Retry visible before failure');
  const originalFetch=window.fetch.bind(window);let failDraft=true,failFeedback=true;
  window.fetch=async(...a)=>{const path=String(a[0]);if(a[1]?.method==='POST'&&((path.endsWith('/draft')&&failDraft)||(path.endsWith('/feedback')&&failFeedback))){if(path.endsWith('/draft'))failDraft=false;else failFeedback=false;return new Response(JSON.stringify({error:'synthetic failure'}),{status:503,headers:{'Content-Type':'application/json'}});}return originalFetch(...a);};
  fill('#answer','I would measure query latency and compare the execution plans.');await wait(()=>!el('#retry-draft').hidden,'draft failure');
  click('#retry-draft');await wait(()=>el('#draft-status').textContent.includes('已儲存'),'draft retry');
- click('#next-question');await wait(()=>el('#recommended-question'),'switch');click('#recommended-question button');await wait(()=>el('#answer'),'new editor');
+ click('#next-question');await wait(()=>el('#recommended-question'),'switch');click('#question-actions button');await wait(()=>el('#answer'),'new editor');
  click('[data-view="history"]');await wait(()=>el('[data-job-id]'),'job-centred history');
  const first=Object.values((await ws()).records).find(r=>r.writtenDraft);
  click('[data-job-id="'+first.snapshotId+'"] [aria-expanded]');await wait(()=>el('[data-record-id="'+first.id+'"]'),'job detail');
@@ -91,11 +98,12 @@ try {
  if(!el('.focus-progress').textContent.includes('系統不會替你宣稱進步'))throw Error('Focus progress must not fabricate improvement');
  `);
  await browser('set','viewport','390','844');
- await run(`if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow');if(btn('查看參考表達'))throw Error('Old reference outline shown');click('nav [data-view="home"]');await wait(()=>el('#use-resume'),'home');el('#use-resume').checked=false;fill('#jd','Build services and discuss engineering trade-offs.');click('#capture');await wait(()=>el('#recommended-question'),'JD only');click('#recommended-question button');await wait(()=>el('#answer'),'editor');`);
+ await run(`if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow');if(btn('查看參考表達'))throw Error('Old reference outline shown');click('nav [data-view="home"]');await wait(()=>el('#use-resume'),'home');el('#use-resume').checked=false;fill('#jd','Build services and discuss engineering trade-offs.');click('#capture');await wait(()=>el('#recommended-question'),'JD only');click('#question-actions button');await wait(()=>el('#answer'),'editor');`);
  await browser('screenshot',resolve('docs/verification/learner-flow/mobile.png'),'--full');
  await run(`
  click(btn('看一個示範回答'));await wait(()=>el('#hint-result .coaching-text'),'illustrative');
  if(!el('#hint-result .coaching-caveat')||!el('#hint-result .coaching-caveat').textContent.includes('這是假設示範，請替換成你自己的經驗'))throw Error('Illustrative caveat missing');
+ if(!el('#illustrative-read-aloud .read-aloud-play'))throw Error('Illustrative Answer cannot be read aloud');
  fill('#ideas','I would compare two approaches.');click(btn('幫我整理成英文'));await wait(()=>el('#ideas-result .coaching-text'),'ideas');
  const before=await ws();const fresh=Object.values(before.records).find(r=>r.attempts.length===0&&before.snapshots[r.snapshotId].resume===null);if(!fresh)throw Error('JD-only record missing');
  if(fresh.attempts.length)throw Error('Ideas counted as answer');
@@ -128,16 +136,16 @@ try {
  if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow');
  return 'pass';`);
  await run(`
- click(btn('再練一題'));await wait(()=>el('#recommended-question'),'early-end question');click('#recommended-question button');await wait(()=>el('#answer'),'early-end editor');
+ click(btn('再練一題'));await wait(()=>el('#recommended-question'),'early-end question');click('#question-actions button');await wait(()=>el('#answer'),'early-end editor');
  fill('#answer','I would identify the riskiest assumption and test it first.');click('#submit-answer');await wait(()=>btn('讓面試官追問'),'early-end primary feedback');click(btn('讓面試官追問'));await wait(()=>el('#follow-up-answer'),'early-end follow-up');
  fill('#follow-up-answer','I would measure the outcome and adjust the plan.');click('#submit-follow-up');await wait(()=>btn('繼續追問'),'early-end follow-up feedback');click(btn('結束並保存'));await wait(()=>el('#practice-complete'),'early-end completion');
  const earlyEnded=Object.values((await ws()).records).find(r=>r.attempts[0]?.transcript==='I would identify the riskiest assumption and test it first.');if(earlyEnded?.status!=='completed'||earlyEnded.followUps?.length!==1||!earlyEnded.followUps[0].attempt?.feedback)throw Error('Early end after first follow-up feedback did not preserve the completed follow-up');
  `);
  await run(`
- click(btn('再練一題'));await wait(()=>el('#recommended-question'),'another question');click('#recommended-question button');await wait(()=>el('#answer'),'another editor');
+ click(btn('再練一題'));await wait(()=>el('#recommended-question'),'another question');click('#question-actions button');await wait(()=>el('#answer'),'another editor');
  const realFetch=window.fetch.bind(window);let started=false;
  window.fetch=async(...a)=>{if(a[1]?.method==='POST'&&String(a[0]).endsWith('/feedback')){started=true;await new Promise(r=>setTimeout(r,800));return new Response(JSON.stringify({error:'synthetic delayed failure'}),{status:503,headers:{'Content-Type':'application/json'}});}return realFetch(...a);};
- fill('#answer','I would start by checking the logs.');click('#submit-answer');await wait(()=>started,'background feedback');click('#next-question');await wait(()=>el('#recommended-question'),'background switch');click('#recommended-question button');await wait(()=>el('#answer'),'background new editor');fill('#answer','This new draft must survive the previous feedback failure.');await wait(()=>el('#draft-status').textContent.includes('已儲存'),'background draft save');await new Promise(r=>setTimeout(r,1000));
+ fill('#answer','I would start by checking the logs.');click('#submit-answer');await wait(()=>started,'background feedback');click('#next-question');await wait(()=>el('#recommended-question'),'background switch');click('#question-actions button');await wait(()=>el('#answer'),'background new editor');fill('#answer','This new draft must survive the previous feedback failure.');await wait(()=>el('#draft-status').textContent.includes('已儲存'),'background draft save');await new Promise(r=>setTimeout(r,1000));
  const records=Object.values((await ws()).records);if(!records.some(r=>r.writtenDraft?.transcript==='This new draft must survive the previous feedback failure.'))throw Error('Background feedback destroyed new draft');window.fetch=realFetch;
  `);
  await run(`

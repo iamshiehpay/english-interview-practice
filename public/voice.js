@@ -1,3 +1,88 @@
+// Read-aloud playback. One reading plays at a time, the chosen speed follows the
+// learner across controls, and nothing ever starts without a click.
+const speedLabels = {slow: '慢速', normal: '正常', fast: '快速'};
+let readAloudSpeed = 'normal';
+let playing = null;
+const mountedReadAloud = new Set();
+
+export function stopReadAloud() {
+  if (!playing) return;
+  const audio = playing;
+  playing = null;
+  audio.pause();
+  audio.currentTime = 0;
+}
+export function resetReadAloud() {
+  stopReadAloud();
+  for (const dispose of [...mountedReadAloud]) dispose();
+}
+
+export function mountReadAloud(parent, reference, {api, provider, label = '朗讀英文', onError} = {}) {
+  if (!parent || !provider?.canSpeak) return () => {};
+  const box = document.createElement('div');
+  box.className = 'read-aloud';
+  const play = document.createElement('button'); play.type = 'button'; play.className = 'ghost read-aloud-play'; play.textContent = label;
+  const replay = document.createElement('button'); replay.type = 'button'; replay.className = 'ghost read-aloud-replay'; replay.textContent = '重播'; replay.hidden = true;
+  const speed = document.createElement('select'); speed.className = 'read-aloud-speed'; speed.setAttribute('aria-label', '朗讀速度');
+  for (const [value, text] of Object.entries(speedLabels)) { const option = document.createElement('option'); option.value = value; option.textContent = text; speed.append(option); }
+  speed.value = readAloudSpeed;
+  const status = document.createElement('span'); status.className = 'meta read-aloud-status'; status.setAttribute('role', 'status');
+  box.append(play, replay, speed, status);
+  if (provider.demonstrationSpeech) { const note = document.createElement('span'); note.className = 'meta'; note.textContent = '目前是本機示範服務，只會播放示意音，不是真人朗讀。'; box.append(note); }
+  parent.append(box);
+
+  const cache = new Map();
+  let audio = null, disposed = false;
+  const dispose = () => {
+    if (disposed) return;
+    disposed = true;
+    mountedReadAloud.delete(dispose);
+    if (audio && playing === audio) stopReadAloud();
+    for (const url of cache.values()) URL.revokeObjectURL(url);
+    cache.clear();
+    box.remove();
+  };
+  mountedReadAloud.add(dispose);
+
+  const idle = () => { play.textContent = label; play.disabled = false; };
+  async function sourceFor(choice) {
+    if (cache.has(choice)) return cache.get(choice);
+    const result = await api('/speech', {...reference, speed: choice});
+    const bytes = Uint8Array.from(atob(result.audio), character => character.charCodeAt(0));
+    const url = URL.createObjectURL(new Blob([bytes], {type: result.mimeType}));
+    cache.set(choice, url);
+    return url;
+  }
+  async function start() {
+    if (playing === audio && audio) { stopReadAloud(); idle(); status.textContent = ''; return; }
+    stopReadAloud();
+    play.disabled = true;
+    status.textContent = '正在準備朗讀…';
+    try {
+      const url = await sourceFor(speed.value);
+      if (disposed) return;
+      audio = new Audio(url);
+      audio.onended = () => { if (playing === audio) playing = null; idle(); status.textContent = ''; };
+      playing = audio;
+      play.textContent = '停止';
+      play.disabled = false;
+      replay.hidden = false;
+      status.textContent = '正在朗讀…';
+      await audio.play();
+    } catch (error) {
+      if (disposed) return;
+      if (playing === audio) playing = null;
+      idle();
+      status.textContent = '朗讀失敗，可再試一次。';
+      onError?.(error);
+    }
+  }
+  play.addEventListener('click', () => { start(); });
+  replay.addEventListener('click', () => { stopReadAloud(); start(); });
+  speed.addEventListener('change', () => { readAloudSpeed = speed.value; stopReadAloud(); idle(); status.textContent = ''; });
+  return dispose;
+}
+
 // Audio remains in memory only while recording or awaiting a retry.
 export function mountVoice(parent, {recordId, api, provider, beforeTranscription, onTranscript, onTranscriptionEnd, onError}) {
   const panel = document.createElement('section');
@@ -28,6 +113,7 @@ export function mountVoice(parent, {recordId, api, provider, beforeTranscription
   }
   start.onclick = async () => {
     try {
+      stopReadAloud();
       if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) throw Error('這個瀏覽器無法錄音，請改用文字回答。');
       start.disabled = true; recordingFailed = false; audio = null; chunks = []; retry.hidden = true;
       stream = await navigator.mediaDevices.getUserMedia({audio: true});

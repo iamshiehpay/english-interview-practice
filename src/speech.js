@@ -3,11 +3,51 @@ import {join} from 'node:path';
 import {randomUUID} from 'node:crypto';
 import {requireValue, nonempty} from './domain.js';
 
+// Read-aloud speeds are a small fixed set; the browser may only name one of these.
+export const readAloudSpeeds = {slow: 0.75, normal: 1, fast: 1.25};
+export const readAloudMediaTypes = ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/mp4'];
+// A long question plus its rationale stays far below this; the cap bounds outbound text.
+export const READ_ALOUD_MAX_CHARACTERS = 4000;
+
 export class FakeSpeechProvider {
   name = 'Demonstration speech provider (fixed sample transcript)';
+  // Deliberately not speech: a short tone proves the whole read-aloud path works
+  // without a key, and the interface labels it as a demonstration.
+  demonstrationSpeech = true;
   async transcribe({audioPath, mimeType}) {
     return {transcript: 'I would first clarify the requirements, then compare alternatives and test the assumptions. This is a demonstration transcript, not a transcription of your recording.'};
   }
+  async speak({speed}) {
+    return {audio: tone(0.6 / (speed || 1)), mimeType: 'audio/wav'};
+  }
+}
+
+function tone(seconds, rate = 8000, hertz = 440) {
+  const samples = Math.max(1, Math.round(seconds * rate));
+  const data = Buffer.alloc(samples * 2);
+  for (let i = 0; i < samples; i++) data.writeInt16LE(Math.round(Math.sin((2 * Math.PI * hertz * i) / rate) * 4000), i * 2);
+  const header = Buffer.alloc(44);
+  header.write('RIFF', 0); header.writeUInt32LE(36 + data.length, 4); header.write('WAVE', 8);
+  header.write('fmt ', 12); header.writeUInt32LE(16, 16); header.writeUInt16LE(1, 20); header.writeUInt16LE(1, 22);
+  header.writeUInt32LE(rate, 24); header.writeUInt32LE(rate * 2, 28); header.writeUInt16LE(2, 32); header.writeUInt16LE(16, 34);
+  header.write('data', 36); header.writeUInt32LE(data.length, 40);
+  return Buffer.concat([header, data]);
+}
+
+export const canSpeak = provider => typeof provider?.speak === 'function';
+
+// The caller resolves `text` from stored English content; free browser text never
+// reaches here. `hasLatin` is defence in depth for legacy records.
+export async function readAloud({provider, text, speed = 'normal', signal}) {
+  requireValue(canSpeak(provider), 'This speech provider cannot read text aloud', 409);
+  requireValue(Object.hasOwn(readAloudSpeeds, speed), 'Choose a supported reading speed');
+  requireValue(nonempty(text) && text.length <= READ_ALOUD_MAX_CHARACTERS, 'Nothing to read aloud');
+  requireValue(/\p{Script=Latin}/u.test(text), 'Only English practice text is read aloud');
+  const work = provider.speak({text, speed: readAloudSpeeds[speed], signal});
+  let listener;
+  const result = signal ? await Promise.race([work, new Promise((_, reject) => {listener = () => reject(signal.reason); if (signal.aborted) listener(); else signal.addEventListener('abort', listener, {once: true});})]).finally(() => signal.removeEventListener('abort', listener)) : await work;
+  requireValue(result && Object.keys(result).length === 2 && Buffer.isBuffer(result.audio) && result.audio.length > 0 && result.audio.length <= 4_000_000 && readAloudMediaTypes.includes(result.mimeType), 'Invalid read-aloud provider output', 502);
+  return {audio: result.audio.toString('base64'), mimeType: result.mimeType, speed};
 }
 export async function clearTemporaryAudio(directory) {
   await mkdir(directory, {recursive: true, mode: 0o700});

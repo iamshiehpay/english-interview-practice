@@ -9,7 +9,7 @@ import {randomUUID,createHash} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {resolve, join} from 'node:path';
-import {FakeSpeechProvider, clearTemporaryAudio, transcribeTemporary} from './speech.js';
+import {FakeSpeechProvider, clearTemporaryAudio, transcribeTemporary, readAloud, canSpeak} from './speech.js';
 import {LocalWorkspace} from './store.js';
 import {FakeLanguageModel} from './providers.js';
 import {AppError, requireValue, nonempty, validateAnalysis, validateFeedback, validateCoaching, validateFollowUp, validateCorrections, dimensions, questionSetView} from './domain.js';
@@ -27,6 +27,37 @@ export async function createApplication({directory = '.workspace', languageModel
   const audioDirectory = join(directory, 'temporary-audio');
   await clearTemporaryAudio(audioDirectory);
   const item = (collection, id) => { const value = Object.hasOwn(store.data[collection],id) ? store.data[collection][id] : undefined; requireValue(value, 'Not found', 404); return structuredClone(value); };
+  // Read-aloud resolves English text from stored content; the browser may only send a
+  // reference. Chinese-by-contract fields (meaningZh, reasonZh, explanationZh…) are not
+  // addressable at all, which is what keeps them from ever being spoken.
+  function readAloudText(input) {
+    requireValue(input.text === undefined, 'Read aloud takes a reference to saved practice text, not text');
+    if (input.snapshotId !== undefined) {
+      const analysis = store.data.analyses[input.snapshotId];
+      requireValue(analysis, 'Generate a Question Set first', 409);
+      const question = analysis.questions.find(q => q.id === input.questionId);
+      requireValue(question, 'Not found', 404);
+      return question.text;
+    }
+    const record = item('records', input.recordId);
+    if (input.followUpId !== undefined) {
+      const node = (record.followUps || []).find(n => n.id === input.followUpId);
+      requireValue(node, 'Follow-up not found', 404);
+      return node.question.text;
+    }
+    if (input.coachingId !== undefined) {
+      const coaching = record.coaching?.[input.coachingId];
+      requireValue(coaching && coaching.mode === 'illustrative', 'Only an Illustrative Answer can be read aloud', 404);
+      return coaching.text;
+    }
+    if (input.attemptId !== undefined) {
+      const saved = record.corrections?.[input.attemptId];
+      requireValue(saved && Number.isInteger(input.correctionIndex) && saved.corrections[input.correctionIndex], 'Not found', 404);
+      return saved.corrections[input.correctionIndex].rewrite;
+    }
+    return record.question.text;
+  }
+  let readAloudActive = 0;
   async function route(method, path, input, context) {
     const commit = update => store.transact(d => {context?.check(d);const result=update(d);context?.complete(d,result);return result;});
     if (method === 'GET' && path === '/api/health') return {status: 'ok', languageModel: languageModel.name, speechProvider: speechProvider.name, jobSource: jobSource.name};
@@ -37,7 +68,16 @@ export async function createApplication({directory = '.workspace', languageModel
     const dismissOp = path.match(/^\/api\/operations\/([^/]+)$/);
     if (method === 'DELETE' && dismissOp) return operations.dismiss(dismissOp[1]);
     if (method === 'GET' && path === '/api/providers/language-status') return languageModel.status ? languageModel.status() : {provider:languageModel.name,authenticated:null,loginRequired:false};
-    if (method === 'GET' && path === '/api/providers') return {languageModel:{name:languageModel.name,subscription:!!languageModel.status,external:!!languageModel.external,outbound:languageModel.external?['JD text and selected resume for analysis','JD, selected resume and existing capability/question set for additions','current question and transcript for feedback or English assistance','primary question, frozen formal answer and completed follow-ups for follow-up generation','a question and one formal answer transcript for evidence-safe key-sentence corrections']:[]},speech:{name:speechProvider.name,external:!!speechProvider.external,outbound:speechProvider.external?['recorded audio only']:[]},jobSource:{name:jobSource.name,external:!!jobSource.external,outbound:!!jobSource.external?['public board token and requested job ID; profile filtering stays local']:[]}};
+    if (method === 'GET' && path === '/api/providers') return {languageModel:{name:languageModel.name,subscription:!!languageModel.status,external:!!languageModel.external,outbound:languageModel.external?['JD text and selected resume for analysis','JD, selected resume and existing capability/question set for additions','current question and transcript for feedback or English assistance','primary question, frozen formal answer and completed follow-ups for follow-up generation','a question and one formal answer transcript for evidence-safe key-sentence corrections']:[]},speech:{name:speechProvider.name,external:!!speechProvider.external,canSpeak:canSpeak(speechProvider),demonstrationSpeech:!!speechProvider.demonstrationSpeech,outbound:speechProvider.external?['recorded audio only',...(canSpeak(speechProvider)?['English practice text for reading aloud']:[])]:[]},jobSource:{name:jobSource.name,external:!!jobSource.external,outbound:!!jobSource.external?['public board token and requested job ID; profile filtering stays local']:[]}};
+    if (method === 'POST' && path === '/api/speech') {
+      // Learner-initiated, nothing saved: deliberately outside the operations tracker,
+      // but bounded so a held request cannot open unlimited provider calls.
+      requireValue(readAloudActive < 2, 'Two readings are already in progress; wait for one to finish', 429);
+      const text = readAloudText(input);
+      readAloudActive += 1;
+      try { return await readAloud({provider: speechProvider, text, speed: input.speed ?? 'normal'}); }
+      finally { readAloudActive -= 1; }
+    }
     if (path === '/api/resume') {
       if (method === 'GET') return store.data.resume || null;
       if (method === 'POST') { const resume=practiceResume(input); return commit(d => (d.resume=resume)); }

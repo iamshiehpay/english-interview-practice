@@ -1,4 +1,4 @@
-import {mountVoice} from './voice.js';
+import {mountVoice, mountReadAloud, resetReadAloud} from './voice.js';
 
 const $ = selector => document.querySelector(selector);
 const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -123,9 +123,19 @@ function outboundLabel(value) {
     [/JD.*question set/i, '新增題目時傳送職缺、選用履歷與現有題組'],
     [/current question and transcript/i, '回饋或英文協助時傳送目前題目與你的回答／想法'],
     [/recorded audio only/i, '語音轉錄時只傳送錄音'],
+    [/English practice text for reading aloud/i, '朗讀時只傳送畫面上的英文練習內容，中文說明不會傳送'],
     [/public board token/i, '取得公開職缺時傳送職缺板識別與職缺編號；搜尋條件留在本機']
   ];
   return rules.find(([pattern]) => pattern.test(value))?.[1] || '依這項服務的用途傳送必要資料';
+}
+
+// Read-aloud is reference-addressed: the server resolves the English text from its
+// own stored data, so nothing on this page decides what gets spoken.
+function readAloud(parent, reference, label) {
+  return mountReadAloud(parent, reference, {api, provider:providerInfo?.speech, label, onError:error => setError(error.message)});
+}
+function mountCorrectionReadAloud(container, recordId, attemptId) {
+  container?.querySelectorAll('[data-correction-index]').forEach(slot => readAloud(slot, {recordId, attemptId, correctionIndex:Number(slot.dataset.correctionIndex)}, '朗讀修正句'));
 }
 
 function clearDraftSession() {
@@ -197,7 +207,7 @@ function markView(name) {
 async function navigate(name) {
   if (!(await leaveEditor())) return;
   clearDraftSession();
-  disposeVoice();
+  disposeVoice(); resetReadAloud();
   disposeVoice = () => {};
   if (name !== 'practice') currentRecordId = null;
   markView(name);
@@ -293,7 +303,7 @@ $('#capture').addEventListener('click', async event => {
 });
 
 async function showAnalysisFailure(snapshotId, error) {
-  clearDraftSession(); disposeVoice(); markView('practice'); currentSnapshotId = snapshotId;
+  clearDraftSession(); disposeVoice(); resetReadAloud(); markView('practice'); currentSnapshotId = snapshotId;
   const snapshot = workspace.snapshots[snapshotId] || await api(`/snapshots/${snapshotId}`);
   $('#practice').innerHTML = practiceFrame({stage:1, snapshot, content:`<div class="provider-warning"><h2>職缺已保存，題目尚未產生</h2><p>${escape(error.message)}</p><p>你不需要重新貼上職缺。可以直接重試這一步。</p><div id="analysis-retry"></div></div>`});
   button('重試產生題目', async () => {
@@ -310,7 +320,7 @@ async function analysisView(snapshotId) {
 }
 async function showRecommended(snapshotId) {
   if (!(await leaveEditor())) return;
-  clearDraftSession(); disposeVoice(); markView('practice'); currentSnapshotId = snapshotId;
+  clearDraftSession(); disposeVoice(); resetReadAloud(); markView('practice'); currentSnapshotId = snapshotId;
   const analysis = await analysisView(snapshotId);
   if (!analysis) return showAnalysisFailure(snapshotId, new Error('這份職缺還沒有題目。'));
   return showQuestion(snapshotId, analysis.recommendation.questionId, analysis);
@@ -321,7 +331,7 @@ function incompleteForQuestion(snapshotId, questionId) {
 }
 async function showQuestion(snapshotId, questionId, suppliedAnalysis) {
   if (!(await leaveEditor())) return;
-  clearDraftSession(); disposeVoice(); markView('practice'); currentSnapshotId = snapshotId; currentRecordId = null;
+  clearDraftSession(); disposeVoice(); resetReadAloud(); markView('practice'); currentSnapshotId = snapshotId; currentRecordId = null;
   const snapshot = workspace.snapshots[snapshotId] || await api(`/snapshots/${snapshotId}`);
   const analysis = suppliedAnalysis || await analysisView(snapshotId);
   if (!analysis) return showAnalysisFailure(snapshotId, new Error('這份職缺還沒有題目。'));
@@ -330,8 +340,9 @@ async function showQuestion(snapshotId, questionId, suppliedAnalysis) {
   const meaning = question.meaningZh || '這是舊版題目，目前沒有保存中文題意；英文原題完整保留。';
   const previous = incompleteForQuestion(snapshotId, question.id);
   const providerGate = modelReady() ? '' : `<div class="provider-warning"><strong>目前還不能取得模型回饋。</strong><p>請先到設定完成 Codex 登入與驗證；若要先整理想法，文字草稿仍會保存在本機。</p><div id="question-provider-gate"></div></div>`;
-  const content = `<div id="recommended-question" class="question-phase"><p class="question-kicker">${recommended ? '建議先練' : '目前選擇'}｜${escape(categories[question.category] || question.category)}</p><h1 class="question-text" lang="en">${escape(question.text)}</h1><details open><summary>查看中文題意</summary><div class="detail-panel"><p>${escape(meaning)}</p></div></details>${providerGate}<div class="button-row" id="question-actions"></div></div>`;
+  const content = `<div id="recommended-question" class="question-phase"><p class="question-kicker">${recommended ? '建議先練' : '目前選擇'}｜${escape(categories[question.category] || question.category)}</p><h1 class="question-text" lang="en">${escape(question.text)}</h1><div id="question-read-aloud"></div><details open><summary>查看中文題意</summary><div class="detail-panel"><p>${escape(meaning)}</p></div></details>${providerGate}<div class="button-row" id="question-actions"></div></div>`;
   $('#practice').innerHTML = practiceFrame({stage:1, snapshot, content});
+  readAloud($('#question-read-aloud'), {snapshotId, questionId:question.id}, '朗讀題目');
   const actions = $('#question-actions');
   const begin = async () => {
     const existing = incompleteForQuestion(snapshotId, question.id);
@@ -350,7 +361,7 @@ async function showQuestion(snapshotId, questionId, suppliedAnalysis) {
 
 async function showQuestionList(snapshotId, suppliedAnalysis) {
   if (!(await leaveEditor())) return;
-  clearDraftSession(); disposeVoice(); markView('practice'); currentSnapshotId = snapshotId;
+  clearDraftSession(); disposeVoice(); resetReadAloud(); markView('practice'); currentSnapshotId = snapshotId;
   const snapshot = workspace.snapshots[snapshotId];
   const analysis = suppliedAnalysis || await analysisView(snapshotId);
   const groups = Object.entries(categories).map(([category,label]) => {
@@ -390,7 +401,7 @@ function feedbackHtml(feedback, prefix = '') {
 function correctionsHtml(result) {
   const corrections = result?.corrections || [];
   if (!corrections.length) return '<p class="corrections-none meta">這次沒有需要調整的關鍵句，你的英文已經能清楚表達。</p>';
-  return `<p class="eyebrow">關鍵句英文修正（${corrections.length}）</p><p class="meta">只列出必要的句子修正，保留你的原意、事實與語氣；這是修正建議，不會算作正式回答。</p>${corrections.map(item => `<article class="correction-card"><p class="meta">你的原句</p><blockquote lang="en">${escape(item.original)}</blockquote><p class="meta">建議的英文表達</p><blockquote class="correction-rewrite" lang="en">${escape(item.rewrite)}</blockquote><p class="correction-reason">${escape(item.reasonZh)}</p></article>`).join('')}`;
+  return `<p class="eyebrow">關鍵句英文修正（${corrections.length}）</p><p class="meta">只列出必要的句子修正，保留你的原意、事實與語氣；這是修正建議，不會算作正式回答。</p>${corrections.map((item, index) => `<article class="correction-card"><p class="meta">你的原句</p><blockquote lang="en">${escape(item.original)}</blockquote><p class="meta">建議的英文表達</p><blockquote class="correction-rewrite" lang="en">${escape(item.rewrite)}</blockquote><div data-correction-index="${index}"></div><p class="correction-reason">${escape(item.reasonZh)}</p></article>`).join('')}`;
 }
 async function loadCorrections(recordId, attemptId, container) {
   const token = viewToken;
@@ -400,6 +411,7 @@ async function loadCorrections(recordId, attemptId, container) {
     if (viewToken !== token || !container.isConnected) return;
     if (workspace.records?.[recordId]) { workspace.records[recordId].corrections ??= {}; workspace.records[recordId].corrections[attemptId] = result; }
     container.innerHTML = correctionsHtml(result);
+    mountCorrectionReadAloud(container, recordId, attemptId);
   } catch (error) {
     if (viewToken !== token || !container.isConnected) return;
     container.innerHTML = '';
@@ -410,7 +422,7 @@ async function loadCorrections(recordId, attemptId, container) {
 function setupCorrections(record, attemptId, container, auto) {
   if (!container) return;
   const cached = record.corrections?.[attemptId];
-  if (cached) { container.innerHTML = correctionsHtml(cached); return; }
+  if (cached) { container.innerHTML = correctionsHtml(cached); mountCorrectionReadAloud(container, record.id, attemptId); return; }
   if (auto) { loadCorrections(record.id, attemptId, container); return; }
   container.replaceChildren();
   button('看關鍵句英文修正', () => loadCorrections(record.id, attemptId, container), container, {kind:'ghost'});
@@ -449,7 +461,8 @@ async function showCoaching(record, mode, parent, transcript) {
     if (viewToken!==token || !parent.isConnected) return;
     const english=['rewrite','ideas','illustrative'].includes(mode);
     const eyebrow=mode==='rewrite'?'英文示範':mode==='ideas'?'想法整理成英文':mode==='gap'?'無相關經驗的回答框架':mode==='illustrative'?'示範回答（假設）':'回答提示';
-    parent.innerHTML=`<section class="detail-panel coaching-result"><p class="eyebrow">${eyebrow}</p>${['rewrite','ideas'].includes(mode)?`<details><summary>查看這次整理的原文</summary><blockquote>${escape(transcript ?? record.attempts.at(-1)?.transcript)}</blockquote></details>`:''}${mode==='illustrative'?'<p class="coaching-caveat" role="note">這是假設示範，請替換成你自己的經驗，不要當成你的真實經歷。</p>':''}<p class="coaching-text" lang="${english?'en':'zh-Hant'}">${escape(result.text)}</p>${english?`<p class="meta">${escape(result.explanationZh)}</p>`:''}</section>`;
+    parent.innerHTML=`<section class="detail-panel coaching-result"><p class="eyebrow">${eyebrow}</p>${['rewrite','ideas'].includes(mode)?`<details><summary>查看這次整理的原文</summary><blockquote>${escape(transcript ?? record.attempts.at(-1)?.transcript)}</blockquote></details>`:''}${mode==='illustrative'?'<p class="coaching-caveat" role="note">這是假設示範，請替換成你自己的經驗，不要當成你的真實經歷。</p>':''}<p class="coaching-text" lang="${english?'en':'zh-Hant'}">${escape(result.text)}</p>${mode==='illustrative'?'<div id="illustrative-read-aloud"></div>':''}${english?`<p class="meta">${escape(result.explanationZh)}</p>`:''}</section>`;
+    if (mode==='illustrative') readAloud($('#illustrative-read-aloud'), {recordId:record.id, coachingId:result.id}, '朗讀示範回答');
   } catch(error) {if(parent.isConnected)parent.textContent='尚未取得建議，可再次按下按鈕重試。';throw error;}
 }
 
@@ -670,6 +683,7 @@ function followUpHtml(record, complete) {
   return `${followUpHistoryHtml(followUps, record.corrections)}<section class="follow-up-flow" aria-labelledby="follow-up-title">
     <div class="follow-up-heading"><p class="eyebrow">追問 ${number} / 2</p><span class="follow-up-state">${feedback ? '回饋已完成' : attempt ? '等待回饋' : '等待回答'}</span></div>
     <h2 id="follow-up-title" class="follow-up-question" lang="en">${escape(current.question.text)}</h2>
+    <div id="follow-up-read-aloud"></div>
     <details open><summary>中文題意</summary><p class="meaning">${escape(current.question.meaningZh)}</p></details>
     ${content}
   </section>`;
@@ -790,7 +804,7 @@ async function requestFollowUpFeedback(recordId, followUpId) {
 
 async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedback=false,followUpFresh=false} = {}) {
   if (!(await leaveEditor())) return;
-  clearDraftSession(); disposeVoice(); disposeVoice = () => {}; markView('practice'); currentRecordId = recordId;
+  clearDraftSession(); disposeVoice(); resetReadAloud(); disposeVoice = () => {}; markView('practice'); currentRecordId = recordId;
   const record = await api(`/records/${recordId}`);
   const snapshot = workspace.snapshots[record.snapshotId] || await api(`/snapshots/${record.snapshotId}`);
   currentSnapshotId = record.snapshotId;
@@ -800,7 +814,7 @@ async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedb
   const currentFollowUp = followUps.at(-1);
   const followUpFeedbackPending = Boolean(currentFollowUp?.attempt && !currentFollowUp.attempt.feedback);
   const editor = !complete && !feedbackOnly && (!last || (last.feedback && record.attempts.length===1 && (editing || record.writtenDraft)));
-  let body = `${record.focusOrigin ? `<div class="focus-origin-banner"><p class="eyebrow">延續練習重點</p><p>這一題延續你上次的練習重點：<strong>${escape(record.focusOrigin.focusPoint.replace(/[。．.!！?？,，、;；\s]+$/u, ''))}</strong>，換一個情境、同一份職缺再練一次。</p></div>` : ''}<section class="question-phase"><p class="question-kicker">${escape(categories[record.question.category] || record.question.category)}</p><h1 class="question-text" lang="en">${escape(record.question.text)}</h1><details open><summary>中文題意</summary><p class="meaning">${escape(record.question.meaningZh || '舊版題目未保存中文題意。')}</p></details></section>`;
+  let body = `${record.focusOrigin ? `<div class="focus-origin-banner"><p class="eyebrow">延續練習重點</p><p>這一題延續你上次的練習重點：<strong>${escape(record.focusOrigin.focusPoint.replace(/[。．.!！?？,，、;；\s]+$/u, ''))}</strong>，換一個情境、同一份職缺再練一次。</p></div>` : ''}<section class="question-phase"><p class="question-kicker">${escape(categories[record.question.category] || record.question.category)}</p><h1 class="question-text" lang="en">${escape(record.question.text)}</h1><div id="question-read-aloud"></div><details open><summary>中文題意</summary><p class="meaning">${escape(record.question.meaningZh || '舊版題目未保存中文題意。')}</p></details></section>`;
   if (last && !last.feedback) {
     body += `<section class="answer-area"><h2>你的回答已保存</h2><details><summary>查看回答</summary><blockquote>${escape(last.transcript)}</blockquote></details><p>回饋尚未完成，可以重試，不會重複提交回答。</p><div id="feedback-retry-actions"></div></section>`;
   } else if (editor) {
@@ -825,6 +839,8 @@ async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedb
     body+=`<section class="next-steps"><p class="eyebrow next-steps-title">接下來</p>${followUpHtml(record,complete)}${optional}${completion}</section>`;
   }
   $('#practice').innerHTML = practiceFrame({stage:last?.feedback?3:2,snapshot,content:body});
+  readAloud($('#question-read-aloud'), {recordId:record.id}, '朗讀題目');
+  if (currentFollowUp) readAloud($('#follow-up-read-aloud'), {recordId:record.id, followUpId:currentFollowUp.id}, '朗讀追問題目');
   if ($('#attempt-version')) {
     const renderAttempt = () => {
       const index=Number($('#attempt-version').value), attempt=record.attempts[index];
@@ -1062,11 +1078,12 @@ async function renderDiscovery() {
 
 function renderSettings() {
   const parent = $('#provider-settings'); parent.replaceChildren();
-  const names = {languageModel:'題目與回饋',speech:'語音轉錄',jobSource:'公開職缺來源'};
+  const names = {languageModel:'題目與回饋',speech:'語音轉錄與朗讀',jobSource:'公開職缺來源'};
   for (const [role,info] of Object.entries(providerInfo || {})) {
     const row = document.createElement('div'); row.className = 'provider-row';
-    const access = !info.external ? '' : info.subscription ? '透過你的官方訂閱登入使用；用量依方案計算，不需在本機保存 API 金鑰。' : role === 'jobSource' ? '只讀取你指定的公開職缺板；不需金鑰，也不送出個人資料。' : '使用你在啟動時設定的 API 金鑰；金鑰不會存進本機資料或顯示在畫面上。呼叫可能依供應商方案產生費用。';
-    row.innerHTML = `<h3>${escape(names[role] || role)}</h3><p>${escape(providerName(info))}</p><p class="meta">${info.external ? `可能送出：${escape(info.outbound.map(outboundLabel).join('；'))}` : '本機示範服務，不傳送資料到外部。'}</p>${access ? `<p class="meta">${access}</p>` : ''}`;
+    const access = !info.external ? '' : info.subscription ? '透過你的官方訂閱登入使用；用量依方案計算，不需在本機保存 API 金鑰。' : role === 'jobSource' ? '只讀取你指定的公開職缺板；不需金鑰，也不送出個人資料。' : '使用你在啟動時設定的 API 金鑰；金鑰只從伺服器環境讀取，不會存進本機資料、也不會出現在瀏覽器或畫面上。呼叫可能依供應商方案產生費用。';
+    const speechNote = role !== 'speech' ? '' : info.demonstrationSpeech ? '目前的朗讀是本機示意音，不是真人語音。' : info.canSpeak ? '英文題目、示範回答與關鍵句修正可以朗讀；中文說明不會朗讀。' : '這個服務不支援朗讀，畫面上不會出現朗讀按鈕。';
+    row.innerHTML = `<h3>${escape(names[role] || role)}</h3><p>${escape(providerName(info))}</p><p class="meta">${info.external ? `可能送出：${escape(info.outbound.map(outboundLabel).join('；'))}` : '本機示範服務，不傳送資料到外部。'}</p>${speechNote ? `<p class="meta">${escape(speechNote)}</p>` : ''}${access ? `<p class="meta">${access}</p>` : ''}`;
     parent.append(row);
   }
   if (providerInfo?.languageModel?.subscription) {
@@ -1077,7 +1094,7 @@ function renderSettings() {
   const deletion = $('#delete-workspace'); deletion.replaceChildren();
   deletion.innerHTML = '<p>這會刪除所有職缺、題目、練習紀錄、文字草稿與進步項目。若要繼續，請輸入 <strong>DELETE ALL LOCAL DATA</strong>。</p><label for="delete-all">確認文字</label><input id="delete-all" autocomplete="off">';
   button('刪除全部本機資料', async () => {
-    await api('/workspace/delete', {confirmation:$('#delete-all').value}); clearDraftSession(); disposeVoice(); await refreshWorkspace(); setNotice('所有本機資料已刪除。'); await navigate('home');
+    await api('/workspace/delete', {confirmation:$('#delete-all').value}); clearDraftSession(); disposeVoice(); resetReadAloud(); await refreshWorkspace(); setNotice('所有本機資料已刪除。'); await navigate('home');
   }, deletion, {kind:'danger'});
 }
 
@@ -1100,7 +1117,7 @@ async function showOperations() {
 }
 
 window.addEventListener('beforeunload', event => {
-  disposeVoice();
+  disposeVoice(); resetReadAloud();
   if (draftSession?.dirty) { event.preventDefault(); event.returnValue = ''; }
 });
 
