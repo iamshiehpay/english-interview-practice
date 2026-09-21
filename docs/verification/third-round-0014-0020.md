@@ -113,14 +113,18 @@ invariant on every other path it traced.
   transcription failure. **All of these remain pending human acceptance**, as the
   voice discussion required.
 - **Real text-to-speech is unverified.** No live `gpt-4o-mini-tts` call was made.
-- **Audible playback in an `<audio>` element could not be verified in this
-  browser.** This Chrome build fails to decode WAV in a media element — a control
-  WAV built in-page, never touching the server, failed identically, while Web Audio
-  decoded the same bytes. The failure is an environment limitation, not a product
-  defect: the endpoint serves correct, decodable audio, and the interface surfaces
-  a clear retryable failure rather than going silent. Real OpenAI read-aloud returns
-  `audio/mpeg`, which this browser reports as `probably` playable. **Audible
-  playback is pending human check.**
+- **Audible playback is still pending a human check**, but the earlier explanation
+  of why it failed was **wrong and has been corrected**. This record previously
+  claimed the browser could not decode WAV in a media element and called it an
+  environment limitation. It was a product defect: the page's Content-Security-Policy
+  set no `media-src`, so it fell back to `default-src 'self'`, which does not cover
+  `blob:` — and read-aloud plays from a blob URL. Every reading failed for everyone,
+  and the in-page "control" WAV that seemed to prove the browser's innocence was
+  blocked for exactly the same reason. Confirmed by `securitypolicyviolation` events
+  naming `media-src`, fixed by adding `media-src 'self' blob:`, and covered by a
+  regression test in `test/read-aloud.test.js`. After the fix, a real mouse click
+  reaches `正在朗讀…` with no violation and no error. Whether it is *audible* still
+  needs ears.
 - **Model quality is unverified throughout.** The demonstration providers return
   fixed text for feedback, the Session Summary, search interpretation and job
   curation. The validators and the workflow are proven; whether a real model writes

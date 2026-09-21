@@ -145,3 +145,20 @@ test('the demonstration provider speaks a labelled non-speech tone', async t => 
   assert.equal(spoken.data.mimeType, 'audio/wav');
   assert.equal(Buffer.from(spoken.data.audio, 'base64').subarray(0, 4).toString(), 'RIFF');
 });
+
+test('the page policy allows the audio the player actually uses', async t => {
+  const {api, base} = await harness(t, undefined, {speechProvider: new FakeSpeechProvider()});
+  await api('/health');
+  const policy = (await fetch(`${base}/`)).headers.get('content-security-policy');
+  const directive = policy.split(';').map(part => part.trim()).find(part => part.startsWith('media-src'));
+
+  // Read-aloud audio arrives as JSON and is played from a blob: URL. `default-src 'self'`
+  // does not cover blob:, so without an explicit media-src every reading fails in the
+  // browser with MEDIA_ERR_SRC_NOT_SUPPORTED while every server-side test still passes.
+  assert.ok(directive, `no media-src in the policy, so it falls back to default-src: ${policy}`);
+  assert.match(directive, /blob:/, `media-src must allow blob: for read-aloud playback: ${directive}`);
+  assert.match(directive, /'self'/, `media-src must allow 'self' for retained recording playback: ${directive}`);
+  // The policy must stay restrictive elsewhere.
+  assert.match(policy, /object-src 'none'/);
+  assert.doesNotMatch(directive, /\*/, 'media-src must not be a wildcard');
+});

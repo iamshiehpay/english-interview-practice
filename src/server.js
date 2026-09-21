@@ -730,7 +730,11 @@ export async function createApplication({directory = '.workspace', languageModel
         const name = {'/': 'index.html', '/app.js': 'app.js', '/voice.js': 'voice.js', '/style.css': 'style.css'}[path];
         requireValue(name, 'Not found', 404);
         const content = await readFile(new URL(`../public/${name}`, import.meta.url));
-        res.writeHead(200, {'Content-Type': name.endsWith('.js') ? 'text/javascript' : name.endsWith('.css') ? 'text/css' : 'text/html', 'Content-Security-Policy': "default-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'"}); res.end(content);
+        res.writeHead(200, {'Content-Type': name.endsWith('.js') ? 'text/javascript' : name.endsWith('.css') ? 'text/css' : 'text/html', // media-src must name blob: explicitly: read-aloud audio is fetched as JSON and
+// played from a blob URL, which 'self' does not cover, so without this every
+// reading fails with MEDIA_ERR_SRC_NOT_SUPPORTED. Retained recordings stream from
+// this origin and are covered by 'self'.
+'Content-Security-Policy': "default-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; media-src 'self' blob:; object-src 'none'; base-uri 'none'"}); res.end(content);
       }
     } catch (error) {
       res.writeHead(error.status || 502, {'Content-Type': 'application/json'});
