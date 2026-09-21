@@ -187,6 +187,39 @@ test('a restart keeps retained recordings, sweeps pending ones and removes unref
   assert.equal((await fetch(`${session.base}/api/recordings/${pendingId}`)).status, 404);
 });
 
+// Regression: a cascading delete derived its file list before the transaction, so a
+// recording retained in between could survive its owner and stay permanently servable.
+test('a cascading delete removes recordings derived from the live data, not a stale list', async t => {
+  const {api, directory, base, store} = await harness(t, undefined, {speechProvider: speaking()});
+  const {snapshot, record} = await setup(api);
+  await submitSpoken(api, record.id, {text: 'first answer'});
+
+  // Simulate a recording that appears after a delete has read the workspace: write it
+  // directly, exactly as a concurrent promotion would.
+  const sneaked = {id: '11111111-2222-3333-4444-555555555555', mimeType: 'audio/webm', bytes: 8, capturedAt: new Date().toISOString(), recordId: record.id, state: 'retained', attemptId: 'late'};
+  await store.transact(d => { d.recordings[sneaked.id] = sneaked; });
+  const {RecordingStore} = await import('../src/recordings.js');
+  await new RecordingStore(directory).open().then(s => s.write(sneaked, Buffer.from('lateaudi')));
+  assert.equal((await files(directory)).length, 2);
+
+  assert.equal((await api(`/snapshots/${snapshot.id}`, undefined, 'DELETE')).status, 200);
+  assert.deepEqual(await files(directory), [], 'every recording owned by the job is gone');
+  assert.deepEqual((await workspace(api)).recordings, {});
+  assert.equal((await fetch(`${base}/api/recordings/${sneaked.id}`)).status, 404);
+});
+
+test('a recording whose owner no longer exists is not servable', async t => {
+  const {api, base, store} = await harness(t, undefined, {speechProvider: speaking()});
+  const {record} = await setup(api);
+  await submitSpoken(api, record.id, {text: 'orphan me'});
+  const id = (await api(`/records/${record.id}`)).data.attempts[0].recordingId;
+  assert.equal((await fetch(`${base}/api/recordings/${id}`)).status, 200);
+
+  // Drop the owning practice but leave the reference, as a partial delete would.
+  await store.transact(d => { delete d.records[record.id]; });
+  assert.equal((await fetch(`${base}/api/recordings/${id}`)).status, 404, 'audio must not outlive the practice it belongs to');
+});
+
 test('playback refuses unknown ids, cross-origin requests and a reference whose file vanished', async t => {
   const {api, directory, base} = await harness(t, undefined, {speechProvider: speaking()});
   const {record} = await setup(api);

@@ -39,6 +39,19 @@ export async function createApplication({directory = '.workspace', languageModel
   // Removing files only after the transaction that dropped their references commits
   // means a crash can leave an unreferenced file (swept above), never a dead reference.
   const commitThenDelete = async (doomed, update) => { const result = await update(); await recordings.remove(doomed); return result; };
+  // For a cascading delete the set to remove must be derived from the live data inside
+  // the transaction: a pre-transaction snapshot can miss a recording another request
+  // retained in the meantime, leaving audio that is orphaned but still servable.
+  const deleteOwnedRecordings = async (owns, update) => {
+    const removed = [];
+    const result = await store.transact(d => {
+      removed.length = 0;
+      for (const entry of Object.values(d.recordings || {})) if (owns(entry, d)) { removed.push({id: entry.id, mimeType: entry.mimeType}); delete d.recordings[entry.id]; }
+      return update(d);
+    });
+    await recordings.remove(removed);
+    return result;
+  };
   const item = (collection, id) => { const held = store.data[collection] || {}; const value = typeof id === 'string' && Object.hasOwn(held,id) ? held[id] : undefined; requireValue(value, 'Not found', 404); return structuredClone(value); };
   // Read-aloud resolves English text from stored content; the browser may only send a
   // reference. Chinese-by-contract fields (meaningZh, reasonZh, explanationZh…) are not
@@ -194,8 +207,13 @@ export async function createApplication({directory = '.workspace', languageModel
         for (const id of recordIds) await operations.cancelTarget(id);
         const sessionIds = sessionsFor(store.data, s => s.snapshotId === snapshot.id).map(s => s.id);
         for (const id of sessionIds) await operations.cancelTarget(id);
-        const owned = recordingsFor(store.data, entry => recordIds.includes(entry.recordId) || sessionIds.includes(entry.sessionId));
-        return commitThenDelete(owned, () => commit(d => {for (const r of Object.values(d.records)) if (r.snapshotId===snapshot.id) removeRecord(d,r.id);for (const id of sessionIds){delete d.mockSessions?.[id];}for (const entry of owned) delete d.recordings?.[entry.id];delete d.snapshots[snapshot.id];delete d.analyses[snapshot.id];for (const c of Object.values(d.evidenceClaims||{})) c.capabilityLinks=c.capabilityLinks.filter(l=>l.snapshotId!==snapshot.id);cleanDerivedState(d);return {deleted:snapshot.id};}));
+        // Ownership is re-derived from the live data, so a recording another request
+        // retained between the read and this transaction is still deleted with its job.
+        const ownedByThisJob = (entry, d) => {
+          const owner = entry.recordId ? d.records[entry.recordId] : entry.sessionId ? d.mockSessions?.[entry.sessionId] : null;
+          return owner?.snapshotId === snapshot.id;
+        };
+        return deleteOwnedRecordings(ownedByThisJob, d => {for (const r of Object.values(d.records)) if (r.snapshotId===snapshot.id) removeRecord(d,r.id);for (const s of Object.values(d.mockSessions||{})) if (s.snapshotId===snapshot.id) delete d.mockSessions[s.id];delete d.snapshots[snapshot.id];delete d.analyses[snapshot.id];for (const c of Object.values(d.evidenceClaims||{})) c.capabilityLinks=c.capabilityLinks.filter(l=>l.snapshotId!==snapshot.id);cleanDerivedState(d);return {deleted:snapshot.id};});
       }
       const current = store.data.analyses[snapshot.id];
       const view = analysis => ({...recommendWithFocus(questionSetView(analysis, Object.values(store.data.records), snapshot.id), store.data, snapshot.id), evidenceContext: evidenceContext(store.data, snapshot.id, analysis.capabilities.map(c => c.id))});
@@ -310,13 +328,11 @@ export async function createApplication({directory = '.workspace', languageModel
       if (method === 'GET' && !action) return sessionView(session);
       if (method === 'DELETE' && !action) {
         await operations.cancelTarget(session.id);
-        const owned = recordingsFor(store.data, entry => entry.sessionId === session.id);
-        return commitThenDelete(owned, () => commit(d => {
+        return deleteOwnedRecordings(entry => entry.sessionId === session.id, d => {
           requireValue(d.mockSessions?.[session.id], 'Not found', 404);
-          for (const entry of owned) delete d.recordings[entry.id];
           delete d.mockSessions[session.id];
           return {deleted: session.id};
-        }));
+        });
       }
       if (method === 'POST' && (action === 'answer' || action === 'skip')) {
         // An idempotent resubmit is answered before the ordering guard: the learner has
@@ -554,10 +570,13 @@ export async function createApplication({directory = '.workspace', languageModel
         try { transcript = await transcribeRecording({store: recordings, provider: speechProvider, entry: captured, signal: context?.signal}); }
         catch (error) { await recordings.remove([captured]); throw error; }
         // A new recording for this practice supersedes an earlier unsubmitted one.
-        const superseded = recordingsFor(store.data, entry => entry.state === 'pending' && entry.recordId === record.id);
+        // Follow-up recordings also carry this recordId, so they must be excluded here:
+        // recording a primary revision must never discard an unsubmitted follow-up take.
+        const superseded = recordingsFor(store.data, entry => entry.state === 'pending' && entry.recordId === record.id && !entry.followUpId);
         try {
           return await commitThenDelete(superseded, () => commit(d => {
             const r = d.records[record.id];
+            requireValue(r, 'Practice was deleted', 409);
             requireValue(r.status !== 'completed' && r.attempts.length === record.attempts.length, 'Practice changed; reload', 409);
             d.recordings ??= {};
             for (const entry of superseded) delete d.recordings[entry.id];
@@ -594,7 +613,7 @@ export async function createApplication({directory = '.workspace', languageModel
         if (voice) requireValue(record.transcriptDraft?.id === input.transcriptDraftId, 'Transcript draft changed; review again', 409);
         // Promote this answer's recording; drop any other unsubmitted one for this practice.
         const promotedId = voice ? record.transcriptDraft.recordingId : undefined;
-        const abandoned = recordingsFor(store.data, entry => entry.state === 'pending' && entry.recordId === record.id && entry.id !== promotedId);
+        const abandoned = recordingsFor(store.data, entry => entry.state === 'pending' && entry.recordId === record.id && !entry.followUpId && entry.id !== promotedId);
         const attempt = {id: randomUUID(), transcript: input.transcript, inputMode: voice ? 'voice' : 'text', submittedAt: new Date().toISOString(), ...(input.submissionId ? {submissionId: input.submissionId} : {}),
           // The recording is evidence of what was said; an edited transcript is labelled,
           // never re-cut, so the audio is not presented as matching the edited text.
@@ -654,7 +673,10 @@ export async function createApplication({directory = '.workspace', languageModel
       if (req.method === 'GET' && playback) {
         if (req.headers.origin) requireValue(req.headers.origin === `http://${req.headers.host}`, 'Cross-origin request rejected', 403);
         const entry = store.data.recordings?.[playback[1]];
-        requireValue(entry && entry.state === 'retained', 'Recording is no longer available', 404);
+        // Defence in depth: an entry whose owning practice or session is gone is treated
+        // as deleted, so no recording can outlive the thing the learner deleted.
+        const owner = entry?.recordId ? store.data.records?.[entry.recordId] : entry?.sessionId ? store.data.mockSessions?.[entry.sessionId] : null;
+        requireValue(entry && entry.state === 'retained' && owner, 'Recording is no longer available', 404);
         let content;
         try { content = await recordings.read(entry); }
         catch (error) { requireValue(error.code !== 'ENOENT', 'Recording is no longer available', 404); throw error; }
@@ -672,9 +694,10 @@ export async function createApplication({directory = '.workspace', languageModel
           const followUpFeedback=path.match(/^\/api\/records\/([^/]+)\/follow-ups\/[^/]+\/feedback$/);
           const followUpTranscription=path.match(/^\/api\/records\/([^/]+)\/follow-ups\/([^/]+)\/transcription$/);
           const sessionSummary=path.match(/^\/api\/mock-sessions\/([^/]+)\/summary$/);
-          const sessionEntry=path.match(/^\/api\/mock-sessions\/([^/]+)\/entries\/[^/]+\/(feedback|transcription|corrections|coaching)$/);
+          const sessionEntry=path.match(/^\/api\/mock-sessions\/([^/]+)\/entries\/([^/]+)\/(feedback|transcription|corrections|coaching)$/);
           if(sessionSummary)external={targetId:sessionSummary[1],kind:'session-summary'};
-          else if(sessionEntry)external={targetId:sessionEntry[1],kind:`session-${sessionEntry[2]}`};
+          // Scoped to the entry: opening feedback for one question must not block another.
+          else if(sessionEntry)external={targetId:`${sessionEntry[1]}:${sessionEntry[2]}`,kind:`session-${sessionEntry[3]}`};
           else if(standard)external={targetId:standard[1],kind:standard[2]};
           else if(followUpGeneration)external={targetId:followUpGeneration[1],kind:'follow-up'};
           else if(followUpFeedback)external={targetId:followUpFeedback[1],kind:'follow-up-feedback'};
@@ -690,11 +713,13 @@ export async function createApplication({directory = '.workspace', languageModel
           if (op.kind==='feedback') return item('records',op.targetId);
           if (op.kind==='transcription') {const r=item('records',op.targetId);requireValue(r.transcriptDraft?.id===op.resultId,'Transcript already consumed; reopen saved record',409);return r.transcriptDraft;}
           if (op.kind==='follow-up-transcription') {const r=item('records',op.targetId);const draft=(r.followUps||[]).map(n=>n.transcriptDraft).find(d=>d?.id===op.resultId);requireValue(draft,'Transcript already consumed; reopen saved record',409);return draft;}
+          // A per-entry operation's targetId is `${sessionId}:${entryId}`.
+          const ofSession = () => item('mockSessions', op.targetId.split(':')[0]);
           if (op.kind==='session-summary') return sessionView(item('mockSessions',op.targetId));
-          if (op.kind==='session-transcription') {const s=item('mockSessions',op.targetId);requireValue(s.transcriptDraft?.id===op.resultId,'Transcript already consumed; reopen the session',409);return s.transcriptDraft;}
-          if (op.kind==='session-feedback') {const s=item('mockSessions',op.targetId);const entry=s.entries.find(e=>e.id===op.resultId);requireValue(entry,'Session answer no longer available',409);return entry;}
-          if (op.kind==='session-corrections') {const s=item('mockSessions',op.targetId);const saved=s.entries.map(e=>e.corrections).find(c=>c?.id===op.resultId);requireValue(saved,'Corrections no longer available',409);return saved;}
-          if (op.kind==='session-coaching') {const s=item('mockSessions',op.targetId);const saved=s.entries.flatMap(e=>Object.values(e.coaching||{})).find(c=>c.id===op.resultId);requireValue(saved,'Assistance no longer available',409);return saved;}
+          if (op.kind==='session-transcription') {const s=ofSession();requireValue(s.transcriptDraft?.id===op.resultId,'Transcript already consumed; reopen the session',409);return s.transcriptDraft;}
+          if (op.kind==='session-feedback') {const s=ofSession();const entry=s.entries.find(e=>e.id===op.resultId);requireValue(entry,'Session answer no longer available',409);return entry;}
+          if (op.kind==='session-corrections') {const s=ofSession();const saved=s.entries.map(e=>e.corrections).find(c=>c?.id===op.resultId);requireValue(saved,'Corrections no longer available',409);return saved;}
+          if (op.kind==='session-coaching') {const s=ofSession();const saved=s.entries.flatMap(e=>Object.values(e.coaching||{})).find(c=>c.id===op.resultId);requireValue(saved,'Assistance no longer available',409);return saved;}
           if (op.kind==='interpret') {const saved=store.data.jobSearchProposal;requireValue(saved?.id===op.resultId,'Search criteria expired; describe the job again',409);return saved;}
           if (op.kind==='url') return item('snapshots',op.resultId);
           const run=store.data.discoveryRuns?.[op.resultId];requireValue(run,'Discovery run expired; start a new request',409);return run;

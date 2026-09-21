@@ -122,6 +122,25 @@ test('follow-up recording preconditions and failures leave saved state untouched
   assert.equal((await files(directory)).length, 2);
 });
 
+// Regression: a follow-up recording carries the practice's recordId as well as its own
+// followUpId, so the primary-answer cleanup used to sweep it away.
+test('recording a primary revision does not destroy an unsubmitted follow-up recording', async t => {
+  const {api, directory} = await harness(t, undefined, {speechProvider: speaking()});
+  const {record} = await setup(api);
+  await primaryAnswer(api, record.id, 'primary one');
+  const node = (await api(`/records/${record.id}/follow-ups`, {})).data;
+  const followUp = (await api(`/records/${record.id}/follow-ups/${node.id}/transcription`, audio('follow-up take'))).data;
+
+  // The learner goes back and re-records the primary answer instead.
+  await api(`/records/${record.id}/transcription`, audio('primary revision'));
+  assert.ok((await api('/workspace')).data.recordings[followUp.recordingId], 'the follow-up recording must survive');
+  assert.equal((await api(`/records/${record.id}`)).data.followUps[0].transcriptDraft?.recordingId, followUp.recordingId);
+  const submitted = await api(`/records/${record.id}/follow-ups/${node.id}/attempt`, {transcript: followUp.transcript, transcriptDraftId: followUp.id});
+  assert.equal(submitted.status, 200, JSON.stringify(submitted.data));
+  assert.equal(submitted.data.attempt.recordingId, followUp.recordingId);
+  assert.equal((await files(directory)).length, 3, 'primary answer, primary revision draft and follow-up all kept');
+});
+
 test('a superseded follow-up recording is dropped and typing instead abandons it', async t => {
   const {api, directory} = await harness(t, undefined, {speechProvider: speaking()});
   const {record} = await setup(api);

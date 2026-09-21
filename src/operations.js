@@ -12,7 +12,9 @@ export class Operations {
     this.controllers.get(id)?.abort(new AppError('Operation cancelled',409));
     return this.store.transact(d=>{const o=d.operations?.[id];requireValue(o,'Operation not found',404);if(o.state==='pending'){o.state='cancelled';o.retryable=true;o.errorCode='CANCELLED';}return o;});
   }
-  async cancelTarget(target){for(const [id,controller]of this.controllers){const o=this.store.data.operations?.[id];if(!target||o?.targetId===target)await this.cancel(id);}}
+  // A per-entry operation's targetId is `${ownerId}:${entryId}`, so cancelling an owner
+  // must also cancel the operations scoped to its parts.
+  async cancelTarget(target){for(const [id,controller]of this.controllers){const o=this.store.data.operations?.[id];if(!target||o?.targetId===target||o?.targetId?.startsWith(target+':'))await this.cancel(id);}}
   async dismiss(id){
     requireValue(Object.hasOwn(this.store.data.operations||{},id),'Operation not found',404);
     return this.store.transact(d=>{const o=d.operations?.[id];requireValue(o,'Operation not found',404);requireValue(o.state!=='pending','Cancel a pending operation before dismissing it',409);delete d.operations[id];return {dismissed:id};});

@@ -5,7 +5,7 @@ curated job discovery (0019–0020) integrated and exercised together.
 
 ## Automated evidence
 
-- `npm test` — **160/160 pass** (108 before this round). New files:
+- `npm test` — **163/163 pass** (108 before this round). New files:
   `read-aloud`, `recording-limits`, `recordings`, `voice-paths`, `mock-sessions`,
   `search-interpretation`, `job-curation`.
 - `npm run test:browser` — **PASS**, one walk covering read-aloud (no autoplay,
@@ -71,6 +71,38 @@ Against a real server (`WORKSPACE_DIR` scratch workspace, port 4399) in Chrome
 7. **Stale evaluation artifacts** (pre-existing, from the 0013 provider trim) were
    regenerated in their own commit.
 
+### Second independent review (issues 0016–0018)
+
+A completed review of the recording, voice-path and session commits found four more
+defects. All are fixed; the first two are covered by new regression tests.
+
+8. **CONFIRMED, data loss — recording a primary revision destroyed an unsubmitted
+   follow-up recording.** A follow-up recording carries both `recordId` and
+   `followUpId`, but the primary-answer cleanup filtered on `recordId` alone, so it
+   swept the follow-up's own pending take. Deterministic, no race needed: answer,
+   get feedback, start a follow-up, record it, then re-record the primary answer —
+   the follow-up audio and its file were deleted and submitting it failed with
+   "Recording is no longer available". Reproduced with a failing test before fixing,
+   then fixed by excluding follow-up-scoped recordings from both primary filters.
+9. **Cascading delete could orphan a recording permanently.** `DELETE /snapshots/:id`
+   and `DELETE /mock-sessions/:id` derived their file list *before* the transaction,
+   so a recording retained in between kept both its reference and its file, survived
+   its owner, and stayed servable forever (the startup sweep only removes files with
+   *no* reference). Ownership is now re-derived from the live data inside the
+   transaction, and the playback route additionally refuses a recording whose owning
+   practice or session no longer exists.
+10. **Unguarded null dereference** when a practice or session was deleted mid-
+    transcription: a raw `TypeError` surfaced as a misleading retryable 502 instead of
+    a clean "was deleted" 409.
+11. **Per-entry session operations collided.** Opening feedback for one session
+    question and corrections for another gave a spurious "operation already pending",
+    because both used the session id as the operation target. The target is now scoped
+    to the entry, and `cancelTarget` matches those scoped ids so cancelling a session
+    still cancels them.
+
+The same review found **no path-traversal vector** and confirmed the data-integrity
+invariant on every other path it traced.
+
 ## Known limits — what is NOT verified
 
 - **Real microphone and real transcription are unverified.** Every recording check
@@ -96,8 +128,8 @@ Against a real server (`WORKSPACE_DIR` scratch workspace, port 4399) in Chrome
   jobs is not.
 - **Job source coverage is narrow.** Greenhouse boards plus the demonstration
   source. 104 was investigated and is not shipped.
-- **No independent review for issues 0016–0020.** The reviewer for 0016 hit an API
-  session limit part-way through; 0017–0020 were never reviewed. The two areas most
-  warranting an independent read are the recording data-integrity invariant with
-  `RecordingStore` path safety, and outbound-data discipline in discovery.
+- **Issues 0019–0020 have had no independent review.** The completed review covered
+  0016–0018 only; discovery's outbound-data discipline has not been read by anyone
+  but me, though it is covered by a test asserting the resume never reaches a job
+  source.
 - Phone-browser acceptance is deferred; desktop only this round.

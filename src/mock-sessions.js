@@ -53,6 +53,8 @@ export const currentEntry = session => session.entries.find(entry => !entry.answ
 export const sessionFinished = session => session.entries.every(entry => entry.answer || entry.skipped);
 
 export function requireCurrentEntry(session, entryId) {
+  // The session can be deleted by a concurrent request between the read and the commit.
+  requireValue(session, 'This mock session was deleted', 409);
   const entry = currentEntry(session);
   requireValue(session.status === 'in-progress', 'This mock session is already finished', 409);
   requireValue(entry, 'Every question in this session is already answered or skipped', 409);
