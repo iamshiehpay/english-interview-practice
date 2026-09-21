@@ -2,9 +2,9 @@
   "suiteVersion": "1.0.0",
   "runnerVersion": "3.0.0",
   "contractVersion": "3.0.0",
-  "generatedAt": "2026-09-18T14:47:05.030Z",
+  "generatedAt": "2026-09-21T03:38:25.857Z",
   "runtime": "v23.11.0",
-  "codeChecksum": "30a8e42df08837230cce207b0d812b47e12feaedc96960f824d216c829197542",
+  "codeChecksum": "ac05841abedb6579c97980ec5064fce625ec626e96c79ab61774d9e84335014c",
   "provider": "Deterministic demonstration provider",
   "model": null,
   "configuration": null,
@@ -135,12 +135,12 @@
     {
       "caseId": "ai-role-fit",
       "repeat": 1,
-      "inputChecksum": "0b26cfbdb7eda57283604de6472bbeca6ad68cd8f7de22e6001182b21cba6044",
-      "outputChecksum": "3e8cec2207c54410173c217b7f485603646af671f23d6d545a2edfa03a1f744f",
+      "inputChecksum": "1c6dfab6b2e33ae8147d41d4aeeb0917868ae7fd42565c64814511b6193e323c",
+      "outputChecksum": "6c9de8e22d1e5ecc2c9f9090e694053945b706db388ef1dbfd6efbebff216fe3",
       "question": {
         "id": "q1",
-        "text": "Why does this responsibility interest you, and what would you aim to learn? Focus: Evaluate retrieval quality for a Mandarin support assistant.",
-        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Evaluate retrieval quality for a Mandarin support assistant.",
+        "text": "Why does this responsibility interest you, and what would you aim to learn?",
+        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "role-fit",
@@ -199,8 +199,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Evaluate retrieval quality for a Mandarin support assistant.",
-            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Evaluate retrieval quality for a Mandarin support assistant."
+            "en": "Why does this responsibility interest you, and what would you aim to learn?",
+            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？"
           },
           {
             "name": "question rationale",
@@ -254,12 +254,12 @@
     {
       "caseId": "ai-experience-depth",
       "repeat": 1,
-      "inputChecksum": "1a70fb5449b848c03749fa259a8d303aea3c8d5cb98689672f1e85515828a1ea",
-      "outputChecksum": "b9b077b6721aec4718840a0f4d92c016594b7903eb31df1fdcb46fde33090dd9",
+      "inputChecksum": "389a142aaf71637c532e243cd41ebbf4fffe9b66104fdae37dd15a6ec69bb078",
+      "outputChecksum": "9309c5b3db5c624b589fe5b1467303d2cc9a6a1c79dc8bcfef22754dba51d0c4",
       "question": {
         "id": "q2",
-        "text": "Describe a relevant project or an honest hypothetical approach. Focus: Build Python inference services in Taipei.",
-        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Build Python inference services in Taipei.",
+        "text": "Describe a relevant project or an honest hypothetical approach.",
+        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "experience-depth",
@@ -318,8 +318,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Describe a relevant project or an honest hypothetical approach. Focus: Build Python inference services in Taipei.",
-            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Build Python inference services in Taipei."
+            "en": "Describe a relevant project or an honest hypothetical approach.",
+            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。"
           },
           {
             "name": "question rationale",
@@ -373,12 +373,12 @@
     {
       "caseId": "ai-behavioral",
       "repeat": 1,
-      "inputChecksum": "4b264406e41d2281a08927740bbeb3ca3674e0d1227e86db0ae666d0c32620f1",
-      "outputChecksum": "ab7a106f9ba03b3d294847ccd7707ed374695432725a2de6d830a6b9ec134868",
+      "inputChecksum": "43e6452856a9488351118d17fd3a9c8052e3f51d46b9f6942aefe6277310a22c",
+      "outputChecksum": "728ab42f568e6ec937f9c2f264afb1564cff9e5c3e494b7dbfc799c13c0c96c5",
       "question": {
         "id": "q3",
-        "text": "How would you handle disagreement with a teammate about this work? Focus: Discuss model limitations with product colleagues.",
-        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Discuss model limitations with product colleagues.",
+        "text": "How would you handle disagreement with a teammate about this work?",
+        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "behavioral",
@@ -437,8 +437,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "How would you handle disagreement with a teammate about this work? Focus: Discuss model limitations with product colleagues.",
-            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Discuss model limitations with product colleagues."
+            "en": "How would you handle disagreement with a teammate about this work?",
+            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？"
           },
           {
             "name": "question rationale",
@@ -492,12 +492,12 @@
     {
       "caseId": "ai-technical-communication",
       "repeat": 1,
-      "inputChecksum": "ca6202ccaffe5688dae96e039093f23cabac4bfafb9e568910ea0ce5c8b4baf7",
-      "outputChecksum": "dc1269e748ebcacc496941bae2ae7711a9cf5f36b4196265d87380d573b71f04",
+      "inputChecksum": "518baa362665299572e0a055e1d41f2eef29c99a024a012a0cfb9f944a1171e7",
+      "outputChecksum": "7bb4b70d6d95dcac4fdc4c4632a5582a08acf62b40b484a98f4f9404d3a193d2",
       "question": {
         "id": "q4",
-        "text": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain latency and accuracy trade-offs.",
-        "meaningZh": "請向非專業人士說明一種做法及其取捨。 重點：Explain latency and accuracy trade-offs.",
+        "text": "Explain an approach and its trade-offs to a non-specialist.",
+        "meaningZh": "請向非專業人士說明一種做法及其取捨。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "technical-communication",
@@ -556,8 +556,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain latency and accuracy trade-offs.",
-            "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain latency and accuracy trade-offs."
+            "en": "Explain an approach and its trade-offs to a non-specialist.",
+            "zh": "請向非專業人士說明一種做法及其取捨。"
           },
           {
             "name": "question rationale",
@@ -611,12 +611,12 @@
     {
       "caseId": "backend-role-fit",
       "repeat": 1,
-      "inputChecksum": "bd061228d6dba746e30d9ae5c2a0a78cdfe8ed579136e972f968dc587a3c9d1f",
-      "outputChecksum": "59d6f78d3bcbd0be33207f6a7ab275903b65fca60d1c07814f9dc2b3db7fd21a",
+      "inputChecksum": "8573b3b0df0f1e1d153f7bcce2ccadd97aa4991e2d6d03f8592580ed51a09bda",
+      "outputChecksum": "204352bbc6a7d3ddeeb331ea1fce08502b04e53cad8cd1813b91f3d4deaca943",
       "question": {
         "id": "q1",
-        "text": "Why does this responsibility interest you, and what would you aim to learn? Focus: Build reliable payment APIs in Taipei.",
-        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Build reliable payment APIs in Taipei.",
+        "text": "Why does this responsibility interest you, and what would you aim to learn?",
+        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "role-fit",
@@ -675,8 +675,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Build reliable payment APIs in Taipei.",
-            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Build reliable payment APIs in Taipei."
+            "en": "Why does this responsibility interest you, and what would you aim to learn?",
+            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？"
           },
           {
             "name": "question rationale",
@@ -730,12 +730,12 @@
     {
       "caseId": "backend-experience-depth",
       "repeat": 1,
-      "inputChecksum": "e8d42909cf83a772b8676a8f4d7f9dc6d50a1c93e91a40f3228e6b178faa8d61",
-      "outputChecksum": "c4f00e90db12f2e705e613ae82d0db0541c98c3e6ccf33790489c27cb935cfbc",
+      "inputChecksum": "0cb97be59e5f61a02845011e8ac30ef09f8404f610bb3ecf07c5f2564ecd967c",
+      "outputChecksum": "92fc32bb838ce8d77f9497fb7744d11cf7074a729b6a827f96b7585d52afe5b6",
       "question": {
         "id": "q2",
-        "text": "Describe a relevant project or an honest hypothetical approach. Focus: Use PostgreSQL transactions and automated tests.",
-        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Use PostgreSQL transactions and automated tests.",
+        "text": "Describe a relevant project or an honest hypothetical approach.",
+        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "experience-depth",
@@ -794,8 +794,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Describe a relevant project or an honest hypothetical approach. Focus: Use PostgreSQL transactions and automated tests.",
-            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Use PostgreSQL transactions and automated tests."
+            "en": "Describe a relevant project or an honest hypothetical approach.",
+            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。"
           },
           {
             "name": "question rationale",
@@ -849,12 +849,12 @@
     {
       "caseId": "backend-behavioral",
       "repeat": 1,
-      "inputChecksum": "26185cf0d21cf573d3bafb91a32bea499c7d12c91a1b11209bec5422a3f3a347",
-      "outputChecksum": "affe3230a340d04f9c972fff04551f334d29d434f0a2160c1065b139b8b986b3",
+      "inputChecksum": "109a885c02b9f599cbac12f0cec58fd7db1579925ebc8cae57229a316209ba80",
+      "outputChecksum": "41abe6edae531272ac3e1acb7ed71b2b19818281bc7c768b9c640877ce932f1f",
       "question": {
         "id": "q3",
-        "text": "How would you handle disagreement with a teammate about this work? Focus: Collaborate on incident reviews without blame.",
-        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Collaborate on incident reviews without blame.",
+        "text": "How would you handle disagreement with a teammate about this work?",
+        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "behavioral",
@@ -913,8 +913,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "How would you handle disagreement with a teammate about this work? Focus: Collaborate on incident reviews without blame.",
-            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Collaborate on incident reviews without blame."
+            "en": "How would you handle disagreement with a teammate about this work?",
+            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？"
           },
           {
             "name": "question rationale",
@@ -968,12 +968,12 @@
     {
       "caseId": "backend-technical-communication",
       "repeat": 1,
-      "inputChecksum": "835bc3ea468472c0d59e1ae1702ab4e489440e9e792e8c896184f3f41c66bdc3",
-      "outputChecksum": "241e676e0996e343bb865f4a442426313b7fb55a46a55d2564ea85b2750bda34",
+      "inputChecksum": "742ce5b19df1d0e1ce446af6de7d7565f57827efdd5fab31ac1720d9268f6c13",
+      "outputChecksum": "e40bf12ffe38b54efab67d5223e26e704e891683c414af5a2df5ce8d74d79bec",
       "question": {
         "id": "q4",
-        "text": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain consistency and availability trade-offs.",
-        "meaningZh": "請向非專業人士說明一種做法及其取捨。 重點：Explain consistency and availability trade-offs.",
+        "text": "Explain an approach and its trade-offs to a non-specialist.",
+        "meaningZh": "請向非專業人士說明一種做法及其取捨。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "technical-communication",
@@ -1032,8 +1032,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain consistency and availability trade-offs.",
-            "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain consistency and availability trade-offs."
+            "en": "Explain an approach and its trade-offs to a non-specialist.",
+            "zh": "請向非專業人士說明一種做法及其取捨。"
           },
           {
             "name": "question rationale",
@@ -1087,12 +1087,12 @@
     {
       "caseId": "data-role-fit",
       "repeat": 1,
-      "inputChecksum": "98dab3aac8874bf0bdd873a405eff6fde31eb6597375112d0633ffcc2eabdaa2",
-      "outputChecksum": "113e5c9d263b41540df3c24adc32cf5c48f2943672bac091000bb539a4124a00",
+      "inputChecksum": "74af78e57f73633da6eebf21b309179b96127b8a05f2f8761efff29c71834f20",
+      "outputChecksum": "6205f66116cbccb72335bb7a746331ed6b90f269b2dc2858385c7ddf33223c03",
       "question": {
         "id": "q1",
-        "text": "Why does this responsibility interest you, and what would you aim to learn? Focus: Analyze product experiments in Hsinchu.",
-        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Analyze product experiments in Hsinchu.",
+        "text": "Why does this responsibility interest you, and what would you aim to learn?",
+        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "role-fit",
@@ -1151,8 +1151,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Analyze product experiments in Hsinchu.",
-            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Analyze product experiments in Hsinchu."
+            "en": "Why does this responsibility interest you, and what would you aim to learn?",
+            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？"
           },
           {
             "name": "question rationale",
@@ -1206,12 +1206,12 @@
     {
       "caseId": "data-experience-depth",
       "repeat": 1,
-      "inputChecksum": "6b299bc0ca73e3fd5597ee3ce8abf427ec2a3c4dd50cb1a04db4024289c3b5c4",
-      "outputChecksum": "e407fead2dd7940c4e729e239f20af85a60e5dcc1cad16aac4495c25764021f8",
+      "inputChecksum": "1249ef3e1133d7326cf904dcfc45fd79d66addb0b7481ce5abe20f9f94eab288",
+      "outputChecksum": "2aa537fba183117f072aff9df21e910a697365d507b8f11032b991ab6a687c42",
       "question": {
         "id": "q2",
-        "text": "Describe a relevant project or an honest hypothetical approach. Focus: Use SQL and Python to investigate missing data.",
-        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Use SQL and Python to investigate missing data.",
+        "text": "Describe a relevant project or an honest hypothetical approach.",
+        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "experience-depth",
@@ -1270,8 +1270,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Describe a relevant project or an honest hypothetical approach. Focus: Use SQL and Python to investigate missing data.",
-            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Use SQL and Python to investigate missing data."
+            "en": "Describe a relevant project or an honest hypothetical approach.",
+            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。"
           },
           {
             "name": "question rationale",
@@ -1325,12 +1325,12 @@
     {
       "caseId": "data-behavioral",
       "repeat": 1,
-      "inputChecksum": "08932558fa6fba1be9a79e5c7733358e65f6d497e859f6f81c6f2ed182c42270",
-      "outputChecksum": "2e3a7dd0b31c306e9ad6dd46ceeac82e82b79405b46cb71bfdee7f88461106cb",
+      "inputChecksum": "76e86ff411c91064f8c79053d609a67bbd119d095776850c63b396616a18fc42",
+      "outputChecksum": "eb00bad12a26c694b2d93e3c51fd9b4b4ab26691492af2a5b4b5fec625531054",
       "question": {
         "id": "q3",
-        "text": "How would you handle disagreement with a teammate about this work? Focus: Communicate uncertainty to product managers.",
-        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Communicate uncertainty to product managers.",
+        "text": "How would you handle disagreement with a teammate about this work?",
+        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "behavioral",
@@ -1389,8 +1389,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "How would you handle disagreement with a teammate about this work? Focus: Communicate uncertainty to product managers.",
-            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Communicate uncertainty to product managers."
+            "en": "How would you handle disagreement with a teammate about this work?",
+            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？"
           },
           {
             "name": "question rationale",
@@ -1444,12 +1444,12 @@
     {
       "caseId": "data-technical-communication",
       "repeat": 1,
-      "inputChecksum": "7370c70943acbc8430fa1c9de8a601c2e38d1605163e8cc407a5dcb7f5eb48ae",
-      "outputChecksum": "a7d8b630af0a8fffd3b8e2495503767127f356e9938465936af3bee9b525acfb",
+      "inputChecksum": "15b97d980f0e0386913188d03bc457b2d4b1bcb468b35604deaea668acbd915c",
+      "outputChecksum": "b7e101f3b91efa26f08374e5bed229dd5849974b71a0bd271bdc2044c28a5618",
       "question": {
         "id": "q4",
-        "text": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain experiment assumptions and confidence intervals.",
-        "meaningZh": "請向非專業人士說明一種做法及其取捨。 重點：Explain experiment assumptions and confidence intervals.",
+        "text": "Explain an approach and its trade-offs to a non-specialist.",
+        "meaningZh": "請向非專業人士說明一種做法及其取捨。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "technical-communication",
@@ -1508,8 +1508,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain experiment assumptions and confidence intervals.",
-            "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain experiment assumptions and confidence intervals."
+            "en": "Explain an approach and its trade-offs to a non-specialist.",
+            "zh": "請向非專業人士說明一種做法及其取捨。"
           },
           {
             "name": "question rationale",
@@ -1563,12 +1563,12 @@
     {
       "caseId": "embedded-role-fit",
       "repeat": 1,
-      "inputChecksum": "7a002c6dcd2826a17f92f6a6641005e115094afe32b474c0083e79854aa19abc",
-      "outputChecksum": "8d9397feb3e6c20feb4738548985bb0b46c034bb41df41a19a7cddf0f0ee38c6",
+      "inputChecksum": "b0fe758e14765d157808f37fdfdc5fc4a8be252ffc2bcb0577370325513b99cb",
+      "outputChecksum": "5baa2b5e26969a612e9ba02b9c248234be6b6d9dfe284b089ffd2d7de4f613ce",
       "question": {
         "id": "q1",
-        "text": "Why does this responsibility interest you, and what would you aim to learn? Focus: Build embedded sensor software in Hsinchu.",
-        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Build embedded sensor software in Hsinchu.",
+        "text": "Why does this responsibility interest you, and what would you aim to learn?",
+        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "role-fit",
@@ -1627,8 +1627,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Build embedded sensor software in Hsinchu.",
-            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Build embedded sensor software in Hsinchu."
+            "en": "Why does this responsibility interest you, and what would you aim to learn?",
+            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？"
           },
           {
             "name": "question rationale",
@@ -1682,12 +1682,12 @@
     {
       "caseId": "embedded-experience-depth",
       "repeat": 1,
-      "inputChecksum": "7ceb4606cba3cc0600dd66cc2b334f2ad73e82c117506e36a4846db6fd8a881f",
-      "outputChecksum": "988d2d711efd8d5aad6b60ae2da4fc1f662b5b24c80c391880a97bb685137272",
+      "inputChecksum": "4bdfe98cba48d0451dd41e33faa50884e2b8ec4994b751eed126da7ada09f72a",
+      "outputChecksum": "2118fa69b8df1c669657442b9bcdbb74204d0f156713126c13b6cb4e80801ec1",
       "question": {
         "id": "q2",
-        "text": "Describe a relevant project or an honest hypothetical approach. Focus: Debug C firmware and serial communication.",
-        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Debug C firmware and serial communication.",
+        "text": "Describe a relevant project or an honest hypothetical approach.",
+        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "experience-depth",
@@ -1746,8 +1746,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Describe a relevant project or an honest hypothetical approach. Focus: Debug C firmware and serial communication.",
-            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Debug C firmware and serial communication."
+            "en": "Describe a relevant project or an honest hypothetical approach.",
+            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。"
           },
           {
             "name": "question rationale",
@@ -1801,12 +1801,12 @@
     {
       "caseId": "embedded-behavioral",
       "repeat": 1,
-      "inputChecksum": "1ca0f296f41e02fd1d31bc0f81795b2407514d81d8986bdca1db018319e913ba",
-      "outputChecksum": "9c90a2eeaa675f230b79b7c7b836f16047b1a0e1048ed5eb9df207efefccb12e",
+      "inputChecksum": "b4d75d23bcbdf8fe0cf4f51122b42aa56a519d42e4c244d0fbebb467b78bfd3c",
+      "outputChecksum": "b47836d1ead91e25e86102b7a637eb340ebdf457742e5949e4bd70e3f5d1a43e",
       "question": {
         "id": "q3",
-        "text": "How would you handle disagreement with a teammate about this work? Focus: Coordinate hardware and software investigations.",
-        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Coordinate hardware and software investigations.",
+        "text": "How would you handle disagreement with a teammate about this work?",
+        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "behavioral",
@@ -1865,8 +1865,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "How would you handle disagreement with a teammate about this work? Focus: Coordinate hardware and software investigations.",
-            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Coordinate hardware and software investigations."
+            "en": "How would you handle disagreement with a teammate about this work?",
+            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？"
           },
           {
             "name": "question rationale",
@@ -1920,12 +1920,12 @@
     {
       "caseId": "embedded-technical-communication",
       "repeat": 1,
-      "inputChecksum": "78b5bcc988e14de24550ed1132f761ca8e2177bc7038222a9b333ff938fdbe47",
-      "outputChecksum": "72cff6cbe12b789e6fb6d7e9f6faf166c94001ddaa57ad1dfef90c47a2891551",
+      "inputChecksum": "28875df3a776b677afd270a927bfb0e8b71391d53c67ed8dccfe10c019a3fa82",
+      "outputChecksum": "38289a843e25616e291f068b6633a65bc5d0d02d3a23d5d36f1370ac0094c2dc",
       "question": {
         "id": "q4",
-        "text": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain timing and memory constraints.",
-        "meaningZh": "請向非專業人士說明一種做法及其取捨。 重點：Explain timing and memory constraints.",
+        "text": "Explain an approach and its trade-offs to a non-specialist.",
+        "meaningZh": "請向非專業人士說明一種做法及其取捨。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "technical-communication",
@@ -1984,8 +1984,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain timing and memory constraints.",
-            "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain timing and memory constraints."
+            "en": "Explain an approach and its trade-offs to a non-specialist.",
+            "zh": "請向非專業人士說明一種做法及其取捨。"
           },
           {
             "name": "question rationale",
@@ -2039,12 +2039,12 @@
     {
       "caseId": "frontend-role-fit",
       "repeat": 1,
-      "inputChecksum": "57998a9c331bc8596db7e58d3b021de7ad7e7507b36e4c8a57ea00fa4fc6cd14",
-      "outputChecksum": "d819029bbcb85ddb70ce3605f0b8435518abaad2bdffc295870b8fe106e71b8a",
+      "inputChecksum": "2a29b9ff97ebde9454923f8cd9868da4f7978f2a8d672a84862caf48b9108eef",
+      "outputChecksum": "2020f3e0572e0c484bd876a9ac6219a403ad0d8935dfb9bf4fb047b46a9a7849",
       "question": {
         "id": "q1",
-        "text": "Why does this responsibility interest you, and what would you aim to learn? Focus: Build accessible web interfaces in Taipei.",
-        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Build accessible web interfaces in Taipei.",
+        "text": "Why does this responsibility interest you, and what would you aim to learn?",
+        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "role-fit",
@@ -2103,8 +2103,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Build accessible web interfaces in Taipei.",
-            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Build accessible web interfaces in Taipei."
+            "en": "Why does this responsibility interest you, and what would you aim to learn?",
+            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？"
           },
           {
             "name": "question rationale",
@@ -2158,12 +2158,12 @@
     {
       "caseId": "frontend-experience-depth",
       "repeat": 1,
-      "inputChecksum": "5aef1d206ab75a52a5125fc567d57bfbb1ccb14d031459412e18a0b4d422365e",
-      "outputChecksum": "f55094b75b14f6c22c08aaf277847fce39880d811b0680b2dcd0ee70c7fe34bb",
+      "inputChecksum": "32ba451c56d67c884d3243c413d633b749dc649bd280242a504914b0103b1de9",
+      "outputChecksum": "354dc27aca2cc905939234c704aa77a75354b1dafd85bae737ee6674387a3e2f",
       "question": {
         "id": "q2",
-        "text": "Describe a relevant project or an honest hypothetical approach. Focus: Use JavaScript and browser performance tools.",
-        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Use JavaScript and browser performance tools.",
+        "text": "Describe a relevant project or an honest hypothetical approach.",
+        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "experience-depth",
@@ -2222,8 +2222,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Describe a relevant project or an honest hypothetical approach. Focus: Use JavaScript and browser performance tools.",
-            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Use JavaScript and browser performance tools."
+            "en": "Describe a relevant project or an honest hypothetical approach.",
+            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。"
           },
           {
             "name": "question rationale",
@@ -2277,12 +2277,12 @@
     {
       "caseId": "frontend-behavioral",
       "repeat": 1,
-      "inputChecksum": "97fc436c7ce08e92bb20e5919db067a3d638328ac8bebd1adac823439886e86a",
-      "outputChecksum": "f38d138a1ba263081e95fe1e99482f03c5bf7737efb9f1e817363fa51b6a1068",
+      "inputChecksum": "788a95b8c3b4fd726a34b360816179bac98b02b04a03426bb874279be9e6c244",
+      "outputChecksum": "e8fbb6aeb3b323f6e6d3a8681ff46172ab7243164903fa7081cd005e78a123fa",
       "question": {
         "id": "q3",
-        "text": "How would you handle disagreement with a teammate about this work? Focus: Collaborate with designers on usability feedback.",
-        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Collaborate with designers on usability feedback.",
+        "text": "How would you handle disagreement with a teammate about this work?",
+        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "behavioral",
@@ -2341,8 +2341,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "How would you handle disagreement with a teammate about this work? Focus: Collaborate with designers on usability feedback.",
-            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Collaborate with designers on usability feedback."
+            "en": "How would you handle disagreement with a teammate about this work?",
+            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？"
           },
           {
             "name": "question rationale",
@@ -2396,12 +2396,12 @@
     {
       "caseId": "frontend-technical-communication",
       "repeat": 1,
-      "inputChecksum": "af428187acec4d0625c2ff61f46367d5296458f0622eafb140097f1e108c2aaf",
-      "outputChecksum": "e9e67f4668e658185613fd9bd7b3735187070da5fa80f9857a0134bba5e70348",
+      "inputChecksum": "70482ff9c056332d6fd63a31f3027c1b5ca1b3fdb29f10f073fcdfbd13615e6c",
+      "outputChecksum": "6087e7e5a288863f46e079e821262d874c937e62bda0c725725b79df54f00c48",
       "question": {
         "id": "q4",
-        "text": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain accessibility and rendering trade-offs.",
-        "meaningZh": "請向非專業人士說明一種做法及其取捨。 重點：Explain accessibility and rendering trade-offs.",
+        "text": "Explain an approach and its trade-offs to a non-specialist.",
+        "meaningZh": "請向非專業人士說明一種做法及其取捨。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "technical-communication",
@@ -2460,8 +2460,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain accessibility and rendering trade-offs.",
-            "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain accessibility and rendering trade-offs."
+            "en": "Explain an approach and its trade-offs to a non-specialist.",
+            "zh": "請向非專業人士說明一種做法及其取捨。"
           },
           {
             "name": "question rationale",
@@ -2515,12 +2515,12 @@
     {
       "caseId": "ai-role-fit",
       "repeat": 2,
-      "inputChecksum": "0b26cfbdb7eda57283604de6472bbeca6ad68cd8f7de22e6001182b21cba6044",
-      "outputChecksum": "c39a133640141ddbb781b52bc829e557a6891892a500f0dd06f50211691d0948",
+      "inputChecksum": "1c6dfab6b2e33ae8147d41d4aeeb0917868ae7fd42565c64814511b6193e323c",
+      "outputChecksum": "b6e1af7542bfb39d731a48bd41be34390be65a77afeee9e592eb684147298b41",
       "question": {
         "id": "q1",
-        "text": "Why does this responsibility interest you, and what would you aim to learn? Focus: Evaluate retrieval quality for a Mandarin support assistant.",
-        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Evaluate retrieval quality for a Mandarin support assistant.",
+        "text": "Why does this responsibility interest you, and what would you aim to learn?",
+        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "role-fit",
@@ -2579,8 +2579,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Evaluate retrieval quality for a Mandarin support assistant.",
-            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Evaluate retrieval quality for a Mandarin support assistant."
+            "en": "Why does this responsibility interest you, and what would you aim to learn?",
+            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？"
           },
           {
             "name": "question rationale",
@@ -2634,12 +2634,12 @@
     {
       "caseId": "ai-experience-depth",
       "repeat": 2,
-      "inputChecksum": "1a70fb5449b848c03749fa259a8d303aea3c8d5cb98689672f1e85515828a1ea",
-      "outputChecksum": "0ce8ab995ed3188d68f8c6b3aa502a54aa7f87cabbdc28ed7d7f086098b3e1f0",
+      "inputChecksum": "389a142aaf71637c532e243cd41ebbf4fffe9b66104fdae37dd15a6ec69bb078",
+      "outputChecksum": "73d232c75b4287ee4b5972019f8467b7f4cb7ca3c865ce92fec34033184c2074",
       "question": {
         "id": "q2",
-        "text": "Describe a relevant project or an honest hypothetical approach. Focus: Build Python inference services in Taipei.",
-        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Build Python inference services in Taipei.",
+        "text": "Describe a relevant project or an honest hypothetical approach.",
+        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "experience-depth",
@@ -2698,8 +2698,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Describe a relevant project or an honest hypothetical approach. Focus: Build Python inference services in Taipei.",
-            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Build Python inference services in Taipei."
+            "en": "Describe a relevant project or an honest hypothetical approach.",
+            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。"
           },
           {
             "name": "question rationale",
@@ -2753,12 +2753,12 @@
     {
       "caseId": "ai-behavioral",
       "repeat": 2,
-      "inputChecksum": "4b264406e41d2281a08927740bbeb3ca3674e0d1227e86db0ae666d0c32620f1",
-      "outputChecksum": "b2cc9645506df1283cf053893210d9ca2c56f437d33184cea6b8c1508310eb5a",
+      "inputChecksum": "43e6452856a9488351118d17fd3a9c8052e3f51d46b9f6942aefe6277310a22c",
+      "outputChecksum": "d174d279cb10f9b7e5db4870581401aaa02cd8c2a4c13244c960b188e677d763",
       "question": {
         "id": "q3",
-        "text": "How would you handle disagreement with a teammate about this work? Focus: Discuss model limitations with product colleagues.",
-        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Discuss model limitations with product colleagues.",
+        "text": "How would you handle disagreement with a teammate about this work?",
+        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "behavioral",
@@ -2817,8 +2817,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "How would you handle disagreement with a teammate about this work? Focus: Discuss model limitations with product colleagues.",
-            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Discuss model limitations with product colleagues."
+            "en": "How would you handle disagreement with a teammate about this work?",
+            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？"
           },
           {
             "name": "question rationale",
@@ -2872,12 +2872,12 @@
     {
       "caseId": "ai-technical-communication",
       "repeat": 2,
-      "inputChecksum": "ca6202ccaffe5688dae96e039093f23cabac4bfafb9e568910ea0ce5c8b4baf7",
-      "outputChecksum": "73057e813a0e4d0ad9074a98925811784407c8ef01b0edd7cb49566defd05fb8",
+      "inputChecksum": "518baa362665299572e0a055e1d41f2eef29c99a024a012a0cfb9f944a1171e7",
+      "outputChecksum": "392b204bb0908ab9d0cc0276d62b2c85c13efaef524466296e27e47d84ab5c45",
       "question": {
         "id": "q4",
-        "text": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain latency and accuracy trade-offs.",
-        "meaningZh": "請向非專業人士說明一種做法及其取捨。 重點：Explain latency and accuracy trade-offs.",
+        "text": "Explain an approach and its trade-offs to a non-specialist.",
+        "meaningZh": "請向非專業人士說明一種做法及其取捨。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "technical-communication",
@@ -2936,8 +2936,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain latency and accuracy trade-offs.",
-            "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain latency and accuracy trade-offs."
+            "en": "Explain an approach and its trade-offs to a non-specialist.",
+            "zh": "請向非專業人士說明一種做法及其取捨。"
           },
           {
             "name": "question rationale",
@@ -2991,12 +2991,12 @@
     {
       "caseId": "backend-role-fit",
       "repeat": 2,
-      "inputChecksum": "bd061228d6dba746e30d9ae5c2a0a78cdfe8ed579136e972f968dc587a3c9d1f",
-      "outputChecksum": "f0a14c9886983ec58619e9d0991d9a6e236737d29310f4f790efad770e8ecb1b",
+      "inputChecksum": "8573b3b0df0f1e1d153f7bcce2ccadd97aa4991e2d6d03f8592580ed51a09bda",
+      "outputChecksum": "cf824cb80fce98fa1942bfea23d3efa77454c62a0d1eb6ce93e511635110fac9",
       "question": {
         "id": "q1",
-        "text": "Why does this responsibility interest you, and what would you aim to learn? Focus: Build reliable payment APIs in Taipei.",
-        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Build reliable payment APIs in Taipei.",
+        "text": "Why does this responsibility interest you, and what would you aim to learn?",
+        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "role-fit",
@@ -3055,8 +3055,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Build reliable payment APIs in Taipei.",
-            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Build reliable payment APIs in Taipei."
+            "en": "Why does this responsibility interest you, and what would you aim to learn?",
+            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？"
           },
           {
             "name": "question rationale",
@@ -3110,12 +3110,12 @@
     {
       "caseId": "backend-experience-depth",
       "repeat": 2,
-      "inputChecksum": "e8d42909cf83a772b8676a8f4d7f9dc6d50a1c93e91a40f3228e6b178faa8d61",
-      "outputChecksum": "44403c11814f593f5d3b4fdd9350c7b728e953b015472ba57d648dc698b2f866",
+      "inputChecksum": "0cb97be59e5f61a02845011e8ac30ef09f8404f610bb3ecf07c5f2564ecd967c",
+      "outputChecksum": "0667927ec10aed064b94a143400a4aa7e576013d74abdb000464b84a93114d6c",
       "question": {
         "id": "q2",
-        "text": "Describe a relevant project or an honest hypothetical approach. Focus: Use PostgreSQL transactions and automated tests.",
-        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Use PostgreSQL transactions and automated tests.",
+        "text": "Describe a relevant project or an honest hypothetical approach.",
+        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "experience-depth",
@@ -3174,8 +3174,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Describe a relevant project or an honest hypothetical approach. Focus: Use PostgreSQL transactions and automated tests.",
-            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Use PostgreSQL transactions and automated tests."
+            "en": "Describe a relevant project or an honest hypothetical approach.",
+            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。"
           },
           {
             "name": "question rationale",
@@ -3229,12 +3229,12 @@
     {
       "caseId": "backend-behavioral",
       "repeat": 2,
-      "inputChecksum": "26185cf0d21cf573d3bafb91a32bea499c7d12c91a1b11209bec5422a3f3a347",
-      "outputChecksum": "a47a8cfd7aecac3f77ace9ad27b327926c2d7a99bd5b532c83e56d0b9a08a591",
+      "inputChecksum": "109a885c02b9f599cbac12f0cec58fd7db1579925ebc8cae57229a316209ba80",
+      "outputChecksum": "4146d68713af1a9928c7b90c69bf6b1a62ebd1a473fab778a94128f8b58259e7",
       "question": {
         "id": "q3",
-        "text": "How would you handle disagreement with a teammate about this work? Focus: Collaborate on incident reviews without blame.",
-        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Collaborate on incident reviews without blame.",
+        "text": "How would you handle disagreement with a teammate about this work?",
+        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "behavioral",
@@ -3293,8 +3293,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "How would you handle disagreement with a teammate about this work? Focus: Collaborate on incident reviews without blame.",
-            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Collaborate on incident reviews without blame."
+            "en": "How would you handle disagreement with a teammate about this work?",
+            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？"
           },
           {
             "name": "question rationale",
@@ -3348,12 +3348,12 @@
     {
       "caseId": "backend-technical-communication",
       "repeat": 2,
-      "inputChecksum": "835bc3ea468472c0d59e1ae1702ab4e489440e9e792e8c896184f3f41c66bdc3",
-      "outputChecksum": "5ae914f43ebe0e42ecd65f20cec2c464e5d2686150b12f4292e85b4848864d82",
+      "inputChecksum": "742ce5b19df1d0e1ce446af6de7d7565f57827efdd5fab31ac1720d9268f6c13",
+      "outputChecksum": "4ba007bf96c49131f7b6c6e71cc640a41fc4aac6044a3cd66960d2b1f4c038e3",
       "question": {
         "id": "q4",
-        "text": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain consistency and availability trade-offs.",
-        "meaningZh": "請向非專業人士說明一種做法及其取捨。 重點：Explain consistency and availability trade-offs.",
+        "text": "Explain an approach and its trade-offs to a non-specialist.",
+        "meaningZh": "請向非專業人士說明一種做法及其取捨。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "technical-communication",
@@ -3412,8 +3412,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain consistency and availability trade-offs.",
-            "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain consistency and availability trade-offs."
+            "en": "Explain an approach and its trade-offs to a non-specialist.",
+            "zh": "請向非專業人士說明一種做法及其取捨。"
           },
           {
             "name": "question rationale",
@@ -3467,12 +3467,12 @@
     {
       "caseId": "data-role-fit",
       "repeat": 2,
-      "inputChecksum": "98dab3aac8874bf0bdd873a405eff6fde31eb6597375112d0633ffcc2eabdaa2",
-      "outputChecksum": "e4aa95bc1c08cc4bba0edf511c5aef64ee0b359707162bfbcc308aa96cd103b6",
+      "inputChecksum": "74af78e57f73633da6eebf21b309179b96127b8a05f2f8761efff29c71834f20",
+      "outputChecksum": "0aeeedc307e9d60ea6b211c0e33e1f96282864d87fc3718700413b89327f9c6e",
       "question": {
         "id": "q1",
-        "text": "Why does this responsibility interest you, and what would you aim to learn? Focus: Analyze product experiments in Hsinchu.",
-        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Analyze product experiments in Hsinchu.",
+        "text": "Why does this responsibility interest you, and what would you aim to learn?",
+        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "role-fit",
@@ -3531,8 +3531,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Analyze product experiments in Hsinchu.",
-            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Analyze product experiments in Hsinchu."
+            "en": "Why does this responsibility interest you, and what would you aim to learn?",
+            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？"
           },
           {
             "name": "question rationale",
@@ -3586,12 +3586,12 @@
     {
       "caseId": "data-experience-depth",
       "repeat": 2,
-      "inputChecksum": "6b299bc0ca73e3fd5597ee3ce8abf427ec2a3c4dd50cb1a04db4024289c3b5c4",
-      "outputChecksum": "83bae5c88b11915303142096c429efd5d0c72efe181a250602a27b27d93d8a00",
+      "inputChecksum": "1249ef3e1133d7326cf904dcfc45fd79d66addb0b7481ce5abe20f9f94eab288",
+      "outputChecksum": "77e15e4c76bd5e58087d268bc5736d66c01de5481df6cb30b89911734624a612",
       "question": {
         "id": "q2",
-        "text": "Describe a relevant project or an honest hypothetical approach. Focus: Use SQL and Python to investigate missing data.",
-        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Use SQL and Python to investigate missing data.",
+        "text": "Describe a relevant project or an honest hypothetical approach.",
+        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "experience-depth",
@@ -3650,8 +3650,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Describe a relevant project or an honest hypothetical approach. Focus: Use SQL and Python to investigate missing data.",
-            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Use SQL and Python to investigate missing data."
+            "en": "Describe a relevant project or an honest hypothetical approach.",
+            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。"
           },
           {
             "name": "question rationale",
@@ -3705,12 +3705,12 @@
     {
       "caseId": "data-behavioral",
       "repeat": 2,
-      "inputChecksum": "08932558fa6fba1be9a79e5c7733358e65f6d497e859f6f81c6f2ed182c42270",
-      "outputChecksum": "4ddf39f1d53e0002321366f163b8401cd239016b6a10b745be48cfaaac2791f3",
+      "inputChecksum": "76e86ff411c91064f8c79053d609a67bbd119d095776850c63b396616a18fc42",
+      "outputChecksum": "2ea193359ac81c01840bf8a6d09d0e047b5988ee2b1c2e8a12ef35c7957058b8",
       "question": {
         "id": "q3",
-        "text": "How would you handle disagreement with a teammate about this work? Focus: Communicate uncertainty to product managers.",
-        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Communicate uncertainty to product managers.",
+        "text": "How would you handle disagreement with a teammate about this work?",
+        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "behavioral",
@@ -3769,8 +3769,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "How would you handle disagreement with a teammate about this work? Focus: Communicate uncertainty to product managers.",
-            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Communicate uncertainty to product managers."
+            "en": "How would you handle disagreement with a teammate about this work?",
+            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？"
           },
           {
             "name": "question rationale",
@@ -3824,12 +3824,12 @@
     {
       "caseId": "data-technical-communication",
       "repeat": 2,
-      "inputChecksum": "7370c70943acbc8430fa1c9de8a601c2e38d1605163e8cc407a5dcb7f5eb48ae",
-      "outputChecksum": "40171d2755055ebcbba878f15d50f565d12d4e474d03f7f2bb773aad329b8a60",
+      "inputChecksum": "15b97d980f0e0386913188d03bc457b2d4b1bcb468b35604deaea668acbd915c",
+      "outputChecksum": "b0ee543c6d9690843b102d55b7c4880530bd453d38972ad7965c7189dd24989c",
       "question": {
         "id": "q4",
-        "text": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain experiment assumptions and confidence intervals.",
-        "meaningZh": "請向非專業人士說明一種做法及其取捨。 重點：Explain experiment assumptions and confidence intervals.",
+        "text": "Explain an approach and its trade-offs to a non-specialist.",
+        "meaningZh": "請向非專業人士說明一種做法及其取捨。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "technical-communication",
@@ -3888,8 +3888,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain experiment assumptions and confidence intervals.",
-            "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain experiment assumptions and confidence intervals."
+            "en": "Explain an approach and its trade-offs to a non-specialist.",
+            "zh": "請向非專業人士說明一種做法及其取捨。"
           },
           {
             "name": "question rationale",
@@ -3943,12 +3943,12 @@
     {
       "caseId": "embedded-role-fit",
       "repeat": 2,
-      "inputChecksum": "7a002c6dcd2826a17f92f6a6641005e115094afe32b474c0083e79854aa19abc",
-      "outputChecksum": "02c3e8e6487cdc9aa6ffd4431f63d758b671909c3675a31a35167f402db5e606",
+      "inputChecksum": "b0fe758e14765d157808f37fdfdc5fc4a8be252ffc2bcb0577370325513b99cb",
+      "outputChecksum": "43eb5003f94e34bb6277b1861ee082068653408fdf9059dfedd9be2a0f31d79f",
       "question": {
         "id": "q1",
-        "text": "Why does this responsibility interest you, and what would you aim to learn? Focus: Build embedded sensor software in Hsinchu.",
-        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Build embedded sensor software in Hsinchu.",
+        "text": "Why does this responsibility interest you, and what would you aim to learn?",
+        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "role-fit",
@@ -4007,8 +4007,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Build embedded sensor software in Hsinchu.",
-            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Build embedded sensor software in Hsinchu."
+            "en": "Why does this responsibility interest you, and what would you aim to learn?",
+            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？"
           },
           {
             "name": "question rationale",
@@ -4062,12 +4062,12 @@
     {
       "caseId": "embedded-experience-depth",
       "repeat": 2,
-      "inputChecksum": "7ceb4606cba3cc0600dd66cc2b334f2ad73e82c117506e36a4846db6fd8a881f",
-      "outputChecksum": "bd0770cfee5e10faf3bbc3ef4b50aa6e44b584617c45c079a683e08022947a51",
+      "inputChecksum": "4bdfe98cba48d0451dd41e33faa50884e2b8ec4994b751eed126da7ada09f72a",
+      "outputChecksum": "b73b7c5b2e8eac34051eb048b4a3504ed721b1dd11a226f0f383e2d4ee85d345",
       "question": {
         "id": "q2",
-        "text": "Describe a relevant project or an honest hypothetical approach. Focus: Debug C firmware and serial communication.",
-        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Debug C firmware and serial communication.",
+        "text": "Describe a relevant project or an honest hypothetical approach.",
+        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "experience-depth",
@@ -4126,8 +4126,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Describe a relevant project or an honest hypothetical approach. Focus: Debug C firmware and serial communication.",
-            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Debug C firmware and serial communication."
+            "en": "Describe a relevant project or an honest hypothetical approach.",
+            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。"
           },
           {
             "name": "question rationale",
@@ -4181,12 +4181,12 @@
     {
       "caseId": "embedded-behavioral",
       "repeat": 2,
-      "inputChecksum": "1ca0f296f41e02fd1d31bc0f81795b2407514d81d8986bdca1db018319e913ba",
-      "outputChecksum": "3bf9c282ea645a8c5a95fc233bab987e275df012955e8074a459721d166044cd",
+      "inputChecksum": "b4d75d23bcbdf8fe0cf4f51122b42aa56a519d42e4c244d0fbebb467b78bfd3c",
+      "outputChecksum": "601ee870f3b9992660b94c09f3d1f5ae8aa4c617a0ffffa3961edf5651b47786",
       "question": {
         "id": "q3",
-        "text": "How would you handle disagreement with a teammate about this work? Focus: Coordinate hardware and software investigations.",
-        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Coordinate hardware and software investigations.",
+        "text": "How would you handle disagreement with a teammate about this work?",
+        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "behavioral",
@@ -4245,8 +4245,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "How would you handle disagreement with a teammate about this work? Focus: Coordinate hardware and software investigations.",
-            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Coordinate hardware and software investigations."
+            "en": "How would you handle disagreement with a teammate about this work?",
+            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？"
           },
           {
             "name": "question rationale",
@@ -4300,12 +4300,12 @@
     {
       "caseId": "embedded-technical-communication",
       "repeat": 2,
-      "inputChecksum": "78b5bcc988e14de24550ed1132f761ca8e2177bc7038222a9b333ff938fdbe47",
-      "outputChecksum": "35bd42c5a0a267c9fde81243bd816438875f7648926378755073ee0e1028f8b7",
+      "inputChecksum": "28875df3a776b677afd270a927bfb0e8b71391d53c67ed8dccfe10c019a3fa82",
+      "outputChecksum": "c3ace8dba6859e125b12c4530b5ed0c0ac9bcc848984d4798dbc84396466a41d",
       "question": {
         "id": "q4",
-        "text": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain timing and memory constraints.",
-        "meaningZh": "請向非專業人士說明一種做法及其取捨。 重點：Explain timing and memory constraints.",
+        "text": "Explain an approach and its trade-offs to a non-specialist.",
+        "meaningZh": "請向非專業人士說明一種做法及其取捨。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "technical-communication",
@@ -4364,8 +4364,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain timing and memory constraints.",
-            "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain timing and memory constraints."
+            "en": "Explain an approach and its trade-offs to a non-specialist.",
+            "zh": "請向非專業人士說明一種做法及其取捨。"
           },
           {
             "name": "question rationale",
@@ -4419,12 +4419,12 @@
     {
       "caseId": "frontend-role-fit",
       "repeat": 2,
-      "inputChecksum": "57998a9c331bc8596db7e58d3b021de7ad7e7507b36e4c8a57ea00fa4fc6cd14",
-      "outputChecksum": "7e2d96eebe12c5ce800d06fd2126476793c2546d554b1612662ec406ef910b61",
+      "inputChecksum": "2a29b9ff97ebde9454923f8cd9868da4f7978f2a8d672a84862caf48b9108eef",
+      "outputChecksum": "314dc0879aeee1d7dabf6efa9c2338de6c50d97f5b8c8f504be0ce145d240173",
       "question": {
         "id": "q1",
-        "text": "Why does this responsibility interest you, and what would you aim to learn? Focus: Build accessible web interfaces in Taipei.",
-        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Build accessible web interfaces in Taipei.",
+        "text": "Why does this responsibility interest you, and what would you aim to learn?",
+        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "role-fit",
@@ -4483,8 +4483,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Build accessible web interfaces in Taipei.",
-            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Build accessible web interfaces in Taipei."
+            "en": "Why does this responsibility interest you, and what would you aim to learn?",
+            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？"
           },
           {
             "name": "question rationale",
@@ -4538,12 +4538,12 @@
     {
       "caseId": "frontend-experience-depth",
       "repeat": 2,
-      "inputChecksum": "5aef1d206ab75a52a5125fc567d57bfbb1ccb14d031459412e18a0b4d422365e",
-      "outputChecksum": "bc2b33e3734137eb058747e42c68da5efec37a75a8429cec51093893c2404298",
+      "inputChecksum": "32ba451c56d67c884d3243c413d633b749dc649bd280242a504914b0103b1de9",
+      "outputChecksum": "d951d6dac4be171071c1f1a6c867177a54f5eb91cf45d7c89f663898e4a757cf",
       "question": {
         "id": "q2",
-        "text": "Describe a relevant project or an honest hypothetical approach. Focus: Use JavaScript and browser performance tools.",
-        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Use JavaScript and browser performance tools.",
+        "text": "Describe a relevant project or an honest hypothetical approach.",
+        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "experience-depth",
@@ -4602,8 +4602,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Describe a relevant project or an honest hypothetical approach. Focus: Use JavaScript and browser performance tools.",
-            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Use JavaScript and browser performance tools."
+            "en": "Describe a relevant project or an honest hypothetical approach.",
+            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。"
           },
           {
             "name": "question rationale",
@@ -4657,12 +4657,12 @@
     {
       "caseId": "frontend-behavioral",
       "repeat": 2,
-      "inputChecksum": "97fc436c7ce08e92bb20e5919db067a3d638328ac8bebd1adac823439886e86a",
-      "outputChecksum": "5ae258b96fb11111a8a8544f72abe9c24eea63ba26f4241481632c198207a28f",
+      "inputChecksum": "788a95b8c3b4fd726a34b360816179bac98b02b04a03426bb874279be9e6c244",
+      "outputChecksum": "5893777630d31c7081ef326d3b4b719e0debf9ea4b5a86a3dbe41dda32e636cc",
       "question": {
         "id": "q3",
-        "text": "How would you handle disagreement with a teammate about this work? Focus: Collaborate with designers on usability feedback.",
-        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Collaborate with designers on usability feedback.",
+        "text": "How would you handle disagreement with a teammate about this work?",
+        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "behavioral",
@@ -4721,8 +4721,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "How would you handle disagreement with a teammate about this work? Focus: Collaborate with designers on usability feedback.",
-            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Collaborate with designers on usability feedback."
+            "en": "How would you handle disagreement with a teammate about this work?",
+            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？"
           },
           {
             "name": "question rationale",
@@ -4776,12 +4776,12 @@
     {
       "caseId": "frontend-technical-communication",
       "repeat": 2,
-      "inputChecksum": "af428187acec4d0625c2ff61f46367d5296458f0622eafb140097f1e108c2aaf",
-      "outputChecksum": "5aeaf89636823263bd43e87d46b651ad1c99a2032182218c7aa130b3841bec0d",
+      "inputChecksum": "70482ff9c056332d6fd63a31f3027c1b5ca1b3fdb29f10f073fcdfbd13615e6c",
+      "outputChecksum": "c238f6d5923b28d8b868ddd21cd0521878b778f1f2417aa43e0b2825780ccb38",
       "question": {
         "id": "q4",
-        "text": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain accessibility and rendering trade-offs.",
-        "meaningZh": "請向非專業人士說明一種做法及其取捨。 重點：Explain accessibility and rendering trade-offs.",
+        "text": "Explain an approach and its trade-offs to a non-specialist.",
+        "meaningZh": "請向非專業人士說明一種做法及其取捨。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "technical-communication",
@@ -4840,8 +4840,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain accessibility and rendering trade-offs.",
-            "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain accessibility and rendering trade-offs."
+            "en": "Explain an approach and its trade-offs to a non-specialist.",
+            "zh": "請向非專業人士說明一種做法及其取捨。"
           },
           {
             "name": "question rationale",
@@ -4895,12 +4895,12 @@
     {
       "caseId": "ai-role-fit",
       "repeat": 3,
-      "inputChecksum": "0b26cfbdb7eda57283604de6472bbeca6ad68cd8f7de22e6001182b21cba6044",
-      "outputChecksum": "c28b2862b566b2e3763d392b1594ac645e1e39de31bdaa02f49bf627b32b9240",
+      "inputChecksum": "1c6dfab6b2e33ae8147d41d4aeeb0917868ae7fd42565c64814511b6193e323c",
+      "outputChecksum": "e884bb3d35d8ce3cdccbccfddd6313e16cb9f7bacfd8f9a64727fba612fd94cf",
       "question": {
         "id": "q1",
-        "text": "Why does this responsibility interest you, and what would you aim to learn? Focus: Evaluate retrieval quality for a Mandarin support assistant.",
-        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Evaluate retrieval quality for a Mandarin support assistant.",
+        "text": "Why does this responsibility interest you, and what would you aim to learn?",
+        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "role-fit",
@@ -4959,8 +4959,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Evaluate retrieval quality for a Mandarin support assistant.",
-            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Evaluate retrieval quality for a Mandarin support assistant."
+            "en": "Why does this responsibility interest you, and what would you aim to learn?",
+            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？"
           },
           {
             "name": "question rationale",
@@ -5014,12 +5014,12 @@
     {
       "caseId": "ai-experience-depth",
       "repeat": 3,
-      "inputChecksum": "1a70fb5449b848c03749fa259a8d303aea3c8d5cb98689672f1e85515828a1ea",
-      "outputChecksum": "6053eaec30e85df05c016a9b916d50984fc32fcc5063a9c07c303cafe113b640",
+      "inputChecksum": "389a142aaf71637c532e243cd41ebbf4fffe9b66104fdae37dd15a6ec69bb078",
+      "outputChecksum": "b34a7736487caf94e75fadf0185b1cfb7e1826c7ddb013e73d06340af6a1da35",
       "question": {
         "id": "q2",
-        "text": "Describe a relevant project or an honest hypothetical approach. Focus: Build Python inference services in Taipei.",
-        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Build Python inference services in Taipei.",
+        "text": "Describe a relevant project or an honest hypothetical approach.",
+        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "experience-depth",
@@ -5078,8 +5078,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Describe a relevant project or an honest hypothetical approach. Focus: Build Python inference services in Taipei.",
-            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Build Python inference services in Taipei."
+            "en": "Describe a relevant project or an honest hypothetical approach.",
+            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。"
           },
           {
             "name": "question rationale",
@@ -5133,12 +5133,12 @@
     {
       "caseId": "ai-behavioral",
       "repeat": 3,
-      "inputChecksum": "4b264406e41d2281a08927740bbeb3ca3674e0d1227e86db0ae666d0c32620f1",
-      "outputChecksum": "a669d60b7ea30d369cf2ba9b8a330e564c67e40de9fe666c06253f11dcc2e10c",
+      "inputChecksum": "43e6452856a9488351118d17fd3a9c8052e3f51d46b9f6942aefe6277310a22c",
+      "outputChecksum": "deb0f3607b170aa3dff44b71fd63292f99ac3d785606a2667ef0250488277f12",
       "question": {
         "id": "q3",
-        "text": "How would you handle disagreement with a teammate about this work? Focus: Discuss model limitations with product colleagues.",
-        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Discuss model limitations with product colleagues.",
+        "text": "How would you handle disagreement with a teammate about this work?",
+        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "behavioral",
@@ -5197,8 +5197,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "How would you handle disagreement with a teammate about this work? Focus: Discuss model limitations with product colleagues.",
-            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Discuss model limitations with product colleagues."
+            "en": "How would you handle disagreement with a teammate about this work?",
+            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？"
           },
           {
             "name": "question rationale",
@@ -5252,12 +5252,12 @@
     {
       "caseId": "ai-technical-communication",
       "repeat": 3,
-      "inputChecksum": "ca6202ccaffe5688dae96e039093f23cabac4bfafb9e568910ea0ce5c8b4baf7",
-      "outputChecksum": "8abde66e42dad7c9dc5cf995491d0149cd2abd063dd3cb38663e0676e548e30b",
+      "inputChecksum": "518baa362665299572e0a055e1d41f2eef29c99a024a012a0cfb9f944a1171e7",
+      "outputChecksum": "7a53e21256ecae00efbaac15770043b240ca671424dab00d58e095c5bd930d1f",
       "question": {
         "id": "q4",
-        "text": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain latency and accuracy trade-offs.",
-        "meaningZh": "請向非專業人士說明一種做法及其取捨。 重點：Explain latency and accuracy trade-offs.",
+        "text": "Explain an approach and its trade-offs to a non-specialist.",
+        "meaningZh": "請向非專業人士說明一種做法及其取捨。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "technical-communication",
@@ -5316,8 +5316,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain latency and accuracy trade-offs.",
-            "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain latency and accuracy trade-offs."
+            "en": "Explain an approach and its trade-offs to a non-specialist.",
+            "zh": "請向非專業人士說明一種做法及其取捨。"
           },
           {
             "name": "question rationale",
@@ -5371,12 +5371,12 @@
     {
       "caseId": "backend-role-fit",
       "repeat": 3,
-      "inputChecksum": "bd061228d6dba746e30d9ae5c2a0a78cdfe8ed579136e972f968dc587a3c9d1f",
-      "outputChecksum": "ffa9795a00fd6d0c4c8c8424e40e245c72d6713aa56dc6feb9eb682e08223b4e",
+      "inputChecksum": "8573b3b0df0f1e1d153f7bcce2ccadd97aa4991e2d6d03f8592580ed51a09bda",
+      "outputChecksum": "a8c7dba49c187aa385789a8f8e1b586e4fdd42736c57cdf8d1607f7e7ee04767",
       "question": {
         "id": "q1",
-        "text": "Why does this responsibility interest you, and what would you aim to learn? Focus: Build reliable payment APIs in Taipei.",
-        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Build reliable payment APIs in Taipei.",
+        "text": "Why does this responsibility interest you, and what would you aim to learn?",
+        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "role-fit",
@@ -5435,8 +5435,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Build reliable payment APIs in Taipei.",
-            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Build reliable payment APIs in Taipei."
+            "en": "Why does this responsibility interest you, and what would you aim to learn?",
+            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？"
           },
           {
             "name": "question rationale",
@@ -5490,12 +5490,12 @@
     {
       "caseId": "backend-experience-depth",
       "repeat": 3,
-      "inputChecksum": "e8d42909cf83a772b8676a8f4d7f9dc6d50a1c93e91a40f3228e6b178faa8d61",
-      "outputChecksum": "6162e1887291f563eaf440b7dfd1c9dd47aae791d218c235cde9c02d0ab7079d",
+      "inputChecksum": "0cb97be59e5f61a02845011e8ac30ef09f8404f610bb3ecf07c5f2564ecd967c",
+      "outputChecksum": "1622294c89edca5a9d8d6465f21dc24b0defd9a381a9d0e17c14b2c56df6e61f",
       "question": {
         "id": "q2",
-        "text": "Describe a relevant project or an honest hypothetical approach. Focus: Use PostgreSQL transactions and automated tests.",
-        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Use PostgreSQL transactions and automated tests.",
+        "text": "Describe a relevant project or an honest hypothetical approach.",
+        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "experience-depth",
@@ -5554,8 +5554,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Describe a relevant project or an honest hypothetical approach. Focus: Use PostgreSQL transactions and automated tests.",
-            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Use PostgreSQL transactions and automated tests."
+            "en": "Describe a relevant project or an honest hypothetical approach.",
+            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。"
           },
           {
             "name": "question rationale",
@@ -5609,12 +5609,12 @@
     {
       "caseId": "backend-behavioral",
       "repeat": 3,
-      "inputChecksum": "26185cf0d21cf573d3bafb91a32bea499c7d12c91a1b11209bec5422a3f3a347",
-      "outputChecksum": "8e9f6b3118f0d1f51566f46b83c84bca44e168c37e7cbba2d64b743e37eec8a1",
+      "inputChecksum": "109a885c02b9f599cbac12f0cec58fd7db1579925ebc8cae57229a316209ba80",
+      "outputChecksum": "47344ec9aeb621e6c74b6631c5f48788361203ed3abba423ff5d3c8c8a620df2",
       "question": {
         "id": "q3",
-        "text": "How would you handle disagreement with a teammate about this work? Focus: Collaborate on incident reviews without blame.",
-        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Collaborate on incident reviews without blame.",
+        "text": "How would you handle disagreement with a teammate about this work?",
+        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "behavioral",
@@ -5673,8 +5673,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "How would you handle disagreement with a teammate about this work? Focus: Collaborate on incident reviews without blame.",
-            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Collaborate on incident reviews without blame."
+            "en": "How would you handle disagreement with a teammate about this work?",
+            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？"
           },
           {
             "name": "question rationale",
@@ -5728,12 +5728,12 @@
     {
       "caseId": "backend-technical-communication",
       "repeat": 3,
-      "inputChecksum": "835bc3ea468472c0d59e1ae1702ab4e489440e9e792e8c896184f3f41c66bdc3",
-      "outputChecksum": "93263766d4b34af6ee75fe54a2a1fe80a7c18557e5668784018594693347e413",
+      "inputChecksum": "742ce5b19df1d0e1ce446af6de7d7565f57827efdd5fab31ac1720d9268f6c13",
+      "outputChecksum": "a0741ec030fd9ff760b23dec804e644c4508cf0970ceccf302d13d35f80b30c8",
       "question": {
         "id": "q4",
-        "text": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain consistency and availability trade-offs.",
-        "meaningZh": "請向非專業人士說明一種做法及其取捨。 重點：Explain consistency and availability trade-offs.",
+        "text": "Explain an approach and its trade-offs to a non-specialist.",
+        "meaningZh": "請向非專業人士說明一種做法及其取捨。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "technical-communication",
@@ -5792,8 +5792,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain consistency and availability trade-offs.",
-            "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain consistency and availability trade-offs."
+            "en": "Explain an approach and its trade-offs to a non-specialist.",
+            "zh": "請向非專業人士說明一種做法及其取捨。"
           },
           {
             "name": "question rationale",
@@ -5847,12 +5847,12 @@
     {
       "caseId": "data-role-fit",
       "repeat": 3,
-      "inputChecksum": "98dab3aac8874bf0bdd873a405eff6fde31eb6597375112d0633ffcc2eabdaa2",
-      "outputChecksum": "f88fbd296a9581aa8fc64b4744bc5479ec8d3e63a309c3ceb16853bda89aa1bd",
+      "inputChecksum": "74af78e57f73633da6eebf21b309179b96127b8a05f2f8761efff29c71834f20",
+      "outputChecksum": "798ddf715e1f0331a878f98e1a0441c5515fd01de03bf96fd2752fac425ed93a",
       "question": {
         "id": "q1",
-        "text": "Why does this responsibility interest you, and what would you aim to learn? Focus: Analyze product experiments in Hsinchu.",
-        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Analyze product experiments in Hsinchu.",
+        "text": "Why does this responsibility interest you, and what would you aim to learn?",
+        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "role-fit",
@@ -5911,8 +5911,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Analyze product experiments in Hsinchu.",
-            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Analyze product experiments in Hsinchu."
+            "en": "Why does this responsibility interest you, and what would you aim to learn?",
+            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？"
           },
           {
             "name": "question rationale",
@@ -5966,12 +5966,12 @@
     {
       "caseId": "data-experience-depth",
       "repeat": 3,
-      "inputChecksum": "6b299bc0ca73e3fd5597ee3ce8abf427ec2a3c4dd50cb1a04db4024289c3b5c4",
-      "outputChecksum": "97e50430160107079b295eb72f19be9e0267e147bb966901c5b266ed3ff72930",
+      "inputChecksum": "1249ef3e1133d7326cf904dcfc45fd79d66addb0b7481ce5abe20f9f94eab288",
+      "outputChecksum": "16af06223c91d328d28f31402899d26953ffb404d5629b2b4bdad3dc35918f87",
       "question": {
         "id": "q2",
-        "text": "Describe a relevant project or an honest hypothetical approach. Focus: Use SQL and Python to investigate missing data.",
-        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Use SQL and Python to investigate missing data.",
+        "text": "Describe a relevant project or an honest hypothetical approach.",
+        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "experience-depth",
@@ -6030,8 +6030,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Describe a relevant project or an honest hypothetical approach. Focus: Use SQL and Python to investigate missing data.",
-            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Use SQL and Python to investigate missing data."
+            "en": "Describe a relevant project or an honest hypothetical approach.",
+            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。"
           },
           {
             "name": "question rationale",
@@ -6085,12 +6085,12 @@
     {
       "caseId": "data-behavioral",
       "repeat": 3,
-      "inputChecksum": "08932558fa6fba1be9a79e5c7733358e65f6d497e859f6f81c6f2ed182c42270",
-      "outputChecksum": "73a73b6f71c44cc6a886ab47d259f4f40e6633d48025b807f378b13a0da952ea",
+      "inputChecksum": "76e86ff411c91064f8c79053d609a67bbd119d095776850c63b396616a18fc42",
+      "outputChecksum": "54ac1250c14bead173c67130f9734113da54b0ddeaa05253beb1303ef4a16758",
       "question": {
         "id": "q3",
-        "text": "How would you handle disagreement with a teammate about this work? Focus: Communicate uncertainty to product managers.",
-        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Communicate uncertainty to product managers.",
+        "text": "How would you handle disagreement with a teammate about this work?",
+        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "behavioral",
@@ -6149,8 +6149,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "How would you handle disagreement with a teammate about this work? Focus: Communicate uncertainty to product managers.",
-            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Communicate uncertainty to product managers."
+            "en": "How would you handle disagreement with a teammate about this work?",
+            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？"
           },
           {
             "name": "question rationale",
@@ -6204,12 +6204,12 @@
     {
       "caseId": "data-technical-communication",
       "repeat": 3,
-      "inputChecksum": "7370c70943acbc8430fa1c9de8a601c2e38d1605163e8cc407a5dcb7f5eb48ae",
-      "outputChecksum": "cb37603c9210dbb58650316b67a285d7f62d275bb5da0e518c36f5009a7b9aa8",
+      "inputChecksum": "15b97d980f0e0386913188d03bc457b2d4b1bcb468b35604deaea668acbd915c",
+      "outputChecksum": "110690e7565dfed84f0c4f1a035981baf2cdff36d7a9ce46570688aea9fccb46",
       "question": {
         "id": "q4",
-        "text": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain experiment assumptions and confidence intervals.",
-        "meaningZh": "請向非專業人士說明一種做法及其取捨。 重點：Explain experiment assumptions and confidence intervals.",
+        "text": "Explain an approach and its trade-offs to a non-specialist.",
+        "meaningZh": "請向非專業人士說明一種做法及其取捨。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "technical-communication",
@@ -6268,8 +6268,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain experiment assumptions and confidence intervals.",
-            "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain experiment assumptions and confidence intervals."
+            "en": "Explain an approach and its trade-offs to a non-specialist.",
+            "zh": "請向非專業人士說明一種做法及其取捨。"
           },
           {
             "name": "question rationale",
@@ -6323,12 +6323,12 @@
     {
       "caseId": "embedded-role-fit",
       "repeat": 3,
-      "inputChecksum": "7a002c6dcd2826a17f92f6a6641005e115094afe32b474c0083e79854aa19abc",
-      "outputChecksum": "1b6ac36de012b373f08b5dbf363cd90c88507374a5b95df0322c29c4aa2fb38f",
+      "inputChecksum": "b0fe758e14765d157808f37fdfdc5fc4a8be252ffc2bcb0577370325513b99cb",
+      "outputChecksum": "a0ab85312e8d3b761d45d1a5effcdc57c10a148e444d70ddfea35c492779e037",
       "question": {
         "id": "q1",
-        "text": "Why does this responsibility interest you, and what would you aim to learn? Focus: Build embedded sensor software in Hsinchu.",
-        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Build embedded sensor software in Hsinchu.",
+        "text": "Why does this responsibility interest you, and what would you aim to learn?",
+        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "role-fit",
@@ -6387,8 +6387,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Build embedded sensor software in Hsinchu.",
-            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Build embedded sensor software in Hsinchu."
+            "en": "Why does this responsibility interest you, and what would you aim to learn?",
+            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？"
           },
           {
             "name": "question rationale",
@@ -6442,12 +6442,12 @@
     {
       "caseId": "embedded-experience-depth",
       "repeat": 3,
-      "inputChecksum": "7ceb4606cba3cc0600dd66cc2b334f2ad73e82c117506e36a4846db6fd8a881f",
-      "outputChecksum": "0155fcef2598b00a88e2814519a337e4bfb3780b941a5b09e22045e4710c3d40",
+      "inputChecksum": "4bdfe98cba48d0451dd41e33faa50884e2b8ec4994b751eed126da7ada09f72a",
+      "outputChecksum": "373eea489406509744b0c323591e11cbe4c20a33b041cf195ab28db9acc564ce",
       "question": {
         "id": "q2",
-        "text": "Describe a relevant project or an honest hypothetical approach. Focus: Debug C firmware and serial communication.",
-        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Debug C firmware and serial communication.",
+        "text": "Describe a relevant project or an honest hypothetical approach.",
+        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "experience-depth",
@@ -6506,8 +6506,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Describe a relevant project or an honest hypothetical approach. Focus: Debug C firmware and serial communication.",
-            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Debug C firmware and serial communication."
+            "en": "Describe a relevant project or an honest hypothetical approach.",
+            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。"
           },
           {
             "name": "question rationale",
@@ -6561,12 +6561,12 @@
     {
       "caseId": "embedded-behavioral",
       "repeat": 3,
-      "inputChecksum": "1ca0f296f41e02fd1d31bc0f81795b2407514d81d8986bdca1db018319e913ba",
-      "outputChecksum": "399ef5297659ecbacdea81accd81569ade8e21577585d6bce7c77640c734b8d5",
+      "inputChecksum": "b4d75d23bcbdf8fe0cf4f51122b42aa56a519d42e4c244d0fbebb467b78bfd3c",
+      "outputChecksum": "c3168a27205679eaae6f731503309468c84920cada884833e8e41b9e4ff9bdd4",
       "question": {
         "id": "q3",
-        "text": "How would you handle disagreement with a teammate about this work? Focus: Coordinate hardware and software investigations.",
-        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Coordinate hardware and software investigations.",
+        "text": "How would you handle disagreement with a teammate about this work?",
+        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "behavioral",
@@ -6625,8 +6625,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "How would you handle disagreement with a teammate about this work? Focus: Coordinate hardware and software investigations.",
-            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Coordinate hardware and software investigations."
+            "en": "How would you handle disagreement with a teammate about this work?",
+            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？"
           },
           {
             "name": "question rationale",
@@ -6680,12 +6680,12 @@
     {
       "caseId": "embedded-technical-communication",
       "repeat": 3,
-      "inputChecksum": "78b5bcc988e14de24550ed1132f761ca8e2177bc7038222a9b333ff938fdbe47",
-      "outputChecksum": "02e7550fec1460a20f6b49db17b25e46c95313cda3dc511bc30850a4ffd6f3c0",
+      "inputChecksum": "28875df3a776b677afd270a927bfb0e8b71391d53c67ed8dccfe10c019a3fa82",
+      "outputChecksum": "be8b3e358c74c813ca9fa7d541f151bb6452a35ad704db9cc53740eee0a0c8e5",
       "question": {
         "id": "q4",
-        "text": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain timing and memory constraints.",
-        "meaningZh": "請向非專業人士說明一種做法及其取捨。 重點：Explain timing and memory constraints.",
+        "text": "Explain an approach and its trade-offs to a non-specialist.",
+        "meaningZh": "請向非專業人士說明一種做法及其取捨。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "technical-communication",
@@ -6744,8 +6744,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain timing and memory constraints.",
-            "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain timing and memory constraints."
+            "en": "Explain an approach and its trade-offs to a non-specialist.",
+            "zh": "請向非專業人士說明一種做法及其取捨。"
           },
           {
             "name": "question rationale",
@@ -6799,12 +6799,12 @@
     {
       "caseId": "frontend-role-fit",
       "repeat": 3,
-      "inputChecksum": "57998a9c331bc8596db7e58d3b021de7ad7e7507b36e4c8a57ea00fa4fc6cd14",
-      "outputChecksum": "b1eacc608d2b75da44076f0b4ddea7bc80eb9515176ebcbb5f3ac48111f9d048",
+      "inputChecksum": "2a29b9ff97ebde9454923f8cd9868da4f7978f2a8d672a84862caf48b9108eef",
+      "outputChecksum": "914d0349640845b6f9e3b33c4192add16e7c119cf7c441afd17b79384bd1c983",
       "question": {
         "id": "q1",
-        "text": "Why does this responsibility interest you, and what would you aim to learn? Focus: Build accessible web interfaces in Taipei.",
-        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Build accessible web interfaces in Taipei.",
+        "text": "Why does this responsibility interest you, and what would you aim to learn?",
+        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "role-fit",
@@ -6863,8 +6863,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Why does this responsibility interest you, and what would you aim to learn? Focus: Build accessible web interfaces in Taipei.",
-            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？ 重點：Build accessible web interfaces in Taipei."
+            "en": "Why does this responsibility interest you, and what would you aim to learn?",
+            "zh": "這項職責為什麼吸引你？你希望從中學到什麼？"
           },
           {
             "name": "question rationale",
@@ -6918,12 +6918,12 @@
     {
       "caseId": "frontend-experience-depth",
       "repeat": 3,
-      "inputChecksum": "5aef1d206ab75a52a5125fc567d57bfbb1ccb14d031459412e18a0b4d422365e",
-      "outputChecksum": "49a49d6c33fd5d6a2aaec1e10d6f8e8114ca6abf6884b0c6b7d6e872b79ee5fc",
+      "inputChecksum": "32ba451c56d67c884d3243c413d633b749dc649bd280242a504914b0103b1de9",
+      "outputChecksum": "9ae342e5357ac0c68c6b5ee640efb2afca908b33ce4b52b8e2807ef9e810506f",
       "question": {
         "id": "q2",
-        "text": "Describe a relevant project or an honest hypothetical approach. Focus: Use JavaScript and browser performance tools.",
-        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Use JavaScript and browser performance tools.",
+        "text": "Describe a relevant project or an honest hypothetical approach.",
+        "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "experience-depth",
@@ -6982,8 +6982,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Describe a relevant project or an honest hypothetical approach. Focus: Use JavaScript and browser performance tools.",
-            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。 重點：Use JavaScript and browser performance tools."
+            "en": "Describe a relevant project or an honest hypothetical approach.",
+            "zh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。"
           },
           {
             "name": "question rationale",
@@ -7037,12 +7037,12 @@
     {
       "caseId": "frontend-behavioral",
       "repeat": 3,
-      "inputChecksum": "97fc436c7ce08e92bb20e5919db067a3d638328ac8bebd1adac823439886e86a",
-      "outputChecksum": "f8cd6b4018ca034b65a0d86b1231c96e91f778ec501fe23c3eac00c91351e43b",
+      "inputChecksum": "788a95b8c3b4fd726a34b360816179bac98b02b04a03426bb874279be9e6c244",
+      "outputChecksum": "477c62926643d2f5868968ca854f22f8a891f578a0f92964971ae22d5ab453c4",
       "question": {
         "id": "q3",
-        "text": "How would you handle disagreement with a teammate about this work? Focus: Collaborate with designers on usability feedback.",
-        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Collaborate with designers on usability feedback.",
+        "text": "How would you handle disagreement with a teammate about this work?",
+        "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "behavioral",
@@ -7101,8 +7101,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "How would you handle disagreement with a teammate about this work? Focus: Collaborate with designers on usability feedback.",
-            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？ 重點：Collaborate with designers on usability feedback."
+            "en": "How would you handle disagreement with a teammate about this work?",
+            "zh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？"
           },
           {
             "name": "question rationale",
@@ -7156,12 +7156,12 @@
     {
       "caseId": "frontend-technical-communication",
       "repeat": 3,
-      "inputChecksum": "af428187acec4d0625c2ff61f46367d5296458f0622eafb140097f1e108c2aaf",
-      "outputChecksum": "7829ef65c44ccd33f2014ab468f71fec5ef02aa2d9e92834a8baf7d8728f92ef",
+      "inputChecksum": "70482ff9c056332d6fd63a31f3027c1b5ca1b3fdb29f10f073fcdfbd13615e6c",
+      "outputChecksum": "15d0b0cd1cf1e98dfd15a09272a74527b7e9330fe8b9b5f8b51048db73c80e8d",
       "question": {
         "id": "q4",
-        "text": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain accessibility and rendering trade-offs.",
-        "meaningZh": "請向非專業人士說明一種做法及其取捨。 重點：Explain accessibility and rendering trade-offs.",
+        "text": "Explain an approach and its trade-offs to a non-specialist.",
+        "meaningZh": "請向非專業人士說明一種做法及其取捨。",
         "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
         "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
         "category": "technical-communication",
@@ -7220,8 +7220,8 @@
         "pairs": [
           {
             "name": "question meaning",
-            "en": "Explain an approach and its trade-offs to a non-specialist. Focus: Explain accessibility and rendering trade-offs.",
-            "zh": "請向非專業人士說明一種做法及其取捨。 重點：Explain accessibility and rendering trade-offs."
+            "en": "Explain an approach and its trade-offs to a non-specialist.",
+            "zh": "請向非專業人士說明一種做法及其取捨。"
           },
           {
             "name": "question rationale",
