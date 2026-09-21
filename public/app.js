@@ -1486,7 +1486,11 @@ async function initialize() {
       catch { languageStatus = {ready:false,authenticated:false}; }
     }
     const health = await api('/health');
-    $('#provider').textContent = `${providerName(providerInfo.languageModel)} · ${providerInfo.speech.external ? '語音已配置' : '文字練習'}`;
+    // Name the speech service in the strip: "why is it only beeping" should be
+    // answerable by looking at the page, not by querying the API from a terminal.
+    const speech = providerInfo.speech;
+    const speechLabel = speech.demonstrationSpeech ? '語音：本機示範（嗶聲，非真人朗讀）' : speech.external ? `語音：${speech.name}` : '語音：本機示範';
+    $('#provider').textContent = `${providerName(providerInfo.languageModel)} · ${speechLabel}`;
     await refreshWorkspace();
     renderSettings();
     renderHome();
