@@ -3,13 +3,13 @@ import {readFile} from 'node:fs/promises';
 import {AppError, requireValue} from './domain.js';
 import {FakeLanguageModel} from './providers.js';
 import {FakeSpeechProvider} from './speech.js';
-import {FakeJobSource, GreenhouseJobSource} from './jobs.js';
+import {FakeJobSource, GreenhouseJobSource, MultiJobSource} from './jobs.js';
 async function responseJson(response){
   requireValue(response.ok,response.status===429?'Provider rate limit; retry later':'External provider request failed',response.status===429?429:502);
   let size=0;const chunks=[];for await(const chunk of response.body){size+=chunk.length;requireValue(size<=2_000_000,'Provider response too large',502);chunks.push(chunk);}
   try{return JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw new AppError('Provider returned invalid JSON',502);}
 }
-import {analysisContract,feedbackContract,personalizationContract,coachingContract,followUpContract,correctionsContract,searchProfileContract,mockSummaryContract,MODEL_CONTRACT_VERSION} from './model-contracts.js';
+import {analysisContract,feedbackContract,personalizationContract,coachingContract,followUpContract,correctionsContract,searchProfileContract,mockSummaryContract,jobCurationContract,MODEL_CONTRACT_VERSION} from './model-contracts.js';
 const followUpContext=({primaryQuestion,primaryAnswer,previousFollowUps=[]})=>({
   primaryQuestion:{text:primaryQuestion.text,...(primaryQuestion.meaningZh?{meaningZh:primaryQuestion.meaningZh}:{})},
   primaryAnswer:{transcript:primaryAnswer.transcript},
@@ -29,6 +29,7 @@ export class OpenAILanguageModel {
   corrections({question,transcript,signal}){return this.json(correctionsContract,{question:{text:question.text},transcript},signal);}
   interpretSearch({request,signal}){return this.json(searchProfileContract,{request},signal);}
   mockSummary({answers,signal}){return this.json(mockSummaryContract,{answers:answers.map(({question,transcript})=>({question:{text:question.text},transcript}))},signal);}
+  curateJobs({candidates,resume,signal}){return this.json(jobCurationContract,{candidates:candidates.map(({id,title,location,source,locationTag,excerpt})=>({id,title,location,source,locationTag,excerpt})),resume},signal);}
   feedback({question,transcript,previousAttempt,approvedEvidence,signal}){return this.json(feedbackContract,{question,transcript,...(previousAttempt?{previousAttempt:{transcript:previousAttempt.transcript,priorityImprovement:previousAttempt.feedback.priorityImprovement}}:{}),approvedEvidence:approvedEvidence.map(({excerpt})=>({excerpt}))},signal);}
 }
 export class ClaudeLanguageModel {
@@ -48,6 +49,7 @@ export class ClaudeLanguageModel {
   corrections({question,transcript,signal}){return this.json(correctionsContract,{question:{text:question.text},transcript},signal);}
   interpretSearch({request,signal}){return this.json(searchProfileContract,{request},signal);}
   mockSummary({answers,signal}){return this.json(mockSummaryContract,{answers:answers.map(({question,transcript})=>({question:{text:question.text},transcript}))},signal);}
+  curateJobs({candidates,resume,signal}){return this.json(jobCurationContract,{candidates:candidates.map(({id,title,location,source,locationTag,excerpt})=>({id,title,location,source,locationTag,excerpt})),resume},signal);}
   feedback({question,transcript,previousAttempt,approvedEvidence,signal}){return this.json(feedbackContract,{question,transcript,...(previousAttempt?{previousAttempt:{transcript:previousAttempt.transcript,priorityImprovement:previousAttempt.feedback.priorityImprovement}}:{}),approvedEvidence:approvedEvidence.map(({excerpt})=>({excerpt}))},signal);}
 }
 async function responseBytes(response,limit=4_000_000){
@@ -69,5 +71,13 @@ export class OpenAISpeechProvider {
 }
 export function configuredProviders(env=process.env){
   requireValue(['fake','openai','codex','claude'].includes(env.COACH_LANGUAGE_PROVIDER||'fake'),'Unsupported language provider');requireValue(['fake','openai'].includes(env.COACH_SPEECH_PROVIDER||'fake'),'Unsupported speech provider');
-  return {languageModel:env.COACH_LANGUAGE_PROVIDER==='codex'?new CodexLanguageModel({profile:env.COACH_CODEX_HOME,binary:env.COACH_CODEX_BIN||'codex',model:env.COACH_CODEX_MODEL||'gpt-5.6-sol'}):env.COACH_LANGUAGE_PROVIDER==='claude'?new ClaudeLanguageModel({apiKey:env.ANTHROPIC_API_KEY,model:env.COACH_CLAUDE_MODEL||'claude-sonnet-5',effort:env.COACH_CLAUDE_EFFORT??'high'}):env.COACH_LANGUAGE_PROVIDER==='openai'?new OpenAILanguageModel({apiKey:env.OPENAI_API_KEY,model:env.COACH_MODEL||'gpt-4.1-mini'}):new FakeLanguageModel(),speechProvider:env.COACH_SPEECH_PROVIDER==='openai'?new OpenAISpeechProvider({apiKey:env.OPENAI_API_KEY,model:env.COACH_SPEECH_MODEL||'gpt-4o-mini-transcribe',readAloudModel:env.COACH_TTS_MODEL||'gpt-4o-mini-tts',voice:env.COACH_TTS_VOICE||'alloy'}):new FakeSpeechProvider(),jobSource:env.GREENHOUSE_BOARD?new GreenhouseJobSource(env.GREENHOUSE_BOARD):new FakeJobSource()};
+  return {languageModel:env.COACH_LANGUAGE_PROVIDER==='codex'?new CodexLanguageModel({profile:env.COACH_CODEX_HOME,binary:env.COACH_CODEX_BIN||'codex',model:env.COACH_CODEX_MODEL||'gpt-5.6-sol'}):env.COACH_LANGUAGE_PROVIDER==='claude'?new ClaudeLanguageModel({apiKey:env.ANTHROPIC_API_KEY,model:env.COACH_CLAUDE_MODEL||'claude-sonnet-5',effort:env.COACH_CLAUDE_EFFORT??'high'}):env.COACH_LANGUAGE_PROVIDER==='openai'?new OpenAILanguageModel({apiKey:env.OPENAI_API_KEY,model:env.COACH_MODEL||'gpt-4.1-mini'}):new FakeLanguageModel(),speechProvider:env.COACH_SPEECH_PROVIDER==='openai'?new OpenAISpeechProvider({apiKey:env.OPENAI_API_KEY,model:env.COACH_SPEECH_MODEL||'gpt-4o-mini-transcribe',readAloudModel:env.COACH_TTS_MODEL||'gpt-4o-mini-tts',voice:env.COACH_TTS_VOICE||'alloy'}):new FakeSpeechProvider(),jobSource:greenhouseSources(env)};
+}
+// Several boards can be configured together: an international employer's Taiwan roles
+// and its remote roles often live on different boards.
+function greenhouseSources(env){
+  const boards=[...new Set(`${env.GREENHOUSE_BOARDS||env.GREENHOUSE_BOARD||''}`.split(',').map(value=>value.trim()).filter(Boolean))];
+  if(!boards.length)return new FakeJobSource();
+  const sources=boards.map(board=>new GreenhouseJobSource(board));
+  return sources.length===1?sources[0]:new MultiJobSource(sources);
 }

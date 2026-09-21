@@ -458,3 +458,16 @@ mark { background: #ffe2c5; color: #1b3a47; border-radius: 4px; }
 /* Interpreted search criteria: what the coach understood, before anything is saved. */
 .interpreted-list { margin: 8px 0; padding-left: 20px; }
 .interpreted-list li { margin-bottom: 4px; }
+
+/* Curated Job Shortlist: the fit is shown in four parts, never as one score. */
+.shortlist-card h3 { margin-bottom: 4px; }
+.why-fit { margin: 8px 0 12px; }
+.location-tag { color: var(--teal-dark); font-weight: 600; }
+.fit-breakdown { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin: 12px 0; }
+.fit-part { padding: 10px 12px; background: var(--mist); border-radius: 12px; }
+.fit-part h4 { margin: 0 0 6px; font-size: 13px; color: var(--ink-soft); }
+.fit-part ul { margin: 0; padding-left: 18px; font-size: 14px; }
+.fit-part li { margin-bottom: 3px; }
+.fit-part .meta { margin: 0; }
+.fit-gaps { background: var(--coral-soft); }
+.shortlist-card .shortlist-depth { margin-bottom: 8px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 12px; }

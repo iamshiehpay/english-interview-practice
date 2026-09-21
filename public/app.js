@@ -1304,6 +1304,69 @@ function fillSearchFields(values) {
   }
 }
 
+const locationTags = {taiwan:'台灣在地', 'taiwan-remote':'台灣可做・支援遠端', remote:'遠端（需自行確認可否在台灣受聘）', unknown:'地點未載明'};
+const fitParts = {matched:'已符合', transferable:'可轉移', gaps:'需補足', unknown:'職缺未說明'};
+const blockingLabels = {roles:'想找的職務', locations:'地點', seniority:'年資層級', workArrangements:'工作方式', exclusions:'排除條件'};
+
+// The shortlist is the coach's reading of public postings: at most five, never padded,
+// with the fit split four ways rather than collapsed into a score.
+function renderShortlist(run, results, save) {
+  results.replaceChildren();
+  const failed = (run.sourceStatus || []).filter(status => !status.ok);
+  const header = document.createElement('div');
+  header.innerHTML = `<p class="meta">查詢時間 ${escape(dateLabel(run.capturedAt))} · 來源 ${escape((run.sourceStatus || []).filter(s => s.ok).map(s => s.source).join('、') || run.source)}</p>
+    ${failed.length ? `<p class="meta">${escape(failed.map(s => `${s.source}：${s.error === 'rate-limited' ? '請求過多，稍後重試' : s.error === 'timed-out' ? '逾時' : '暫時無法連線'}`).join('；'))}。其他來源的結果仍然列在下面。</p>` : ''}
+    <p class="meta">這是教練依公開職缺內容的判讀，不是雇主的評估，也不是保證錄取；不會替你投遞。${run.resumeUsed ? '適配說明會參考你目前保存的履歷。' : '目前沒有保存履歷，因此只依職缺內容判讀。'}</p>`;
+  results.append(header);
+
+  if (!run.shortlist.length) {
+    const empty = document.createElement('div');
+    empty.className = 'provider-warning';
+    empty.innerHTML = run.blocking?.length
+      ? `<strong>沒有符合的職缺</strong><p>這些條件排除掉最多職缺：</p><ul class="interpreted-list">${run.blocking.map(item => `<li><strong>${escape(blockingLabels[item.field] || item.field)}</strong>（${escape(item.terms.join('、'))}）排除了 ${item.removed} 筆</li>`).join('')}</ul><div class="button-row" id="relax-actions"></div>`
+      : '<strong>沒有符合的職缺</strong><p>這次來源沒有回傳任何可用的職缺。可以稍後重試，或回首頁直接貼上職缺描述。</p><div class="button-row" id="relax-actions"></div>';
+    results.append(empty);
+    for (const item of run.blocking || []) {
+      button(`放寬「${blockingLabels[item.field] || item.field}」`, async () => {
+        const input = $(`#profile-${item.field}`);
+        if (input) input.value = '';
+        await save();
+        setNotice(`已清除「${blockingLabels[item.field] || item.field}」條件，可以再搜尋一次。`);
+      }, $('#relax-actions'), {kind:'secondary'});
+    }
+    button('改用貼上職缺描述', () => navigate('home'), $('#relax-actions'), {kind:'ghost'});
+    return;
+  }
+
+  const count = document.createElement('p');
+  count.className = 'eyebrow';
+  count.textContent = `精選 ${run.shortlist.length} 筆${run.shortlist.length < 5 ? '（符合的就這些，沒有湊數）' : ''}`;
+  results.append(count);
+
+  for (const job of run.shortlist) {
+    const card = document.createElement('article'); card.className = 'list-card shortlist-card'; card.dataset.resultId = job.id;
+    const parts = Object.entries(fitParts).map(([key, label]) => `<div class="fit-part fit-${key}"><h4>${escape(label)}</h4>${job[key].length ? `<ul>${job[key].map(entry => `<li>${escape(entry)}</li>`).join('')}</ul>` : '<p class="meta">—</p>'}</div>`).join('');
+    card.innerHTML = `<h3>${escape(job.title)}</h3>
+      <p class="meta">${escape(job.location)} · ${escape(job.source)} · <span class="location-tag">${escape(locationTags[job.locationTag] || job.locationTag)}</span></p>
+      <p class="why-fit">${escape(job.whyFitZh)}</p>
+      <div class="fit-breakdown">${parts}</div>
+      <details><summary>查看取得的職缺內容</summary><blockquote>${escape(job.text)}</blockquote></details>
+      <p class="meta"><a href="${escape(job.sourceUrl)}" target="_blank" rel="noopener noreferrer">查看原始職缺</a></p>
+      <label class="check-label"><input type="checkbox" class="shortlist-resume" ${workspace.resume ? 'checked' : 'disabled'}>${workspace.resume ? `搭配履歷：${escape(workspace.resume.name)}` : '尚未保存履歷，將只依職缺出題'}</label>
+      <label class="visually-hidden" for="depth-${escape(job.id)}">練習深度</label>
+      <select id="depth-${escape(job.id)}" class="shortlist-depth"><option value="standard">依職缺要求</option><option value="easier">簡單一點</option><option value="deeper">深入一點</option></select>
+      <div class="button-row"></div>`;
+    button('保存並產生題目', async () => {
+      const snapshot = await api(`/discovery/${run.id}/select`, {resultId: job.id, useResume: card.querySelector('.shortlist-resume').checked, difficulty: card.querySelector('.shortlist-depth').value});
+      await refreshWorkspace();
+      await api(`/snapshots/${snapshot.id}/analysis`, {});
+      await refreshWorkspace();
+      await showRecommended(snapshot.id);
+    }, card.querySelector('.button-row'));
+    results.append(card);
+  }
+}
+
 async function renderDiscovery() {
   const parent = $('#discovery'); parent.replaceChildren();
   const profile = await api('/job-search-profile');
@@ -1323,13 +1386,12 @@ async function renderDiscovery() {
   button('儲存搜尋條件', save, form, {kind:'secondary'});
   const results = document.createElement('div'); results.id = 'discovery-results';
   button('搜尋公開職缺', async () => {
-    await save(); const run = await api('/discovery', {}); results.replaceChildren();
-    if (!run.results.length) results.innerHTML = '<p class="empty">沒有符合結果。調整條件，或回首頁直接貼上職缺描述。</p>';
-    for (const job of run.results) {
-      const card = document.createElement('article'); card.className = 'list-card'; card.innerHTML = `<h3>${escape(job.title)}</h3><p>${escape(job.location)} · ${escape(job.source)}</p><p class="meta">${escape(job.reasons.join('；'))}</p><details><summary>查看取得的職缺內容</summary><blockquote>${escape(job.text)}</blockquote></details><div class="button-row"></div>`;
-      button('保存並產生題目', async () => { const snapshot = await api(`/discovery/${run.id}/select`, {resultId:job.id}); await refreshWorkspace(); await api(`/snapshots/${snapshot.id}/analysis`, {}); await refreshWorkspace(); await showRecommended(snapshot.id); }, card.querySelector('.button-row'));
-      results.append(card);
-    }
+    results.innerHTML = '<p class="meta">正在搜尋並整理精選職缺…</p>';
+    await save();
+    let run;
+    try { run = await api('/discovery', {}); }
+    catch (error) { results.innerHTML = '<p class="empty">這次搜尋沒有完成，搜尋條件仍保存在本機。可以稍後重試，或回首頁直接貼上職缺描述。</p>'; throw error; }
+    renderShortlist(run, results, save);
   }, form);
   form.insertAdjacentHTML('beforeend', '<hr><label for="job-url">支援的 Greenhouse 職缺網址</label><input id="job-url" type="url" placeholder="https://job-boards.greenhouse.io/…">');
   button('取得並保存職缺', async () => { const snapshot = await api('/snapshots/from-url', {url:$('#job-url').value}); await refreshWorkspace(); await api(`/snapshots/${snapshot.id}/analysis`, {}); await refreshWorkspace(); await showRecommended(snapshot.id); }, form, {kind:'secondary'});

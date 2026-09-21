@@ -1,5 +1,5 @@
 ---
-status: ready-for-agent
+status: ready-for-human
 ---
 
 # Curate at most five jobs with a Fit Breakdown and practise from one
@@ -63,43 +63,43 @@ defined in the PRD, including the note that a Fit Breakdown is not an Experience
 
 ## Acceptance criteria
 
-- [ ] Searching happens only on a learner action; there is no background search.
-- [ ] Multiple sources are searched together, results merged, and each result names
+- [x] Searching happens only on a learner action; there is no background search.
+- [x] Multiple sources are searched together, results merged, and each result names
       its source and retrieval time.
-- [ ] A failing or timing-out source is reported without losing results from healthy
+- [x] A failing or timing-out source is reported without losing results from healthy
       sources; a rate-limited source says to retry later.
-- [ ] The Practice Resume text never reaches a job source, asserted by a test that
+- [x] The Practice Resume text never reaches a job source, asserted by a test that
       records exactly what the source received.
-- [ ] Duplicate postings across sources appear once.
-- [ ] Each surviving candidate is tagged Taiwan, remote or unknown from its own text,
+- [x] Duplicate postings across sources appear once.
+- [x] Each surviving candidate is tagged Taiwan, remote or unknown from its own text,
       and the tag is shown; exclusions are honoured.
-- [ ] At most five results are returned; fewer is accepted and never padded.
-- [ ] Each result shows a Traditional Chinese fit rationale and all four Fit Breakdown
+- [x] At most five results are returned; fewer is accepted and never padded.
+- [x] Each result shows a Traditional Chinese fit rationale and all four Fit Breakdown
       parts, with an empty part allowed, and no single fit score.
-- [ ] An entry naming an unsupplied candidate, more than five entries, a rationale
+- [x] An entry naming an unsupplied candidate, more than five entries, a rationale
       quoting text absent from the posting excerpt, and a number appearing in neither
       the excerpt nor the resume are each rejected as invalid provider output.
-- [ ] Each result links to the original posting and shows the retrieved job
+- [x] Each result links to the original posting and shows the retrieved job
       description in place.
-- [ ] With no qualifying result, the run names the blocking conditions and offers
+- [x] With no qualifying result, the run names the blocking conditions and offers
       relaxations applicable in one click, with no model call.
-- [ ] Pasting a job description remains available as a fallback.
-- [ ] Selecting a result creates a Job Snapshot with source, URL and retrieval time,
+- [x] Pasting a job description remains available as a fallback.
+- [x] Selecting a result creates a Job Snapshot with source, URL and retrieval time,
       honours the resume choice and question depth, reuses the existing snapshot on a
       second selection, and generates a valid Question Set.
-- [ ] A saved snapshot is unaffected by later changes to the posting.
-- [ ] Search and curation are cancellable and retryable through the operations
+- [x] A saved snapshot is unaffected by later changes to the posting.
+- [x] Search and curation are cancellable and retryable through the operations
       tracker; a repeated request with the same identifier does not call providers
       twice.
-- [ ] The interface states the shortlist is the coach's reading of public postings and
+- [x] The interface states the shortlist is the coach's reading of public postings and
       applies to nothing on the learner's behalf.
-- [ ] Old search runs are pruned; deleting all local data removes runs and the profile.
-- [ ] A search leaves existing Job Snapshots, Practice Records and recordings
+- [x] Old search runs are pruned; deleting all local data removes runs and the profile.
+- [x] A search leaves existing Job Snapshots, Practice Records and recordings
       byte-identical.
-- [ ] `CONTEXT.md` defines Curated Job Shortlist and Fit Breakdown, and records that a
+- [x] `CONTEXT.md` defines Curated Job Shortlist and Fit Breakdown, and records that a
       Fit Breakdown is not an Experience Gap.
-- [ ] API-level tests cover every rule above.
-- [ ] Browser smoke walks: request, proposed criteria, search, at most five results
+- [x] API-level tests cover every rule above.
+- [x] Browser smoke walks: request, proposed criteria, search, at most five results
       with all four Fit Breakdown parts and source and time, open the job description,
       save with the resume attached, reach a generated question, walk the no-results
       relaxation path, and confirm no horizontal overflow at phone width.
@@ -107,3 +107,11 @@ defined in the PRD, including the note that a Fit Breakdown is not an Experience
 ## Blocked by
 
 - [Issue 0019](./0019-interpret-a-natural-language-job-request.md)
+
+## Verification
+
+Implemented and verified through the API and browser seams.
+[Evidence](../verification/0020.md). No independent review yet. Shipping sources
+are Greenhouse boards plus the demonstration source; 104 was investigated and is
+not shipped. Whether a real model picks the right five jobs is pending human
+validation.

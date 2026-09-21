@@ -68,6 +68,14 @@ _Avoid_: Resume, learner profile, search prompt
 An immutable, time-stamped capture of one selected job posting and its source, used as reproducible evidence for analysis and practice.
 _Avoid_: Live job, search result, cached page
 
+**Curated Job Shortlist（精選職缺清單）**:
+At most five retrieved postings selected for one search run, each with a Traditional Chinese fit rationale, a Fit Breakdown, its retrieval time, its source, and a link to the original posting. It is the coach's reading of public postings, never an employer assessment, an endorsement, or a ranking claim, and it is never padded to reach five.
+_Avoid_: Job match score, recommendation engine, application shortlist
+
+**Fit Breakdown（適配拆解）**:
+The four separate parts of one shortlist entry: capabilities the learner already matches, capabilities that are transferable from adjacent experience, genuine gaps, and conditions the posting does not state. It never collapses into a single score, and "unknown" is a first-class outcome rather than a silent match or a silent gap. It is discovery-side analysis of a posting against the Practice Resume, not an Experience Gap against a Job Capability Map, and is never written into learner evidence.
+_Avoid_: Fit score, match percentage, qualification verdict, Experience Gap
+
 **Job Capability Map**:
 A model-produced, source-linked description of the responsibilities, competencies, and evidence expectations inferred from selected Job Snapshots.
 _Avoid_: Skill prediction, learner skill profile

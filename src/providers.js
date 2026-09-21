@@ -79,6 +79,19 @@ export class FakeLanguageModel {
     if (mode === 'illustrative') return {text:'Demonstration only: if I faced this, I would first clarify the goal, outline one approach, and name a trade-off I would weigh. Replace this with your own experience.',explanationZh:'這是本機示範的假設回答，僅示意結構；請設定模型服務以取得針對此題的實質示範，並替換成你自己的經驗。'};
     return {text: /[A-Za-z]/.test(transcript || '') ? transcript : 'Demonstration only: configure a model provider for English assistance.', explanationZh:'本機示範不會實際翻譯或改寫，請設定模型服务。'};
   }
+  // Demonstration only: keep the first few candidates in the order they arrived and
+  // describe the fit in fixed wording. It invents nothing and never pads past what it
+  // was given, so the "at most five, fewer is correct" rule is exercised honestly.
+  async curateJobs({candidates}) {
+    return {selections: candidates.slice(0, 5).map(candidate => ({
+      id: candidate.id,
+      whyFitZh: `這是本機示範的適配說明：${candidate.title} 來自 ${candidate.source}，尚未經模型評估。請設定模型服務以取得針對你履歷的實質分析。`,
+      matched: [],
+      transferable: [],
+      gaps: [],
+      unknown: ['本機示範服務沒有讀你的履歷，因此符合、可轉移與缺口都無法判斷。']
+    }))};
+  }
   // Demonstration only: quote the learner's own longest session answer so the citation
   // rule holds, and label the assessment as a demonstration rather than coaching.
   async mockSummary({answers}) {

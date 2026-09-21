@@ -23,7 +23,7 @@ Local issue tracker for the Adaptive English Interview Coach. All issues below w
 | [0017 — Answer by voice in every answer path](./0017-answer-by-voice-in-every-answer-path.md) | ready-for-human | 0015, 0016 |
 | [0018 — Run a three-question Short Mock Session](./0018-run-a-three-question-short-mock-session.md) | ready-for-human | 0017 |
 | [0019 — Interpret a natural-language job request](./0019-interpret-a-natural-language-job-request.md) | ready-for-human | None |
-| [0020 — Curate five jobs with a Fit Breakdown](./0020-curate-five-jobs-with-a-fit-breakdown.md) | ready-for-agent | 0019 |
+| [0020 — Curate five jobs with a Fit Breakdown](./0020-curate-five-jobs-with-a-fit-breakdown.md) | ready-for-human | 0019 |
 
 Implementation should proceed in dependency order. Start each issue in a fresh session with the PRD and only the selected issue as the implementation brief.
 

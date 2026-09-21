@@ -237,6 +237,36 @@ try {
  const saved=await fetch('/api/job-search-profile').then(r=>r.json());
  if(!saved.exclusions.includes('Manager'))throw Error('Edited criteria were not saved');
  if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow on the job search view');
+ // No qualifying result: name the blocking condition and offer a one-click relaxation.
+ fill('#profile-roles','Nothing Matches This');fill('#profile-exclusions','');
+ click(btn('搜尋公開職缺'));await wait(()=>el('#discovery-results .provider-warning'),'no-results guidance');
+ if(!document.body.innerText.includes('沒有符合的職缺'))throw Error('Empty result is not explained');
+ if(!btn('放寬「想找的職務」'))throw Error('No one-click relaxation offered');
+ click(btn('放寬「想找的職務」'));await wait(()=>el('#profile-roles').value==='','relaxation applied');
+ // A curated shortlist: at most five, with all four Fit Breakdown parts and a source link.
+ fill('#profile-roles','Engineer');fill('#profile-locations','Taiwan');fill('#profile-workArrangements','');fill('#profile-seniority','');fill('#profile-salary','');fill('#profile-priorities','');
+ click(btn('搜尋公開職缺'));await wait(()=>el('.shortlist-card'),'curated shortlist');
+ const cards=[...document.querySelectorAll('.shortlist-card')];
+ if(cards.length>5)throw Error('More than five curated results: '+cards.length);
+ if(!document.body.innerText.includes('查詢時間'))throw Error('Retrieval time not shown');
+ if(!document.body.innerText.includes('不是雇主的評估'))throw Error('Shortlist does not disclaim an employer assessment');
+ for(const card of cards){
+   const parts=[...card.querySelectorAll('.fit-part h4')].map(n=>n.textContent);
+   for(const label of ['已符合','可轉移','需補足','職缺未說明'])if(!parts.includes(label))throw Error('Missing Fit Breakdown part: '+label);
+   if(!card.querySelector('.why-fit').textContent.trim())throw Error('No fit rationale');
+   if(!card.querySelector('.location-tag').textContent.trim())throw Error('No location tag');
+   const link=card.querySelector('a[href]');if(!link||!/^https?:/.test(link.getAttribute('href')))throw Error('No link to the original posting');
+   if(!card.querySelector('details'))throw Error('Retrieved job description not available in place');
+ }
+ if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow on the shortlist');
+ // Saving a result carries the resume choice and depth into practice.
+ cards[0].querySelector('.shortlist-depth').value='deeper';
+ click(cards[0].querySelector('.button-row button'));await wait(()=>el('#recommended-question'),'practising a discovered job');
+ const discovered=Object.values((await ws()).snapshots).find(s=>s.sourceType==='job-source');
+ if(!discovered)throw Error('Discovered job was not saved as a Job Snapshot');
+ if(discovered.difficulty!=='deeper')throw Error('Question depth was not carried into the snapshot');
+ if(!discovered.resume)throw Error('Resume choice was not carried into the snapshot');
+ if(!discovered.sourceUrl)throw Error('Snapshot lost its source link');
  `);
  // Short Mock Session: three questions in a row, no coaching during, summary at the end.
  await run(`

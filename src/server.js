@@ -3,7 +3,7 @@ import {Operations} from './operations.js';
 import {configuredProviders} from './cloud.js';
 import {progressView, decideProgress, cleanDerivedState, removeRecord, recommendWithFocus} from './progress.js';
 import {importResume, captureAnswerClaims, decideClaim, evidenceContext} from './evidence.js';
-import {FakeJobSource, GreenhouseJobSource, profileFields, emptyProfile, validateProfile, validateProfileProposal, matchingJobs, boundedSource} from './jobs.js';
+import {FakeJobSource, GreenhouseJobSource, MultiJobSource, profileFields, emptyProfile, validateProfile, validateProfileProposal, validateJobCuration, blockingConditions, matchingJobs, boundedSource} from './jobs.js';
 import http from 'node:http';
 import {randomUUID,createHash} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
@@ -81,7 +81,7 @@ export async function createApplication({directory = '.workspace', languageModel
     const dismissOp = path.match(/^\/api\/operations\/([^/]+)$/);
     if (method === 'DELETE' && dismissOp) return operations.dismiss(dismissOp[1]);
     if (method === 'GET' && path === '/api/providers/language-status') return languageModel.status ? languageModel.status() : {provider:languageModel.name,authenticated:null,loginRequired:false};
-    if (method === 'GET' && path === '/api/providers') return {languageModel:{name:languageModel.name,subscription:!!languageModel.status,external:!!languageModel.external,outbound:languageModel.external?['JD text and selected resume for analysis','JD, selected resume and existing capability/question set for additions','current question and transcript for feedback or English assistance','primary question, frozen formal answer and completed follow-ups for follow-up generation','a question and one formal answer transcript for evidence-safe key-sentence corrections']:[]},speech:{name:speechProvider.name,external:!!speechProvider.external,canSpeak:canSpeak(speechProvider),demonstrationSpeech:!!speechProvider.demonstrationSpeech,recordingLimitSeconds:RECORDING_LIMIT_SECONDS,recordingWarningSeconds:RECORDING_WARNING_SECONDS,recordingMaxBytes:RECORDING_MAX_BYTES,outbound:speechProvider.external?['recorded audio only',...(canSpeak(speechProvider)?['English practice text for reading aloud']:[])]:[]},jobSource:{name:jobSource.name,external:!!jobSource.external,outbound:!!jobSource.external?['public board token and requested job ID; profile filtering stays local']:[]}};
+    if (method === 'GET' && path === '/api/providers') return {languageModel:{name:languageModel.name,subscription:!!languageModel.status,external:!!languageModel.external,outbound:languageModel.external?['JD text and selected resume for analysis','JD, selected resume and existing capability/question set for additions','current question and transcript for feedback or English assistance','primary question, frozen formal answer and completed follow-ups for follow-up generation','a question and one formal answer transcript for evidence-safe key-sentence corrections']:[]},speech:{name:speechProvider.name,external:!!speechProvider.external,canSpeak:canSpeak(speechProvider),demonstrationSpeech:!!speechProvider.demonstrationSpeech,recordingLimitSeconds:RECORDING_LIMIT_SECONDS,recordingWarningSeconds:RECORDING_WARNING_SECONDS,recordingMaxBytes:RECORDING_MAX_BYTES,outbound:speechProvider.external?['recorded audio only',...(canSpeak(speechProvider)?['English practice text for reading aloud']:[])]:[]},jobSource:{name:jobSource.name,external:!!jobSource.external,outbound:!!jobSource.external?['public board token and requested job ID; profile filtering stays local']:[]},jobCuration:{name:languageModel.name,external:!!languageModel.external,outbound:languageModel.external?['shortlisted posting excerpts and your selected resume, to explain the fit and the gaps']:[]}};
     if (method === 'POST' && path === '/api/speech') {
       // Learner-initiated, nothing saved: deliberately outside the operations tracker,
       // but bounded so a held request cannot open unlimited provider calls.
@@ -125,8 +125,25 @@ export async function createApplication({directory = '.workspace', languageModel
     }
     if (method === 'POST' && path === '/api/discovery') {
       const profile = {...emptyProfile(), ...(store.data.jobSearchProfile || {})};
-      const results = matchingJobs(await boundedSource(() => jobSource.search({profile: structuredClone(profile), signal: context?.signal}), sourceTimeoutMs), profile);
-      const run = {id: randomUUID(), capturedAt: new Date().toISOString(), source: jobSource.name, profile, results};
+      // Only the profile reaches the job source. The Practice Resume never does.
+      const retrieved = await boundedSource(() => jobSource.search({profile: structuredClone(profile), signal: context?.signal}), sourceTimeoutMs);
+      const results = matchingJobs(retrieved, profile);
+      const sourceStatus = jobSource.lastSourceStatus ?? [{source: jobSource.name, ok: true}];
+      const capturedAt = new Date().toISOString();
+      const run = {id: randomUUID(), capturedAt, source: jobSource.name, sourceStatus, profile, results, shortlist: [], blocking: [], resumeUsed: false};
+      if (!results.length) {
+        // No model call: name what removed the most candidates and offer relaxations.
+        run.blocking = blockingConditions(retrieved, profile);
+      } else {
+        const resume = store.data.resume?.text ?? '';
+        const candidates = results.slice(0, 12).map(result => ({id: result.id, title: result.title, location: result.location, source: result.source, locationTag: result.locationTag, excerpt: result.text.slice(0, 4000)}));
+        const curated = validateJobCuration(await languageModel.curateJobs({candidates, resume, signal: context?.signal}), candidates, resume);
+        run.resumeUsed = Boolean(resume);
+        run.shortlist = curated.selections.map(selection => {
+          const result = results.find(item => item.id === selection.id);
+          return {...selection, title: result.title, location: result.location, source: result.source, sourceUrl: result.sourceUrl, locationTag: result.locationTag, text: result.text};
+        });
+      }
       return commit(d => {d.discoveryRuns ??= {}; d.discoveryRuns[run.id] = run; for (const id of Object.keys(d.discoveryRuns).slice(0, -3)) delete d.discoveryRuns[id]; return run;});
     }
     let selection = path.match(/^\/api\/discovery\/([^/]+)\/select$/);
@@ -134,10 +151,14 @@ export async function createApplication({directory = '.workspace', languageModel
       const run = store.data.discoveryRuns?.[selection[1]];
       const result = run?.results.find(r => r.id === input.resultId);
       requireValue(result, 'Select a result from a saved discovery run', 404);
+      // Saving from a search must land downstream exactly like a pasted job description.
+      requireValue(input.useResume === undefined || typeof input.useResume === 'boolean', 'Invalid resume selection');
+      requireValue(['standard','easier','deeper'].includes(input.difficulty || 'standard'), 'Invalid difficulty');
       return commit(d => {
         const existing = Object.values(d.snapshots).find(s => s.discoveryRunId === run.id && s.resultId === result.id);
         if (existing) return existing;
-        const snapshot = {id: randomUUID(), text: result.text, sourceType: 'job-source', sourceUrl: result.sourceUrl, source: result.source, capturedAt: run.capturedAt, selectedAt: new Date().toISOString(), discoveryRunId: run.id, resultId: result.id};
+        const snapshot = {id: randomUUID(), text: result.text, sourceType: 'job-source', sourceUrl: result.sourceUrl, source: result.source, capturedAt: run.capturedAt, selectedAt: new Date().toISOString(), discoveryRunId: run.id, resultId: result.id,
+          practiceVersion: 3, difficulty: input.difficulty || 'standard', resume: input.useResume === false ? null : structuredClone(d.resume || null)};
         d.snapshots[snapshot.id] = snapshot; return snapshot;
       });
     }
