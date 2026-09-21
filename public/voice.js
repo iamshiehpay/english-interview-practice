@@ -17,7 +17,22 @@ export function resetReadAloud() {
   for (const dispose of [...mountedReadAloud]) dispose();
 }
 
-export function mountReadAloud(parent, reference, {api, provider, label = '朗讀英文', onError} = {}) {
+// Listening mode: a display preference, not practice data, so it lives in this
+// browser only. Storage can be refused or cleared, in which case the mode is simply
+// off and everything else still works.
+const LISTENING_KEY = 'coach.listeningMode';
+let listeningMode = (() => { try { return localStorage.getItem(LISTENING_KEY) === 'on'; } catch { return false; } })();
+const listeningListeners = new Set();
+function setListeningMode(on) {
+  listeningMode = on;
+  try { localStorage.setItem(LISTENING_KEY, on ? 'on' : 'off'); } catch { /* per-viewer convenience only */ }
+  for (const listener of [...listeningListeners]) listener(on);
+}
+
+// `hideable` is the element holding the question text and its Chinese meaning. It is
+// removed from the accessibility tree, not just painted over, so a screen-reader user
+// gets the same experience rather than a silently different one.
+export function mountReadAloud(parent, reference, {api, provider, label = '朗讀英文', onError, hideable} = {}) {
   if (!parent || !provider?.canSpeak) return () => {};
   const box = document.createElement('div');
   box.className = 'read-aloud';
@@ -28,6 +43,27 @@ export function mountReadAloud(parent, reference, {api, provider, label = '朗�
   speed.value = readAloudSpeed;
   const status = document.createElement('span'); status.className = 'meta read-aloud-status'; status.setAttribute('role', 'status');
   box.append(play, replay, speed, status);
+
+  // Listening mode is offered only where there is question text to hide.
+  const reveal = document.createElement('button'); reveal.type = 'button'; reveal.className = 'ghost read-aloud-reveal'; reveal.textContent = '顯示題目'; reveal.hidden = true;
+  const toggleLabel = document.createElement('label'); toggleLabel.className = 'check-label listening-toggle';
+  const toggle = document.createElement('input'); toggle.type = 'checkbox'; toggle.className = 'listening-mode';
+  toggleLabel.append(toggle, document.createTextNode('聽力模式：朗讀時先不看題目'));
+  // Several elements can make up the question (the text and its Chinese meaning sit
+  // either side of this control), so accept a list and keep the control itself visible.
+  const hidden = [hideable].flat().filter(Boolean);
+  const showText = () => { if (!hidden.length) return; for (const node of hidden) node.hidden = false; reveal.hidden = true; status.textContent = ''; };
+  const hideText = () => { if (!hidden.length || !toggle.checked) return; for (const node of hidden) node.hidden = true; reveal.hidden = false; };
+  if (hidden.length) {
+    toggle.checked = listeningMode;
+    box.append(toggleLabel, reveal);
+    toggle.addEventListener('change', () => { setListeningMode(toggle.checked); if (!toggle.checked) showText(); });
+    reveal.addEventListener('click', () => { showText(); reveal.blur(); });
+    const follow = on => { if (toggle.checked !== on) { toggle.checked = on; if (!on) showText(); } };
+    listeningListeners.add(follow);
+    box.dataset.listening = 'available';
+    box._unfollow = () => listeningListeners.delete(follow);
+  }
   if (provider.demonstrationSpeech) { const note = document.createElement('span'); note.className = 'meta'; note.textContent = '目前是本機示範服務，只會播放示意音，不是真人朗讀。'; box.append(note); }
   parent.append(box);
 
@@ -37,6 +73,7 @@ export function mountReadAloud(parent, reference, {api, provider, label = '朗�
     if (disposed) return;
     disposed = true;
     mountedReadAloud.delete(dispose);
+    box._unfollow?.();
     if (audio && playing === audio) stopReadAloud();
     for (const url of cache.values()) URL.revokeObjectURL(url);
     cache.clear();
@@ -65,6 +102,8 @@ export function mountReadAloud(parent, reference, {api, provider, label = '朗�
     play.disabled = true;
     replay.disabled = true;
     status.textContent = '正在準備朗讀…';
+    // Hide before the request so the learner cannot read ahead while it loads.
+    hideText();
     try {
       const url = await sourceFor(speed.value);
       if (disposed) return;
@@ -78,7 +117,9 @@ export function mountReadAloud(parent, reference, {api, provider, label = '朗�
     } catch (error) {
       if (disposed) return;
       if (playing === audio) playing = null;
-      status.textContent = '朗讀失敗，可再試一次。';
+      // Never leave the learner unable to both hear and read the question.
+      showText();
+      status.textContent = '朗讀失敗，已顯示題目，可再試一次。';
       onError?.(error);
     } finally {
       loading = false;

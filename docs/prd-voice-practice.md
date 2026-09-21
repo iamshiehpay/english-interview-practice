@@ -219,6 +219,29 @@ emotion or personality.
 47. As a Target Learner, I want to see roughly how much recording audio is stored
     locally, so that local retention is visible rather than hidden.
 
+### Listening mode (added 2026-09-21, issue 0021)
+
+54. As a Target Learner, I want an optional listening mode that hides the question
+    text while it is read aloud, so that I practise taking a question in by ear the
+    way a real interview gives it to me.
+55. As a Target Learner, I want that mode off by default, so that the calm
+    read-along experience I already have is unchanged unless I ask for it.
+56. As a Target Learner, I want my choice remembered, so that I do not re-enable it
+    every time.
+57. As a Target Learner, I want a "show the question" control always visible while
+    the text is hidden, so that I am never stuck.
+58. As a Target Learner, I do not want the text to reappear by itself when the
+    audio ends, so that I actually have to work out what I heard.
+59. As a Target Learner whose read-aloud fails, I want the question shown
+    immediately, so that I am never left unable to both hear and read it.
+60. As a Target Learner using a screen reader, I want hidden text removed from the
+    accessible tree rather than only visually hidden, so that the mode means the
+    same thing for me as for anyone else.
+61. As a Target Learner, I want the toggle absent when no read-aloud service is
+    configured, so that it never promises something that cannot happen.
+62. As a Target Learner in a Short Mock Session, I want the mode to work there too,
+    so that the closest thing to a real interview can be heard rather than read.
+
 ### Disclosure, privacy and scope of assessment
 
 48. As a Target Learner, I want the screen to name the service that receives my

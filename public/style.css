@@ -471,3 +471,8 @@ mark { background: #ffe2c5; color: #1b3a47; border-radius: 4px; }
 .fit-part .meta { margin: 0; }
 .fit-gaps { background: var(--coral-soft); }
 .shortlist-card .shortlist-depth { margin-bottom: 8px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 12px; }
+
+/* Listening mode: the toggle stays quiet, the reveal control stays obvious. */
+.listening-toggle { display: inline-flex; align-items: center; gap: 6px; margin: 0; font-size: 14px; color: var(--ink-soft); }
+.listening-toggle input { margin: 0; }
+.read-aloud-reveal { border-color: var(--teal); color: var(--teal-dark); }

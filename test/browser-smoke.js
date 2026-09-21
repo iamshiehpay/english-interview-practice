@@ -58,6 +58,38 @@ try {
  for(let i=0;i<4;i++){el('#question-read-aloud .read-aloud-replay').click();el('#question-read-aloud .read-aloud-play').click();}
  await new Promise(r=>setTimeout(r,600));
  if(window.__played.length>beforeBurst+1)throw Error('Overlapping readings started: '+(window.__played.length-beforeBurst));
+ // Listening mode: off by default, hides the question on play, reveals in one click.
+ const qText=()=>el('#recommended-question .question-text');
+ const qMeaning=()=>el('#recommended-question details');
+ if(!el('.listening-mode'))throw Error('Listening-mode toggle missing beside the question');
+ if(el('.listening-mode').checked)throw Error('Listening mode must be off by default');
+ if(qText().hidden)throw Error('Question hidden while listening mode is off');
+ el('.listening-mode').checked=true;el('.listening-mode').dispatchEvent(new Event('change',{bubbles:true}));
+ const playedBefore=window.__played.length;
+ click('#question-read-aloud .read-aloud-play');
+ await wait(()=>qText().hidden,'question hidden on play');
+ if(!qMeaning().hidden)throw Error('Chinese meaning stayed visible in listening mode');
+ if(el('.read-aloud-reveal').hidden)throw Error('No reveal control while the question is hidden');
+ await wait(()=>window.__played.length>playedBefore,'audio played in listening mode');
+ await new Promise(r=>setTimeout(r,300));
+ if(!qText().hidden)throw Error('Question reappeared by itself when the audio ended');
+ click('.read-aloud-reveal');
+ await wait(()=>!qText().hidden,'one-click reveal');
+ if(qMeaning().hidden)throw Error('Chinese meaning not revealed');
+ if(!el('.read-aloud-reveal').hidden)throw Error('Reveal control still shown after revealing');
+ // A read-aloud failure must reveal the question rather than leave nothing.
+ const realSpeech=window.fetch.bind(window);
+ window.fetch=async(...a)=>{if(a[1]?.method==='POST'&&String(a[0]).endsWith('/api/speech'))return new Response(JSON.stringify({error:'synthetic failure'}),{status:503,headers:{'Content-Type':'application/json'}});return realSpeech(...a);};
+ // Pick a speed whose audio is not already cached, so the request really is made.
+ el('#question-read-aloud .read-aloud-speed').value='fast';el('#question-read-aloud .read-aloud-speed').dispatchEvent(new Event('change',{bubbles:true}));
+ click('#question-read-aloud .read-aloud-play');
+ await wait(()=>el('#question-read-aloud .read-aloud-status').textContent.includes('已顯示題目'),'failure reveals the question');
+ if(qText().hidden)throw Error('Question stayed hidden after a read-aloud failure');
+ window.fetch=realSpeech;
+ el('.listening-mode').checked=false;el('.listening-mode').dispatchEvent(new Event('change',{bubbles:true}));
+ if(qText().hidden)throw Error('Turning listening mode off did not reveal the question');
+ sessionStorage.setItem('listening-checked','1');
+
  click('#question-actions button');await wait(()=>el('#answer'),'editor');
  if(!el('#retry-draft').hidden)throw Error('Retry visible before failure');
 

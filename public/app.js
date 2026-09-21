@@ -133,12 +133,15 @@ function outboundLabel(value) {
 
 // Read-aloud is reference-addressed: the server resolves the English text from its
 // own stored data, so nothing on this page decides what gets spoken.
-function readAloud(parent, reference, label) {
+function readAloud(parent, reference, label, hideable) {
   // An ApiError message is already localized; a browser playback failure is raw English,
-  // so it is replaced rather than shown to the learner.
-  return mountReadAloud(parent, reference, {api, provider:providerInfo?.speech, label,
+  // so it is replaced rather than shown to the learner. `hideable` is the question text
+  // that listening mode hides; omit it where there is no question to hide.
+  return mountReadAloud(parent, reference, {api, provider:providerInfo?.speech, label, hideable,
     onError:error => setError(error instanceof ApiError ? error.message : '這個瀏覽器無法播放這段朗讀音訊。你可以再試一次，或直接閱讀畫面上的英文。')});
 }
+// The question text and its Chinese meaning sit either side of the read-aloud control.
+const questionText = scope => [scope?.querySelector('.question-text, .follow-up-question'), scope?.querySelector('details')].filter(Boolean);
 // An Answer Recording is evidence of what the learner said. It is served from this
 // machine, never cached, and an edited transcript is labelled rather than the audio
 // being presented as matching the edited text.
@@ -365,7 +368,7 @@ async function showQuestion(snapshotId, questionId, suppliedAnalysis) {
   const providerGate = modelReady() ? '' : `<div class="provider-warning"><strong>目前還不能取得模型回饋。</strong><p>請先到設定完成 Codex 登入與驗證；若要先整理想法，文字草稿仍會保存在本機。</p><div id="question-provider-gate"></div></div>`;
   const content = `<div id="recommended-question" class="question-phase"><p class="question-kicker">${recommended ? '建議先練' : '目前選擇'}｜${escape(categories[question.category] || question.category)}</p><h1 class="question-text" lang="en">${escape(question.text)}</h1><div id="question-read-aloud"></div><details open><summary>查看中文題意</summary><div class="detail-panel"><p>${escape(meaning)}</p></div></details>${providerGate}<div class="button-row" id="question-actions"></div></div>`;
   $('#practice').innerHTML = practiceFrame({stage:1, snapshot, content});
-  readAloud($('#question-read-aloud'), {snapshotId, questionId:question.id}, '朗讀題目');
+  readAloud($('#question-read-aloud'), {snapshotId, questionId:question.id}, '朗讀題目', questionText($('#recommended-question')));
   const actions = $('#question-actions');
   const begin = async () => {
     const existing = incompleteForQuestion(snapshotId, question.id);
@@ -912,8 +915,8 @@ async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedb
     body+=`<section class="next-steps"><p class="eyebrow next-steps-title">接下來</p>${followUpHtml(record,complete)}${optional}${completion}</section>`;
   }
   $('#practice').innerHTML = practiceFrame({stage:last?.feedback?3:2,snapshot,content:body});
-  readAloud($('#question-read-aloud'), {recordId:record.id}, '朗讀題目');
-  if (currentFollowUp) readAloud($('#follow-up-read-aloud'), {recordId:record.id, followUpId:currentFollowUp.id}, '朗讀追問題目');
+  readAloud($('#question-read-aloud'), {recordId:record.id}, '朗讀題目', questionText($('#question-read-aloud')?.closest('.question-phase')));
+  if (currentFollowUp) readAloud($('#follow-up-read-aloud'), {recordId:record.id, followUpId:currentFollowUp.id}, '朗讀追問題目', questionText($('#follow-up-read-aloud')?.closest('.follow-up-flow')));
   // Corrections rendered inside the collapsed follow-up history are static markup, so
   // they need mounting here; the live panels mount through setupCorrections.
   document.querySelectorAll('[data-history-attempt]').forEach(area => mountCorrectionReadAloud(area, record.id, area.dataset.historyAttempt));
@@ -1013,7 +1016,7 @@ async function showMockSession(sessionId, {summaryFresh = false} = {}) {
         <div id="mock-voice-entry"></div>
         <div class="button-row" id="mock-actions"></div>
       </section></div></article>`;
-    readAloud($('#question-read-aloud'), {snapshotId: session.snapshotId, questionId: entry.question.id}, '朗讀題目');
+    readAloud($('#question-read-aloud'), {snapshotId: session.snapshotId, questionId: entry.question.id}, '朗讀題目', questionText($('#question-read-aloud')?.closest('.question-phase')));
     mountMockVoice(session, entry);
     const submissionId = crypto.randomUUID();
     button(session.currentPosition === session.questionCount ? '送出並結束這場模擬' : '送出，下一題', async () => {

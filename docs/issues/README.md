@@ -24,6 +24,7 @@ Local issue tracker for the Adaptive English Interview Coach. All issues below w
 | [0018 — Run a three-question Short Mock Session](./0018-run-a-three-question-short-mock-session.md) | ready-for-human | 0017 |
 | [0019 — Interpret a natural-language job request](./0019-interpret-a-natural-language-job-request.md) | ready-for-human | None |
 | [0020 — Curate five jobs with a Fit Breakdown](./0020-curate-five-jobs-with-a-fit-breakdown.md) | ready-for-human | 0019 |
+| [0021 — Hide the question in listening mode](./0021-hide-the-question-in-listening-mode.md) | ready-for-human | 0014 |
 
 Implementation should proceed in dependency order. Start each issue in a fresh session with the PRD and only the selected issue as the implementation brief.
 
@@ -31,6 +32,6 @@ Implementation should proceed in dependency order. Start each issue in a fresh s
 
 | PRD | Issues |
 |---|---|
-| [Voice practice](../prd-voice-practice.md) | 0014–0017 |
+| [Voice practice](../prd-voice-practice.md) | 0014–0017, 0021 |
 | [Three-question short mock session](../prd-short-mock-session.md) | 0018 |
 | [Natural-language curated job discovery](../prd-curated-job-discovery.md) | 0019–0020 |
