@@ -57,6 +57,11 @@ export async function transcribeRecording({store, provider, entry, signal}) {
   const result = signal
     ? await Promise.race([work, new Promise((_, reject) => {listener = () => reject(signal.reason); if (signal.aborted) listener(); else signal.addEventListener('abort', listener, {once: true});})]).finally(() => signal.removeEventListener('abort', listener))
     : await work;
-  requireValue(result && Object.keys(result).length === 1 && nonempty(result.transcript) && result.transcript.length <= 100000, 'Invalid speech provider transcript', 502);
+  // A provider that returns nothing is not broken: a silent, too-quiet or wrong-input
+  // recording transcribes to an empty string. That is the learner's situation to fix,
+  // not a provider fault, so it gets its own actionable message instead of a generic
+  // "transcription failed" that invites a pointless retry of the same audio.
+  requireValue(result && Object.keys(result).length === 1 && typeof result.transcript === 'string' && result.transcript.length <= 100000, 'Invalid speech provider transcript', 502);
+  requireValue(nonempty(result.transcript), 'No speech was detected in the recording', 422);
   return result.transcript;
 }

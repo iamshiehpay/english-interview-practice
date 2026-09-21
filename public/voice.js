@@ -176,7 +176,18 @@ export function mountVoice(parent, {recordId, path, api, provider, beforeTranscr
       const draft = await api(endpoint, {audio: btoa(binary), mimeType: audio.type.split(';')[0]});
       holdAudio(null); chunks = []; retry.hidden = true; status.textContent = '已轉成文字，請看上面的回答框。';
       if (!disposed) await onTranscript(draft, panel);
-    } catch (e) { if (!disposed) {status.textContent = '語音轉錄失敗。錄音還在，你可以重試、重新錄音或改用文字。'; retry.hidden = false; onError(e);} }
+    } catch (e) {
+      if (!disposed) {
+        // Say what went wrong, not just that something did: retrying the same silent
+        // recording will fail the same way, so the reason decides the next step.
+        const noSpeech = /No speech was detected|沒有辨識到內容/.test(e?.message || '');
+        status.textContent = noSpeech
+          ? '這段錄音沒有辨識到內容。重試同一段會得到相同結果，建議直接重新錄音，或改用文字。'
+          : '語音轉錄失敗。錄音還在，你可以重試、重新錄音或改用文字。';
+        retry.hidden = noSpeech;
+        onError(e);
+      }
+    }
     finally { if (!disposed) await onTranscriptionEnd?.(); start.disabled = false; retry.disabled = false; }
   }
   start.onclick = async () => {

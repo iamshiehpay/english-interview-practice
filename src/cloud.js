@@ -4,8 +4,28 @@ import {AppError, requireValue} from './domain.js';
 import {FakeLanguageModel} from './providers.js';
 import {FakeSpeechProvider} from './speech.js';
 import {FakeJobSource, GreenhouseJobSource, MultiJobSource} from './jobs.js';
+// A rejected request used to throw before the body was read, so the provider's own
+// explanation ("Invalid file format", "model not found", a quota message) was thrown
+// away and every failure looked identical. Read it, log it for whoever is running the
+// server, and carry it into the error. Provider error bodies do not contain the key,
+// and the redaction below is a belt-and-braces guard in case that ever changes.
+const redact = text => String(text).replace(/\b(sk|rk)-[A-Za-z0-9_-]{8,}/g, '<redacted>').slice(0, 400);
+async function providerFailure(response, what){
+  let detail = '';
+  try {
+    const body = await response.text();
+    try { detail = JSON.parse(body)?.error?.message ?? body; } catch { detail = body; }
+  } catch { /* the body may already be gone */ }
+  detail = redact(detail).trim();
+  console.error(`[provider] ${what} failed: HTTP ${response.status}${detail ? ` — ${detail}` : ''}`);
+  const rateLimited = response.status === 429;
+  throw new AppError(
+    rateLimited ? 'Provider rate limit; retry later' : `External provider request failed (HTTP ${response.status})${detail ? `: ${detail}` : ''}`,
+    rateLimited ? 429 : 502
+  );
+}
 async function responseJson(response){
-  requireValue(response.ok,response.status===429?'Provider rate limit; retry later':'External provider request failed',response.status===429?429:502);
+  if (!response.ok) await providerFailure(response, 'request');
   let size=0;const chunks=[];for await(const chunk of response.body){size+=chunk.length;requireValue(size<=2_000_000,'Provider response too large',502);chunks.push(chunk);}
   try{return JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw new AppError('Provider returned invalid JSON',502);}
 }
@@ -53,7 +73,7 @@ export class ClaudeLanguageModel {
   feedback({question,transcript,previousAttempt,approvedEvidence,signal}){return this.json(feedbackContract,{question,transcript,...(previousAttempt?{previousAttempt:{transcript:previousAttempt.transcript,priorityImprovement:previousAttempt.feedback.priorityImprovement}}:{}),approvedEvidence:approvedEvidence.map(({excerpt})=>({excerpt}))},signal);}
 }
 async function responseBytes(response,limit=4_000_000){
-  requireValue(response.ok,response.status===429?'Provider rate limit; retry later':'External provider request failed',response.status===429?429:502);
+  if (!response.ok) await providerFailure(response, 'audio request');
   let size=0;const chunks=[];for await(const chunk of response.body){size+=chunk.length;requireValue(size<=limit,'Provider audio response too large',502);chunks.push(chunk);}
   return Buffer.concat(chunks);
 }

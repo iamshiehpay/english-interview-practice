@@ -44,3 +44,22 @@ test('voice revision uses the same comparison and completion workflow as text',a
  const comparison=(await api(`/records/${record.id}/comparison`)).data;assert.deepEqual(comparison.attempts.map(a=>a.inputMode),['text','voice']);
  assert.equal((await api(`/records/${record.id}/complete`,{focusPoint:'State assumptions'})).data.status,'completed');
 });
+
+test('a recording with no speech is reported as such, not as a broken provider',async t=>{
+ const {api,directory}=await harness(t,undefined,{speechProvider:{name:'silent',async transcribe(){return {transcript:'   '};}}});
+ const {record}=await setup(api);
+ const result=await api(`/records/${record.id}/transcription`,upload);
+ // 422, not 502: the provider answered correctly, the audio simply had nothing in it.
+ assert.equal(result.status,422);
+ assert.match(result.data.error,/No speech was detected/);
+ // Nothing is kept for an empty transcript.
+ assert.deepEqual(await readdir(join(directory,'recordings')),[]);
+ assert.deepEqual((await api('/workspace')).data.recordings??{},{});
+ assert.equal((await api(`/records/${record.id}`)).data.transcriptDraft,undefined);
+});
+
+test('a malformed provider transcript is still a provider fault',async t=>{
+ const {api}=await harness(t,undefined,{speechProvider:{name:'broken',async transcribe(){return {transcript:42};}}});
+ const {record}=await setup(api);
+ assert.equal((await api(`/records/${record.id}/transcription`,upload)).status,502);
+});
