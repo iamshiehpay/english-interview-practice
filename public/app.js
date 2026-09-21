@@ -136,6 +136,23 @@ function outboundLabel(value) {
 function readAloud(parent, reference, label) {
   return mountReadAloud(parent, reference, {api, provider:providerInfo?.speech, label, onError:error => setError(error.message)});
 }
+// An Answer Recording is evidence of what the learner said. It is served from this
+// machine, never cached, and an edited transcript is labelled rather than the audio
+// being presented as matching the edited text.
+function playerHtml(attempt, {label = '回聽這次的錄音'} = {}) {
+  if (!attempt?.recordingId) return '';
+  const entry = workspace.recordings?.[attempt.recordingId];
+  if (entry && entry.state !== 'retained') return '';
+  const edited = attempt.transcriptEdited ? '<p class="meta">錄音保留你當時說的原音；上面的文字是你之後修改過的版本。</p>' : '';
+  return `<div class="answer-recording"><p class="meta">${escape(label)}</p><audio controls preload="none" src="/api/recordings/${escape(attempt.recordingId)}"></audio>${edited}</div>`;
+}
+function recordingBytesLabel() {
+  const total = Object.values(workspace.recordings || {}).filter(entry => entry.state === 'retained').reduce((sum, entry) => sum + (entry.bytes || 0), 0);
+  const count = Object.values(workspace.recordings || {}).filter(entry => entry.state === 'retained').length;
+  if (!count) return '目前沒有保存任何回答錄音。';
+  return `目前保存 ${count} 段回答錄音，約 ${total < 1_000_000 ? Math.max(1, Math.round(total / 1000)) + ' KB' : (total / 1_000_000).toFixed(1) + ' MB'}，全部只存在這台裝置。刪除練習或職缺時會一併刪除。`;
+}
+
 function mountCorrectionReadAloud(container, recordId, attemptId) {
   container?.querySelectorAll('[data-correction-index]').forEach(slot => readAloud(slot, {recordId, attemptId, correctionIndex:Number(slot.dataset.correctionIndex)}, '朗讀修正句'));
 }
@@ -834,7 +851,7 @@ async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedb
   const editor = !complete && !feedbackOnly && (!last || (last.feedback && record.attempts.length===1 && (editing || record.writtenDraft)));
   let body = `${record.focusOrigin ? `<div class="focus-origin-banner"><p class="eyebrow">延續練習重點</p><p>這一題延續你上次的練習重點：<strong>${escape(record.focusOrigin.focusPoint.replace(/[。．.!！?？,，、;；\s]+$/u, ''))}</strong>，換一個情境、同一份職缺再練一次。</p></div>` : ''}<section class="question-phase"><p class="question-kicker">${escape(categories[record.question.category] || record.question.category)}</p><h1 class="question-text" lang="en">${escape(record.question.text)}</h1><div id="question-read-aloud"></div><details open><summary>中文題意</summary><p class="meaning">${escape(record.question.meaningZh || '舊版題目未保存中文題意。')}</p></details></section>`;
   if (last && !last.feedback) {
-    body += `<section class="answer-area"><h2>你的回答已保存</h2><details><summary>查看回答</summary><blockquote>${escape(last.transcript)}</blockquote></details><p>回饋尚未完成，可以重試，不會重複提交回答。</p><div id="feedback-retry-actions"></div></section>`;
+    body += `<section class="answer-area"><h2>你的回答已保存</h2><details><summary>查看回答</summary><blockquote>${escape(last.transcript)}</blockquote></details>${playerHtml(last)}<p>回饋尚未完成，可以重試，不會重複提交回答。</p><div id="feedback-retry-actions"></div></section>`;
   } else if (editor) {
     if(last)body+=`<section class="answer-area"><h2>這次，試著改這一點</h2><p>${escape(last.feedback.priorityImprovement.textZh || '請選擇一項下次想練習的重點。')}</p><blockquote>${escape(last.feedback.priorityImprovement.quote)}</blockquote></section>`;
     body+=`<section class="answer-area"><h2>${last?'自己再試一次':'先用自己的方式回答'}</h2>${guidanceHtml()}<label for="answer">${last?'修改你的回答':'你的回答'}</label><textarea id="answer" rows="7" placeholder="先說出你的想法，不用一次就完美。"></textarea><p id="draft-status" class="draft-status" aria-live="polite"></p><button id="retry-draft" class="ghost" hidden type="button">重試儲存草稿</button><div id="voice-entry"></div><button id="submit-answer" class="primary wide" type="button">${last?'送出修改並取得回饋':'送出並取得回饋'}</button></section>`;
@@ -846,7 +863,7 @@ async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedb
       const same=first.transcript.trim()===last.transcript.trim();
       body+=`<section class="answer-area"><h2>${same?'這次回答尚未修改':'看看這次的調整'}</h2><p>${same?'兩次內容相同，沒有文字修改可比較。':'先前的練習重點：'+escape(first.feedback.priorityImprovement.textZh || '此筆舊紀錄沒有中文說明。')}</p>${same?'':`<details open><summary>關鍵句前後對照</summary>${changedTextHtml(first.transcript,last.transcript)}</details>`}</section>`;
     }
-    body+=`<section class="answer-area"><h2 id="feedback-heading" tabindex="-1">給這次回答的一點建議</h2>${feedbackHtml(last.feedback)}<div id="corrections" class="corrections-area" aria-live="polite"></div><details id="attempt-history"><summary>查看回答紀錄（${record.attempts.length} 個版本）</summary><label for="attempt-version">選擇回答版本</label><select id="attempt-version">${record.attempts.map((a,i)=>`<option value="${i}" ${i===record.attempts.length-1?'selected':''}>第 ${i+1} 次回答 · ${escape(dateLabel(a.submittedAt))}</option>`).join('')}</select><div id="attempt-detail"></div></details></section>`;
+    body+=`<section class="answer-area"><h2 id="feedback-heading" tabindex="-1">給這次回答的一點建議</h2>${playerHtml(last)}${feedbackHtml(last.feedback)}<div id="corrections" class="corrections-area" aria-live="polite"></div><details id="attempt-history"><summary>查看回答紀錄（${record.attempts.length} 個版本）</summary><label for="attempt-version">選擇回答版本</label><select id="attempt-version">${record.attempts.map((a,i)=>`<option value="${i}" ${i===record.attempts.length-1?'selected':''}>第 ${i+1} 次回答 · ${escape(dateLabel(a.submittedAt))}</option>`).join('')}</select><div id="attempt-detail"></div></details></section>`;
     if(complete && record.focusOrigin){const priority=last.feedback.priorityImprovement;body+=`<section class="answer-area focus-progress"><h2>這個重點練得如何？</h2><p class="meta">上次的練習重點</p><blockquote>${escape(record.focusOrigin.focusPoint)}</blockquote><p class="meta">這次回答的優先改進</p><blockquote>${escape(priority.textZh || priority.text || '－')}</blockquote>${priority.quote?`<p class="meta">依據你這次的原句</p><blockquote lang="en">${escape(priority.quote)}</blockquote>`:''}<p>對照上次的重點與這次的回饋，由你判斷這個重點是否已改善；系統不會替你宣稱進步。</p></section>`;}
     if(record.unsubmittedDraft)body+=`<details><summary>未送出的修改草稿（未評分）</summary><blockquote>${escape(record.unsubmittedDraft.transcript)}</blockquote></details>`;
     const focus=record.focusPoint || last.feedback.priorityImprovement.textZh || '請選擇一項下次想練習的重點。';
@@ -865,7 +882,7 @@ async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedb
   if ($('#attempt-version')) {
     const renderAttempt = () => {
       const index=Number($('#attempt-version').value), attempt=record.attempts[index];
-      $('#attempt-detail').innerHTML=`<h3>第 ${index+1} 次回答</h3><blockquote lang="en">${escape(attempt.transcript)}</blockquote>${index<record.attempts.length-1?feedbackHtml(attempt.feedback):'<p class="meta">此版本的回饋已顯示在上方。</p>'}`;
+      $('#attempt-detail').innerHTML=`<h3>第 ${index+1} 次回答</h3><blockquote lang="en">${escape(attempt.transcript)}</blockquote>${playerHtml(attempt,{label:`回聽第 ${index+1} 次回答`})}${index<record.attempts.length-1?feedbackHtml(attempt.feedback):'<p class="meta">此版本的回饋已顯示在上方。</p>'}`;
     };
     $('#attempt-version').addEventListener('change',renderAttempt);
     renderAttempt();
@@ -1113,7 +1130,7 @@ function renderSettings() {
     parent.append(status);
   }
   const deletion = $('#delete-workspace'); deletion.replaceChildren();
-  deletion.innerHTML = '<p>這會刪除所有職缺、題目、練習紀錄、文字草稿與進步項目。若要繼續，請輸入 <strong>DELETE ALL LOCAL DATA</strong>。</p><label for="delete-all">確認文字</label><input id="delete-all" autocomplete="off">';
+  deletion.innerHTML = `<p class="meta" id="recording-storage">${escape(recordingBytesLabel())}</p><p>這會刪除所有職缺、題目、練習紀錄、文字草稿、回答錄音與進步項目。若要繼續，請輸入 <strong>DELETE ALL LOCAL DATA</strong>。</p><label for="delete-all">確認文字</label><input id="delete-all" autocomplete="off">`;
   button('刪除全部本機資料', async () => {
     await api('/workspace/delete', {confirmation:$('#delete-all').value}); clearDraftSession(); disposeVoice(); resetReadAloud(); await refreshWorkspace(); setNotice('所有本機資料已刪除。'); await navigate('home');
   }, deletion, {kind:'danger'});

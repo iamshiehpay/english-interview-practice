@@ -89,6 +89,9 @@ try {
  if(!el('#answer').value.includes('demonstration transcript'))throw Error('Append did not add the transcript');
  el('#answer').value='';el('#answer').dispatchEvent(new InputEvent('input',{bubbles:true}));
  await wait(()=>el('#draft-status').textContent.includes('已儲存'),'cleared draft settles; status='+el('#draft-status').textContent);
+ // An unsubmitted recording is pending, not retained, and holds no answer.
+ const pending=Object.values((await ws()).recordings||{});
+ if(pending.length!==1||pending[0].state!=='pending')throw Error('Expected exactly one pending recording, got '+JSON.stringify(pending));
  const originalFetch=window.fetch.bind(window);let failDraft=true,failFeedback=true;
  window.fetch=async(...a)=>{const path=String(a[0]);if(a[1]?.method==='POST'&&((path.endsWith('/draft')&&failDraft)||(path.endsWith('/feedback')&&failFeedback))){if(path.endsWith('/draft'))failDraft=false;else failFeedback=false;return new Response(JSON.stringify({error:'synthetic failure'}),{status:503,headers:{'Content-Type':'application/json'}});}return originalFetch(...a);};
  fill('#answer','I would measure query latency and compare the execution plans.');await wait(()=>!el('#retry-draft').hidden,'draft failure');
@@ -202,5 +205,33 @@ try {
  fill('#job-search','zzz-no-match');await wait(()=>el('.job-list .empty'),'search filters job list');
  if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow on filtered job list');
  `);
- console.log('Browser smoke PASS: resume default/opt-out, draft failure/reload recovery, feedback retry, key-sentence corrections (normal/retry/no-change/evidence-safe), Focus-Point same-job practice, job-centred Records navigation, optional revision, separate AI assistance, one-answer completion and mobile layout.');
+ // Answer Recordings: submit a spoken answer, replay it, then delete the practice.
+ await run(`
+ fakeMicrophone();
+ click('nav [data-view="home"]');await wait(()=>el('#jd'),'home for a recorded answer');
+ fill('#jd','Investigate incidents and explain the root cause to stakeholders.');click('#capture');await wait(()=>el('#recommended-question'),'recording job question');
+ click('#question-actions button');await wait(()=>el('#answer'),'recording editor');
+ click(btn('開始錄音'));await wait(()=>!el('.recording-clock').hidden,'recording for retention');
+ click(btn('停止並轉成文字'));await wait(()=>el('#answer').value.includes('demonstration transcript'),'transcript for retention');
+ click('#submit-answer');await wait(()=>el('#feedback-heading'),'recorded answer feedback');
+ const spoken=Object.values((await ws()).records).find(r=>r.attempts[0]?.inputMode==='voice');
+ if(!spoken)throw Error('Spoken answer was not stored as a voice attempt');
+ const rid=spoken.attempts[0].recordingId;
+ if(!rid)throw Error('Submitted spoken answer kept no recording');
+ if(spoken.attempts[0].transcriptEdited!==false)throw Error('Unedited transcript must not be marked edited');
+ if((await ws()).recordings[rid].state!=='retained')throw Error('Recording was not promoted to retained');
+ if(!el('.answer-recording audio'))throw Error('No player beside a submitted spoken answer');
+ const played=await fetch(el('.answer-recording audio').getAttribute('src'));
+ if(!played.ok||!played.headers.get('content-type').startsWith('audio/'))throw Error('Recording playback failed: '+played.status);
+ if(played.headers.get('cache-control')!=='no-store')throw Error('Recording playback is cacheable');
+ el('#attempt-history').open=true;
+ if(!el('#attempt-detail .answer-recording audio'))throw Error('No player in the answer-version history');
+ if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow with a player');
+ click('nav [data-view="settings"]');await wait(()=>el('#recording-storage'),'settings shows local recording size');
+ if(!el('#recording-storage').textContent.includes('段回答錄音'))throw Error('Local recording size not disclosed: '+el('#recording-storage').textContent);
+ await fetch('/api/records/'+spoken.id,{method:'DELETE'});
+ if((await ws()).recordings[rid])throw Error('Deleting the practice left the recording behind');
+ if((await fetch('/api/recordings/'+rid)).status!==404)throw Error('A deleted recording is still playable');
+ `);
+ console.log('Browser smoke PASS: resume default/opt-out, read-aloud (no autoplay, replay, speed, no overlap), three-minute recording with a visible clock, transcript replace/append handoff, retained Answer Recordings with playback and deletion, draft failure/reload recovery, feedback retry, key-sentence corrections (normal/retry/no-change/evidence-safe), Focus-Point same-job practice, job-centred Records navigation, optional revision, separate AI assistance, one-answer completion and mobile layout.');
 }finally{await browser('close').catch(()=>{});if(server)await new Promise(r=>server.close(r));await rm(directory,{recursive:true,force:true});}

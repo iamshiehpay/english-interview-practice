@@ -3,13 +3,14 @@ import {Operations} from './operations.js';
 import {configuredProviders} from './cloud.js';
 import {progressView, decideProgress, cleanDerivedState, removeRecord, recommendWithFocus} from './progress.js';
 import {importResume, captureAnswerClaims, decideClaim, evidenceContext} from './evidence.js';
-import {FakeJobSource, GreenhouseJobSource, profileFields, validateProfile, matchingJobs, boundedSource} from './jobs.js';
+import {FakeJobSource, GreenhouseJobSource, profileFields, emptyProfile, validateProfile, validateProfileProposal, matchingJobs, boundedSource} from './jobs.js';
 import http from 'node:http';
 import {randomUUID,createHash} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {resolve, join} from 'node:path';
-import {FakeSpeechProvider, clearTemporaryAudio, transcribeTemporary, readAloud, canSpeak, RECORDING_LIMIT_SECONDS, RECORDING_WARNING_SECONDS, RECORDING_MAX_BYTES, RECORDING_MAX_REQUEST_BYTES} from './speech.js';
+import {FakeSpeechProvider, clearTemporaryAudio, readAloud, canSpeak, RECORDING_LIMIT_SECONDS, RECORDING_WARNING_SECONDS, RECORDING_MAX_BYTES, RECORDING_MAX_REQUEST_BYTES} from './speech.js';
+import {RecordingStore, captureRecording, transcribeRecording, recordingsFor} from './recordings.js';
 import {LocalWorkspace} from './store.js';
 import {FakeLanguageModel} from './providers.js';
 import {AppError, requireValue, nonempty, validateAnalysis, validateFeedback, validateCoaching, validateFollowUp, validateCorrections, dimensions, questionSetView} from './domain.js';
@@ -26,6 +27,17 @@ export async function createApplication({directory = '.workspace', languageModel
   await operations.recover();
   const audioDirectory = join(directory, 'temporary-audio');
   await clearTemporaryAudio(audioDirectory);
+  // Recording recovery. A recording that was captured but never submitted is
+  // temporary, so it goes; a retained Answer Recording survives a restart, and any
+  // file with no reference left behind by a crash is swept.
+  const recordings = await new RecordingStore(directory).open();
+  if (recordingsFor(store.data, entry => entry.state !== 'retained').length) {
+    await store.transact(d => { for (const entry of Object.values(d.recordings || {})) if (entry.state !== 'retained') delete d.recordings[entry.id]; });
+  }
+  await recordings.sweep(new Set(Object.keys(store.data.recordings || {})));
+  // Removing files only after the transaction that dropped their references commits
+  // means a crash can leave an unreferenced file (swept above), never a dead reference.
+  const commitThenDelete = async (doomed, update) => { const result = await update(); await recordings.remove(doomed); return result; };
   const item = (collection, id) => { const value = Object.hasOwn(store.data[collection],id) ? store.data[collection][id] : undefined; requireValue(value, 'Not found', 404); return structuredClone(value); };
   // Read-aloud resolves English text from stored content; the browser may only send a
   // reference. Chinese-by-contract fields (meaningZh, reasonZh, explanationZh…) are not
@@ -91,18 +103,19 @@ export async function createApplication({directory = '.workspace', languageModel
       requireValue(input.confirmation === 'DELETE ALL LOCAL DATA', 'Type DELETE ALL LOCAL DATA to confirm');
       await operations.cancelTarget();
       await clearTemporaryAudio(audioDirectory);
-      return commit(d => {for (const key of Object.keys(d)) delete d[key]; Object.assign(d, {version:1,snapshots:{},analyses:{},records:{}}); return {deleted:'all'};});
+      const everything = recordingsFor(store.data, () => true);
+      return commitThenDelete(everything, () => commit(d => {for (const key of Object.keys(d)) delete d[key]; Object.assign(d, {version:1,snapshots:{},analyses:{},records:{}}); return {deleted:'all'};}));
     }
     if (method === 'GET' && path === '/api/evidence') return {sources: store.data.evidenceSources || {}, claims: store.data.evidenceClaims || {}};
     if (method === 'POST' && path === '/api/evidence/import') return commit(d => importResume(d, input.text));
     const claimMatch = path.match(/^\/api\/evidence\/([^/]+)$/);
     if (method === 'POST' && claimMatch) return commit(d => decideClaim(d, claimMatch[1], input));
     if (path === '/api/job-search-profile') {
-      if (method === 'GET') return store.data.jobSearchProfile || Object.fromEntries(profileFields.map(k => [k, []]));
+      if (method === 'GET') return {...emptyProfile(), ...(store.data.jobSearchProfile || {})};
       if (method === 'POST') {const profile = validateProfile(input); return commit(d => (d.jobSearchProfile = profile));}
     }
     if (method === 'POST' && path === '/api/discovery') {
-      const profile = store.data.jobSearchProfile || Object.fromEntries(profileFields.map(k => [k, []]));
+      const profile = {...emptyProfile(), ...(store.data.jobSearchProfile || {})};
       const results = matchingJobs(await boundedSource(() => jobSource.search({profile: structuredClone(profile), signal: context?.signal}), sourceTimeoutMs), profile);
       const run = {id: randomUUID(), capturedAt: new Date().toISOString(), source: jobSource.name, profile, results};
       return commit(d => {d.discoveryRuns ??= {}; d.discoveryRuns[run.id] = run; for (const id of Object.keys(d.discoveryRuns).slice(0, -3)) delete d.discoveryRuns[id]; return run;});
@@ -122,7 +135,7 @@ export async function createApplication({directory = '.workspace', languageModel
     if (method === 'POST' && path === '/api/snapshots/from-url') {
       requireValue(typeof jobSource.fetchUrl === 'function', 'This Job Source does not support URL intake; paste the JD.', 400);
       const result = await boundedSource(() => jobSource.fetchUrl(input.url, {signal: context?.signal}), sourceTimeoutMs);
-      const [validated] = matchingJobs([result], Object.fromEntries(profileFields.map(k => [k, []])));
+      const [validated] = matchingJobs([result], emptyProfile());
       const snapshot = {id: randomUUID(), text: validated.text, sourceType: 'job-source', sourceUrl: validated.sourceUrl, source: validated.source, capturedAt: new Date().toISOString()};
       return commit(d => (d.snapshots[snapshot.id] = snapshot));
     }
@@ -149,7 +162,8 @@ export async function createApplication({directory = '.workspace', languageModel
         await operations.cancelTarget(snapshot.id);
         const recordIds = Object.values(store.data.records).filter(r => r.snapshotId === snapshot.id).map(r => r.id);
         for (const id of recordIds) await operations.cancelTarget(id);
-        return commit(d => {for (const r of Object.values(d.records)) if (r.snapshotId===snapshot.id) removeRecord(d,r.id);delete d.snapshots[snapshot.id];delete d.analyses[snapshot.id];for (const c of Object.values(d.evidenceClaims||{})) c.capabilityLinks=c.capabilityLinks.filter(l=>l.snapshotId!==snapshot.id);cleanDerivedState(d);return {deleted:snapshot.id};});
+        const owned = recordingsFor(store.data, entry => recordIds.includes(entry.recordId));
+        return commitThenDelete(owned, () => commit(d => {for (const r of Object.values(d.records)) if (r.snapshotId===snapshot.id) removeRecord(d,r.id);delete d.snapshots[snapshot.id];delete d.analyses[snapshot.id];for (const c of Object.values(d.evidenceClaims||{})) c.capabilityLinks=c.capabilityLinks.filter(l=>l.snapshotId!==snapshot.id);cleanDerivedState(d);return {deleted:snapshot.id};}));
       }
       const current = store.data.analyses[snapshot.id];
       const view = analysis => ({...recommendWithFocus(questionSetView(analysis, Object.values(store.data.records), snapshot.id), store.data, snapshot.id), evidenceContext: evidenceContext(store.data, snapshot.id, analysis.capabilities.map(c => c.id))});
@@ -310,7 +324,11 @@ export async function createApplication({directory = '.workspace', languageModel
           return result;
         });
       }
-      if (method === 'DELETE' && !action) {await operations.cancelTarget(record.id);return commit(d => removeRecord(d, record.id));}
+      if (method === 'DELETE' && !action) {
+        await operations.cancelTarget(record.id);
+        const owned = recordingsFor(store.data, entry => entry.recordId === record.id);
+        return commitThenDelete(owned, () => commit(d => removeRecord(d, record.id)));
+      }
       if (method === 'GET' && action === 'evidence-context') return evidenceContext(store.data, record.snapshotId, record.question.capabilityIds);
       if (method === 'POST' && action === 'coaching') {
         const mode=input.mode;
@@ -326,13 +344,23 @@ export async function createApplication({directory = '.workspace', languageModel
       }
       if (method === 'POST' && action === 'transcription') {
         requireValue(record.status !== 'completed' && record.attempts.length < 2 && record.attempts.every(a => a.feedback), 'Finish feedback before recording a revision', 409);
-        const transcript = await transcribeTemporary({directory: audioDirectory, provider: speechProvider, audio: input.audio, mimeType: input.mimeType, signal: context?.signal});
-        return commit(d => {
-          const r = d.records[record.id];
-          requireValue(r.status !== 'completed' && r.attempts.length === record.attempts.length, 'Practice changed; reload', 409);
-          r.transcriptDraft = {id: randomUUID(), transcript, inputMode: 'voice'};
-          return r.transcriptDraft;
-        });
+        const captured = await captureRecording({store: recordings, audio: input.audio, mimeType: input.mimeType});
+        let transcript;
+        try { transcript = await transcribeRecording({store: recordings, provider: speechProvider, entry: captured, signal: context?.signal}); }
+        catch (error) { await recordings.remove([captured]); throw error; }
+        // A new recording for this practice supersedes an earlier unsubmitted one.
+        const superseded = recordingsFor(store.data, entry => entry.state === 'pending' && entry.recordId === record.id);
+        try {
+          return await commitThenDelete(superseded, () => commit(d => {
+            const r = d.records[record.id];
+            requireValue(r.status !== 'completed' && r.attempts.length === record.attempts.length, 'Practice changed; reload', 409);
+            d.recordings ??= {};
+            for (const entry of superseded) delete d.recordings[entry.id];
+            d.recordings[captured.id] = {...captured, recordId: record.id, state: 'pending'};
+            r.transcriptDraft = {id: randomUUID(), transcript, inputMode: 'voice', recordingId: captured.id};
+            return r.transcriptDraft;
+          }));
+        } catch (error) { await recordings.remove([captured]); throw error; }
       }
       if (method === 'POST' && action === 'draft') {
         requireValue(typeof input.transcript === 'string' && input.transcript.length <= 100000, 'Enter a text draft up to 100000 characters');
@@ -359,8 +387,14 @@ export async function createApplication({directory = '.workspace', languageModel
         requireValue(record.status !== 'completed' && record.attempts.length < 2 && record.attempts.every(a => a.feedback), 'Finish feedback before revising; at most two attempts', 409);
         const voice = input.transcriptDraftId !== undefined;
         if (voice) requireValue(record.transcriptDraft?.id === input.transcriptDraftId, 'Transcript draft changed; review again', 409);
-        const attempt = {id: randomUUID(), transcript: input.transcript, inputMode: voice ? 'voice' : 'text', submittedAt: new Date().toISOString(), ...(input.submissionId ? {submissionId: input.submissionId} : {}), feedback: null};
-        return commit(d => {
+        // Promote this answer's recording; drop any other unsubmitted one for this practice.
+        const promotedId = voice ? record.transcriptDraft.recordingId : undefined;
+        const abandoned = recordingsFor(store.data, entry => entry.state === 'pending' && entry.recordId === record.id && entry.id !== promotedId);
+        const attempt = {id: randomUUID(), transcript: input.transcript, inputMode: voice ? 'voice' : 'text', submittedAt: new Date().toISOString(), ...(input.submissionId ? {submissionId: input.submissionId} : {}),
+          // The recording is evidence of what was said; an edited transcript is labelled,
+          // never re-cut, so the audio is not presented as matching the edited text.
+          ...(promotedId ? {recordingId: promotedId, transcriptEdited: record.transcriptDraft.transcript !== input.transcript} : {}), feedback: null};
+        return commitThenDelete(abandoned, () => commit(d => {
           const r = d.records[record.id];
           requireValue(r, 'Practice was deleted', 409);
           const existing = input.submissionId && r.attempts.find(a => a.submissionId === input.submissionId);
@@ -369,8 +403,10 @@ export async function createApplication({directory = '.workspace', languageModel
             return r;
           }
           requireValue(r.status !== 'completed' && r.attempts.length === record.attempts.length, 'Practice changed; reload', 409);
+          for (const entry of abandoned) delete d.recordings[entry.id];
+          if (promotedId) { const kept = d.recordings?.[promotedId]; requireValue(kept, 'Recording is no longer available; record again', 409); kept.state = 'retained'; kept.attemptId = attempt.id; }
           if (store.data.snapshots[r.snapshotId]?.practiceVersion !== 3) captureAnswerClaims(d, r, attempt); r.attempts.push(attempt); delete r.transcriptDraft; delete r.writtenDraft; r.updatedAt = attempt.submittedAt; r.status = 'feedback'; return r;
-        });
+        }));
       }
       if (method === 'POST' && action === 'feedback') {
         const attempt = record.attempts.at(-1);
@@ -397,7 +433,9 @@ export async function createApplication({directory = '.workspace', languageModel
         requireValue(record.attempts.length >= 1 && record.attempts.every(a => a.feedback), 'Complete feedback first', 409);
         requireValue(!(record.followUps||[]).some(node=>node.attempt&&!node.attempt.feedback), 'Complete follow-up feedback before ending this practice', 409);
         requireValue(nonempty(input.focusPoint) && input.focusPoint.length <= 500 && /[\p{L}\p{N}]/u.test(input.focusPoint), 'Choose one meaningful Focus Point (up to 500 characters)');
-        return commit(d => { const r = d.records[record.id]; requireValue(r && r.attempts.length >= 1 && r.attempts.every(a=>a.feedback), 'Complete feedback first', 409); requireValue(!(r.followUps||[]).some(node=>node.attempt&&!node.attempt.feedback), 'Complete follow-up feedback before ending this practice', 409); if (r.status === 'completed') {requireValue(r.focusPoint === input.focusPoint, 'Completed Focus Point is immutable; start a new loop', 409); return r;} r.focusPoint = input.focusPoint; if(r.writtenDraft)r.unsubmittedDraft=r.writtenDraft; delete r.writtenDraft; delete r.transcriptDraft; r.status = 'completed'; r.completedAt ??= new Date().toISOString(); cleanDerivedState(d); return r; });
+        // Completing discards the transcript draft, so its unsubmitted recording goes too.
+        const stranded = recordingsFor(store.data, entry => entry.state === 'pending' && entry.recordId === record.id);
+        return commitThenDelete(stranded, () => commit(d => { const r = d.records[record.id]; requireValue(r && r.attempts.length >= 1 && r.attempts.every(a=>a.feedback), 'Complete feedback first', 409); requireValue(!(r.followUps||[]).some(node=>node.attempt&&!node.attempt.feedback), 'Complete follow-up feedback before ending this practice', 409); if (r.status === 'completed') {requireValue(r.focusPoint === input.focusPoint, 'Completed Focus Point is immutable; start a new loop', 409); return r;} r.focusPoint = input.focusPoint; if(r.writtenDraft)r.unsubmittedDraft=r.writtenDraft; delete r.writtenDraft; delete r.transcriptDraft; for (const entry of stranded) delete d.recordings[entry.id]; r.status = 'completed'; r.completedAt ??= new Date().toISOString(); cleanDerivedState(d); return r; }));
       }
     }
     throw new AppError('Not found', 404);
@@ -406,6 +444,19 @@ export async function createApplication({directory = '.workspace', languageModel
     try {
       requireValue(/^(127\.0\.0\.1|localhost)(:\d+)?$/.test(req.headers.host||''),'Local host required',403);
       const path = new URL(req.url, 'http://localhost').pathname;
+      // Playback of one retained Answer Recording. Binary, local-only, never cached.
+      const playback = path.match(/^\/api\/recordings\/([^/]+)$/);
+      if (req.method === 'GET' && playback) {
+        if (req.headers.origin) requireValue(req.headers.origin === `http://${req.headers.host}`, 'Cross-origin request rejected', 403);
+        const entry = store.data.recordings?.[playback[1]];
+        requireValue(entry && entry.state === 'retained', 'Recording is no longer available', 404);
+        let content;
+        try { content = await recordings.read(entry); }
+        catch (error) { requireValue(error.code !== 'ENOENT', 'Recording is no longer available', 404); throw error; }
+        res.writeHead(200, {'Content-Type': entry.mimeType, 'Content-Length': content.length, 'Cache-Control': 'no-store', 'Content-Disposition': 'inline', 'X-Content-Type-Options': 'nosniff'});
+        res.end(content);
+        return;
+      }
       if (path.startsWith('/api/')) {
         if (req.headers.origin) requireValue(req.headers.origin === `http://${req.headers.host}`, 'Cross-origin request rejected', 403);
         const input = ['POST', 'PUT', 'PATCH'].includes(req.method) ? await body(req, path.endsWith('/transcription') ? RECORDING_MAX_REQUEST_BYTES : path === '/api/resume/extract' ? 8_100_000 : 1_000_000) : {};

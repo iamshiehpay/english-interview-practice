@@ -32,6 +32,8 @@ export function decideProgress(data,id,input) {
 }
 export function removeRecord(data,id) {
   requireValue(data.records[id],'Practice Record not found',404);delete data.records[id];
+  // Deleting a practice deletes its Answer Recordings with it (ADR 0019).
+  for(const entry of Object.values(data.recordings||{}))if(entry.recordId===id)delete data.recordings[entry.id];
   for(const [claimId,claim]of Object.entries(data.evidenceClaims||{}))if(claim.recordId===id)delete data.evidenceClaims[claimId];
   cleanDerivedState(data);return {deleted:id};
 }

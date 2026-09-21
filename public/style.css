@@ -442,3 +442,8 @@ mark { background: #ffe2c5; color: #1b3a47; border-radius: 4px; }
 .voice-panel { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
 .recording-clock { margin: 10px 0 2px; font-variant-numeric: tabular-nums; font-weight: 600; color: var(--ink); }
 .recording-clock.near-limit { color: #8e3e31; }
+
+/* Answer Recording playback: present but never competing with the feedback. */
+.answer-recording { margin: 12px 0 16px; }
+.answer-recording .meta { margin-bottom: 6px; }
+.answer-recording audio { width: 100%; max-width: 420px; }

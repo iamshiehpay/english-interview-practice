@@ -28,6 +28,10 @@ _Avoid_: Final answer, message, recording
 The locally retained evidence of a completed or partial Practice Loop, including its question, transcripts, Feedback Reports, comparison, and Focus Point, with an associated local recording for spoken answers when available. A recording preserves the original speech even if the learner later corrects the transcript; older records may contain transcripts only.
 _Avoid_: Chat history, audio archive, model trace
 
+**Answer Recording（回答錄音）**:
+The retained local audio of one submitted spoken Answer Attempt, associated with that specific answer version and deleted with its owning practice data. It is evidence of what the learner actually said, not a scored artifact; editing the transcript afterwards never alters or re-cuts it, and the interface labels an edited transcript so the audio is not presented as matching it.
+_Avoid_: Audio archive, voice sample, pronunciation evidence
+
 **Feedback Report**:
 A structured, transcript-grounded evaluation of one Answer Attempt across relevance, support, structure, and English expression, with one strength and one priority improvement. Support means experience evidence for experience questions and reasoning, assumptions, examples, or trade-offs for technical and hypothetical questions; bilingual explanations express the same assessment with shared ratings and original quotations.
 _Avoid_: Overall grade, personality assessment, free-form critique

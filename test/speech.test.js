@@ -4,11 +4,17 @@ import {readdir, readFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {harness,setup} from './helpers.js';
 const upload={audio:Buffer.from('synthetic audio fixture').toString('base64'),mimeType:'audio/webm'};
-test('voice transcript is reviewed before becoming an attempt and audio is cleaned',async t=>{
+test('voice transcript is reviewed before becoming an attempt and the recording is retained',async t=>{
  let path;const speechProvider={name:'test speech',async transcribe(args){path=args.audioPath;assert.equal(await readFile(path,'utf8'),'synthetic audio fixture');return {transcript:'I would compare alternatives before deciding.'};}};
  const {api,directory}=await harness(t,undefined,{speechProvider});const {record}=await setup(api);
  const draft=await api(`/records/${record.id}/transcription`,upload);assert.equal(draft.status,200);assert.equal(draft.data.inputMode,'voice');
- assert.deepEqual(await readdir(join(directory,'temporary-audio')),[]);await assert.rejects(readFile(path));
+ // ADR 0019 supersedes delete-after-transcription for submitted answers: the recording
+ // is held as pending, the legacy temporary directory stays empty, and the bytes never
+ // enter the practice database.
+ assert.deepEqual(await readdir(join(directory,'temporary-audio')),[]);
+ assert.equal(await readFile(path,'utf8'),'synthetic audio fixture');
+ assert.ok(draft.data.recordingId);
+ assert.equal((await api('/workspace')).data.recordings[draft.data.recordingId].state,'pending');
  assert.equal((await api(`/records/${record.id}`)).data.attempts.length,0);
  const transcript=draft.data.transcript+' I would then test assumptions.';
  assert.equal((await api(`/records/${record.id}/attempts`,{transcript,transcriptDraftId:draft.data.id})).status,200);
