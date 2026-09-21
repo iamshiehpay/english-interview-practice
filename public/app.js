@@ -15,7 +15,7 @@ const dimensions = {
   englishExpression: '英文表達'
 };
 const recordStates = {answer:'準備初答',feedback:'等待回饋',revise:'等待修改回答',compare:'等待比較與保存',completed:'已完成'};
-const operationNames = {analysis:'產生題目',questions:'新增題目',feedback:'取得回饋','follow-up':'產生追問題目','follow-up-feedback':'取得追問回饋','follow-up-transcription':'追問語音轉成文字','session-summary':'整理整場回饋','session-feedback':'取得逐題回饋','session-transcription':'模擬語音轉成文字','session-corrections':'整理關鍵句修正','session-coaching':'準備英文示範',followUp:'產生追問題目',coaching:'準備練習建議',corrections:'整理關鍵句修正',transcription:'語音轉成文字',discovery:'搜尋職缺',url:'取得職缺'};
+const operationNames = {analysis:'產生題目',questions:'新增題目',feedback:'取得回饋','follow-up':'產生追問題目','follow-up-feedback':'取得追問回饋','follow-up-transcription':'追問語音轉成文字','session-summary':'整理整場回饋','session-feedback':'取得逐題回饋','session-transcription':'模擬語音轉成文字','session-corrections':'整理關鍵句修正','session-coaching':'準備英文示範',followUp:'產生追問題目',coaching:'準備練習建議',corrections:'整理關鍵句修正',transcription:'語音轉成文字',discovery:'搜尋職缺',interpret:'整理搜尋條件',url:'取得職缺'};
 
 let workspace = {snapshots:{}, analyses:{}, records:{}};
 let providerInfo;
@@ -1295,13 +1295,30 @@ async function renderEvidence({clearText=false}={}) {
   if(resume)button('移除目前履歷',async()=>{if(!confirm('移除目前履歷？既有練習保留當時的履歷版本；可在設定刪除全部資料。'))return;await api('/resume',undefined,'DELETE');await refreshWorkspace();await renderEvidence();},$('#resume-actions'),{kind:'ghost'});
 }
 
+const searchFieldLabels = {roles:'想找的職務',locations:'地點',seniority:'年資層級',workArrangements:'工作方式',salary:'薪資期待',priorities:'重視條件',exclusions:'排除條件'};
+
+function fillSearchFields(values) {
+  for (const field of Object.keys(searchFieldLabels)) {
+    const input = $(`#profile-${field}`);
+    if (input) input.value = (values[field] || []).join(', ');
+  }
+}
+
 async function renderDiscovery() {
   const parent = $('#discovery'); parent.replaceChildren();
   const profile = await api('/job-search-profile');
   const form = document.createElement('section'); form.className = 'settings-section';
-  form.innerHTML = '<p>搜尋只會在你按下按鈕時進行。Greenhouse 會提供公開職缺，條件篩選留在本機。</p>';
-  const labels = {roles:'想找的職務',locations:'地點',seniority:'年資層級',workArrangements:'工作方式',priorities:'重視條件',exclusions:'排除條件'};
-  for (const [field,text] of Object.entries(labels)) form.insertAdjacentHTML('beforeend', `<label for="profile-${field}">${escape(text)}（以逗號分隔）</label><input id="profile-${field}" value="${escape(profile[field].join(', '))}">`);
+  // Describe it in your own words; the product proposes criteria and you confirm them.
+  form.innerHTML = `<h2>用一句話說你想找什麼</h2><label for="search-request">例如：根據我的履歷，幫我找台灣適合轉職的 AI 職缺，最好能遠端</label>
+    <textarea id="search-request" rows="3" placeholder="用中文或英文都可以。"></textarea>
+    <p class="data-note" id="interpret-disclosure"></p>
+    <div class="button-row" id="interpret-actions"></div>
+    <div id="interpret-result" aria-live="polite"></div>
+    <hr>
+    <h2>搜尋條件</h2>
+    <p>這些是實際會用來搜尋的條件，你可以直接修改。搜尋只會在你按下按鈕時進行，履歷不會送到職缺板。</p>`;
+  const labels = searchFieldLabels;
+  for (const [field,text] of Object.entries(labels)) form.insertAdjacentHTML('beforeend', `<label for="profile-${field}">${escape(text)}（以逗號分隔）</label><input id="profile-${field}" value="${escape((profile[field] || []).join(', '))}">`);
   const save = () => api('/job-search-profile', Object.fromEntries(Object.keys(labels).map(field => [field,$(`#profile-${field}`).value.split(',').map(value => value.trim()).filter(Boolean)])));
   button('儲存搜尋條件', save, form, {kind:'secondary'});
   const results = document.createElement('div'); results.id = 'discovery-results';
@@ -1317,6 +1334,31 @@ async function renderDiscovery() {
   form.insertAdjacentHTML('beforeend', '<hr><label for="job-url">支援的 Greenhouse 職缺網址</label><input id="job-url" type="url" placeholder="https://job-boards.greenhouse.io/…">');
   button('取得並保存職缺', async () => { const snapshot = await api('/snapshots/from-url', {url:$('#job-url').value}); await refreshWorkspace(); await api(`/snapshots/${snapshot.id}/analysis`, {}); await refreshWorkspace(); await showRecommended(snapshot.id); }, form, {kind:'secondary'});
   parent.append(form, results);
+
+  $('#interpret-disclosure').textContent = providerInfo?.languageModel?.external
+    ? `你寫的這句話會傳送給 ${providerInfo.languageModel.name} 來整理成搜尋條件。你的履歷不會送到職缺板。`
+    : '目前使用本機示範服務，這句話不會傳送到外部；示範服務只會抓出少數明顯的關鍵字。';
+  button('整理成搜尋條件', async () => {
+    const request = $('#search-request').value;
+    if (!request.trim()) { setError('請先用一句話描述你想找的職缺。'); $('#search-request').focus(); return; }
+    const panel = $('#interpret-result');
+    panel.innerHTML = '<p class="meta">正在整理你說的條件…</p>';
+    try {
+      const result = await api('/discovery/interpret', {request});
+      const stated = Object.entries(searchFieldLabels).filter(([field]) => result.proposal[field]?.length);
+      panel.innerHTML = `<div class="provider-warning"><strong>我理解成這些條件</strong>
+        ${stated.length ? `<ul class="interpreted-list">${stated.map(([field, label]) => `<li><strong>${escape(label)}</strong>：${escape(result.proposal[field].join('、'))}</li>`).join('')}</ul>` : '<p>你這句話裡沒有明確的條件。你可以直接在下面填寫。</p>'}
+        <p class="meta">沒有講到的條件會留空，不會替你猜。確認後才會套用到下面的搜尋條件，也才會儲存。</p>
+        <div class="button-row" id="interpret-confirm"></div></div>`;
+      button('套用這些條件', async () => {
+        fillSearchFields(result.proposal);
+        await save();
+        setNotice('搜尋條件已更新並儲存。可以再修改，或直接搜尋。');
+        panel.replaceChildren();
+      }, $('#interpret-confirm'), {kind:'secondary', id:'apply-interpreted'});
+      button('不要套用', () => panel.replaceChildren(), $('#interpret-confirm'), {kind:'ghost'});
+    } catch (error) { panel.innerHTML = '<p class="meta">沒有整理出條件，你的搜尋條件沒有被改動。可以修改描述後再試一次。</p>'; throw error; }
+  }, $('#interpret-actions'), {id:'interpret-request'});
 }
 
 function renderSettings() {

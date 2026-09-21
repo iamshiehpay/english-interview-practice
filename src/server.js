@@ -115,6 +115,14 @@ export async function createApplication({directory = '.workspace', languageModel
       if (method === 'GET') return {...emptyProfile(), ...(store.data.jobSearchProfile || {})};
       if (method === 'POST') {const profile = validateProfile(input); return commit(d => (d.jobSearchProfile = profile));}
     }
+    // The learner's own words become a proposed Job Search Profile, shown for
+    // confirmation. Nothing is searched and nothing is saved until they confirm.
+    if (method === 'POST' && path === '/api/discovery/interpret') {
+      requireValue(nonempty(input.request) && input.request.length <= 2000, '請先用一句話描述你想找的職缺（最多 2000 字）。');
+      const proposal = validateProfileProposal(await languageModel.interpretSearch({request: input.request, signal: context?.signal}));
+      // Held as a proposal, not as the profile: confirming is what saves it.
+      return commit(d => (d.jobSearchProposal = {id: randomUUID(), proposal, request: input.request, interpretedAt: new Date().toISOString()}));
+    }
     if (method === 'POST' && path === '/api/discovery') {
       const profile = {...emptyProfile(), ...(store.data.jobSearchProfile || {})};
       const results = matchingJobs(await boundedSource(() => jobSource.search({profile: structuredClone(profile), signal: context?.signal}), sourceTimeoutMs), profile);
@@ -650,6 +658,7 @@ export async function createApplication({directory = '.workspace', languageModel
           else if(followUpGeneration)external={targetId:followUpGeneration[1],kind:'follow-up'};
           else if(followUpFeedback)external={targetId:followUpFeedback[1],kind:'follow-up-feedback'};
           else if(followUpTranscription)external={targetId:followUpTranscription[1],kind:'follow-up-transcription'};
+          else if(path==='/api/discovery/interpret')external={targetId:'workspace',kind:'interpret'};
           else if(['/api/discovery','/api/snapshots/from-url'].includes(path))external={targetId:'workspace',kind:path.endsWith('from-url')?'url':'discovery'};
         }
         const replay = async op => {
@@ -665,6 +674,7 @@ export async function createApplication({directory = '.workspace', languageModel
           if (op.kind==='session-feedback') {const s=item('mockSessions',op.targetId);const entry=s.entries.find(e=>e.id===op.resultId);requireValue(entry,'Session answer no longer available',409);return entry;}
           if (op.kind==='session-corrections') {const s=item('mockSessions',op.targetId);const saved=s.entries.map(e=>e.corrections).find(c=>c?.id===op.resultId);requireValue(saved,'Corrections no longer available',409);return saved;}
           if (op.kind==='session-coaching') {const s=item('mockSessions',op.targetId);const saved=s.entries.flatMap(e=>Object.values(e.coaching||{})).find(c=>c.id===op.resultId);requireValue(saved,'Assistance no longer available',409);return saved;}
+          if (op.kind==='interpret') {const saved=store.data.jobSearchProposal;requireValue(saved?.id===op.resultId,'Search criteria expired; describe the job again',409);return saved;}
           if (op.kind==='url') return item('snapshots',op.resultId);
           const run=store.data.discoveryRuns?.[op.resultId];requireValue(run,'Discovery run expired; start a new request',409);return run;
         };

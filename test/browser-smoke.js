@@ -218,6 +218,26 @@ try {
  fill('#job-search','zzz-no-match');await wait(()=>el('.job-list .empty'),'search filters job list');
  if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow on filtered job list');
  `);
+ // Natural-language search criteria: describe it, confirm what was understood.
+ await run(`
+ click('nav [data-view="discovery"]');await wait(()=>el('#search-request'),'job search view');
+ if(!el('#interpret-disclosure').textContent.trim())throw Error('Outbound disclosure missing for the request text');
+ const before=await fetch('/api/job-search-profile').then(r=>r.json());
+ fill('#search-request','根據我的履歷，幫我找台灣適合轉職的 AI 職缺，最好能遠端');
+ click('#interpret-request');await wait(()=>el('.interpreted-list'),'criteria proposed');
+ const shown=el('.interpreted-list').textContent;
+ if(!shown.includes('AI'))throw Error('Stated role not understood: '+shown);
+ if(shown.includes('排除條件'))throw Error('An unstated field was guessed: '+shown);
+ if(JSON.stringify(await fetch('/api/job-search-profile').then(r=>r.json()))!==JSON.stringify(before))throw Error('Interpreting saved the profile before the learner confirmed');
+ click('#apply-interpreted');await wait(()=>el('#notice').textContent.includes('搜尋條件已更新'),'criteria applied on confirmation');
+ if(!el('#profile-roles').value.includes('AI'))throw Error('Confirmed criteria did not reach the editable fields');
+ // Every field stays editable before searching.
+ fill('#profile-exclusions','Manager');
+ click(btn('儲存搜尋條件'));await new Promise(r=>setTimeout(r,200));
+ const saved=await fetch('/api/job-search-profile').then(r=>r.json());
+ if(!saved.exclusions.includes('Manager'))throw Error('Edited criteria were not saved');
+ if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow on the job search view');
+ `);
  // Short Mock Session: three questions in a row, no coaching during, summary at the end.
  await run(`
  click('[data-view="history"]');await wait(()=>el('#job-search'),'history for the mock session');

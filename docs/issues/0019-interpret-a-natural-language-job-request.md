@@ -1,5 +1,5 @@
 ---
-status: ready-for-agent
+status: ready-for-human
 ---
 
 # Interpret a natural-language job request into a confirmed Job Search Profile
@@ -37,26 +37,32 @@ sent to the configured model.
 
 ## Acceptance criteria
 
-- [ ] A learner can write a request in Chinese or English and see the criteria that
+- [x] A learner can write a request in Chinese or English and see the criteria that
       were understood, as separate fields for role, seniority, location, work
       arrangement, salary, priorities and exclusions.
-- [ ] A field the learner did not state comes back empty rather than guessed.
-- [ ] The learner can edit or clear any field before confirming.
-- [ ] Nothing is saved until the learner confirms; confirming saves the profile.
-- [ ] An invalid provider output is rejected and the saved profile is unchanged.
-- [ ] Searching with the saved profile and no new request text still works.
-- [ ] A profile saved before this change loads with an empty salary field and can be
+- [x] A field the learner did not state comes back empty rather than guessed.
+- [x] The learner can edit or clear any field before confirming.
+- [x] Nothing is saved until the learner confirms; confirming saves the profile.
+- [x] An invalid provider output is rejected and the saved profile is unchanged.
+- [x] Searching with the saved profile and no new request text still works.
+- [x] A profile saved before this change loads with an empty salary field and can be
       re-saved with the full set.
-- [ ] Interpretation is cancellable and retryable through the operations tracker, and
+- [x] Interpretation is cancellable and retryable through the operations tracker, and
       a repeated request with the same identifier does not call the provider twice.
-- [ ] The interface states that the request text is sent to the configured model.
-- [ ] Deleting all local data removes the saved profile.
-- [ ] API-level tests cover: unstated fields staying empty, validation rejecting an
+- [x] The interface states that the request text is sent to the configured model.
+- [x] Deleting all local data removes the saved profile.
+- [x] API-level tests cover: unstated fields staying empty, validation rejecting an
       invalid proposal without changing the saved profile, the proposal not being
       saved before confirmation, and legacy six-field profiles loading.
-- [ ] Browser smoke covers typing a request, seeing the proposed criteria, editing one
+- [x] Browser smoke covers typing a request, seeing the proposed criteria, editing one
       field, and confirming.
 
 ## Blocked by
 
 None — can start immediately.
+
+## Verification
+
+Implemented and verified through the API and browser seams.
+[Evidence](../verification/0019.md). No independent review yet, and interpretation
+quality with a configured model is pending human validation.
