@@ -170,7 +170,20 @@ try {
  if((await ws()).records[fresh.id].attempts.length!==1)throw Error('Primary feedback changed formal-answer count');
  click(btn('讓面試官追問'));await wait(()=>el('#follow-up-answer'),'first optional follow-up');
  if((await ws()).records[fresh.id].attempts.length!==1)throw Error('Follow-up generation became a primary answer');
+ // A follow-up is answerable by voice, and its recording belongs to the follow-up.
+ fakeMicrophone();
+ if(!el('#follow-up-voice-entry .voice-panel'))throw Error('No recording panel on the follow-up answer');
+ click(btn('開始錄音'));await wait(()=>!el('.recording-clock').hidden,'follow-up recording started');
+ click(btn('停止並轉成文字'));await wait(()=>el('#follow-up-answer').value.includes('demonstration transcript'),'follow-up transcript lands in its own box');
+ const midFollowUp=(await ws()).records[fresh.id];
+ if(midFollowUp.transcriptDraft)throw Error('Follow-up recording created a primary transcript draft');
+ if(!midFollowUp.followUps[0].transcriptDraft)throw Error('Follow-up transcript draft was not saved on the follow-up');
  fill('#follow-up-answer','I would begin with the highest-risk failure mode and validate it with a small test.');click('#submit-follow-up');await wait(()=>btn('繼續追問'),'first follow-up feedback');
+ const spokenFollowUp=(await ws()).records[fresh.id].followUps[0].attempt;
+ if(spokenFollowUp.inputMode!=='voice'||!spokenFollowUp.recordingId)throw Error('Follow-up answer did not keep its recording');
+ if(spokenFollowUp.transcriptEdited!==true)throw Error('Edited follow-up transcript is not labelled');
+ if((await ws()).records[fresh.id].attempts[0].recordingId===spokenFollowUp.recordingId)throw Error('Follow-up recording landed on the primary attempt');
+ if(!el('.follow-up-feedback')?.closest('section')?.querySelector('.answer-recording audio')&&!el('.answer-recording audio'))throw Error('No player for the spoken follow-up answer');
  const afterFirstFollowUp=(await ws()).records[fresh.id];if(afterFirstFollowUp.attempts.length!==1||afterFirstFollowUp.followUps?.length!==1||!afterFirstFollowUp.followUps[0].attempt?.feedback)throw Error('First follow-up was not saved with Chinese feedback');
  if(![...el('#follow-up-actions').querySelectorAll('button')].some(button=>button.textContent.trim()==='結束並保存'))throw Error('Early finish was unavailable after first follow-up feedback');
  click(btn('繼續追問'));await wait(()=>el('#follow-up-answer'),'second optional follow-up');

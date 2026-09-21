@@ -1,5 +1,5 @@
 ---
-status: ready-for-agent
+status: ready-for-human
 ---
 
 # Retain Answer Recordings locally and replay them from a Practice Record
@@ -59,35 +59,40 @@ recording audio is stored locally.
 
 ## Acceptance criteria
 
-- [ ] Submitting a spoken answer retains its recording in the Local Workspace and
+- [x] Submitting a spoken answer retains its recording in the Local Workspace and
       attaches it to that specific answer version.
-- [ ] The workspace JSON never contains audio bytes.
-- [ ] The learner can replay a submitted answer's recording from the Practice
+- [x] The workspace JSON never contains audio bytes.
+- [x] The learner can replay a submitted answer's recording from the Practice
       Record and from the answer-version history.
-- [ ] A second attempt's recording and the first attempt's recording are separate
+- [x] A second attempt's recording and the first attempt's recording are separate
       and neither overwrites the other.
-- [ ] Editing the transcript before submitting leaves the recording bytes unchanged
+- [x] Editing the transcript before submitting leaves the recording bytes unchanged
       and marks the attempt as edited; the player is labelled accordingly.
-- [ ] A typed answer and an older transcript-only Practice Record open normally with
+- [x] A typed answer and an older transcript-only Practice Record open normally with
       no player and no fabricated audio.
-- [ ] Deleting a Practice Record deletes its recordings; deleting a Job Snapshot
+- [x] Deleting a Practice Record deletes its recordings; deleting a Job Snapshot
       deletes the recordings of all its records; deleting all local data removes
       every recording. A repeated delete is safe.
-- [ ] A pending recording that is never submitted is gone after a restart.
-- [ ] A recording file with no database reference is removed at startup; a
+- [x] A pending recording that is never submitted is gone after a restart.
+- [x] A recording file with no database reference is removed at startup; a
       referenced file survives a restart and is still playable.
-- [ ] No reference without a file can be observed after a completed delete.
-- [ ] The playback endpoint returns the original bytes and media type, refuses
+- [x] No reference without a file can be observed after a completed delete.
+- [x] The playback endpoint returns the original bytes and media type, refuses
       cross-origin and non-local requests, and reports a missing recording as an
       unavailable state.
-- [ ] The settings panel shows the approximate local size of retained recordings.
-- [ ] Recordings are never uploaded or synced anywhere; the only outbound audio
+- [x] The settings panel shows the approximate local size of retained recordings.
+- [x] Recordings are never uploaded or synced anywhere; the only outbound audio
       remains the transcription request.
-- [ ] API-level tests cover every lifecycle and deletion rule above, the sweep on
+- [x] API-level tests cover every lifecycle and deletion rule above, the sweep on
       restart, and the absence of audio bytes in the workspace JSON.
-- [ ] Browser smoke covers: a player appearing for a submitted spoken answer, in
+- [x] Browser smoke covers: a player appearing for a submitted spoken answer, in
       both the record and the version history, and no player for a typed answer.
 
 ## Blocked by
 
 - [Issue 0015](./0015-record-a-three-minute-answer.md)
+
+## Verification
+
+Implemented and independently reviewed. [Evidence](../verification/0016.md).
+Real-microphone acceptance is pending human validation.

@@ -223,7 +223,7 @@ export async function createApplication({directory = '.workspace', languageModel
         return d.records[record.id] = record;
       });
     }
-    let followUpMatch = path.match(/^\/api\/records\/([^/]+)\/follow-ups(?:\/([^/]+)\/(attempt|feedback))?$/);
+    let followUpMatch = path.match(/^\/api\/records\/([^/]+)\/follow-ups(?:\/([^/]+)\/(attempt|feedback|transcription))?$/);
     if (followUpMatch) {
       const record = item('records', followUpMatch[1]);
       const followUps = Array.isArray(record.followUps) ? record.followUps : [];
@@ -265,6 +265,28 @@ export async function createApplication({directory = '.workspace', languageModel
       }
       const node=followUps.find(value=>value.id===followUpId);
       requireValue(node, 'Follow-up not found', 404);
+      // A follow-up records against its own node: the transcript draft and the Answer
+      // Recording belong to this follow-up, never to the primary attempt.
+      if (method === 'POST' && action === 'transcription') {
+        requireValue(record.status!=='completed','Completed practice cannot accept another answer',409);
+        requireValue(!node.attempt && node.status==='answer' && followUps.at(-1)?.id===node.id,'This follow-up already has an answer',409);
+        const captured = await captureRecording({store: recordings, audio: input.audio, mimeType: input.mimeType});
+        let transcript;
+        try { transcript = await transcribeRecording({store: recordings, provider: speechProvider, entry: captured, signal: context?.signal}); }
+        catch (error) { await recordings.remove([captured]); throw error; }
+        const superseded = recordingsFor(store.data, entry => entry.state === 'pending' && entry.followUpId === node.id);
+        try {
+          return await commitThenDelete(superseded, () => commit(d => {
+            const current=d.records[record.id];const currentNode=current?.followUps?.find(value=>value.id===node.id);
+            requireValue(current && current.status!=='completed' && currentNode && !currentNode.attempt && currentNode.status==='answer','Practice changed; reload',409);
+            d.recordings ??= {};
+            for (const entry of superseded) delete d.recordings[entry.id];
+            d.recordings[captured.id] = {...captured, recordId: record.id, followUpId: node.id, state: 'pending'};
+            currentNode.transcriptDraft = {id: randomUUID(), transcript, inputMode: 'voice', recordingId: captured.id};
+            return currentNode.transcriptDraft;
+          }));
+        } catch (error) { await recordings.remove([captured]); throw error; }
+      }
       if (method === 'POST' && action === 'attempt') {
         requireValue(nonempty(input.transcript) && input.transcript.length<=100000, 'Enter a follow-up answer up to 100000 characters');
         if(input.submissionId!==undefined)requireValue(nonempty(input.submissionId)&&input.submissionId.length<=100,'Invalid submission identifier');
@@ -275,14 +297,21 @@ export async function createApplication({directory = '.workspace', languageModel
         requireValue(record.status!=='completed','Completed practice cannot accept another answer',409);
         requireValue(node.status==='answer' && followUps.at(-1)?.id===node.id,'Follow-up state changed; reload',409);
         if(input.submissionId)requireValue(!followUps.some(value=>value.attempt?.submissionId===input.submissionId),'Submission identifier already used for another answer',409);
+        const voice = input.transcriptDraftId !== undefined;
+        if (voice) requireValue(node.transcriptDraft?.id === input.transcriptDraftId, 'Transcript draft changed; review again', 409);
+        const promotedId = voice ? node.transcriptDraft.recordingId : undefined;
+        const abandoned = recordingsFor(store.data, entry => entry.state === 'pending' && entry.followUpId === node.id && entry.id !== promotedId);
         const submittedAt=new Date().toISOString();
-        const attempt={id:randomUUID(),transcript:input.transcript,inputMode:'text',submittedAt,...(input.submissionId?{submissionId:input.submissionId}:{}),feedback:null};
-        return commit(d=>{
+        const attempt={id:randomUUID(),transcript:input.transcript,inputMode:voice?'voice':'text',submittedAt,...(input.submissionId?{submissionId:input.submissionId}:{}),
+          ...(promotedId?{recordingId:promotedId,transcriptEdited:node.transcriptDraft.transcript!==input.transcript}:{}),feedback:null};
+        return commitThenDelete(abandoned, () => commit(d=>{
           const current=d.records[record.id];const currentFollowUps=current?.followUps||[];const currentNode=currentFollowUps.find(value=>value.id===node.id);
           requireValue(current && current.status!=='completed' && currentNode && !currentNode.attempt && currentNode.status==='answer' && currentFollowUps.at(-1)?.id===node.id,'Practice changed; reload',409);
           if(input.submissionId)requireValue(!currentFollowUps.some(value=>value.attempt?.submissionId===input.submissionId),'Submission identifier already used for another answer',409);
-          currentNode.attempt=attempt;currentNode.status='feedback';currentNode.updatedAt=submittedAt;current.updatedAt=submittedAt;return currentNode;
-        });
+          for (const entry of abandoned) delete d.recordings[entry.id];
+          if (promotedId) { const kept = d.recordings?.[promotedId]; requireValue(kept, 'Recording is no longer available; record again', 409); kept.state='retained'; kept.attemptId=attempt.id; }
+          currentNode.attempt=attempt;currentNode.status='feedback';delete currentNode.transcriptDraft;currentNode.updatedAt=submittedAt;current.updatedAt=submittedAt;return currentNode;
+        }));
       }
       if (method === 'POST' && action === 'feedback') {
         requireValue(record.status!=='completed','Completed practice cannot generate feedback',409);
@@ -435,7 +464,7 @@ export async function createApplication({directory = '.workspace', languageModel
         requireValue(nonempty(input.focusPoint) && input.focusPoint.length <= 500 && /[\p{L}\p{N}]/u.test(input.focusPoint), 'Choose one meaningful Focus Point (up to 500 characters)');
         // Completing discards the transcript draft, so its unsubmitted recording goes too.
         const stranded = recordingsFor(store.data, entry => entry.state === 'pending' && entry.recordId === record.id);
-        return commitThenDelete(stranded, () => commit(d => { const r = d.records[record.id]; requireValue(r && r.attempts.length >= 1 && r.attempts.every(a=>a.feedback), 'Complete feedback first', 409); requireValue(!(r.followUps||[]).some(node=>node.attempt&&!node.attempt.feedback), 'Complete follow-up feedback before ending this practice', 409); if (r.status === 'completed') {requireValue(r.focusPoint === input.focusPoint, 'Completed Focus Point is immutable; start a new loop', 409); return r;} r.focusPoint = input.focusPoint; if(r.writtenDraft)r.unsubmittedDraft=r.writtenDraft; delete r.writtenDraft; delete r.transcriptDraft; for (const entry of stranded) delete d.recordings[entry.id]; r.status = 'completed'; r.completedAt ??= new Date().toISOString(); cleanDerivedState(d); return r; }));
+        return commitThenDelete(stranded, () => commit(d => { const r = d.records[record.id]; requireValue(r && r.attempts.length >= 1 && r.attempts.every(a=>a.feedback), 'Complete feedback first', 409); requireValue(!(r.followUps||[]).some(node=>node.attempt&&!node.attempt.feedback), 'Complete follow-up feedback before ending this practice', 409); if (r.status === 'completed') {requireValue(r.focusPoint === input.focusPoint, 'Completed Focus Point is immutable; start a new loop', 409); return r;} r.focusPoint = input.focusPoint; if(r.writtenDraft)r.unsubmittedDraft=r.writtenDraft; delete r.writtenDraft; delete r.transcriptDraft; for (const node of r.followUps || []) delete node.transcriptDraft; for (const entry of stranded) delete d.recordings[entry.id]; r.status = 'completed'; r.completedAt ??= new Date().toISOString(); cleanDerivedState(d); return r; }));
       }
     }
     throw new AppError('Not found', 404);
@@ -465,9 +494,11 @@ export async function createApplication({directory = '.workspace', languageModel
           const standard=path.match(/^\/api\/(?:snapshots|records)\/([^/]+)\/(analysis|questions|feedback|transcription|coaching|corrections)$/);
           const followUpGeneration=path.match(/^\/api\/records\/([^/]+)\/follow-ups$/);
           const followUpFeedback=path.match(/^\/api\/records\/([^/]+)\/follow-ups\/[^/]+\/feedback$/);
+          const followUpTranscription=path.match(/^\/api\/records\/([^/]+)\/follow-ups\/([^/]+)\/transcription$/);
           if(standard)external={targetId:standard[1],kind:standard[2]};
           else if(followUpGeneration)external={targetId:followUpGeneration[1],kind:'follow-up'};
           else if(followUpFeedback)external={targetId:followUpFeedback[1],kind:'follow-up-feedback'};
+          else if(followUpTranscription)external={targetId:followUpTranscription[1],kind:'follow-up-transcription'};
           else if(['/api/discovery','/api/snapshots/from-url'].includes(path))external={targetId:'workspace',kind:path.endsWith('from-url')?'url':'discovery'};
         }
         const replay = async op => {
@@ -477,6 +508,7 @@ export async function createApplication({directory = '.workspace', languageModel
           if (['follow-up','follow-up-feedback'].includes(op.kind)) {const r=item('records',op.targetId);const node=r.followUps?.find(value=>value.id===op.resultId);requireValue(node,'Follow-up no longer available',409);return node;}
           if (op.kind==='feedback') return item('records',op.targetId);
           if (op.kind==='transcription') {const r=item('records',op.targetId);requireValue(r.transcriptDraft?.id===op.resultId,'Transcript already consumed; reopen saved record',409);return r.transcriptDraft;}
+          if (op.kind==='follow-up-transcription') {const r=item('records',op.targetId);const draft=(r.followUps||[]).map(n=>n.transcriptDraft).find(d=>d?.id===op.resultId);requireValue(draft,'Transcript already consumed; reopen saved record',409);return draft;}
           if (op.kind==='url') return item('snapshots',op.resultId);
           const run=store.data.discoveryRuns?.[op.resultId];requireValue(run,'Discovery run expired; start a new request',409);return run;
         };

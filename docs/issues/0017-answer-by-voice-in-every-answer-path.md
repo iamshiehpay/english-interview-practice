@@ -1,5 +1,5 @@
 ---
-status: ready-for-agent
+status: ready-for-human
 ---
 
 # Answer by voice in every path that accepts an answer
@@ -35,32 +35,38 @@ handoff, the retry-on-failure behaviour, local retention, and replay from histor
 
 ## Acceptance criteria
 
-- [ ] A learner can record a same-question revision, and its recording is attached
+- [x] A learner can record a same-question revision, and its recording is attached
       to the second Answer Attempt.
-- [ ] A learner can record an answer to each Follow-up Question, and each recording
+- [x] A learner can record an answer to each Follow-up Question, and each recording
       is attached to that follow-up's attempt.
-- [ ] A learner can record the fresh question of a Focus Point Continuation.
-- [ ] A follow-up transcript is saved as a draft and survives a page reload.
-- [ ] A follow-up recording never lands on the primary attempt, and a primary
+- [x] A learner can record the fresh question of a Focus Point Continuation.
+- [x] A follow-up transcript is saved as a draft and survives a page reload.
+- [x] A follow-up recording never lands on the primary attempt, and a primary
       recording never lands on a follow-up.
-- [ ] Two follow-ups on the same practice keep separate recordings.
-- [ ] Every recording is replayable from the Practice Record and the answer-version
+- [x] Two follow-ups on the same practice keep separate recordings.
+- [x] Every recording is replayable from the Practice Record and the answer-version
       history, including follow-up answers.
-- [ ] Typing remains fully available in every path; voice is never mandatory.
-- [ ] Transcription preconditions still hold per path: a completed practice accepts
+- [x] Typing remains fully available in every path; voice is never mandatory.
+- [x] Transcription preconditions still hold per path: a completed practice accepts
       no new recording, the two-attempt limit still applies, and a follow-up that
       already has an answer accepts no new one.
-- [ ] A transcription failure in any path leaves that path's saved state
+- [x] A transcription failure in any path leaves that path's saved state
       byte-identical and offers retry, re-record and type-instead.
-- [ ] Deleting the practice deletes primary, revision and follow-up recordings
+- [x] Deleting the practice deletes primary, revision and follow-up recordings
       together.
-- [ ] API-level tests cover: a follow-up recording attached to the follow-up
+- [x] API-level tests cover: a follow-up recording attached to the follow-up
       attempt, a revision recording attached to the second attempt, two follow-ups
       keeping separate recordings, and per-path precondition refusals.
-- [ ] Browser smoke covers recording a follow-up answer and replaying it, with the
+- [x] Browser smoke covers recording a follow-up answer and replaying it, with the
       existing follow-up assertions still passing.
 
 ## Blocked by
 
 - [Issue 0015](./0015-record-a-three-minute-answer.md)
 - [Issue 0016](./0016-retain-and-replay-answer-recordings.md)
+
+## Verification
+
+Implemented and verified through the API and browser seams.
+[Evidence](../verification/0017.md). Real-microphone acceptance across the four
+answer paths is pending human validation.

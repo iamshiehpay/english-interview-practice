@@ -15,7 +15,7 @@ const dimensions = {
   englishExpression: '英文表達'
 };
 const recordStates = {answer:'準備初答',feedback:'等待回饋',revise:'等待修改回答',compare:'等待比較與保存',completed:'已完成'};
-const operationNames = {analysis:'產生題目',questions:'新增題目',feedback:'取得回饋','follow-up':'產生追問題目','follow-up-feedback':'取得追問回饋',followUp:'產生追問題目',coaching:'準備練習建議',corrections:'整理關鍵句修正',transcription:'語音轉成文字',discovery:'搜尋職缺',url:'取得職缺'};
+const operationNames = {analysis:'產生題目',questions:'新增題目',feedback:'取得回饋','follow-up':'產生追問題目','follow-up-feedback':'取得追問回饋','follow-up-transcription':'追問語音轉成文字',followUp:'產生追問題目',coaching:'準備練習建議',corrections:'整理關鍵句修正',transcription:'語音轉成文字',discovery:'搜尋職缺',url:'取得職缺'};
 
 let workspace = {snapshots:{}, analyses:{}, records:{}};
 let providerInfo;
@@ -226,7 +226,7 @@ function markView(name) {
 async function navigate(name) {
   if (!(await leaveEditor())) return;
   clearDraftSession();
-  disposeVoice(); resetReadAloud();
+  disposeVoice(); followUpVoice.dispose(); followUpVoice.dispose = () => {}; followUpVoice.draftId = null; resetReadAloud();
   disposeVoice = () => {};
   if (name !== 'practice') currentRecordId = null;
   markView(name);
@@ -322,7 +322,7 @@ $('#capture').addEventListener('click', async event => {
 });
 
 async function showAnalysisFailure(snapshotId, error) {
-  clearDraftSession(); disposeVoice(); resetReadAloud(); markView('practice'); currentSnapshotId = snapshotId;
+  clearDraftSession(); disposeVoice(); followUpVoice.dispose(); followUpVoice.dispose = () => {}; followUpVoice.draftId = null; resetReadAloud(); markView('practice'); currentSnapshotId = snapshotId;
   const snapshot = workspace.snapshots[snapshotId] || await api(`/snapshots/${snapshotId}`);
   $('#practice').innerHTML = practiceFrame({stage:1, snapshot, content:`<div class="provider-warning"><h2>職缺已保存，題目尚未產生</h2><p>${escape(error.message)}</p><p>你不需要重新貼上職缺。可以直接重試這一步。</p><div id="analysis-retry"></div></div>`});
   button('重試產生題目', async () => {
@@ -339,7 +339,7 @@ async function analysisView(snapshotId) {
 }
 async function showRecommended(snapshotId) {
   if (!(await leaveEditor())) return;
-  clearDraftSession(); disposeVoice(); resetReadAloud(); markView('practice'); currentSnapshotId = snapshotId;
+  clearDraftSession(); disposeVoice(); followUpVoice.dispose(); followUpVoice.dispose = () => {}; followUpVoice.draftId = null; resetReadAloud(); markView('practice'); currentSnapshotId = snapshotId;
   const analysis = await analysisView(snapshotId);
   if (!analysis) return showAnalysisFailure(snapshotId, new Error('這份職缺還沒有題目。'));
   return showQuestion(snapshotId, analysis.recommendation.questionId, analysis);
@@ -350,7 +350,7 @@ function incompleteForQuestion(snapshotId, questionId) {
 }
 async function showQuestion(snapshotId, questionId, suppliedAnalysis) {
   if (!(await leaveEditor())) return;
-  clearDraftSession(); disposeVoice(); resetReadAloud(); markView('practice'); currentSnapshotId = snapshotId; currentRecordId = null;
+  clearDraftSession(); disposeVoice(); followUpVoice.dispose(); followUpVoice.dispose = () => {}; followUpVoice.draftId = null; resetReadAloud(); markView('practice'); currentSnapshotId = snapshotId; currentRecordId = null;
   const snapshot = workspace.snapshots[snapshotId] || await api(`/snapshots/${snapshotId}`);
   const analysis = suppliedAnalysis || await analysisView(snapshotId);
   if (!analysis) return showAnalysisFailure(snapshotId, new Error('這份職缺還沒有題目。'));
@@ -380,7 +380,7 @@ async function showQuestion(snapshotId, questionId, suppliedAnalysis) {
 
 async function showQuestionList(snapshotId, suppliedAnalysis) {
   if (!(await leaveEditor())) return;
-  clearDraftSession(); disposeVoice(); resetReadAloud(); markView('practice'); currentSnapshotId = snapshotId;
+  clearDraftSession(); disposeVoice(); followUpVoice.dispose(); followUpVoice.dispose = () => {}; followUpVoice.draftId = null; resetReadAloud(); markView('practice'); currentSnapshotId = snapshotId;
   const snapshot = workspace.snapshots[snapshotId];
   const analysis = suppliedAnalysis || await analysisView(snapshotId);
   const groups = Object.entries(categories).map(([category,label]) => {
@@ -678,6 +678,7 @@ function followUpHistoryHtml(followUps, corrections = {}) {
       <p lang="en"><strong>${escape(previous.question.text)}</strong></p>
       <p class="meaning">${escape(previous.question.meaningZh)}</p>
       <blockquote lang="en">${escape(previous.attempt?.transcript || '尚未作答')}</blockquote>
+      ${previous.attempt ? playerHtml(previous.attempt, {label:`回聽第 ${followUps.length - 1} 次追問錄音`}) : ''}
       ${previous.attempt?.feedback ? feedbackHtml(previous.attempt.feedback) : ''}
       ${previousCorrections ? `<div class="corrections-area" data-history-attempt="${escape(previous.attempt.id)}">${correctionsHtml(previousCorrections)}</div>` : ''}
     </div>
@@ -701,8 +702,9 @@ function followUpHtml(record, complete) {
   let content = '';
   if (!attempt && !complete) {
     content = `<label for="follow-up-answer">你的追問回答</label>
-      <textarea id="follow-up-answer" rows="6" placeholder="只寫下你想在面試中正式說出的英文回答。"></textarea>
-      <p class="meta">這會另存為追問的正式回答；上方的提示與英文整理不會帶入。</p>
+      <textarea id="follow-up-answer" rows="6" placeholder="只寫下你想在面試中正式說出的英文回答。">${escape(current.transcriptDraft?.transcript || '')}</textarea>
+      <p id="follow-up-draft-status" class="draft-status" aria-live="polite">${current.transcriptDraft ? '已帶入這次的語音轉錄，可以直接送出，或先修改。' : '可以打字，也可以用語音回答。'}</p>
+      <div id="follow-up-voice-entry"></div>
       <div id="follow-up-actions" class="button-row"></div>`;
   } else if (!attempt) {
     content = '<p class="meta">這題尚未作答；你已提前結束並保存這次練習。</p>';
@@ -711,7 +713,7 @@ function followUpHtml(record, complete) {
       <p>中文回饋尚未完成。請重試取得回饋，再決定要繼續追問或結束；正式回答不會重複保存。</p>
       ${complete ? '' : '<div id="follow-up-actions" class="button-row"></div>'}`;
   } else {
-    content = `<details><summary>查看你的追問回答</summary><blockquote lang="en">${escape(attempt.transcript)}</blockquote></details>
+    content = `<details><summary>查看你的追問回答</summary><blockquote lang="en">${escape(attempt.transcript)}</blockquote></details>${playerHtml(attempt,{label:'回聽這次的追問錄音'})}
       <section class="follow-up-feedback" aria-labelledby="follow-up-feedback-title"><h3 id="follow-up-feedback-title" tabindex="-1">這次追問的中文回饋</h3>${feedbackHtml(feedback)}<div id="follow-up-corrections" class="corrections-area" aria-live="polite"></div></section>
       ${complete ? '' : '<div id="follow-up-actions" class="button-row"></div>'}`;
   }
@@ -746,6 +748,36 @@ async function startFollowUp(recordId) {
   } else setNotice('追問題目已準備好，可從練習紀錄繼續。');
 }
 
+// The follow-up answer box has no autosaving draft session of its own; the transcript
+// draft the server holds for the node is what survives a reload.
+const followUpVoice = {draftId: null, dispose: () => {}};
+function mountFollowUpVoice(record, followUp) {
+  const host = $('#follow-up-voice-entry');
+  const textarea = $('#follow-up-answer');
+  if (!host || !textarea) return;
+  followUpVoice.draftId = followUp.transcriptDraft?.id || null;
+  const status = $('#follow-up-draft-status');
+  followUpVoice.dispose = mountVoice(host, {
+    path: `/records/${record.id}/follow-ups/${followUp.id}/transcription`,
+    api,
+    provider: providerInfo?.speech,
+    beforeTranscription: async () => { textarea.readOnly = true; $('#submit-follow-up').disabled = true; },
+    onTranscript: draft => {
+      const existing = textarea.value;
+      followUpVoice.draftId = draft.id;
+      if (!existing.trim() || existing.includes(draft.transcript)) {
+        textarea.value = existing.includes(draft.transcript) ? existing : draft.transcript;
+        if (status) status.textContent = '語音轉錄已放進回答框，可以直接送出，或先修改。';
+        return;
+      }
+      textarea.value = `${existing.replace(/\s+$/, '')}\n${draft.transcript}`;
+      if (status) status.textContent = '語音轉錄已接在原本的文字後面。';
+    },
+    onTranscriptionEnd: () => { textarea.readOnly = false; if (modelReady()) $('#submit-follow-up').disabled = false; },
+    onError: error => setError(localizeError(error.message, error.status || 400))
+  });
+}
+
 async function submitFollowUp(record, followUp, submissionId) {
   const control = $('#submit-follow-up');
   const textarea = $('#follow-up-answer');
@@ -763,7 +795,9 @@ async function submitFollowUp(record, followUp, submissionId) {
   control.textContent = '正在保存回答…';
   try {
     try {
-      await api(`/records/${record.id}/follow-ups/${followUp.id}/attempt`, {transcript, submissionId});
+      // The transcript draft id marks this as a spoken answer and promotes its recording.
+      const draftId = followUpVoice.draftId;
+      await api(`/records/${record.id}/follow-ups/${followUp.id}/attempt`, {transcript, submissionId, ...(draftId ? {transcriptDraftId: draftId} : {})});
     } catch (error) {
       const latest = await api(`/records/${record.id}`);
       const saved = (latest.followUps || []).find(item => item.id === followUp.id)?.attempt;
@@ -839,7 +873,7 @@ async function requestFollowUpFeedback(recordId, followUpId) {
 
 async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedback=false,followUpFresh=false} = {}) {
   if (!(await leaveEditor())) return;
-  clearDraftSession(); disposeVoice(); resetReadAloud(); disposeVoice = () => {}; markView('practice'); currentRecordId = recordId;
+  clearDraftSession(); disposeVoice(); followUpVoice.dispose(); followUpVoice.dispose = () => {}; followUpVoice.draftId = null; resetReadAloud(); disposeVoice = () => {}; markView('practice'); currentRecordId = recordId;
   const record = await api(`/records/${recordId}`);
   const snapshot = workspace.snapshots[record.snapshotId] || await api(`/snapshots/${record.snapshotId}`);
   currentSnapshotId = record.snapshotId;
@@ -903,6 +937,7 @@ async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedb
       const submit = button('送出並取得中文回饋',()=>submitFollowUp(record,currentFollowUp,submissionId),followUpActions,{id:'submit-follow-up'});
       submit.disabled = !modelReady();
       button('結束並保存',finish,followUpActions,{kind:'ghost'});
+      mountFollowUpVoice(record, currentFollowUp);
       requestAnimationFrame(() => $('#follow-up-answer')?.focus({preventScroll:true}));
     } else if (!currentFollowUp.attempt.feedback) {
       const retry = button('重試取得中文回饋',()=>requestFollowUpFeedback(record.id,currentFollowUp.id),followUpActions);
@@ -1132,7 +1167,7 @@ function renderSettings() {
   const deletion = $('#delete-workspace'); deletion.replaceChildren();
   deletion.innerHTML = `<p class="meta" id="recording-storage">${escape(recordingBytesLabel())}</p><p>這會刪除所有職缺、題目、練習紀錄、文字草稿、回答錄音與進步項目。若要繼續，請輸入 <strong>DELETE ALL LOCAL DATA</strong>。</p><label for="delete-all">確認文字</label><input id="delete-all" autocomplete="off">`;
   button('刪除全部本機資料', async () => {
-    await api('/workspace/delete', {confirmation:$('#delete-all').value}); clearDraftSession(); disposeVoice(); resetReadAloud(); await refreshWorkspace(); setNotice('所有本機資料已刪除。'); await navigate('home');
+    await api('/workspace/delete', {confirmation:$('#delete-all').value}); clearDraftSession(); disposeVoice(); followUpVoice.dispose(); followUpVoice.dispose = () => {}; followUpVoice.draftId = null; resetReadAloud(); await refreshWorkspace(); setNotice('所有本機資料已刪除。'); await navigate('home');
   }, deletion, {kind:'danger'});
 }
 
@@ -1157,7 +1192,7 @@ async function showOperations() {
 window.addEventListener('beforeunload', event => {
   // A captured-but-unsubmitted recording lives only in this page, so warn before it goes.
   if (draftSession?.dirty || hasPendingRecording()) { event.preventDefault(); event.returnValue = ''; }
-  disposeVoice(); resetReadAloud();
+  disposeVoice(); followUpVoice.dispose(); followUpVoice.dispose = () => {}; followUpVoice.draftId = null; resetReadAloud();
 });
 
 const operationsTimer = setInterval(() => showOperations().catch(() => {}), 800);
