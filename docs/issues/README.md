@@ -17,8 +17,8 @@ Local issue tracker for the Adaptive English Interview Coach. All issues below w
 | [0011 — Start Focus Point practice in the same job](./0011-start-focus-point-practice-in-the-same-job.md) | ready-for-human | 0009, 0010 |
 | [0012 — Reorganize Records by job](./0012-reorganize-records-by-job.md) | ready-for-human | 0009 |
 | [0013 — Refine Practice Loop UI clarity](./0013-refine-practice-loop-ui-clarity.md) | ready-for-human | 0001, 0009, 0010 |
-| [0014 — Read English practice text aloud](./0014-read-english-practice-text-aloud.md) | ready-for-agent | None |
-| [0015 — Record a three-minute answer](./0015-record-a-three-minute-answer.md) | ready-for-agent | None |
+| [0014 — Read English practice text aloud](./0014-read-english-practice-text-aloud.md) | ready-for-human | None |
+| [0015 — Record a three-minute answer](./0015-record-a-three-minute-answer.md) | ready-for-human | None |
 | [0016 — Retain and replay Answer Recordings](./0016-retain-and-replay-answer-recordings.md) | ready-for-agent | 0015 |
 | [0017 — Answer by voice in every answer path](./0017-answer-by-voice-in-every-answer-path.md) | ready-for-agent | 0015, 0016 |
 | [0018 — Run a three-question Short Mock Session](./0018-run-a-three-question-short-mock-session.md) | ready-for-agent | 0017 |

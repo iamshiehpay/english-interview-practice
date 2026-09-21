@@ -9,7 +9,7 @@ import {randomUUID,createHash} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {resolve, join} from 'node:path';
-import {FakeSpeechProvider, clearTemporaryAudio, transcribeTemporary, readAloud, canSpeak} from './speech.js';
+import {FakeSpeechProvider, clearTemporaryAudio, transcribeTemporary, readAloud, canSpeak, RECORDING_LIMIT_SECONDS, RECORDING_WARNING_SECONDS, RECORDING_MAX_BYTES, RECORDING_MAX_REQUEST_BYTES} from './speech.js';
 import {LocalWorkspace} from './store.js';
 import {FakeLanguageModel} from './providers.js';
 import {AppError, requireValue, nonempty, validateAnalysis, validateFeedback, validateCoaching, validateFollowUp, validateCorrections, dimensions, questionSetView} from './domain.js';
@@ -68,7 +68,7 @@ export async function createApplication({directory = '.workspace', languageModel
     const dismissOp = path.match(/^\/api\/operations\/([^/]+)$/);
     if (method === 'DELETE' && dismissOp) return operations.dismiss(dismissOp[1]);
     if (method === 'GET' && path === '/api/providers/language-status') return languageModel.status ? languageModel.status() : {provider:languageModel.name,authenticated:null,loginRequired:false};
-    if (method === 'GET' && path === '/api/providers') return {languageModel:{name:languageModel.name,subscription:!!languageModel.status,external:!!languageModel.external,outbound:languageModel.external?['JD text and selected resume for analysis','JD, selected resume and existing capability/question set for additions','current question and transcript for feedback or English assistance','primary question, frozen formal answer and completed follow-ups for follow-up generation','a question and one formal answer transcript for evidence-safe key-sentence corrections']:[]},speech:{name:speechProvider.name,external:!!speechProvider.external,canSpeak:canSpeak(speechProvider),demonstrationSpeech:!!speechProvider.demonstrationSpeech,outbound:speechProvider.external?['recorded audio only',...(canSpeak(speechProvider)?['English practice text for reading aloud']:[])]:[]},jobSource:{name:jobSource.name,external:!!jobSource.external,outbound:!!jobSource.external?['public board token and requested job ID; profile filtering stays local']:[]}};
+    if (method === 'GET' && path === '/api/providers') return {languageModel:{name:languageModel.name,subscription:!!languageModel.status,external:!!languageModel.external,outbound:languageModel.external?['JD text and selected resume for analysis','JD, selected resume and existing capability/question set for additions','current question and transcript for feedback or English assistance','primary question, frozen formal answer and completed follow-ups for follow-up generation','a question and one formal answer transcript for evidence-safe key-sentence corrections']:[]},speech:{name:speechProvider.name,external:!!speechProvider.external,canSpeak:canSpeak(speechProvider),demonstrationSpeech:!!speechProvider.demonstrationSpeech,recordingLimitSeconds:RECORDING_LIMIT_SECONDS,recordingWarningSeconds:RECORDING_WARNING_SECONDS,recordingMaxBytes:RECORDING_MAX_BYTES,outbound:speechProvider.external?['recorded audio only',...(canSpeak(speechProvider)?['English practice text for reading aloud']:[])]:[]},jobSource:{name:jobSource.name,external:!!jobSource.external,outbound:!!jobSource.external?['public board token and requested job ID; profile filtering stays local']:[]}};
     if (method === 'POST' && path === '/api/speech') {
       // Learner-initiated, nothing saved: deliberately outside the operations tracker,
       // but bounded so a held request cannot open unlimited provider calls.
@@ -408,7 +408,7 @@ export async function createApplication({directory = '.workspace', languageModel
       const path = new URL(req.url, 'http://localhost').pathname;
       if (path.startsWith('/api/')) {
         if (req.headers.origin) requireValue(req.headers.origin === `http://${req.headers.host}`, 'Cross-origin request rejected', 403);
-        const input = ['POST', 'PUT', 'PATCH'].includes(req.method) ? await body(req, (path.endsWith('/transcription') || path === '/api/resume/extract') ? 8_100_000 : 1_000_000) : {};
+        const input = ['POST', 'PUT', 'PATCH'].includes(req.method) ? await body(req, path.endsWith('/transcription') ? RECORDING_MAX_REQUEST_BYTES : path === '/api/resume/extract' ? 8_100_000 : 1_000_000) : {};
         let external;
         if(req.method==='POST'){
           const standard=path.match(/^\/api\/(?:snapshots|records)\/([^/]+)\/(analysis|questions|feedback|transcription|coaching|corrections)$/);

@@ -1,5 +1,5 @@
 ---
-status: ready-for-agent
+status: ready-for-human
 ---
 
 # Read English practice text aloud
@@ -48,37 +48,43 @@ cannot open unbounded provider calls.
 
 ## Acceptance criteria
 
-- [ ] A learner can press a control to hear the English interview question read
+- [x] A learner can press a control to hear the English interview question read
       aloud, and can stop and replay it.
-- [ ] A speed choice with at least a slower, normal and faster option changes the
+- [x] A speed choice with at least a slower, normal and faster option changes the
       returned audio request; the selected speed persists while the learner stays
       on the screen.
-- [ ] No audio ever starts without a learner action.
-- [ ] Read-aloud is available for the interview question, the Follow-up Question,
+- [x] No audio ever starts without a learner action.
+- [x] Read-aloud is available for the interview question, the Follow-up Question,
       the Illustrative Answer and each Key-Sentence Correction rewrite.
-- [ ] The English question and its Traditional Chinese meaning both remain on
+- [x] The English question and its Traditional Chinese meaning both remain on
       screen; no Traditional Chinese text is ever sent to the read-aloud service.
-- [ ] The endpoint accepts only references to stored content; free text, an
+- [x] The endpoint accepts only references to stored content; free text, an
       unknown reference, and a reference to Chinese-only content are refused, and
       the provider is not called.
-- [ ] A provider without a speaking capability is reported as unavailable through
+- [x] A provider without a speaking capability is reported as unavailable through
       the provider summary, the control is hidden with an explanation, and the
       endpoint refuses cleanly rather than throwing.
-- [ ] A read-aloud failure leaves the question, the Question Set and every saved
+- [x] A read-aloud failure leaves the question, the Question Set and every saved
       draft unchanged and can be retried.
-- [ ] The demonstration provider is labelled in the interface as not real speech.
-- [ ] The provider settings panel names the read-aloud service and the text sent
+- [x] The demonstration provider is labelled in the interface as not real speech.
+- [x] The provider settings panel names the read-aloud service and the text sent
       to it.
-- [ ] The API key is read only from the server environment; it appears in no
+- [x] The API key is read only from the server environment; it appears in no
       response, log line, error message, workspace field or test artifact.
-- [ ] Concurrent read-aloud requests are bounded, and exceeding the bound returns
+- [x] Concurrent read-aloud requests are bounded, and exceeding the bound returns
       a clear retryable error.
-- [ ] API-level tests cover: a stored reference reaching the provider with exactly
+- [x] API-level tests cover: a stored reference reaching the provider with exactly
       the stored English text; each refusal above; unavailability reporting;
       provider failure leaving stored data unchanged.
-- [ ] Browser smoke covers: the control exists, does not auto-play, replays,
+- [x] Browser smoke covers: the control exists, does not auto-play, replays,
       stops, and the existing assertions still pass.
 
 ## Blocked by
 
 None — can start immediately.
+
+## Verification
+
+Implemented and independently reviewed; two confirmed review findings fixed.
+[Evidence](../verification/0014.md). Real-voice acceptance with a configured
+OpenAI key is pending human validation.

@@ -437,3 +437,8 @@ mark { background: #ffe2c5; color: #1b3a47; border-radius: 4px; }
 .read-aloud select { padding: 7px 10px; color: var(--ink-soft); background: var(--paper); border: 1px solid var(--line); border-radius: 999px; font-size: 14px; }
 .read-aloud .meta { margin: 0; }
 .correction-card .read-aloud { margin: 6px 0 10px; }
+
+/* Recording: the elapsed clock must be readable at a glance while speaking. */
+.voice-panel { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
+.recording-clock { margin: 10px 0 2px; font-variant-numeric: tabular-nums; font-weight: 600; color: var(--ink); }
+.recording-clock.near-limit { color: #8e3e31; }
