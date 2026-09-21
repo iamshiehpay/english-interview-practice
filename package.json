@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "start": "node src/server.js",
+    "start:speech": "sh scripts/start-with-speech.sh",
     "test": "node --test test/*.test.js",
     "test:browser": "node test/browser-smoke.js",
     "evaluate": "node evaluation/run.js",

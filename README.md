@@ -16,6 +16,8 @@ npm start
 npm test
 ```
 
+`npm start` reads `process.env` and **never reads a credentials file**. To keep speech credentials in a file instead of exporting them by hand, put them in `~/.config/interview-coach/speech.env` (mode 600) and run `npm run start:speech`, which sources that file into the server process and starts the server; override the path with `COACH_SPEECH_ENV`. The key stays in that process's environment and never reaches the browser, the workspace, test artifacts, Git or a log.
+
 ## Start and manually test optional follow-ups
 
 The normal command above uses your existing local practice data in `.workspace/`. To try the interface without changing that data, start a separate workspace instead:
