@@ -134,7 +134,10 @@ function outboundLabel(value) {
 // Read-aloud is reference-addressed: the server resolves the English text from its
 // own stored data, so nothing on this page decides what gets spoken.
 function readAloud(parent, reference, label) {
-  return mountReadAloud(parent, reference, {api, provider:providerInfo?.speech, label, onError:error => setError(error.message)});
+  // An ApiError message is already localized; a browser playback failure is raw English,
+  // so it is replaced rather than shown to the learner.
+  return mountReadAloud(parent, reference, {api, provider:providerInfo?.speech, label,
+    onError:error => setError(error instanceof ApiError ? error.message : '這個瀏覽器無法播放這段朗讀音訊。你可以再試一次，或直接閱讀畫面上的英文。')});
 }
 // An Answer Recording is evidence of what the learner said. It is served from this
 // machine, never cached, and an edited transcript is labelled rather than the audio
