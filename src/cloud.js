@@ -1,15 +1,15 @@
 import {CodexLanguageModel} from './codex-language.js';
 import {readFile} from 'node:fs/promises';
-import {AppError, requireValue} from './domain.js';
+import {AppError, requireValue, redactSecrets} from './domain.js';
 import {FakeLanguageModel} from './providers.js';
 import {FakeSpeechProvider} from './speech.js';
 import {FakeJobSource, GreenhouseJobSource, MultiJobSource} from './jobs.js';
 // A rejected request used to throw before the body was read, so the provider's own
 // explanation ("Invalid file format", "model not found", a quota message) was thrown
 // away and every failure looked identical. Read it, log it for whoever is running the
-// server, and carry it into the error. Provider error bodies do not contain the key,
-// and the redaction below is a belt-and-braces guard in case that ever changes.
-const redact = text => String(text).replace(/\b(sk|rk)-[A-Za-z0-9_-]{8,}/g, '<redacted>').slice(0, 400);
+// server, and carry it into the error. Redaction is shared with everything else that
+// may store or display failure text (see redactSecrets).
+const redact = redactSecrets;
 async function providerFailure(response, what){
   let detail = '';
   try {
@@ -19,9 +19,13 @@ async function providerFailure(response, what){
   detail = redact(detail).trim();
   console.error(`[provider] ${what} failed: HTTP ${response.status}${detail ? ` — ${detail}` : ''}`);
   const rateLimited = response.status === 429;
+  // The status code is ours to keep; the body is not. It goes to the server's own
+  // terminal above, never into the stored reason, because a provider can echo back
+  // anything it was sent.
   throw new AppError(
     rateLimited ? 'Provider rate limit; retry later' : `External provider request failed (HTTP ${response.status})${detail ? `: ${detail}` : ''}`,
-    rateLimited ? 429 : 502
+    rateLimited ? 429 : 502,
+    rateLimited ? 'Provider rate limit; retry later' : `External provider request failed (HTTP ${response.status}); the reason is in the server terminal, on the [provider] line`
   );
 }
 async function responseJson(response){

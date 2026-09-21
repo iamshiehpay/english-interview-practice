@@ -442,6 +442,16 @@ mark { background: #ffe2c5; color: #1b3a47; border-radius: 4px; }
 .voice-panel { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
 .recording-clock { margin: 10px 0 2px; font-variant-numeric: tabular-nums; font-weight: 600; color: var(--ink); }
 .recording-clock.near-limit { color: #8e3e31; }
+/* Microphone evidence: which input is live, how loud it is, and what was captured.
+   These answer "did it hear me?" locally, before any audio is sent anywhere. */
+.voice-input-label { margin: 6px 0 2px; }
+.voice-level-box { margin: 8px 0 2px; }
+.voice-level-box label { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--ink-soft); }
+.voice-level { flex: 1; max-width: 260px; height: 10px; }
+.voice-level-note, .voice-recording-summary { margin: 4px 0 0; }
+.voice-preview { margin: 10px 0 4px; }
+.voice-preview .meta { margin-bottom: 6px; }
+.voice-preview audio { width: 100%; max-width: 420px; }
 
 /* Answer Recording playback: present but never competing with the feedback. */
 .answer-recording { margin: 12px 0 16px; }

@@ -104,15 +104,28 @@ try {
  if(el('.voice-panel').textContent.includes('90 秒')||el('.voice-panel').textContent.includes('6 MB'))throw Error('Stale 90-second / 6 MB wording still shown');
  click(btn('開始錄音'));await wait(()=>el('.recording-clock')&&!el('.recording-clock').hidden,'recording clock visible');
  if(!/已錄 \\d:\\d\\d \\/ 3:00/.test(el('.recording-clock').textContent))throw Error('Elapsed time not shown: '+el('.recording-clock').textContent);
+ // Microphone evidence is local: which input is live and how loud it is, so a silent
+ // recording can be spotted here instead of only after a failed transcription.
+ if(el('.voice-level-box').hidden)throw Error('No input-level meter while recording');
+ if(!el('.voice-input-label').textContent.includes('麥克風：'))throw Error('Selected microphone not named while recording');
  // Force the near-limit state without waiting three real minutes.
  const rec=window.__recorders.at(-1);
  click(btn('停止並轉成文字'));await wait(()=>el('#answer').value.includes('demonstration transcript'),'transcript lands in the answer box');
  if(el('#voice-choice'))throw Error('An empty answer box must not ask replace-or-append');
  await wait(()=>el('#draft-status').textContent.includes('草稿'),'transcript saved as a local draft');
+ if(!el('.voice-preview audio'))throw Error('No local playback of the recording just transcribed');
+ if(el('.voice-recording-summary').hidden)throw Error('No length/size/level summary after transcription');
+ if(el('.voice-level-box').hidden===false)throw Error('Live level meter still running after recording stopped');
  // With different text already present the learner chooses; nothing is overwritten silently.
  const typed='I typed this sentence myself before recording.';
  fill('#answer',typed);await wait(()=>el('#draft-status').textContent.includes('已儲存'),'typed draft saved');
+ // A transcribed recording is retained on the server, so starting a new one must not
+ // claim an unsubmitted take is about to be lost. A blocking confirm() here also froze
+ // this page entirely, so the count is asserted rather than left to a timeout.
+ let confirms=0;const realConfirm=window.confirm;window.confirm=()=>{confirms++;return true;};
  click(btn('開始錄音'));await wait(()=>!el('.recording-clock').hidden,'second recording started');
+ window.confirm=realConfirm;
+ if(confirms)throw Error('Re-recording warned about losing an already-transcribed recording');
  click(btn('停止並轉成文字'));await wait(()=>el('#voice-choice'),'replace-or-append offered when text exists');
  if(el('#answer').value!==typed)throw Error('Existing text changed before the learner chose');
  if(el('#submit-answer').disabled)throw Error('Submitting the existing text must stay available while choosing');

@@ -36,7 +36,7 @@ class ApiError extends Error {
   constructor(message, status, retryable) { super(message); this.status = status; this.retryable = retryable; }
 }
 
-function localizeError(message, status) {
+function localizeError(message, status, unrecognised) {
   const rules = [
     [/Paste a job description/i, '請先貼上職缺描述。'],
     [/Operation cancelled|cancelled or superseded/i, '操作已取消；先前保存的內容仍在本機。'],
@@ -71,7 +71,9 @@ function localizeError(message, status) {
   if (match) return match[1];
   if (status >= 500) return '服務暫時無法完成操作；已成功保存的內容仍在，請重試。';
   if (/[\u3400-\u9fff]/u.test(message || '')) return message;
-  return '目前的輸入或操作狀態無法接受，請檢查畫面提示後重試。';
+  // Callers reporting a recorded failure pass the original text as `unrecognised`:
+  // a generic sentence there would hide the very reason being reported.
+  return unrecognised ?? '目前的輸入或操作狀態無法接受，請檢查畫面提示後重試。';
 }
 
 async function api(path, data, method) {
@@ -1459,7 +1461,7 @@ async function showOperations() {
   const parent = $('#operations');
   const operations = await api('/operations');
   const visible = [...operations.filter(operation => operation.state === 'pending'), ...operations.filter(operation => ['failed','cancelled'].includes(operation.state)).slice(-2)];
-  const signature = JSON.stringify(visible.map(operation => [operation.id,operation.kind,operation.state,operation.retryable,operation.errorCode]));
+  const signature = JSON.stringify(visible.map(operation => [operation.id,operation.kind,operation.state,operation.retryable,operation.errorCode,operation.errorMessage]));
   if (signature === operationsSignature) return;
   operationsSignature = signature;
   parent.replaceChildren();
@@ -1467,6 +1469,14 @@ async function showOperations() {
     const row = document.createElement('div'); row.className = 'operation-card';
     const state = {pending:'進行中',succeeded:'已完成',failed:'失敗',cancelled:'已取消'}[operation.state] || operation.state;
     row.innerHTML = `<p><strong>${escape(operationNames[operation.kind] || operation.kind)}</strong> · ${escape(state)}${operation.retryable ? ' · 可從原操作重試' : ''}</p>`;
+    // "失敗" on its own gives the learner nothing to act on. Show the recorded reason,
+    // translated where we recognise it, so retrying is a decision rather than a guess.
+    if (operation.errorMessage) {
+      const reason = document.createElement('p');
+      reason.className = 'meta operation-reason';
+      reason.textContent = `原因：${localizeError(operation.errorMessage, undefined, operation.errorMessage)}`;
+      row.append(reason);
+    }
     if (operation.state === 'pending') button(['feedback','follow-up-feedback'].includes(operation.kind) ? '取消取得回饋' : '取消操作', () => api(`/operations/${operation.id}/cancel`, {}), row, {kind:'ghost'});
     else button('✕ 清除', async () => { await api(`/operations/${operation.id}`, undefined, 'DELETE'); operationsSignature = null; await showOperations(); }, row, {kind:'ghost'});
     parent.append(row);

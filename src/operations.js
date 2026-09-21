@@ -1,5 +1,10 @@
 import {randomUUID, createHash} from 'node:crypto';
-import {AppError, requireValue} from './domain.js';
+import {AppError, requireValue, redactSecrets} from './domain.js';
+// A failed operation used to record only "OPERATION_FAILED", so the banner offering a
+// retry could not say what went wrong and the reason was lost the moment the request
+// returned. Keep a short, redacted reason with the operation instead.
+// Only an AppError's `reason` is ours to keep; anything else fails closed to nothing.
+const failureReason = error => redactSecrets(error?.reason, 200) || '';
 export class Operations {
   constructor(store, timeoutMs=30000){this.store=store;this.timeoutMs=timeoutMs;this.controllers=new Map();}
   async recover(){
@@ -66,7 +71,7 @@ export class Operations {
     }catch(error){
       if(this.store.data.operations?.[id]?.state==='succeeded'&&this.store.data.operations[id].attempt===attempt)return replay(this.store.data.operations[id]);
       if(!controller.signal.aborted)controller.abort(error);
-      await this.store.transact(d=>{const o=d.operations?.[id];if(o&&o.attempt===attempt&&o.state==='pending')Object.assign(o,{state:controller.signal.aborted&&controller.signal.reason?.status===409?'cancelled':'failed',retryable:true,errorCode:error.status===504?'TIMEOUT':error.status===429?'RATE_LIMIT':'OPERATION_FAILED',finishedAt:new Date().toISOString()});});
+      await this.store.transact(d=>{const o=d.operations?.[id];if(o&&o.attempt===attempt&&o.state==='pending')Object.assign(o,{state:controller.signal.aborted&&controller.signal.reason?.status===409?'cancelled':'failed',retryable:true,errorCode:error.status===504?'TIMEOUT':error.status===429?'RATE_LIMIT':'OPERATION_FAILED',errorMessage:failureReason(error),finishedAt:new Date().toISOString()});});
       throw error;
     }finally{clearTimeout(timer);if(this.controllers.get(id)===controller)this.controllers.delete(id);}
   }

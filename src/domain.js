@@ -1,12 +1,22 @@
 export const dimensions = ['relevance', 'support', 'structure', 'englishExpression'];
 export const categories = ['role-fit', 'experience-depth', 'behavioral', 'technical-communication'];
 export class AppError extends Error {
-  constructor(message, status = 400) { super(message); this.status = status; }
+  // `message` may quote an external service back to whoever is running the server.
+  // `reason` is the part we are willing to persist in the workspace and show in the
+  // page, so it is our own wording only: a provider body can echo anything it was
+  // sent, including a credential, and must never be written to disk.
+  constructor(message, status = 400, reason = message) { super(message); this.status = status; this.reason = reason; }
 }
 export function requireValue(condition, message, status = 400) {
   if (!condition) throw new AppError(message, status);
 }
 export function nonempty(value) { return typeof value === 'string' && value.trim().length > 0; }
+// Any failure text that may be logged, stored in the workspace or shown in the page
+// passes through here first. Provider messages are not supposed to contain the API
+// key, so this is a guard against that ever changing: a key must never reach the
+// workspace file, a test artefact, Git or a log.
+export const redactSecrets = (text, limit = 400) =>
+  String(text ?? '').replace(/\b(?:sk|rk)-[A-Za-z0-9_-]{8,}/g, '<redacted>').slice(0, limit);
 const hasHan=value=>nonempty(value)&&/\p{Script=Han}/u.test(value);
 const hasLatin=value=>nonempty(value)&&/\p{Script=Latin}/u.test(value);
 function fields(value, names) {

@@ -144,7 +144,8 @@ let pendingRecordings = 0;
 export function hasPendingRecording() { return pendingRecordings > 0; }
 const clock = seconds => `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`;
 
-// Audio remains in memory only while recording or awaiting a retry.
+// Audio remains in memory only while recording or while its unsubmitted transcript
+// is being reviewed. The local preview is diagnostic: it never scores speech.
 export function mountVoice(parent, {recordId, path, api, provider, beforeTranscription, onTranscript, onTranscriptionEnd, onError}) {
   const limit = provider?.recordingLimitSeconds || 180;
   const warnAt = Math.max(5, limit - (provider?.recordingWarningSeconds || 30));
@@ -156,15 +157,115 @@ export function mountVoice(parent, {recordId, path, api, provider, beforeTranscr
   panel.innerHTML = `<h3>用語音回答</h3><p class="meta">最多錄音 ${Math.round(limit / 60)} 分鐘，到時會自動停止並轉成文字，已錄的內容不會丟掉。${service}。轉錄完成後文字會放進上面的回答框，你可以直接送出，需要時再修改或重錄。回饋只看你說的內容與英文表達，不評發音或口音。</p><p class="meta">尚未送出的錄音只留在這個頁面，重新整理會失去；轉錄出來的文字會自動存成本機草稿。</p>`;
   parent.append(panel);
   let stream, recorder, audio, limitTimer, tick, disposed = false, recordingFailed = false, held = false, chunks = [];
+  let audioContext, audioSource, levelFrame, previewUrl, recordingStartedAt, observedLevel = null;
   const elapsed = document.createElement('p'); elapsed.className = 'recording-clock'; elapsed.hidden = true;
   const status = document.createElement('p'); status.className = 'meta'; status.setAttribute('role', 'status');
   const start = document.createElement('button'); start.textContent = '開始錄音'; start.className = 'secondary';
   const stop = document.createElement('button'); stop.textContent = '停止並轉成文字'; stop.className = 'secondary'; stop.disabled = true;
   const retry = document.createElement('button'); retry.textContent = '重試語音轉錄'; retry.className = 'secondary'; retry.hidden = true;
   const discard = document.createElement('button'); discard.textContent = '捨棄錄音，改用文字'; discard.className = 'ghost';
-  panel.append(start, stop, retry, discard, elapsed, status);
-  const holdAudio = value => { if (value && !held) { held = true; pendingRecordings += 1; } else if (!value && held) { held = false; pendingRecordings -= 1; } audio = value; };
-  function release() { clearTimeout(limitTimer); clearInterval(tick); tick = null; elapsed.hidden = true; stream?.getTracks().forEach(track => track.stop()); stream = null; }
+  const inputLabel = document.createElement('p'); inputLabel.className = 'meta voice-input-label'; inputLabel.textContent = '麥克風：開始錄音後顯示目前輸入來源。';
+  const levelBox = document.createElement('div'); levelBox.className = 'voice-level-box'; levelBox.hidden = true;
+  const levelLabel = document.createElement('label'); levelLabel.textContent = '目前輸入音量 ';
+  const level = document.createElement('progress'); level.className = 'voice-level'; level.max = 1; level.value = 0; level.setAttribute('aria-label', '目前麥克風輸入音量');
+  const levelNote = document.createElement('p'); levelNote.className = 'meta voice-level-note'; levelNote.textContent = '這只顯示麥克風輸入強弱，不能判斷是否有說話或能否辨識。';
+  levelLabel.append(level); levelBox.append(levelLabel, levelNote);
+  const summary = document.createElement('p'); summary.className = 'meta voice-recording-summary'; summary.hidden = true;
+  const preview = document.createElement('div'); preview.className = 'voice-preview'; preview.hidden = true;
+  const previewLabel = document.createElement('p'); previewLabel.className = 'meta'; previewLabel.textContent = '先播放這次錄音，確認麥克風是否錄到你預期的內容：';
+  const previewPlayer = document.createElement('audio'); previewPlayer.controls = true; previewPlayer.preload = 'metadata'; previewPlayer.setAttribute('aria-label', '播放這次尚未送出的錄音');
+  preview.append(previewLabel, previewPlayer);
+  panel.append(inputLabel, start, stop, retry, discard, elapsed, levelBox, summary, preview, status);
+  // Two separate facts. `audio` is the blob this panel can still preview or retry;
+  // `held` is whether this page holds the only copy, which is what the reload warning
+  // is about. A transcribed recording is retained on the server, so the local copy
+  // stops being the only one even though the preview keeps working.
+  const setHeld = value => { if (value && !held) { held = true; pendingRecordings += 1; } else if (!value && held) { held = false; pendingRecordings -= 1; } };
+  const holdAudio = value => { setHeld(!!value); audio = value; };
+  const closeAudioContext = () => {
+    if (levelFrame) window.cancelAnimationFrame?.(levelFrame);
+    levelFrame = null;
+    try { audioSource?.disconnect(); } catch { /* already disconnected */ }
+    audioSource = null;
+    const context = audioContext; audioContext = null;
+    if (context && context.state !== 'closed') Promise.resolve(context.close?.()).catch(() => {});
+    levelBox.hidden = true; level.value = 0;
+  };
+  const clearPreview = () => {
+    previewPlayer.pause();
+    previewPlayer.removeAttribute('src');
+    if (typeof previewPlayer.load === 'function') previewPlayer.load();
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    previewUrl = null; preview.hidden = true; summary.hidden = true;
+  };
+  const clearCapturedAudio = () => { clearPreview(); holdAudio(null); };
+  const showPreview = captured => {
+    clearPreview();
+    try {
+      previewUrl = URL.createObjectURL(captured);
+      previewPlayer.src = previewUrl;
+      preview.hidden = false;
+    } catch { /* Recording can still be transcribed when local URL playback is unavailable. */ }
+  };
+  const formatBytes = bytes => bytes < 1_000 ? `${bytes} B` : bytes < 1_000_000 ? `${(bytes / 1_000).toFixed(1)} KB` : `${(bytes / 1_000_000).toFixed(1)} MB`;
+  const showSummary = (captured, durationSeconds) => {
+    const duration = durationSeconds < 10 ? `${durationSeconds.toFixed(1)} 秒` : `${Math.round(durationSeconds)} 秒`;
+    const levelSummary = observedLevel === null
+      ? '即時輸入音量未能量測'
+      : `觀察到的最高輸入音量 ${Math.round(observedLevel * 100)}%`;
+    summary.textContent = `這次錄音：${duration}、${formatBytes(captured.size)}；${levelSummary}。音量只代表輸入強弱，不能證明是否有說話。`;
+    summary.hidden = false;
+  };
+  const showSelectedInput = currentStream => {
+    const tracks = currentStream?.getAudioTracks?.() || currentStream?.getTracks?.() || [];
+    const track = tracks.find?.(item => item.kind === 'audio') || tracks[0];
+    inputLabel.textContent = `麥克風：${track?.label || '瀏覽器目前選擇的輸入來源'}`;
+  };
+  const startLevelMeter = currentStream => {
+    closeAudioContext();
+    observedLevel = null;
+    levelBox.hidden = false;
+    level.hidden = false;
+    levelNote.textContent = '這只顯示麥克風輸入強弱，不能判斷是否有說話或能否辨識。';
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) {
+      level.hidden = true;
+      levelNote.textContent = '這個瀏覽器無法顯示即時輸入音量；錄音仍可繼續。';
+      return;
+    }
+    try {
+      audioContext = new AudioContext();
+      const analyser = audioContext.createAnalyser();
+      analyser.fftSize = 512;
+      analyser.smoothingTimeConstant = 0.7;
+      audioSource = audioContext.createMediaStreamSource(currentStream);
+      audioSource.connect(analyser); // Deliberately not connected to destination/speakers.
+      const samples = new Uint8Array(analyser.fftSize);
+      observedLevel = 0;
+      const update = () => {
+        if (!audioContext || disposed || recorder?.state !== 'recording') return;
+        analyser.getByteTimeDomainData(samples);
+        let sum = 0;
+        for (const sample of samples) { const centered = (sample - 128) / 128; sum += centered * centered; }
+        const visibleLevel = Math.min(1, Math.sqrt(sum / samples.length) * 4);
+        observedLevel = Math.max(observedLevel, visibleLevel);
+        level.value = visibleLevel;
+        levelFrame = requestAnimationFrame(update);
+      };
+      update();
+    } catch {
+      closeAudioContext();
+      levelBox.hidden = false;
+      level.hidden = true;
+      levelNote.textContent = '目前無法顯示即時輸入音量；錄音仍可繼續。';
+      observedLevel = null;
+    }
+  };
+  function release() {
+    clearTimeout(limitTimer); clearInterval(tick); tick = null; elapsed.hidden = true;
+    closeAudioContext();
+    stream?.getTracks?.().forEach(track => track.stop()); stream = null;
+  }
   async function transcribe() {
     if (!audio || disposed) return;
     start.disabled = true; retry.disabled = true; status.textContent = '正在轉成文字…';
@@ -174,18 +275,19 @@ export function mountVoice(parent, {recordId, path, api, provider, beforeTranscr
       if (bytes.length > maxBytes) throw Error(`錄音超過 ${Math.round(maxBytes / 1_000_000)} MB，請縮短回答或改用文字。`);
       let binary = ''; for (const byte of bytes) binary += String.fromCharCode(byte);
       const draft = await api(endpoint, {audio: btoa(binary), mimeType: audio.type.split(';')[0]});
-      holdAudio(null); chunks = []; retry.hidden = true; status.textContent = '已轉成文字，請看上面的回答框。';
+      setHeld(false); chunks = []; retry.hidden = true; status.textContent = '已轉成文字，請看上面的回答框；這段錄音仍可在這裡播放。';
       if (!disposed) await onTranscript(draft, panel);
     } catch (e) {
       if (!disposed) {
-        // Say what went wrong, not just that something did: retrying the same silent
-        // recording will fail the same way, so the reason decides the next step.
-        const noSpeech = /No speech was detected|沒有辨識到內容/.test(e?.message || '');
+        // A no-text result says what the model returned, not whether the microphone
+        // definitely captured silence. The preview and meter summary give the learner
+        // local evidence without pretending to detect speech.
+        const noSpeech = /No speech was detected|沒有辨識到(?:說話)?內容/.test(e?.message || '');
         status.textContent = noSpeech
-          ? '這段錄音沒有辨識到內容。重試同一段會得到相同結果，建議直接重新錄音，或改用文字。'
+          ? '模型沒有從這段錄音回傳文字。請先播放錄音並查看輸入音量，再選擇重試轉錄、重新錄音或改用文字。'
           : '語音轉錄失敗。錄音還在，你可以重試、重新錄音或改用文字。';
-        retry.hidden = noSpeech;
-        onError(e);
+        retry.hidden = false;
+        onError?.(noSpeech ? Error('模型沒有從這段錄音回傳文字。請播放錄音、查看麥克風輸入，再決定要重試轉錄、重新錄音或改用文字。') : e);
       }
     }
     finally { if (!disposed) await onTranscriptionEnd?.(); start.disabled = false; retry.disabled = false; }
@@ -193,38 +295,46 @@ export function mountVoice(parent, {recordId, path, api, provider, beforeTranscr
   start.onclick = async () => {
     try {
       stopReadAloud();
-      if (audio && !window.confirm('重新錄音會蓋掉目前這段還沒送出的錄音，確定要重錄嗎？')) return;
+      // Only an unsubmitted recording is at risk. Once transcribed it is retained on
+      // the server, so keeping it previewable here must not start nagging about loss.
+      if (held && !window.confirm('重新錄音會蓋掉目前這段還沒送出的錄音，確定要重錄嗎？')) return;
       if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) throw Error('這個瀏覽器無法錄音，請改用文字回答。');
-      start.disabled = true; recordingFailed = false; holdAudio(null); chunks = []; retry.hidden = true;
+      start.disabled = true; recordingFailed = false; chunks = [];
       stream = await navigator.mediaDevices.getUserMedia({audio: true});
       if (disposed) {release();return;}
+      showSelectedInput(stream);
       const mimeType = ['audio/webm', 'audio/mp4', 'audio/ogg'].find(type => MediaRecorder.isTypeSupported(type));
       recorder = new MediaRecorder(stream, mimeType ? {mimeType} : undefined);
+      clearCapturedAudio();
+      retry.hidden = true;
       recorder.ondataavailable = e => { if (!disposed && e.data.size) chunks.push(e.data); };
-      recorder.onerror = () => {recordingFailed=true;release();start.disabled=false;stop.disabled=true;chunks=[];status.textContent='';onError(Error('錄音失敗，請重新錄音或改用文字。'));};
+      recorder.onerror = () => {recordingFailed=true;release();start.disabled=false;stop.disabled=true;chunks=[];status.textContent='';onError?.(Error('錄音失敗，請重新錄音或改用文字。'));};
       recorder.onstop = async () => {
+        const durationSeconds = Math.max(0, (Date.now() - recordingStartedAt) / 1000);
         release(); stop.disabled = true; start.disabled = false;
         if (disposed || recordingFailed) return;
         const captured = new Blob(chunks, {type: recorder.mimeType}); chunks = [];
-        if (!captured.size) { status.textContent = '這次沒有錄到聲音，請再錄一次或改用文字。'; onError(Error('這次沒有錄到聲音，請確認麥克風後再試，或改用文字。')); return; }
+        if (!captured.size) { status.textContent = '這次沒有產生可播放的錄音檔，請確認麥克風後再試，或改用文字。'; onError?.(Error('這次沒有產生錄音檔，請確認麥克風後再試，或改用文字。')); return; }
         holdAudio(captured);
+        showPreview(captured);
+        showSummary(captured, durationSeconds);
         await transcribe();
       };
-      recorder.start(); start.disabled = true; stop.disabled = false; status.textContent = '正在錄音…';
-      const startedAt = Date.now();
+      recorder.start(); recordingStartedAt = Date.now(); start.disabled = true; stop.disabled = false; status.textContent = '正在錄音…';
+      startLevelMeter(stream);
       elapsed.hidden = false; elapsed.textContent = `已錄 0:00 / ${clock(limit)}`;
       tick = setInterval(() => {
-        const seconds = Math.min(limit, (Date.now() - startedAt) / 1000);
+        const seconds = Math.min(limit, (Date.now() - recordingStartedAt) / 1000);
         elapsed.textContent = `已錄 ${clock(seconds)} / ${clock(limit)}`;
         const near = seconds >= warnAt;
         elapsed.classList.toggle('near-limit', near);
         if (near) elapsed.textContent += `　快到上限了，請開始收尾（剩下約 ${Math.max(0, Math.round(limit - seconds))} 秒）`;
       }, 250);
       limitTimer = setTimeout(() => {if (recorder.state === 'recording') {status.textContent = `已達 ${Math.round(limit / 60)} 分鐘上限，正在把已錄的內容轉成文字。`; recorder.stop();}}, limit * 1000);
-    } catch (e) {release();start.disabled=false;onError(e);}
+    } catch (e) {release();start.disabled=false;stop.disabled=true;onError?.(e);}
   };
   stop.onclick = () => {if (recorder?.state === 'recording') recorder.stop();};
   retry.onclick = transcribe;
-  discard.onclick = async () => {disposed=true;if(recorder?.state==='recording')recorder.stop();release();holdAudio(null);chunks=[];await onTranscriptionEnd?.();panel.remove();};
-  return () => {disposed=true;if(recorder?.state==='recording')recorder.stop();release();holdAudio(null);chunks=[];};
+  discard.onclick = async () => {disposed=true;if(recorder?.state==='recording')recorder.stop();release();clearCapturedAudio();chunks=[];await onTranscriptionEnd?.();panel.remove();};
+  return () => {disposed=true;if(recorder?.state==='recording')recorder.stop();release();clearCapturedAudio();chunks=[];};
 }

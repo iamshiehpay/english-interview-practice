@@ -738,7 +738,11 @@ export async function createApplication({directory = '.workspace', languageModel
       }
     } catch (error) {
       res.writeHead(error.status || 502, {'Content-Type': 'application/json'});
-      res.end(JSON.stringify({error: error.status===504?'Provider operation timed out; retry your original action.':error.status===429?'Provider rate limit reached; retry later.':error instanceof AppError && error.status<500 ? error.message : 'Provider or storage operation failed; your saved work is retained. Retry.', retryable: !error.status || error.status === 429 || error.status >= 500}));
+      // A server-side failure used to collapse into one generic sentence, so a rejected
+      // recording and a broken disk read identically and retrying was a guess. An
+      // AppError's `reason` is our own wording, vetted never to quote a provider body,
+      // so it is safe to return; anything else still falls back to the generic text.
+      res.end(JSON.stringify({error: error.status===504?'Provider operation timed out; retry your original action.':error.status===429?'Provider rate limit reached; retry later.':error instanceof AppError ? error.reason : 'Provider or storage operation failed; your saved work is retained. Retry.', retryable: !error.status || error.status === 429 || error.status >= 500}));
     }
   });
   return {server, store};

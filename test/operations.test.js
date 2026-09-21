@@ -4,7 +4,7 @@ import {readFile,readdir} from 'node:fs/promises';
 import {join} from 'node:path';
 import {harness,setup} from './helpers.js';
 import {FakeLanguageModel} from '../src/providers.js';
-import {OpenAILanguageModel,configuredProviders} from '../src/cloud.js';
+import {OpenAILanguageModel,OpenAISpeechProvider,configuredProviders} from '../src/cloud.js';
 const delay=ms=>new Promise(r=>setTimeout(r,ms));
 async function pending(api){for(let i=0;i<100;i++){const op=(await api('/operations')).data.find(o=>o.state==='pending');if(op)return op;await delay(5);}throw Error('No pending operation');}
 async function keyed(base,path,data,id){const response=await fetch(base+'/api'+path,{method:'POST',headers:{'Content-Type':'application/json','X-Request-Id':id},body:JSON.stringify(data)});return {status:response.status,data:await response.json()};}
@@ -80,4 +80,32 @@ test('a failed operation can be dismissed; an unknown operation cannot',async t=
  assert.equal((await api(`/operations/${failed.id}`,undefined,'DELETE')).status,200);
  assert.equal((await api('/operations')).data.find(o=>o.id===failed.id),undefined);
  assert.equal((await api('/operations/does-not-exist',undefined,'DELETE')).status,404);
+});
+
+test('a failed operation records why, without ever storing the provider body',async t=>{
+ const upload={audio:Buffer.from('synthetic audio fixture').toString('base64'),mimeType:'audio/webm'};
+ // The body deliberately echoes a credential back, the way a confused or hostile
+ // service could: the stored reason must name the status and nothing else.
+ const sentinel='PROVIDER_BODY_SENTINEL';
+ const speechProvider=new OpenAISpeechProvider({apiKey:'SECRET_KEY_SENTINEL',fetcher:async()=>new Response(JSON.stringify({error:{message:sentinel}}),{status:400})});
+ const {api,directory}=await harness(t,undefined,{speechProvider});const {record}=await setup(api);
+ const failure=await api(`/records/${record.id}/transcription`,upload);assert.equal(failure.status,502);
+ const failed=(await api('/operations')).data.find(o=>o.state==='failed');
+ assert.ok(failed,'the failed transcription is recorded');
+ assert.match(failed.errorMessage,/HTTP 400/);
+ assert.match(failed.errorMessage,/\[provider\]/);
+ const persisted=await readFile(join(directory,'workspace.json'),'utf8');
+ for(const secret of [sentinel,'SECRET_KEY_SENTINEL']){
+  assert.ok(!JSON.stringify(failed).includes(secret),`operation must not carry ${secret}`);
+  assert.ok(!persisted.includes(secret),`workspace file must not carry ${secret}`);
+ }
+});
+
+test('an ordinary validation failure keeps its own wording as the recorded reason',async t=>{
+ const upload={audio:Buffer.from('synthetic audio fixture').toString('base64'),mimeType:'audio/webm'};
+ const {api}=await harness(t,undefined,{speechProvider:{name:'silent',async transcribe(){return {transcript:'   '};}}});
+ const {record}=await setup(api);
+ assert.equal((await api(`/records/${record.id}/transcription`,upload)).status,422);
+ const failed=(await api('/operations')).data.find(o=>o.state==='failed');
+ assert.match(failed.errorMessage,/No speech was detected/);
 });
