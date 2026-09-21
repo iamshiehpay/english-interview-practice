@@ -25,7 +25,7 @@ One learner-submitted spoken or written response to a Job-grounded Interview Que
 _Avoid_: Final answer, message, recording
 
 **Practice Record**:
-The locally retained evidence of a completed or partial Practice Loop, including its question, transcripts, Feedback Reports, comparison, and Focus Point, but excluding raw audio by default.
+The locally retained evidence of a completed or partial Practice Loop, including its question, transcripts, Feedback Reports, comparison, and Focus Point, with an associated local recording for spoken answers when available. A recording preserves the original speech even if the learner later corrects the transcript; older records may contain transcripts only.
 _Avoid_: Chat history, audio archive, model trace
 
 **Feedback Report**:
