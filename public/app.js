@@ -223,16 +223,41 @@ async function leaveEditor() {
   catch { setError('草稿儲存失敗，已留在目前頁面。請重試儲存後再切換。'); return false; }
 }
 
+// App shell: the rail marks where you are, the topbar breadcrumb names the view and,
+// inside a job, the job it belongs to. Practice and the mock session live under 開始練習.
+const viewLabels = {home:'開始練習', practice:'開始練習', mock:'三題短場模擬', discovery:'找職缺', history:'練習紀錄', progress:'我的進步', evidence:'我的履歷', settings:'設定'};
+const railViews = {practice:'home', mock:'home'};
+function setJobContext(title) {
+  const value = truncate(title || '', 80);
+  $('#crumb-job-title').textContent = value;
+  $('#crumb-job-title').title = value;
+  $('#crumb-job').hidden = !value;
+}
+function setMenuOpen(open, {restoreFocus = false} = {}) {
+  const toggle = $('#menu-toggle');
+  document.body.classList.toggle('menu-open', open);
+  toggle.setAttribute('aria-expanded', String(open));
+  toggle.setAttribute('aria-label', open ? '關閉選單' : '開啟選單');
+  $('.rail-scrim').hidden = !open;
+  if (open) $('#primary-nav [data-view]')?.focus();
+  else if (restoreFocus) toggle.focus();
+}
+$('#menu-toggle').addEventListener('click', () => setMenuOpen(!document.body.classList.contains('menu-open')));
+$('.rail-scrim').addEventListener('click', () => setMenuOpen(false, {restoreFocus:true}));
+document.addEventListener('keydown', event => { if (event.key === 'Escape' && document.body.classList.contains('menu-open')) setMenuOpen(false, {restoreFocus:true}); });
+
 function markView(name) {
   viewToken += 1;
   currentView = name;
   document.querySelectorAll('.view').forEach(view => view.classList.toggle('active', view.id === `${name}-view`));
-  document.querySelectorAll('[data-view]').forEach(control => {
-    if (control.closest('nav')) {
-      if (control.dataset.view === name) control.setAttribute('aria-current', 'page');
-      else control.removeAttribute('aria-current');
-    }
+  const railView = railViews[name] || name;
+  document.querySelectorAll('#primary-nav [data-view]').forEach(control => {
+    if (control.dataset.view === railView) control.setAttribute('aria-current', 'page');
+    else control.removeAttribute('aria-current');
   });
+  $('#crumb-view').textContent = viewLabels[name] || '';
+  setJobContext('');
+  setMenuOpen(false);
   window.scrollTo({top:0, behavior:'smooth'});
 }
 async function navigate(name) {

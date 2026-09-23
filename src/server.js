@@ -740,10 +740,12 @@ export async function createApplication({directory = '.workspace', languageModel
         const result = external ? await operations.run({kind:external.kind,targetId:external.targetId,requestId:req.headers['x-request-id'],input,execute:context=>route(req.method,path,input,context),replay}) : await route(req.method,path,input);
         res.writeHead(200, {'Content-Type': 'application/json', 'Cache-Control': 'no-store'}); res.end(JSON.stringify(result));
       } else {
-        const name = {'/': 'index.html', '/app.js': 'app.js', '/voice.js': 'voice.js', '/style.css': 'style.css'}[path];
+        // Fonts are self-hosted Latin subsets (ADR 0013: no third-party request on page load).
+        const fonts = ['inter-latin-400-normal', 'inter-latin-500-normal', 'inter-latin-600-normal', 'inter-latin-700-normal', 'jetbrains-mono-latin-400-normal', 'jetbrains-mono-latin-500-normal'];
+        const name = {'/': 'index.html', '/app.js': 'app.js', '/voice.js': 'voice.js', '/style.css': 'style.css', ...Object.fromEntries(fonts.map(font => [`/fonts/${font}.woff2`, `fonts/${font}.woff2`]))}[path];
         requireValue(name, 'Not found', 404);
         const content = await readFile(new URL(`../public/${name}`, import.meta.url));
-        res.writeHead(200, {'Content-Type': name.endsWith('.js') ? 'text/javascript' : name.endsWith('.css') ? 'text/css' : 'text/html', // media-src must name blob: explicitly: read-aloud audio is fetched as JSON and
+        res.writeHead(200, {'Content-Type': name.endsWith('.js') ? 'text/javascript' : name.endsWith('.css') ? 'text/css' : name.endsWith('.woff2') ? 'font/woff2' : 'text/html', // media-src must name blob: explicitly: read-aloud audio is fetched as JSON and
 // played from a blob URL, which 'self' does not cover, so without this every
 // reading fails with MEDIA_ERR_SRC_NOT_SUPPORTED. Retained recordings stream from
 // this origin and are covered by 'self'.
