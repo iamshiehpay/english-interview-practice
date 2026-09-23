@@ -60,9 +60,16 @@
 - **監控與告警**。使用者於 2026-09-23 確認。
   - 限制：Cloud Run 的 `/tmp` 是記憶體檔案系統，訪客 workspace 佔用實例 RAM；滿了會 OOM 重啟並清空所有進行中 Demo。
   - App 端（程式變更）：同時最多 50 個 Demo session，超過先淘汰最久未動者、全部活躍則回「Demo 目前額滿」；每個 workspace 上限 2 MB；log 改為帶 `severity` 的 JSON 行，只記 session 建立／過期／數量，不記使用者輸入。
-  - GCP 端（Terraform）：uptime check 每 5 分鐘打 `/api/health`（已存在於 `src/server.js:89`）；email 告警：uptime 失敗、5xx 率 5 分鐘 >5%、記憶體 >80%；billing budget 超過 $1 通知；Dashboard（請求數、延遲、錯誤率、記憶體、Demo session 數）。
+  - GCP 端（Terraform）：uptime check 每 5 分鐘打 `/api/health`（已存在於 `src/server.js:89`）；email 告警：uptime 失敗、5xx 率 5 分鐘 >5%、記憶體 >80%；billing budget 超過 $0.01 通知；Dashboard（請求數、延遲、錯誤率、記憶體、Demo session 數）。
   - 不自架 Prometheus／Grafana。
 - **成本目標：每月 $0**。使用者於 2026-09-23 確認。所有託管、監控、registry、state 儲存選擇須落在免費額度內；會產生費用的項目須先列出並經使用者同意。
+- **地區與成本細節**（依 2026-09-23 查詢的 GCP 官方價目，由子代理整理，未逐條複核）。使用者於 2026-09-23 確認。
+  - Cloud Run、Artifact Registry 放 `asia-east1`（台灣，延遲最低、同區拉 image 不計費）；Terraform state bucket 放 `us-central1`（Cloud Storage Always Free 僅限 us-west1／us-central1／us-east1）。
+  - Artifact Registry 設清理規則，只保留最近 5 個 image（免費 0.5 GB）。
+  - 唯一不確定的費用是 egress：Cloud Run 1 GB 免費流量文件寫「北美內」，台灣訪客流量可能計費，估最壞每月約 $0.05。緩解：server 回應加 gzip（程式變更）、最後階段 Cloudflare 邊緣層快取靜態檔。
+  - Billing budget 門檻改為 $0.01（任何費用即通知）；budget 只通知、不會擋下費用。GCP 必須綁付款方式。
+  - 告警政策目前免費，最快 2027-09-01 起每個指標每月 $0.35；2027-08 前重新評估（只留 uptime 告警或全關）。
+  - 成本目標因此定義為「預期 $0，最壞每月幾分錢，任何費用立即通知」。真正保證 $0 只有 Cloudflare Workers（方案 C）。
 
 ## 待討論問題
 
