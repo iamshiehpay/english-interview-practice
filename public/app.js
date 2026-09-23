@@ -321,6 +321,37 @@ function practiceFrame({step=0, snapshot, content}) {
   return `<article class="practice-shell"><div class="practice-body">${content}</div></article>`;
 }
 
+// Home feedback preview (issue 0025): a fixed, fictional sample — never the
+// learner's data and never fetched — rendered once through the same
+// annotatedTranscriptHtml/feedbackHtml the practice screen uses, so it cannot
+// drift from the real feedback layout. The panel is inert: a picture of the
+// feedback, not a control, so it never takes keyboard focus from the JD form.
+const homePreviewSample = {
+  question: {text:'Tell me about a time you made an API more reliable.', meaningZh:'請分享一次你讓 API 變得更穩定可靠的經驗。'},
+  transcript: 'Our order API timed out almost every night, so I added retries with backoff and a circuit breaker to the payment calls. After that, the error rate drop a lot, and customers stopped complaining. I also wrote a runbook so the on-call team know what to check first.',
+  feedback: {
+    strength: {textZh:'你直接說出做了哪兩個具體機制，而不是只說「優化了系統」，面試官能立刻聽懂你的做法。', quote:'I added retries with backoff and a circuit breaker'},
+    priorityImprovement: {textZh:'把成果講成數字：錯誤率從多少降到多少、多久內做到。沒有數字，「降很多」很難讓人相信。', quote:'the error rate drop a lot'},
+    ratings: {
+      relevance: {level:4, quote:'I added retries with backoff and a circuit breaker', reasonZh:'緊扣「讓 API 更可靠」，每一句都在回答題目。'},
+      support: {level:2, quote:'the error rate drop a lot', reasonZh:'有做法，但成果沒有數字或比較基準，說服力不足。'},
+      structure: {level:3, quote:'Our order API timed out almost every night', reasonZh:'先交代問題再說做法，順序清楚；結尾可以補一句學到什麼。'},
+      englishExpression: {level:2, quote:'the on-call team know what to check first', reasonZh:'意思清楚，但動詞時態與單複數要注意：drop → dropped、know → knows。'}
+    }
+  }
+};
+function renderHomePreview() {
+  const holder = $('#home-preview');
+  if (!holder || holder.childElementCount) return;
+  const {question, transcript, feedback} = homePreviewSample;
+  const key = registerAnnotation('home-sample', {transcript, feedback});
+  holder.innerHTML = `<p class="preview-q" lang="en">${escape(question.text)}</p><p class="preview-zh">${escape(question.meaningZh)}</p>
+    <p class="fb-label">範例回答</p>${annotatedTranscriptHtml(key, {legend:true})}${feedbackHtml(feedback, key)}`;
+  const opened = holder.querySelector(`[data-note-id="${key}-support"]`);
+  if (opened) opened.open = true;
+  $('#preview-summary').textContent = `範例題目：${question.text}（${question.meaningZh}）範例回答中標出一句做得好（優）與一句優先改進（改），並附中文說明，以及切題程度、論據與例子、回答結構、英文表達四項 1 到 4 分評分。`;
+}
+
 function renderHome() {
   markView('home');
   const parent = $('#resume-practice');
@@ -1883,4 +1914,5 @@ async function initialize() {
   } catch (error) { setError(`無法開啟工作區：${error.message}`); }
 }
 
+renderHomePreview();
 await initialize();

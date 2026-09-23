@@ -30,7 +30,7 @@ try {
  ({server}=await createApplication({directory}));await new Promise(r=>server.listen(0,'127.0.0.1',r));const url=`http://127.0.0.1:${server.address().port}`;
  await browser('set','viewport','1440','900');await browser('open',url);
  await mkdir('docs/verification/learner-flow',{recursive:true});
- await run(`await wait(()=>!el('#capture').disabled,'ready');el('nav [data-view="evidence"]').focus();`);
+ await run(`await wait(()=>!el('#capture').disabled,'ready');if(el('#home-view .flow')?.children.length!==4||!el('#home-preview[inert] .transcript.annotated mark.mk')||!el('#home-preview .ratings .rating .bar')||!/範例/.test(el('.home-preview .preview-head')?.textContent))throw Error('Home hero flow or labelled static feedback preview missing');el('nav [data-view="evidence"]').focus();`);
  await browser('press','Enter');await run(`await wait(()=>el('#resume-text'),'keyboard resume navigation');el('nav [data-view="home"]').focus();`);await browser('press','Enter');
  await browser('screenshot',resolve('docs/verification/learner-flow/home.png'));
  await run(`
@@ -209,13 +209,13 @@ try {
  if(btn('直接結束並保存'))throw Error('Duplicate end button still present after primary feedback');
  const endButtons=[...document.querySelectorAll('button')].filter(b=>b.textContent.trim()==='結束並保存');
  if(endButtons.length!==1||!el('#complete-practice'))throw Error('Expected exactly one completion button before follow-up, got '+endButtons.length);
- const dimCount=document.querySelectorAll('.ratings .rating').length;
+ const dimCount=document.querySelectorAll('#practice-view .ratings .rating').length;
  if(dimCount!==4)throw Error('Expected four assessment dimensions, got '+dimCount);
  // Annotated feedback: the answer is shown once with the quotes marked on it, and the
  // notes link to those marks instead of repeating the learner's sentence.
  if(!document.querySelectorAll('#wb-answer .transcript.annotated mark.mk').length)throw Error('Feedback quotes are not marked on the transcript');
  if(document.querySelectorAll('#wb-feedback .fb-section blockquote').length)throw Error('Feedback repeats the learner sentence in quote blocks');
- if(![...document.querySelectorAll('.ratings .rating')].every(r=>r.querySelector('.bar')&&(r.querySelector('.ref')||r.querySelector('.note-quote'))))throw Error('A rating lacks its 1-4 bar or its transcript reference');
+ if(![...document.querySelectorAll('#practice-view .ratings .rating')].every(r=>r.querySelector('.bar')&&(r.querySelector('.ref')||r.querySelector('.note-quote'))))throw Error('A rating lacks its 1-4 bar or its transcript reference');
  const noteRef=el('#wb-feedback .fb-section .note .ref'),linkedId=noteRef.dataset.jump;click(noteRef);
  await wait(()=>document.activeElement?.matches?.('mark.mk')&&document.activeElement.dataset.notes.split(' ').includes(linkedId),'a note reference moves focus to its transcript mark');
  if(!el('[data-note-id="'+linkedId+'"]').classList.contains('is-active'))throw Error('A focused transcript mark does not highlight its note');

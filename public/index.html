@@ -47,18 +47,37 @@
 
         <section id="home-view" class="view" aria-label="開始練習">
           <div id="resume-practice"></div>
-          <section class="start-card" aria-labelledby="start-title">
-        
-            <div>
-              <p class="eyebrow">開始新練習</p>
-              <h2 id="start-title">你想準備哪個職缺？</h2>
-              <label for="jd">貼上完整職缺描述</label>
-              <textarea id="jd" rows="6" placeholder="貼上 Responsibilities、Requirements 等原始內容…"></textarea>
-              <div id="resume-choice"></div><details><summary>調整題目深度</summary><label for="difficulty">練習深度</label><select id="difficulty"><option value="standard">依職缺要求</option><option value="easier">簡單一點</option><option value="deeper">深入一點</option></select></details><p class="data-note" id="generation-disclosure">題目生成時，會依目前的服務設定傳送這份職缺內容。</p>
-              <div id="provider-gate"></div>
-              <button id="capture" class="primary wide" type="button">儲存職缺並產生題目</button>
+          <div class="home-grid">
+            <div class="home-main">
+              <header class="home-hero">
+                <p class="eyebrow">照著真實職缺練英文面試</p>
+                <h1 id="home-title">貼上職缺，<br>練習這份工作真的會問的英文面試題</h1>
+                <p class="lead">依職缺出英文題目並附中文題意。你用說的或打字回答後，教練用中文告訴你哪裡做得好、先改哪裡——每一點都直接標在你說過的英文原句上。</p>
+                <ol class="flow" aria-label="練習流程">
+                  <li><b><em aria-hidden="true">1</em>貼上職缺</b><span>貼上職缺描述全文</span></li>
+                  <li><b><em aria-hidden="true">2</em>依職缺出題</b><span>英文題目＋中文題意</span></li>
+                  <li><b><em aria-hidden="true">3</em>開口回答</b><span>錄音或打字都可以</span></li>
+                  <li><b><em aria-hidden="true">4</em>逐句回饋</b><span>中文說明，引用你的原句</span></li>
+                </ol>
+              </header>
+              <section class="start-card" aria-labelledby="start-title">
+                <h2 id="start-title">你想準備哪個職缺？</h2>
+                <label for="jd">貼上完整職缺描述</label>
+                <textarea id="jd" rows="6" placeholder="貼上 Responsibilities、Requirements 等原始內容…"></textarea>
+                <div id="resume-choice"></div><details><summary>調整題目深度</summary><label for="difficulty">練習深度</label><select id="difficulty"><option value="standard">依職缺要求</option><option value="easier">簡單一點</option><option value="deeper">深入一點</option></select></details><p class="data-note" id="generation-disclosure">題目生成時，會依目前的服務設定傳送這份職缺內容。</p>
+                <div id="provider-gate"></div>
+                <button id="capture" class="primary wide" type="button">儲存職缺並產生題目</button>
+              </section>
             </div>
-          </section>
+            <!-- A fixed example, not the learner's data: rendered once by app.js from a
+                 sample object through the real annotated-feedback markup, with no request. -->
+            <figure class="home-preview" aria-labelledby="preview-title" aria-describedby="preview-note preview-summary">
+              <div class="preview-head"><span id="preview-title" class="preview-title">回饋會長這樣</span><span class="chip chip-accent">範例</span></div>
+              <p id="preview-note" class="preview-note">固定的示範內容，不是你的練習資料。</p>
+              <div id="home-preview" class="preview-body" inert></div>
+              <figcaption id="preview-summary" class="visually-hidden"></figcaption>
+            </figure>
+          </div>
           <section id="home-progress" class="home-progress"></section>
         </section>
 
