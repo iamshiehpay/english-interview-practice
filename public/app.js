@@ -1,4 +1,5 @@
 import {mountVoice, mountReadAloud, resetReadAloud, hasPendingRecording} from './voice.js';
+import {annotateTranscript, wordDiff, elideUnchanged} from './annotate.js';
 
 const $ = selector => document.querySelector(selector);
 const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -163,10 +164,6 @@ function recordingBytesLabel() {
   const count = Object.values(workspace.recordings || {}).filter(entry => entry.state === 'retained').length;
   if (!count) return '目前沒有保存任何回答錄音。';
   return `目前保存 ${count} 段回答錄音，約 ${total < 1_000_000 ? Math.max(1, Math.round(total / 1000)) + ' KB' : (total / 1_000_000).toFixed(1) + ' MB'}，全部只存在這台裝置。刪除練習或職缺時會一併刪除。`;
-}
-
-function mountCorrectionReadAloud(container, recordId, attemptId) {
-  container?.querySelectorAll('[data-correction-index]').forEach(slot => readAloud(slot, {recordId, attemptId, correctionIndex:Number(slot.dataset.correctionIndex)}, '朗讀修正句'));
 }
 
 function clearDraftSession() {
@@ -474,23 +471,192 @@ async function showQuestionList(snapshotId, suppliedAnalysis) {
   document.querySelectorAll('[data-question-id] button').forEach(control => control.addEventListener('click', () => showQuestion(snapshotId, control.closest('[data-question-id]').dataset.questionId, analysis)));
 }
 
-function feedbackHtml(feedback, prefix = '') {
+// Annotated feedback (issue 0024). The learner's answer is rendered once, as
+// numbered sentences, and every feedback item is a note that points into it: the
+// strength (優, solid underline), the priority improvement (改, wavy), each rating's
+// evidence (切／據／構／英, dotted) and each Key-Sentence Correction (±, shown as an
+// inline diff under its sentence). Quotes are the server-validated exact excerpts
+// (ADR 0006/0016), located again with public/annotate.js; one that cannot be found
+// keeps its note, shows the quote as plain text and logs a warning.
+// Issue 0025's home preview should render through these same helpers.
+const dimensionTags = {relevance:'切', support:'據', structure:'構', englishExpression:'英'};
+const levelLabels = {1:'尚未做到', 2:'部分做到', 3:'大致做到', 4:'充分做到'};
+const annotations = new Map();
+const annotationKey = value => String(value || 'answer').replace(/[^\w-]/g, '_');
+const noteDomId = id => `note-${id}`;
+// Registers one answer (its transcript, feedback and any loaded corrections) so its
+// transcript and its notes can be rendered in different panes and still link.
+function registerAnnotation(key, {transcript, feedback, corrections, recordId, attemptId} = {}) {
+  annotations.set(key, {transcript: String(transcript || ''), feedback, corrections: corrections || null, recordId, attemptId});
+  return key;
+}
+function registerAttempt(record, attempt) {
+  if (!attempt) return null;
+  return registerAnnotation(annotationKey(attempt.id), {transcript: attempt.transcript, feedback: attempt.feedback, corrections: record?.corrections?.[attempt.id]?.corrections, recordId: record?.id, attemptId: attempt.id});
+}
+function annotationNotes(key, feedback = annotations.get(key)?.feedback, corrections = annotations.get(key)?.corrections) {
+  const notes = [];
+  if (feedback?.strength) notes.push({id:`${key}-strength`, kind:'ok', tag:'優', title:'本次做得好的地方', quote:feedback.strength.quote});
+  if (feedback?.priorityImprovement) notes.push({id:`${key}-priority`, kind:'warn', tag:'改', title:'這次優先改進', quote:feedback.priorityImprovement.quote});
+  for (const [dimension, rating] of Object.entries(feedback?.ratings || {})) notes.push({id:`${key}-${dimension}`, kind:'rate', tag:dimensionTags[dimension] || '評', title:dimensions[dimension] || dimension, quote:rating.quote});
+  (corrections || []).forEach((item, index) => notes.push({id:`${key}-fix${index}`, kind:'fix', tag:'±', title:`關鍵句修正 ${index + 1}`, quote:item.original, correction:item, index}));
+  return notes;
+}
+const warnedQuotes = new Set();
+function annotationModel(key) {
+  const entry = annotations.get(key);
+  const notes = annotationNotes(key);
+  const model = annotateTranscript(entry?.transcript || '', notes);
+  for (const id of model.missing) {
+    if (warnedQuotes.has(id)) continue;
+    warnedQuotes.add(id);
+    console.warn(`Feedback quote ${id} was not found verbatim in the transcript; showing it without a transcript link.`);
+  }
+  return {...model, notes, byId: new Map(notes.map(note => [note.id, note]))};
+}
+const tagHtml = note => `<span class="tag tag-${note.kind}" data-tag="${escape(note.tag)}" aria-hidden="true"></span>`;
+function diffRunsHtml(runs, {announce = false} = {}) {
+  const hidden = text => announce ? `<span class="visually-hidden">${text}</span>` : '';
+  return runs.map(run => run.op === '=' ? escape(run.text)
+    : run.op === '-' ? `<del>${hidden('［刪除］')}${escape(run.text)}</del>`
+    : run.op === '+' ? `<ins>${hidden('［加入］')}${escape(run.text)}</ins>`
+    : '<span class="elide" aria-hidden="true">…</span>').join('');
+}
+// A Key-Sentence Correction as the learner's sentence with the rewrite's word
+// changes marked inline (strikethrough + colour for removed words, underline +
+// colour for added ones). Screen readers get the rewrite as one sentence instead.
+function correctionDiffHtml(note, entry, n) {
+  const {original, rewrite, reasonZh} = note.correction;
+  const runs = wordDiff(original, rewrite);
+  const changed = runs.some(run => run.op !== '=');
+  const slot = entry?.recordId && entry?.attemptId ? `<div class="correction-read-aloud" data-correction-slot data-record-id="${escape(entry.recordId)}" data-attempt-id="${escape(entry.attemptId)}" data-correction-index="${note.index}"></div>` : '';
+  return `<div class="diff" role="group" aria-label="${n ? `第 ${n} 句的` : ''}${escape(note.title)}" data-fix="${escape(note.id)}">
+    <div class="diff-head">${tagHtml(note)}<span>${escape(note.title)}</span><span class="meta">${changed ? '刪除線：建議拿掉　底線：建議加入' : '建議表達與原句相同'}</span></div>
+    ${changed ? `<p class="diff-body" lang="en" aria-hidden="true">${diffRunsHtml(runs)}</p><p class="visually-hidden" lang="en">建議的英文表達：${escape(rewrite)}</p>` : ''}
+    ${slot}<p class="diff-why" id="${noteDomId(note.id)}-d">${escape(reasonZh)}</p>
+  </div>`;
+}
+// The learner's answer, once, as numbered sentences with every feedback quote
+// marked. Overlapping quotes are split into segments; a segment carries every id
+// whose quote covers it, the union of their line styles, and each quote's tag on
+// its last segment. Tags, sentence numbers and diffs are drawn so that the
+// transcript's own text (copy, textContent) stays exactly what the learner said.
+function annotatedTranscriptHtml(key, {tag = 'div', corrections = true, legend = false} = {}) {
+  const entry = annotations.get(key);
+  const model = annotationModel(key);
+  const fixes = new Map();
+  if (corrections) for (const note of model.notes) {
+    const n = note.kind === 'fix' && model.endSentenceOf[note.id];
+    if (n) fixes.set(n, [...(fixes.get(n) || []), note]);
+  }
+  const rows = model.sentences.map(row => {
+    const kinds = new Set();
+    const html = row.segments.map(segment => {
+      const ids = segment.ids.filter(id => corrections || model.byId.get(id).kind !== 'fix');
+      // A whitespace-only segment (the gap between two sentences) is never a mark.
+      if (!ids.length || !segment.text.trim()) return escape(segment.text);
+      const notes = ids.map(id => model.byId.get(id));
+      const segmentKinds = [...new Set(notes.map(note => note.kind))];
+      segmentKinds.forEach(kind => kinds.add(kind));
+      const tags = segment.ends.filter(id => ids.includes(id)).map(id => tagHtml(model.byId.get(id))).join('');
+      const titles = [...new Set(notes.map(note => note.title))].join('、');
+      return `<mark class="mk ${segmentKinds.map(kind => `mk-${kind}`).join(' ')}" data-notes="${ids.join(' ')}" tabindex="0" role="button" aria-describedby="${ids.map(id => `${noteDomId(id)}-d`).join(' ')}" title="回饋：${escape(titles)}（按 Enter 查看）">${escape(segment.text)}${tags ? `<span class="tags">${tags}</span>` : ''}</mark>`;
+    }).join('');
+    const rowFixes = fixes.get(row.n) || [];
+    const kind = rowFixes.length ? 'fix' : ['warn', 'ok', 'rate'].find(value => kinds.has(value));
+    return `<div class="srow${kind ? ` has-${kind}` : ''}" data-s="${row.n}"><span class="gut" data-n="${row.n}" aria-hidden="true"></span><div class="stext">${html}</div>${rowFixes.map(note => correctionDiffHtml(note, entry, row.n)).join('')}</div>`;
+  }).join('');
+  const hasMarks = model.notes.some(note => !model.missing.includes(note.id) && (corrections || note.kind !== 'fix'));
+  const legendHtml = legend && hasMarks ? `<div class="mk-legend" aria-label="標記說明"><span><span class="tag tag-ok" data-tag="優" aria-hidden="true"></span>做得好・實線</span><span><span class="tag tag-warn" data-tag="改" aria-hidden="true"></span>優先改進・波浪線</span><span><span class="tag tag-rate" data-tag="切據構英" aria-hidden="true"></span>評分依據・點線</span>${corrections && model.notes.some(note => note.kind === 'fix') ? '<span><span class="tag tag-fix" data-tag="±" aria-hidden="true"></span>關鍵句修正</span>' : ''}</div>` : '';
+  return `${legendHtml}<${tag} class="transcript annotated" lang="en" data-annotation="${escape(key)}">${rows}</${tag}>`;
+}
+// The "↳ 第 N 句" control that moves to (and highlights) a note's quote; its tooltip
+// carries the exact quote. Without a located quote the note shows it as plain text.
+function noteRefHtml(note, model) {
+  const n = model?.sentenceOf[note.id];
+  if (!n) return '';
+  return `<button type="button" class="ref" data-jump="${escape(note.id)}" aria-label="在你的回答中標出第 ${n} 句" title="${escape(note.quote)}"><span aria-hidden="true">↳</span> 第 ${n} 句</button>`;
+}
+const unlinkedQuoteHtml = (note, model) => (!model || model.missing.includes(note.id)) && note.quote ? `<p class="note-quote" lang="en">${escape(note.quote)}</p>` : '';
+// A reference to one feedback quote from elsewhere (the revision prompt, the
+// focus-progress box): the jump control, or the quote itself if it is not linked.
+function quoteRefHtml(key, suffix) {
+  if (!annotations.has(key)) return '';
+  const model = annotationModel(key);
+  const note = model.byId.get(`${key}-${suffix}`);
+  return note ? noteRefHtml(note, model) || unlinkedQuoteHtml(note, model) : '';
+}
+let unlinkedFeedback = 0;
+function feedbackHtml(feedback, key) {
   if (!feedback) return '<p class="provider-warning">回饋尚未完成。你的回答已保存，可以重試取得回饋。</p>';
   const bilingual = feedback.strength?.textZh && feedback.priorityImprovement?.textZh && Object.values(feedback.ratings || {}).every(rating => rating.reasonZh);
-  const finding = (title, item, kind) => `<article class="feedback-card ${kind}"><h3>${escape(title)}</h3><p>${escape(item.textZh || '此筆舊紀錄沒有中文說明。')}</p><blockquote><strong>你的原句</strong><br>${escape(item.quote)}</blockquote></article>`;
-  const shownQuotes = new Set([feedback.strength?.quote, feedback.priorityImprovement?.quote].filter(Boolean));
-  const ratings = Object.entries(feedback.ratings || {}).map(([dimension,rating]) => {
-    const showQuote = rating.quote && !shownQuotes.has(rating.quote);
-    if (rating.quote) shownQuotes.add(rating.quote);
-    return `<div class="rating"><div class="rating-head"><strong>${escape(dimensions[dimension] || dimension)}</strong><span class="rating-level">${escape(rating.level)} / 4</span></div><p>${escape(rating.reasonZh || '此筆舊紀錄沒有中文評分理由。')}</p>${showQuote ? `<blockquote><strong>評分依據原句</strong><br>${escape(rating.quote)}</blockquote>` : ''}</div>`;
+  const model = key && annotations.has(key) ? annotationModel(key) : null;
+  const base = model ? key : `unlinked${++unlinkedFeedback}`;
+  const notes = model?.notes || annotationNotes(base, feedback, null);
+  const byId = new Map(notes.map(note => [note.id, note]));
+  const idFor = suffix => `${base}-${suffix}`;
+  const finding = (suffix, item) => {
+    const note = byId.get(idFor(suffix));
+    return `<article class="note note-${note.kind}" id="${noteDomId(note.id)}" data-note-id="${escape(note.id)}" tabindex="-1">
+      <header>${tagHtml(note)}<h3>${escape(note.title)}</h3>${noteRefHtml(note, model)}</header>
+      <p id="${noteDomId(note.id)}-d"><span class="visually-hidden">${escape(note.title)}：</span>${escape(item.textZh || '此筆舊紀錄沒有中文說明。')}</p>${unlinkedQuoteHtml(note, model)}
+    </article>`;
+  };
+  const ratings = Object.entries(feedback.ratings || {}).map(([dimension, rating]) => {
+    const note = byId.get(idFor(dimension));
+    const level = Number(rating.level) || 0;
+    return `<details class="rating rate" id="${noteDomId(note.id)}" data-note-id="${escape(note.id)}">
+      <summary><span class="rate-name">${tagHtml(note)}<span>${escape(note.title)}</span><small>${escape(levelLabels[level] || '')}</small></span><span class="bar" role="img" aria-label="${level} / 4${levelLabels[level] ? `，${levelLabels[level]}` : ''}">${[1, 2, 3, 4].map(step => `<i class="${step <= level ? 'on' : ''}"></i>`).join('')}</span><span class="rate-num" aria-hidden="true">${escape(rating.level)}<span>/4</span></span><span class="chev" aria-hidden="true"></span></summary>
+      <div class="rate-body"><p id="${noteDomId(note.id)}-d"><span class="visually-hidden">${escape(note.title)} ${level} / 4：</span>${escape(rating.reasonZh || '此筆舊紀錄沒有中文評分理由。')}</p>${noteRefHtml(note, model)}</div>${unlinkedQuoteHtml(note, model)}
+    </details>`;
   }).join('');
-  return `${bilingual ? '' : '<p class="legacy-note">此為舊版紀錄，部分中文說明尚未提供；原始資料保留，未自動重新評估。</p>'}<div class="feedback-feature">${finding('本次做得好的地方', feedback.strength, 'strength')}${finding('這次優先改進', feedback.priorityImprovement, 'priority')}</div><details class="ratings"><summary>查看四項評分與理由</summary><div class="detail-panel">${ratings}</div></details>${prefix}`;
+  return `${bilingual ? '' : '<p class="legacy-note">此為舊版紀錄，部分中文說明尚未提供；原始資料保留，未自動重新評估。</p>'}<div class="fb-sec"><p class="fb-label">重點</p>${feedback.strength ? finding('strength', feedback.strength) : ''}${feedback.priorityImprovement ? finding('priority', feedback.priorityImprovement) : ''}</div><div class="fb-sec ratings"><p class="fb-label">四項評分 <span class="meta">點開看理由</span></p><div class="rates">${ratings}</div></div>`;
 }
-
-function correctionsHtml(result) {
+// Key-Sentence Corrections in the feedback pane: one note per correction pointing
+// at its sentence, where the inline diff is shown. A correction whose sentence
+// cannot be located shows its diff here instead.
+function correctionsHtml(result, key) {
   const corrections = result?.corrections || [];
   if (!corrections.length) return '<p class="corrections-none meta">這次沒有需要調整的關鍵句，你的英文已經能清楚表達。</p>';
-  return `<p class="eyebrow">關鍵句英文修正（${corrections.length}）</p><p class="meta">只列出必要的句子修正，保留你的原意、事實與語氣；這是修正建議，不會算作正式回答。</p>${corrections.map((item, index) => `<article class="correction-card"><p class="meta">你的原句</p><blockquote lang="en">${escape(item.original)}</blockquote><p class="meta">建議的英文表達</p><blockquote class="correction-rewrite" lang="en">${escape(item.rewrite)}</blockquote><div data-correction-index="${index}"></div><p class="correction-reason">${escape(item.reasonZh)}</p></article>`).join('')}`;
+  const model = key && annotations.has(key) ? annotationModel(key) : null;
+  const entry = annotations.get(key);
+  const cards = corrections.map((item, index) => {
+    const note = model?.byId.get(`${key}-fix${index}`) || {id:`${key || 'unlinked'}-fix${index}`, kind:'fix', tag:'±', title:`關鍵句修正 ${index + 1}`, quote:item.original, correction:item, index};
+    const n = model?.endSentenceOf[note.id];
+    return `<article class="correction-card note note-fix" id="${noteDomId(note.id)}" data-note-id="${escape(note.id)}" tabindex="-1">
+      <header>${tagHtml(note)}<h3>${escape(note.title)}</h3>${noteRefHtml(note, model)}</header>
+      ${n ? `<p class="meta">修正直接標在你的回答第 ${n} 句下方，附上理由與朗讀。</p>` : correctionDiffHtml(note, entry, 0)}
+    </article>`;
+  }).join('');
+  return `<p class="fb-label">關鍵句英文修正（${corrections.length}）</p><p class="meta">只列出必要的句子修正，保留你的原意、事實與語氣；這是修正建議，不會算作正式回答。</p>${cards}`;
+}
+// Mounts read-aloud on correction slots not yet mounted (the rewrite is resolved by
+// reference on the server, never taken from the page).
+function mountCorrectionSlots(root = document) {
+  root.querySelectorAll('[data-correction-slot]:not([data-mounted])').forEach(slot => {
+    slot.dataset.mounted = 'true';
+    readAloud(slot, {recordId:slot.dataset.recordId, attemptId:slot.dataset.attemptId, correctionIndex:Number(slot.dataset.correctionIndex)}, '朗讀修正句');
+  });
+}
+// Re-renders every copy of one answer's transcript (after its corrections load).
+function refreshAnnotatedTranscripts(key) {
+  document.querySelectorAll(`[data-annotation="${CSS.escape(key)}"]`).forEach(node => {
+    const legend = node.previousElementSibling?.classList.contains('mk-legend') ? node.previousElementSibling : null;
+    const holder = document.createElement('div');
+    holder.innerHTML = annotatedTranscriptHtml(key, {tag: node.tagName.toLowerCase(), legend: Boolean(legend)});
+    legend?.remove();
+    node.replaceWith(...holder.childNodes);
+  });
+  mountCorrectionSlots();
+}
+function showCorrections(container, result, key) {
+  const entry = annotations.get(key);
+  const fresh = entry && entry.corrections !== (result?.corrections || null);
+  if (entry) entry.corrections = result?.corrections || null;
+  container.innerHTML = correctionsHtml(result, key);
+  if (fresh) refreshAnnotatedTranscripts(key);
+  mountCorrectionSlots();
+  updateFeedbackBadge();
 }
 async function loadCorrections(recordId, attemptId, container) {
   const token = viewToken;
@@ -499,8 +665,7 @@ async function loadCorrections(recordId, attemptId, container) {
     const result = await api(`/records/${recordId}/corrections`, {attemptId});
     if (viewToken !== token || !container.isConnected) return;
     if (workspace.records?.[recordId]) { workspace.records[recordId].corrections ??= {}; workspace.records[recordId].corrections[attemptId] = result; }
-    container.innerHTML = correctionsHtml(result);
-    mountCorrectionReadAloud(container, recordId, attemptId);
+    showCorrections(container, result, annotationKey(attemptId));
   } catch (error) {
     if (viewToken !== token || !container.isConnected) return;
     container.innerHTML = '';
@@ -511,18 +676,73 @@ async function loadCorrections(recordId, attemptId, container) {
 function setupCorrections(record, attemptId, container, auto) {
   if (!container) return;
   const cached = record.corrections?.[attemptId];
-  if (cached) { container.innerHTML = correctionsHtml(cached); mountCorrectionReadAloud(container, record.id, attemptId); return; }
+  if (cached) { showCorrections(container, cached, annotationKey(attemptId)); return; }
   if (auto) { loadCorrections(record.id, attemptId, container); return; }
   container.replaceChildren();
   button('看關鍵句英文修正', () => loadCorrections(record.id, attemptId, container), container, {kind:'ghost'});
 }
 
-function changedTextHtml(before,after) {
-  let start=0,end=0;
-  while(start<before.length && start<after.length && before[start]===after[start])start++;
-  while(end<before.length-start && end<after.length-start && before[before.length-1-end]===after[after.length-1-end])end++;
-  const excerpt=value=>`${start>60?'…':''}${escape(value.slice(Math.max(0,start-60),start))}<mark>${escape(value.slice(start,value.length-end)) || '（已移除）'}</mark>${escape(value.slice(value.length-end,value.length-end+60))}${end>60?'…':''}`;
-  return `<p class="meta">修改前</p><blockquote>${excerpt(before)}</blockquote><p class="meta">修改後</p><blockquote>${excerpt(after)}</blockquote>`;
+// Before/after comparison of two answers as one inline word diff, with long
+// unchanged stretches shortened around the changes.
+function changedTextHtml(before, after) {
+  return `<p class="meta">刪除線是第一次回答有、這次拿掉的字；底線是這次新加入的字。</p><p class="diff-body compare-diff" lang="en">${diffRunsHtml(elideUnchanged(wordDiff(before, after), 8), {announce:true})}</p>`;
+}
+
+// Hovering or focusing a mark or a note highlights both; the state is recomputed
+// from whatever is hovered and focused, so leaving one never clears the other.
+const linkState = {hover:null, focus:null};
+const linkIds = node => !node ? [] : node.dataset.notes ? node.dataset.notes.split(' ') : [node.dataset.noteId];
+const linkTarget = node => node?.closest?.('mark[data-notes], [data-note-id]') || null;
+function paintLinks() {
+  document.querySelectorAll('mark.mk.is-active, [data-note-id].is-active').forEach(node => node.classList.remove('is-active'));
+  const ids = new Set([linkState.hover, linkState.focus].flatMap(linkIds));
+  if (!ids.size) return;
+  document.querySelectorAll('mark[data-notes]').forEach(mark => { if (mark.dataset.notes.split(' ').some(id => ids.has(id))) mark.classList.add('is-active'); });
+  document.querySelectorAll('[data-note-id]').forEach(note => { if (ids.has(note.dataset.noteId)) note.classList.add('is-active'); });
+}
+function pulse(node) { node.classList.remove('pulse'); void node.offsetWidth; node.classList.add('pulse'); }
+function openAncestors(node) { for (let parent = node.parentElement?.closest('details'); parent; parent = parent.parentElement?.closest('details')) parent.open = true; }
+function jumpToNote(id) {
+  const note = document.querySelector(`[data-note-id="${CSS.escape(id)}"]`);
+  if (!note) return;
+  if (note.closest('#practice .fb-scroll')) showTab('feedback');
+  openAncestors(note);
+  if (note.tagName === 'DETAILS') note.open = true;
+  const target = note.tagName === 'DETAILS' ? note.querySelector('summary') : note;
+  requestAnimationFrame(() => { target.focus({preventScroll:true}); note.scrollIntoView({block:'center', behavior:'smooth'}); pulse(note); });
+}
+function jumpToMark(id) {
+  const mark = document.querySelector(`mark[data-notes~="${CSS.escape(id)}"]`);
+  if (!mark) return;
+  if (mark.closest('#practice .wb-answer')) showTab('answer');
+  openAncestors(mark);
+  requestAnimationFrame(() => { mark.focus({preventScroll:true}); mark.scrollIntoView({block:'center', behavior:'smooth'}); pulse(mark); });
+}
+document.addEventListener('pointerover', event => { const node = linkTarget(event.target); if (node !== linkState.hover) { linkState.hover = node; paintLinks(); } });
+document.addEventListener('focusin', event => { linkState.focus = linkTarget(event.target); paintLinks(); });
+document.addEventListener('focusout', event => { if (!event.relatedTarget) { linkState.focus = null; paintLinks(); } });
+document.addEventListener('click', event => {
+  const jump = event.target.closest?.('[data-jump]');
+  if (jump) { event.preventDefault(); jumpToMark(jump.dataset.jump); return; }
+  const mark = event.target.closest?.('mark[data-notes]');
+  if (mark) jumpToNote(mark.dataset.notes.split(' ')[0]);
+});
+document.addEventListener('keydown', event => {
+  if ((event.key === 'Enter' || event.key === ' ') && event.target.matches?.('mark[data-notes]')) { event.preventDefault(); jumpToNote(event.target.dataset.notes.split(' ')[0]); }
+});
+// The 回饋 tab's badge counts the notes shown for the current answer(s): strength,
+// priority improvement, the four ratings and each loaded Key-Sentence Correction,
+// for the main answer and the current follow-up answer. Notes inside the collapsed
+// answer/follow-up history are not counted.
+function updateFeedbackBadge() {
+  const tab = $('#tab-feedback');
+  if (!tab) return;
+  const count = [...document.querySelectorAll('#wb-feedback [data-note-id]')].filter(note => !note.closest('#attempt-history, .follow-up-history')).length;
+  let badge = tab.querySelector('.count');
+  if (!count) { badge?.remove(); tab.removeAttribute('aria-label'); return; }
+  if (!badge) { badge = document.createElement('span'); badge.className = 'count'; tab.append(' ', badge); }
+  badge.textContent = String(count);
+  tab.setAttribute('aria-label', `回饋（${count} 則）`);
 }
 
 function guidanceHtml() {
@@ -743,14 +963,15 @@ function followUpHistoryHtml(followUps, corrections = {}) {
   if (followUps.length < 2) return '';
   const previous = followUps[followUps.length - 2];
   const previousCorrections = previous.attempt && corrections[previous.attempt.id];
+  const key = previous.attempt && annotationKey(previous.attempt.id);
   return `<details class="follow-up-history"><summary>查看第 ${followUps.length - 1} 次追問與回答</summary>
     <div class="detail-panel">
       <p lang="en"><strong>${escape(previous.question.text)}</strong></p>
       <p class="meaning">${escape(previous.question.meaningZh)}</p>
-      <blockquote lang="en">${escape(previous.attempt?.transcript || '尚未作答')}</blockquote>
+      ${previous.attempt ? annotatedTranscriptHtml(key, {tag:'blockquote'}) : '<blockquote>尚未作答</blockquote>'}
       ${previous.attempt ? playerHtml(previous.attempt, {label:`回聽第 ${followUps.length - 1} 次追問錄音`}) : ''}
-      ${previous.attempt?.feedback ? feedbackHtml(previous.attempt.feedback) : ''}
-      ${previousCorrections ? `<div class="corrections-area" data-history-attempt="${escape(previous.attempt.id)}">${correctionsHtml(previousCorrections)}</div>` : ''}
+      ${previous.attempt?.feedback ? feedbackHtml(previous.attempt.feedback, key) : ''}
+      ${previousCorrections ? `<div class="corrections-area">${correctionsHtml(previousCorrections, key)}</div>` : ''}
     </div>
   </details>`;
 }
@@ -776,7 +997,7 @@ function followUpWorkHtml(record, complete) {
   } else if (!attempt) {
     content = '<p class="meta">這題尚未作答；你已提前結束並保存這次練習。</p>';
   } else {
-    content = `<p class="meta">${feedback ? '你的追問回答' : '你的回答已保存'}</p><div class="transcript" lang="en">${escape(attempt.transcript)}</div>${playerHtml(attempt,{label:'回聽這次的追問錄音'})}`;
+    content = `<p class="meta">${feedback ? '你的追問回答' : '你的回答已保存'}</p>${annotatedTranscriptHtml(annotationKey(attempt.id), {legend:true})}${playerHtml(attempt,{label:'回聽這次的追問錄音'})}`;
   }
   return `${followUpHistoryHtml(followUps, record.corrections)}<section class="follow-up-flow" aria-labelledby="follow-up-title">
     <div class="follow-up-heading"><p class="eyebrow">追問 ${followUps.length} / 2</p><span class="follow-up-state">${feedback ? '回饋已完成' : attempt ? '等待回饋' : '等待回答'}</span></div>
@@ -793,7 +1014,7 @@ function followUpFeedbackHtml(record, complete) {
   const attempt = current?.attempt;
   if (!attempt) return '';
   if (!attempt.feedback) return `<div class="provider-warning follow-up-pending"><p class="eyebrow">追問 ${followUps.length} / 2</p><p>追問回答已保存，中文回饋尚未完成。請重試取得回饋，再決定要繼續追問或結束；正式回答不會重複保存。</p>${complete ? '' : '<div id="follow-up-actions" class="button-row"></div>'}</div>`;
-  return `<section class="follow-up-feedback" aria-labelledby="follow-up-feedback-title"><p class="eyebrow">追問 ${followUps.length} / 2</p><h3 id="follow-up-feedback-title" tabindex="-1">這次追問的中文回饋</h3>${feedbackHtml(attempt.feedback)}<div id="follow-up-corrections" class="corrections-area" aria-live="polite"></div></section>`;
+  return `<section class="follow-up-feedback" aria-labelledby="follow-up-feedback-title"><p class="eyebrow">追問 ${followUps.length} / 2</p><h3 id="follow-up-feedback-title" tabindex="-1">這次追問的中文回饋</h3>${feedbackHtml(attempt.feedback, annotationKey(attempt.id))}<div id="follow-up-corrections" class="corrections-area" aria-live="polite"></div></section>`;
 }
 
 async function createFromFocus(sourceId) {
@@ -943,7 +1164,6 @@ async function requestFollowUpFeedback(recordId, followUpId) {
 // pane right, its footer holding the completion action; <1024px 你的回答／回饋 are
 // tabs under the question and the footer is docked to the bottom of the viewport.
 const narrowLayout = () => window.matchMedia('(max-width: 1023px)').matches;
-const feedbackNoteCount = feedback => feedback ? 2 + Object.keys(feedback.ratings || {}).length : 0;
 function showTab(tab, {scroll = false} = {}) {
   const workbench = $('#practice .workbench');
   if (!workbench) return;
@@ -1002,24 +1222,27 @@ async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedb
   const followUps = Array.isArray(record.followUps) ? record.followUps : [];
   const currentFollowUp = followUps.at(-1);
   const followUpFeedbackPending = Boolean(currentFollowUp?.attempt && !currentFollowUp.attempt.feedback);
+  annotations.clear();
+  for (const attempt of [...record.attempts, ...followUps.map(item => item.attempt)]) registerAttempt(record, attempt);
+  const lastKey = last && annotationKey(last.id);
   const editor = !complete && !feedbackOnly && (!last || (last.feedback && record.attempts.length===1 && (editing || record.writtenDraft)));
   const questionHtml = `${record.focusOrigin ? `<div class="focus-origin-banner"><p class="eyebrow">延續練習重點</p><p>這一題延續你上次的練習重點：<strong>${escape(record.focusOrigin.focusPoint.replace(/[。．.!！?？,，、;；\s]+$/u, ''))}</strong>，換一個情境、同一份職缺再練一次。</p></div>` : ''}<section class="question-phase" aria-label="題目"><div class="q-head"><span class="chip">${escape(categories[record.question.category] || record.question.category)}</span></div><h1 class="question-text" lang="en">${escape(record.question.text)}</h1><div id="question-read-aloud"></div><details open><summary>中文題意</summary><p class="meaning">${escape(record.question.meaningZh || '舊版題目未保存中文題意。')}</p></details></section>`;
   let work = '', feedbackPane = '', foot = '', tab = 'answer', step = 1;
   if (last && !last.feedback) {
     step = 2; tab = 'feedback';
-    work = `<section class="answer-area"><div class="sec-head"><h2>你的回答已保存</h2></div><div class="transcript" lang="en">${escape(last.transcript)}</div>${playerHtml(last)}</section>`;
+    work = `<section class="answer-area"><div class="sec-head"><h2>你的回答已保存</h2></div>${annotatedTranscriptHtml(lastKey)}${playerHtml(last)}</section>`;
     feedbackPane = `<div class="fb-title"><h2>回饋</h2></div><div class="provider-warning"><p>回饋尚未完成，可以重試，不會重複提交回答。</p><div id="feedback-retry-actions"></div></div>`;
   } else if (editor) {
-    if(last)work+=`<section class="answer-area revise-target"><h2>這次，試著改這一點</h2><p>${escape(last.feedback.priorityImprovement.textZh || '請選擇一項下次想練習的重點。')}</p><blockquote>${escape(last.feedback.priorityImprovement.quote)}</blockquote></section>`;
+    if(last)work+=`<section class="answer-area revise-target"><div class="sec-head"><h2>這次，試著改這一點</h2>${quoteRefHtml(lastKey, 'priority')}</div><p>${escape(last.feedback.priorityImprovement.textZh || '請選擇一項下次想練習的重點。')}</p><details class="prev-answer"><summary>查看上一次的回答與回饋標記</summary>${annotatedTranscriptHtml(lastKey, {legend:true})}</details></section>`;
     work+=`<section class="answer-area"><h2>${last?'自己再試一次':'先用自己的方式回答'}</h2>${guidanceHtml()}<label for="answer">${last?'修改你的回答':'你的回答'}</label><textarea id="answer" class="transcript-input" rows="7" placeholder="先說出你的想法，不用一次就完美。"></textarea><p id="draft-status" class="draft-status" aria-live="polite"></p><button id="retry-draft" class="ghost" hidden type="button">重試儲存草稿</button><div id="voice-entry"></div><button id="submit-answer" class="primary wide" type="button">${last?'送出修改並取得回饋':'送出並取得回饋'}</button></section>`;
     feedbackPane = last
-      ? `<div class="fb-title"><h2>上一次回答的回饋</h2></div><p class="fb-sub">修改時可以對照這份回饋；送出修改後會得到新的回饋。</p>${feedbackHtml(last.feedback)}`
+      ? `<div class="fb-title"><h2>上一次回答的回饋</h2></div><p class="fb-sub">修改時可以對照這份回饋；送出修改後會得到新的回饋。</p>${feedbackHtml(last.feedback, lastKey)}`
       : '<div class="fb-title"><h2>回饋</h2></div><p class="fb-empty">送出回答後，中文回饋會出現在這裡：一項做得好的地方、一項優先改進，以及四項評分，每一點都引用你的原句。</p>';
     if(last)foot='<div id="finish-while-editing" class="foot-actions"></div>';
   } else if(last) {
     step = complete ? 4 : currentFollowUp ? 3 : 2;
     tab = currentFollowUp && !currentFollowUp.attempt && !complete ? 'answer' : 'feedback';
-    work+=`<section class="answer-area"><div class="sec-head"><h2>你的回答</h2>${record.attempts.length>1?`<span class="meta">第 ${record.attempts.length} 次回答</span>`:''}</div>${playerHtml(last)}<div class="transcript" lang="en">${escape(last.transcript)}</div></section>`;
+    work+=`<section class="answer-area"><div class="sec-head"><h2>你的回答</h2>${record.attempts.length>1?`<span class="meta">第 ${record.attempts.length} 次回答</span>`:''}</div>${playerHtml(last)}${annotatedTranscriptHtml(lastKey, {legend:true})}<p class="work-note">回饋只引用你說過的英文原句，不翻譯、不改寫；修正建議不會算作正式回答。</p></section>`;
     if(record.attempts.length===2) {
       const first=record.attempts[0];
       const same=first.transcript.trim()===last.transcript.trim();
@@ -1028,8 +1251,8 @@ async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedb
     if(record.unsubmittedDraft)work+=`<details><summary>未送出的修改草稿（未評分）</summary><blockquote>${escape(record.unsubmittedDraft.transcript)}</blockquote></details>`;
     work+=followUpWorkHtml(record, complete);
     if(complete)feedbackPane+='<div id="practice-complete" class="complete-banner"><strong>今天又多練習了一點。</strong><p>本次回答與回饋已保存。</p></div>';
-    feedbackPane+=`<section class="fb-section" aria-labelledby="feedback-heading"><h2 id="feedback-heading" tabindex="-1">給這次回答的一點建議</h2>${feedbackHtml(last.feedback)}<div id="corrections" class="corrections-area" aria-live="polite"></div><details id="attempt-history"><summary>查看回答紀錄（${record.attempts.length} 個版本）</summary><label for="attempt-version">選擇回答版本</label><select id="attempt-version">${record.attempts.map((a,i)=>`<option value="${i}" ${i===record.attempts.length-1?'selected':''}>第 ${i+1} 次回答 · ${escape(dateLabel(a.submittedAt))}</option>`).join('')}</select><div id="attempt-detail"></div></details></section>`;
-    if(complete && record.focusOrigin){const priority=last.feedback.priorityImprovement;feedbackPane+=`<section class="answer-area focus-progress"><h2>這個重點練得如何？</h2><p class="meta">上次的練習重點</p><blockquote>${escape(record.focusOrigin.focusPoint)}</blockquote><p class="meta">這次回答的優先改進</p><blockquote>${escape(priority.textZh || priority.text || '－')}</blockquote>${priority.quote?`<p class="meta">依據你這次的原句</p><blockquote lang="en">${escape(priority.quote)}</blockquote>`:''}<p>對照上次的重點與這次的回饋，由你判斷這個重點是否已改善；系統不會替你宣稱進步。</p></section>`;}
+    feedbackPane+=`<section class="fb-section" aria-labelledby="feedback-heading"><h2 id="feedback-heading" tabindex="-1">給這次回答的一點建議</h2>${feedbackHtml(last.feedback, lastKey)}<div id="corrections" class="corrections-area" aria-live="polite"></div><details id="attempt-history"><summary>查看回答紀錄（${record.attempts.length} 個版本）</summary><label for="attempt-version">選擇回答版本</label><select id="attempt-version">${record.attempts.map((a,i)=>`<option value="${i}" ${i===record.attempts.length-1?'selected':''}>第 ${i+1} 次回答 · ${escape(dateLabel(a.submittedAt))}</option>`).join('')}</select><div id="attempt-detail"></div></details></section>`;
+    if(complete && record.focusOrigin){const priority=last.feedback.priorityImprovement;feedbackPane+=`<section class="answer-area focus-progress"><h2>這個重點練得如何？</h2><p class="meta">上次的練習重點</p><blockquote>${escape(record.focusOrigin.focusPoint)}</blockquote><p class="meta">這次回答的優先改進</p><blockquote>${escape(priority.textZh || priority.text || '－')}</blockquote>${priority.quote?`<p class="meta focus-quote">依據你這次的原句 ${quoteRefHtml(lastKey, 'priority')}</p>`:''}<p>對照上次的重點與這次的回饋，由你判斷這個重點是否已改善；系統不會替你宣稱進步。</p></section>`;}
     feedbackPane+=followUpFeedbackHtml(record, complete);
     feedbackPane+=`<div class="optional-actions">${complete?'':'<p class="optional-label">其他選擇</p>'}<div id="feedback-actions" class="button-row"></div><div id="rewrite-result" aria-live="polite"></div></div>`;
     const focus=record.focusPoint || last.feedback.priorityImprovement.textZh || '請選擇一項下次想練習的重點。';
@@ -1047,10 +1270,9 @@ async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedb
       foot = `<p class="meta foot-note">${currentFollowUp ? '每道主問最多追問兩次；' : '追問可選，每道主問最多兩次；'}隨時可以結束並保存。</p><div class="foot-actions"><div id="revise-actions" class="foot-group"></div>${footFollowUp ? '<div id="follow-up-actions" class="foot-group"></div>' : ''}${end}</div>`;
     }
   }
-  const noteCount = feedbackNoteCount(last?.feedback) + feedbackNoteCount(currentFollowUp?.attempt?.feedback);
   const content = `<article class="workbench" data-tab="${tab}">
     <div class="wb-question">${questionHtml}</div>
-    <div class="wb-tabs" role="tablist" aria-label="作答與回饋"><button type="button" role="tab" id="tab-answer" aria-controls="wb-answer" data-tab="answer">你的回答</button><button type="button" role="tab" id="tab-feedback" aria-controls="wb-feedback" data-tab="feedback">回饋${noteCount ? ` <span class="count">${noteCount}</span>` : ''}</button></div>
+    <div class="wb-tabs" role="tablist" aria-label="作答與回饋"><button type="button" role="tab" id="tab-answer" aria-controls="wb-answer" data-tab="answer">你的回答</button><button type="button" role="tab" id="tab-feedback" aria-controls="wb-feedback" data-tab="feedback">回饋</button></div>
     <section id="wb-answer" class="wb-answer" role="tabpanel" aria-labelledby="tab-answer">${work}</section>
     <aside class="wb-feedback" aria-label="回饋"><div id="wb-feedback" class="fb-scroll" role="tabpanel" aria-labelledby="tab-feedback">${feedbackPane}</div>${foot ? `<div class="fb-foot">${foot}</div>` : ''}</aside>
   </article>`;
@@ -1062,11 +1284,14 @@ async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedb
   if (currentFollowUp) readAloud($('#follow-up-read-aloud'), {recordId:record.id, followUpId:currentFollowUp.id}, '朗讀追問題目', questionText($('#follow-up-read-aloud')?.closest('.follow-up-flow')));
   // Corrections rendered inside the collapsed follow-up history are static markup, so
   // they need mounting here; the live panels mount through setupCorrections.
-  document.querySelectorAll('[data-history-attempt]').forEach(area => mountCorrectionReadAloud(area, record.id, area.dataset.historyAttempt));
+  mountCorrectionSlots();
+  updateFeedbackBadge();
   if ($('#attempt-version')) {
     const renderAttempt = () => {
       const index=Number($('#attempt-version').value), attempt=record.attempts[index];
-      $('#attempt-detail').innerHTML=`<h3>第 ${index+1} 次回答</h3><blockquote class="transcript" lang="en">${escape(attempt.transcript)}</blockquote>${playerHtml(attempt,{label:`回聽第 ${index+1} 次回答`})}${index<record.attempts.length-1?feedbackHtml(attempt.feedback):'<p class="meta">此版本的回饋已顯示在上方。</p>'}`;
+      const older=index<record.attempts.length-1;
+      // The latest version is already on screen (answer pane and notes), so it is not repeated.
+      $('#attempt-detail').innerHTML=`<h3>第 ${index+1} 次回答</h3>${older?annotatedTranscriptHtml(annotationKey(attempt.id),{tag:'blockquote',corrections:false}):''}${playerHtml(attempt,{label:`回聽第 ${index+1} 次回答`})}${older?feedbackHtml(attempt.feedback, annotationKey(attempt.id)):'<p class="meta">此版本的回答與回饋已顯示在上方。</p>'}`;
     };
     $('#attempt-version').addEventListener('change',renderAttempt);
     renderAttempt();
@@ -1202,10 +1427,12 @@ function renderMockSummary(session, jobLine) {
   const overall = nothing
     ? '<p class="provider-warning">這場模擬三題都跳過了，沒有可以評的內容。下一次挑一題先講三句也好。</p>'
     : `<div class="feedback-feature">${finding('整場做得好的地方', session.summary.strength, 'strength')}${finding('整場優先改進', session.summary.priorityImprovement, 'priority')}</div>`;
+  annotations.clear();
   const entries = session.entries.map((entry, index) => {
     const head = `<p class="eyebrow">第 ${index + 1} 題・${escape(categories[entry.question.category] || entry.question.category)}</p><h3 lang="en">${escape(entry.question.text)}</h3>`;
     if (entry.skipped) return `<article class="list-card mock-entry"><span class="mock-skipped">已跳過</span>${head}<p class="meta">這一題你選擇跳過，沒有回答，因此沒有評分。</p></article>`;
-    return `<article class="list-card mock-entry" data-entry-id="${escape(entry.id)}">${head}<details><summary>查看你的回答</summary><blockquote lang="en">${escape(entry.answer.transcript)}</blockquote>${playerHtml(entry.answer, {label: '回聽這一題的錄音'})}</details><div class="mock-entry-feedback" aria-live="polite"></div></article>`;
+    const key = registerAnnotation(annotationKey(`mock-${entry.id}`), {transcript: entry.answer.transcript, feedback: entry.feedback});
+    return `<article class="list-card mock-entry" data-entry-id="${escape(entry.id)}">${head}<details><summary>查看你的回答</summary>${annotatedTranscriptHtml(key, {tag:'blockquote'})}${playerHtml(entry.answer, {label: '回聽這一題的錄音'})}</details><div class="mock-entry-feedback" aria-live="polite"></div></article>`;
   }).join('');
   $('#mock').innerHTML = `<article class="practice-shell"><header class="practice-header"><p class="eyebrow">三題短場模擬</p><p class="mock-progress">已完成 · ${escape(dateLabel(session.completedAt))}</p></header>${jobLine}<div class="practice-body">
     <section class="answer-area"><h1 id="mock-summary-heading" tabindex="-1">整場回饋</h1><p class="meta">這是整場的一項優點與一項優先重點，不是分數，也不是錄取判斷。逐題回饋要看再展開。</p>${overall}</section>
@@ -1215,10 +1442,11 @@ function renderMockSummary(session, jobLine) {
     const panel = card.querySelector('.mock-entry-feedback');
     const entryId = card.dataset.entryId;
     const entry = session.entries.find(item => item.id === entryId);
-    if (entry.feedback) { panel.innerHTML = feedbackHtml(entry.feedback); return; }
+    const key = annotationKey(`mock-${entry.id}`);
+    if (entry.feedback) { panel.innerHTML = feedbackHtml(entry.feedback, key); return; }
     button('看這一題的回饋', async () => {
       panel.innerHTML = '<p class="meta">正在整理這一題的回饋…</p>';
-      try { const updated = await api(`/mock-sessions/${session.id}/entries/${entryId}/feedback`, {}); panel.innerHTML = feedbackHtml(updated.feedback); }
+      try { const updated = await api(`/mock-sessions/${session.id}/entries/${entryId}/feedback`, {}); annotations.get(key).feedback = updated.feedback; refreshAnnotatedTranscripts(key); panel.innerHTML = feedbackHtml(updated.feedback, key); }
       catch (error) { panel.replaceChildren(); button('重試取得這一題的回饋', () => {}, panel, {kind: 'ghost'}).remove(); panel.innerHTML = '<p class="meta">尚未取得回饋，可再按一次重試。</p>'; throw error; }
     }, panel, {kind: 'ghost'});
     button('幫我講得更自然', async () => {

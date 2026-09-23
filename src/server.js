@@ -742,7 +742,7 @@ export async function createApplication({directory = '.workspace', languageModel
       } else {
         // Fonts are self-hosted Latin subsets (ADR 0013: no third-party request on page load).
         const fonts = ['inter-latin-400-normal', 'inter-latin-500-normal', 'inter-latin-600-normal', 'inter-latin-700-normal', 'jetbrains-mono-latin-400-normal', 'jetbrains-mono-latin-500-normal'];
-        const name = {'/': 'index.html', '/app.js': 'app.js', '/voice.js': 'voice.js', '/style.css': 'style.css', ...Object.fromEntries(fonts.map(font => [`/fonts/${font}.woff2`, `fonts/${font}.woff2`]))}[path];
+        const name = {'/': 'index.html', '/app.js': 'app.js', '/annotate.js': 'annotate.js', '/voice.js': 'voice.js', '/style.css': 'style.css', ...Object.fromEntries(fonts.map(font => [`/fonts/${font}.woff2`, `fonts/${font}.woff2`]))}[path];
         requireValue(name, 'Not found', 404);
         const content = await readFile(new URL(`../public/${name}`, import.meta.url));
         res.writeHead(200, {'Content-Type': name.endsWith('.js') ? 'text/javascript' : name.endsWith('.css') ? 'text/css' : name.endsWith('.woff2') ? 'font/woff2' : 'text/html', // media-src must name blob: explicitly: read-aloud audio is fetched as JSON and

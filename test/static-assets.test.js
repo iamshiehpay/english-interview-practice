@@ -27,3 +27,13 @@ test('the page references no third-party origin and the CSP stays same-origin', 
   assert.doesNotMatch(html + css, /https?:\/\//);
   for (const font of fonts) assert.match(css, new RegExp(`url\\("/fonts/${font}\\.woff2"\\)`));
 });
+
+test('the annotation helpers app.js imports are served as a same-origin module', async t => {
+  const {base} = await harness(t);
+  const app = await (await fetch(`${base}/app.js`)).text();
+  assert.match(app, /from '\.\/annotate\.js'/);
+  const res = await fetch(`${base}/annotate.js`);
+  assert.equal(res.status, 200);
+  assert.equal(res.headers.get('content-type'), 'text/javascript');
+  assert.match(await res.text(), /export function annotateTranscript/);
+});

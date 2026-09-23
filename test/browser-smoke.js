@@ -157,7 +157,7 @@ try {
  const real=window.fetch.bind(window);let failed=false;window.fetch=async(...a)=>{if(!failed&&a[1]?.method==='POST'&&String(a[0]).endsWith('/feedback')){failed=true;return new Response(JSON.stringify({error:'synthetic failure'}),{status:503,headers:{'Content-Type':'application/json'}});}return real(...a);};
  click('#submit-answer');await wait(()=>btn('重試取得回饋'),'feedback failure');click(btn('重試取得回饋'));await wait(()=>el('#complete-practice'),'feedback retry');
  await wait(()=>el('#corrections .correction-card')||el('#corrections .corrections-none'),'key-sentence corrections surface after feedback');
- if(el('#corrections .correction-card')){const q=el('#corrections .correction-card blockquote[lang="en"]').textContent;if(!(await ws()).records[sessionStorage.getItem('record')].attempts.at(-1).transcript.includes(q))throw Error('Correction original is not a verbatim substring of the learner answer');}
+ if(el('#corrections .correction-card')){const saved=(await ws()).records[sessionStorage.getItem('record')],answer=saved.attempts.at(-1);if(!saved.corrections[answer.id].corrections.every(c=>answer.transcript.includes(c.original))||[...document.querySelectorAll('#corrections .correction-card')].some(card=>!card.querySelector('.ref')||!el('#wb-answer mark[data-notes~="'+card.dataset.noteId+'"]')))throw Error('Correction original is not a verbatim substring of the learner answer');}
  if((await ws()).records[sessionStorage.getItem('record')].attempts.length!==1)throw Error('Corrections became an Answer Attempt');
  if((await ws()).records[sessionStorage.getItem('record')].attempts[0].corrections)throw Error('Corrections must be stored separately from Answer Attempts');
  if(el('#answer'))throw Error('Revision is forced');
@@ -209,9 +209,18 @@ try {
  if(btn('直接結束並保存'))throw Error('Duplicate end button still present after primary feedback');
  const endButtons=[...document.querySelectorAll('button')].filter(b=>b.textContent.trim()==='結束並保存');
  if(endButtons.length!==1||!el('#complete-practice'))throw Error('Expected exactly one completion button before follow-up, got '+endButtons.length);
- const ratingQuoteCount=document.querySelectorAll('.ratings blockquote').length,dimCount=document.querySelectorAll('.ratings .rating').length;
+ const dimCount=document.querySelectorAll('.ratings .rating').length;
  if(dimCount!==4)throw Error('Expected four assessment dimensions, got '+dimCount);
- if(ratingQuoteCount>=dimCount)throw Error('Rating citations were not deduplicated: '+ratingQuoteCount+' of '+dimCount);
+ // Annotated feedback: the answer is shown once with the quotes marked on it, and the
+ // notes link to those marks instead of repeating the learner's sentence.
+ if(!document.querySelectorAll('#wb-answer .transcript.annotated mark.mk').length)throw Error('Feedback quotes are not marked on the transcript');
+ if(document.querySelectorAll('#wb-feedback .fb-section blockquote').length)throw Error('Feedback repeats the learner sentence in quote blocks');
+ if(![...document.querySelectorAll('.ratings .rating')].every(r=>r.querySelector('.bar')&&(r.querySelector('.ref')||r.querySelector('.note-quote'))))throw Error('A rating lacks its 1-4 bar or its transcript reference');
+ const noteRef=el('#wb-feedback .fb-section .note .ref'),linkedId=noteRef.dataset.jump;click(noteRef);
+ await wait(()=>document.activeElement?.matches?.('mark.mk')&&document.activeElement.dataset.notes.split(' ').includes(linkedId),'a note reference moves focus to its transcript mark');
+ if(!el('[data-note-id="'+linkedId+'"]').classList.contains('is-active'))throw Error('A focused transcript mark does not highlight its note');
+ const markFirstId=document.activeElement.dataset.notes.split(' ')[0];document.activeElement.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
+ await wait(()=>document.activeElement?.closest?.('[data-note-id]')?.dataset.noteId===markFirstId,'Enter on a transcript mark moves focus to its note');
  if((await ws()).records[fresh.id].attempts.length!==1)throw Error('Primary feedback changed formal-answer count');
  click(btn('讓面試官追問'));await wait(()=>el('#follow-up-answer'),'first optional follow-up');
  if((await ws()).records[fresh.id].attempts.length!==1)throw Error('Follow-up generation became a primary answer');
@@ -353,7 +362,7 @@ try {
  const transcripts=s.entries.filter(e=>e.answer).map(e=>e.answer.transcript);
  for(const f of [s.summary.strength,s.summary.priorityImprovement])if(!transcripts.some(t=>t.includes(f.quote)))throw Error('Session Summary quoted something the learner never said');
  // Per-question feedback and assistance become available only now.
- click(answered[0].querySelector('button'));await wait(()=>answered[0].querySelector('.feedback-feature'),'per-question feedback on demand');
+ click(answered[0].querySelector('button'));await wait(()=>answered[0].querySelector('.mock-entry-feedback .note'),'per-question feedback on demand');
  if((await sess()).entries.filter(e=>e.feedback).length!==1)throw Error('Opening one question generated feedback for others');
  if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow on the mock summary');
  // A completed session is listed under its job and never became a Practice Record.
