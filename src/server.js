@@ -1,5 +1,5 @@
 import {practiceResume, extractResume} from './resume.js';
-import {Operations} from './operations.js';
+import {Operations, withValidationRetry} from './operations.js';
 import {configuredProviders} from './cloud.js';
 import {progressView, decideProgress, cleanDerivedState, removeRecord, recommendWithFocus} from './progress.js';
 import {importResume, captureAnswerClaims, decideClaim, evidenceContext} from './evidence.js';
@@ -14,14 +14,14 @@ import {RecordingStore, captureRecording, transcribeRecording, recordingsFor} fr
 import {createSession, sessionsFor, sessionView, requireCurrentEntry, sessionFinished} from './mock-sessions.js';
 import {LocalWorkspace} from './store.js';
 import {FakeLanguageModel} from './providers.js';
-import {AppError, requireValue, nonempty, validateAnalysis, validateFeedback, validateCoaching, validateFollowUp, validateCorrections, validateMockSummary, dimensions, questionSetView} from './domain.js';
+import {AppError, requireValue, nonempty, redactSecrets, validateAnalysis, validateFeedback, validateCoaching, validateFollowUp, validateCorrections, validateMockSummary, dimensions, questionSetView} from './domain.js';
 
 async function body(req, limit = 1000000) {
   let raw = '';
   for await (const chunk of req) { raw += chunk; requireValue(raw.length <= limit, 'Request too large', 413); }
   try { const value=raw?JSON.parse(raw):{};requireValue(value && typeof value==='object' && !Array.isArray(value),'Expected JSON object');return value; } catch { throw new AppError('Invalid JSON object'); }
 }
-export async function createApplication({directory = '.workspace', languageModel = new FakeLanguageModel(), speechProvider = new FakeSpeechProvider(), jobSource = new FakeJobSource(), sourceTimeoutMs = 10000, operationTimeoutMs = 30000} = {}) {
+export async function createApplication({directory = '.workspace', languageModel = new FakeLanguageModel(), speechProvider = new FakeSpeechProvider(), jobSource = new FakeJobSource(), sourceTimeoutMs = 10000, operationTimeoutMs = 30000, logRejectedOutput = process.env.NODE_TEST_CONTEXT ? () => {} : line => console.error(line)} = {}) {
   requireValue(Number.isFinite(operationTimeoutMs) && operationTimeoutMs >= 10 && operationTimeoutMs <= 300000, 'Operation timeout must be between 10 and 300000 milliseconds');
   const store = await new LocalWorkspace(directory).open();
   const operations = new Operations(store, operationTimeoutMs);
@@ -52,6 +52,15 @@ export async function createApplication({directory = '.workspace', languageModel
     await recordings.remove(removed);
     return result;
   };
+  // Every model output that must pass a validator goes through here: a validation
+  // rejection is retried once (see withValidationRetry) and recorded on the operation
+  // in our own content-free wording. The rejected output itself is printed to this
+  // server's terminal only, for the local operator to diagnose (ADR 0013); it never
+  // reaches the workspace, an operation record or a response. Quiet under node --test.
+  const generate = (context, call, validate) => withValidationRetry(call, validate, {signal: context?.signal, onRejection: (error, output, attempt) => {
+    if (attempt === 1) context?.note({validationRetries: 1, firstRejection: error.reason});
+    logRejectedOutput(`[provider-output-rejected] ${context?.kind ?? 'request'} attempt ${attempt} of 2: ${error.reason}\n${redactSecrets(JSON.stringify(output), 200000)}`);
+  }});
   const item = (collection, id) => { const held = store.data[collection] || {}; const value = typeof id === 'string' && Object.hasOwn(held,id) ? held[id] : undefined; requireValue(value, 'Not found', 404); return structuredClone(value); };
   // Read-aloud resolves English text from stored content; the browser may only send a
   // reference. Chinese-by-contract fields (meaningZh, reasonZh, explanationZh…) are not
@@ -223,12 +232,13 @@ export async function createApplication({directory = '.workspace', languageModel
       }
       if (method === 'POST' && match[2] === '/analysis') {
         if (current?.questions.length >= 8) return view(current);
-        const generated = await languageModel.analyze({snapshot: {text:snapshot.text,resume:snapshot.resume,difficulty:snapshot.difficulty}, signal: context?.signal});
-        if (current) {
-          generated.capabilities = [...current.capabilities, ...generated.capabilities.filter(c => !current.capabilities.some(old => old.id === c.id))];
-          generated.questions = [...current.questions, ...generated.questions.filter(q => !current.questions.some(old => old.id === q.id))];
-        }
-        const analysis = validateAnalysis(generated, snapshot, {legacyQuestions: current?.questions ?? []});
+        const analysis = await generate(context, () => languageModel.analyze({snapshot: {text:snapshot.text,resume:snapshot.resume,difficulty:snapshot.difficulty}, signal: context?.signal}), generated => {
+          if (current) {
+            generated.capabilities = [...current.capabilities, ...generated.capabilities.filter(c => !current.capabilities.some(old => old.id === c.id))];
+            generated.questions = [...current.questions, ...generated.questions.filter(q => !current.questions.some(old => old.id === q.id))];
+          }
+          return validateAnalysis(generated, snapshot, {legacyQuestions: current?.questions ?? []});
+        });
         // Keep legacy question IDs and evidence so practice history remains linked.
         await commit(d => {
           requireValue(JSON.stringify(d.analyses[snapshot.id]) === JSON.stringify(current), 'Question Set changed; reload and retry', 409);
@@ -239,8 +249,11 @@ export async function createApplication({directory = '.workspace', languageModel
       if (method === 'POST' && match[2] === '/questions') {
         requireValue(current?.questions.length >= 8, 'Generate an initial Question Set first', 409);
         requireValue(current.questions.length < 40, 'Question Set limit reached', 409);
-        const analysis = validateAnalysis(await languageModel.additionalQuestions({snapshot: {text:snapshot.text,resume:snapshot.resume,difficulty:snapshot.difficulty}, analysis: structuredClone(current), signal: context?.signal}), snapshot, {expanded: true, legacyQuestions: current.questions});
-        requireValue(analysis.questions.length > current.questions.length && analysis.questions.length <= 40 && analysis.questions.length <= current.questions.length + 4 && JSON.stringify(analysis.capabilities) === JSON.stringify(current.capabilities) && JSON.stringify(analysis.questions.slice(0, current.questions.length)) === JSON.stringify(current.questions), 'Invalid provider output: additions must preserve existing evidence and questions', 502);
+        const analysis = await generate(context, () => languageModel.additionalQuestions({snapshot: {text:snapshot.text,resume:snapshot.resume,difficulty:snapshot.difficulty}, analysis: structuredClone(current), signal: context?.signal}), output => {
+          const analysis = validateAnalysis(output, snapshot, {expanded: true, legacyQuestions: current.questions});
+          requireValue(analysis.questions.length > current.questions.length && analysis.questions.length <= 40 && analysis.questions.length <= current.questions.length + 4 && JSON.stringify(analysis.capabilities) === JSON.stringify(current.capabilities) && JSON.stringify(analysis.questions.slice(0, current.questions.length)) === JSON.stringify(current.questions), 'Invalid provider output: additions must preserve existing evidence and questions', 502);
+          return analysis;
+        });
         await commit(d => {
           requireValue(JSON.stringify(d.analyses[snapshot.id]) === JSON.stringify(current), 'Question Set changed; reload and retry', 409);
           d.analyses[snapshot.id] = analysis;
@@ -292,7 +305,7 @@ export async function createApplication({directory = '.workspace', languageModel
       requireValue(entry.answer, 'A skipped question has no answer to assess', 409);
       if (entryAction === 'feedback') {
         if (entry.feedback) return entry;
-        const feedback = validateFeedback(await languageModel.feedback({question: entry.question, transcript: entry.answer.transcript, approvedEvidence: [], signal: context?.signal}), entry.answer.transcript);
+        const feedback = await generate(context, () => languageModel.feedback({question: entry.question, transcript: entry.answer.transcript, approvedEvidence: [], signal: context?.signal}), output => validateFeedback(output, entry.answer.transcript));
         return commit(d => {
           const target = d.mockSessions[session.id]?.entries.find(e => e.id === entry.id);
           requireValue(target?.answer?.id === entry.answer.id, 'Session changed; reload', 409);
@@ -302,7 +315,7 @@ export async function createApplication({directory = '.workspace', languageModel
       }
       if (entryAction === 'corrections') {
         if (entry.corrections) return entry.corrections;
-        const output = validateCorrections(await languageModel.corrections({question: entry.question, transcript: entry.answer.transcript, signal: context?.signal}), entry.answer.transcript);
+        const output = await generate(context, () => languageModel.corrections({question: entry.question, transcript: entry.answer.transcript, signal: context?.signal}), output => validateCorrections(output, entry.answer.transcript));
         return commit(d => {
           const target = d.mockSessions[session.id]?.entries.find(e => e.id === entry.id);
           requireValue(target?.answer?.id === entry.answer.id, 'Session changed; reload', 409);
@@ -313,7 +326,7 @@ export async function createApplication({directory = '.workspace', languageModel
       requireValue(input.mode === 'rewrite', 'Only an English rewrite is available for a session answer');
       const key = createHash('sha256').update(JSON.stringify({mode: 'rewrite', transcript: entry.answer.transcript})).digest('hex');
       if (entry.coaching?.[key]) return entry.coaching[key];
-      const output = validateCoaching(await languageModel.coach({question: entry.question, transcript: entry.answer.transcript, mode: 'rewrite', signal: context?.signal}), 'rewrite', entry.answer.transcript);
+      const output = await generate(context, () => languageModel.coach({question: entry.question, transcript: entry.answer.transcript, mode: 'rewrite', signal: context?.signal}), output => validateCoaching(output, 'rewrite', entry.answer.transcript));
       return commit(d => {
         const target = d.mockSessions[session.id]?.entries.find(e => e.id === entry.id);
         requireValue(target?.answer?.id === entry.answer.id, 'Session changed; reload', 409);
@@ -381,7 +394,7 @@ export async function createApplication({directory = '.workspace', languageModel
         if (!answered.length) {
           return commit(d => { const current = d.mockSessions[session.id]; requireValue(sessionFinished(current), 'Session changed; reload', 409); current.status = 'completed'; current.completedAt ??= completedAt; current.summary = {nothingToAssess: true}; return sessionView(current); });
         }
-        const summary = validateMockSummary(await languageModel.mockSummary({answers: answered.map(entry => ({question: entry.question, transcript: entry.answer.transcript})), signal: context?.signal}), answered.map(entry => entry.answer.transcript));
+        const summary = await generate(context, () => languageModel.mockSummary({answers: answered.map(entry => ({question: entry.question, transcript: entry.answer.transcript})), signal: context?.signal}), output => validateMockSummary(output, answered.map(entry => entry.answer.transcript)));
         return commit(d => {
           const current = d.mockSessions[session.id];
           requireValue(current && sessionFinished(current) && JSON.stringify(current.entries.map(e => e.answer?.id ?? null)) === JSON.stringify(session.entries.map(e => e.answer?.id ?? null)), 'Session changed; reload', 409);
@@ -435,7 +448,7 @@ export async function createApplication({directory = '.workspace', languageModel
         const primaryQuestion={text:record.question.text,...(nonempty(record.question.meaningZh)?{meaningZh:record.question.meaningZh}:{})};
         const primaryAnswer = {transcript:primaryAnswerSnapshot.transcript};
         const previousFollowUps = followUps.map(node => ({question:structuredClone(node.question),answer:{transcript:node.attempt.transcript}}));
-        const question = validateFollowUp(await languageModel.followUp({primaryQuestion,primaryAnswer,previousFollowUps,signal:context?.signal}));
+        const question = await generate(context, () => languageModel.followUp({primaryQuestion,primaryAnswer,previousFollowUps,signal:context?.signal}), validateFollowUp);
         const node = {
           id:randomUUID(),
           question,
@@ -510,7 +523,7 @@ export async function createApplication({directory = '.workspace', languageModel
         requireValue(node.attempt,'Submit a follow-up answer first',409);
         if(node.attempt.feedback)return node;
         requireValue(node.status==='feedback','Follow-up state changed; reload',409);
-        const feedback=validateFeedback(await languageModel.feedback({question:node.question,transcript:node.attempt.transcript,approvedEvidence:[],signal:context?.signal}),node.attempt.transcript);
+        const feedback=await generate(context,()=>languageModel.feedback({question:node.question,transcript:node.attempt.transcript,approvedEvidence:[],signal:context?.signal}),output=>validateFeedback(output,node.attempt.transcript));
         const completedAt=new Date().toISOString();
         return commit(d=>{
           const current=d.records[record.id];const currentNode=current?.followUps?.find(value=>value.id===node.id);
@@ -533,7 +546,7 @@ export async function createApplication({directory = '.workspace', languageModel
         requireValue(attempt.feedback, 'Complete feedback before requesting corrections', 409);
         if (record.corrections?.[input.attemptId]) return record.corrections[input.attemptId];
         const question = primary ? record.question : followUpNode.question;
-        const output = validateCorrections(await languageModel.corrections({question, transcript: attempt.transcript, signal: context?.signal}), attempt.transcript);
+        const output = await generate(context, () => languageModel.corrections({question, transcript: attempt.transcript, signal: context?.signal}), output => validateCorrections(output, attempt.transcript));
         return commit(d => {
           const r = d.records[record.id];
           requireValue(r, 'Not found', 404);
@@ -560,7 +573,7 @@ export async function createApplication({directory = '.workspace', languageModel
         requireValue(typeof transcript==='string' && transcript.length<=100000 && (mode!=='ideas'||nonempty(transcript)),'請先寫下想法。');
         const key=createHash('sha256').update(JSON.stringify({mode,transcript})).digest('hex');
         if(record.coaching?.[key])return record.coaching[key];
-        const output=validateCoaching(await languageModel.coach({question:record.question,transcript,mode,signal:context?.signal}),mode,transcript);
+        const output=await generate(context,()=>languageModel.coach({question:record.question,transcript,mode,signal:context?.signal}),output=>validateCoaching(output,mode,transcript));
         return commit(d=>{const r=d.records[record.id];requireValue(r,'Not found',404);r.coaching??={};const result={id:key,mode,...output,createdAt:new Date().toISOString()};r.coaching[key]=result;return result;});
       }
       if (method === 'POST' && action === 'transcription') {
@@ -636,7 +649,7 @@ export async function createApplication({directory = '.workspace', languageModel
         const attempt = record.attempts.at(-1);
         requireValue(attempt, 'Submit an answer first', 409);
         if (attempt.feedback) return record;
-        const feedback = validateFeedback(await languageModel.feedback({question: record.question, transcript: attempt.transcript, previousAttempt: record.attempts.length>1?record.attempts[0]:undefined, approvedEvidence: store.data.snapshots[record.snapshotId]?.practiceVersion === 3 ? [] : evidenceContext(store.data, record.snapshotId, record.question.capabilityIds).approvedEvidence, signal: context?.signal}), attempt.transcript);
+        const feedback = await generate(context, () => languageModel.feedback({question: record.question, transcript: attempt.transcript, previousAttempt: record.attempts.length>1?record.attempts[0]:undefined, approvedEvidence: store.data.snapshots[record.snapshotId]?.practiceVersion === 3 ? [] : evidenceContext(store.data, record.snapshotId, record.question.capabilityIds).approvedEvidence, signal: context?.signal}), output => validateFeedback(output, attempt.transcript));
         return commit(d => {
           const r = d.records[record.id];
           requireValue(r.attempts.at(-1).id === attempt.id, 'Practice changed; reload', 409);

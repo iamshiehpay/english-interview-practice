@@ -19,6 +19,14 @@ export const redactSecrets = (text, limit = 400) =>
   String(text ?? '').replace(/\b(?:sk|rk)-[A-Za-z0-9_-]{8,}/g, '<redacted>').slice(0, limit);
 const hasHan=value=>nonempty(value)&&/\p{Script=Han}/u.test(value);
 const hasLatin=value=>nonempty(value)&&/\p{Script=Latin}/u.test(value);
+// A rejected model output names only the first failing field path and check. The
+// message is kept on the operation and shown in the page, so it carries our own field
+// names and check names only, never transcript, quote or answer text.
+const invalid = (subject, check) => requireValue(false, `Invalid provider output: ${subject} ${check}`, 502);
+const LATIN = 'has no Latin characters', HAN = 'has no Han characters', SHAPE = 'missing or extra fields';
+// Checks a bilingual finding {text, textZh, quote}, returning the first failing check.
+const findingFailure = (v, cited, {limit = Infinity, where = 'not in transcript'} = {}) =>
+  !fields(v, ['text', 'textZh', 'quote']) ? ['', SHAPE] : !hasLatin(v.text) ? ['.text', LATIN] : v.text.length > limit ? ['.text', 'too long'] : !hasHan(v.textZh) ? ['.textZh', HAN] : v.textZh.length > limit ? ['.textZh', 'too long'] : !nonempty(v.quote) ? ['.quote', 'empty'] : !cited(v.quote) ? ['.quote', where] : null;
 function fields(value, names) {
   return value && typeof value === 'object' && !Array.isArray(value) && Object.keys(value).length === names.length && names.every(name => Object.hasOwn(value, name));
 }
@@ -29,22 +37,49 @@ export function validateAnalysis(value, snapshot, {expanded = false, legacyQuest
   if (!categories.every(category => value.questions.some(q => q?.category === category))) fail('missing question category');
   const normalized = value.questions.map(q => typeof q?.text === 'string' ? q.text.normalize('NFKC').toLowerCase().replace(/[\p{P}\p{S}]/gu, '').replace(/\s+/g, ' ').trim() : '');
   if (new Set(normalized).size !== normalized.length) fail('duplicate questions');
-  for (const c of value.capabilities) {
-    if (!fields(c, ['id', 'description', 'evidence', 'kind']) || !nonempty(c.id) || !nonempty(c.description) || !nonempty(c.evidence) || !snapshot.text.includes(c.evidence) || !['fact', 'inference'].includes(c.kind)) fail('capability citation or schema');
-    if (c.kind === 'fact' && !c.evidence.includes(c.description)) fail('unsupported posting fact; label interpretation as inference');
+  for (const [i, c] of value.capabilities.entries()) {
+    const at = `capabilities[${i}]`;
+    if (!fields(c, ['id', 'description', 'evidence', 'kind'])) invalid(`analysis ${at}`, SHAPE);
+    if (!nonempty(c.id) || !nonempty(c.description)) invalid(`analysis ${at}`, 'empty id or description');
+    if (!nonempty(c.evidence)) invalid(`analysis ${at}.evidence`, 'empty');
+    if (!snapshot.text.includes(c.evidence)) invalid(`analysis ${at}.evidence`, 'not in job snapshot');
+    if (!['fact', 'inference'].includes(c.kind)) invalid(`analysis ${at}.kind`, 'not fact or inference');
+    if (c.kind === 'fact' && !c.evidence.includes(c.description)) fail(`unsupported posting fact at ${at}; label interpretation as inference`);
   }
   const legacyNames=['id', 'text', 'rationale', 'category', 'capabilityIds', 'evidence'];
   const legacy = q => fields(q,legacyNames) && legacyQuestions.some(old => JSON.stringify(old) === JSON.stringify(q));
-  for (const q of value.questions) {
-    const names=legacy(q)?legacyNames:['id', 'text', 'meaningZh', 'rationale', 'rationaleZh', 'category', 'capabilityIds', 'evidence'];
-    if (!fields(q, names) || !nonempty(q.id) || !nonempty(q.text) || (!legacy(q) && (!hasLatin(q.text) || !hasHan(q.meaningZh))) || !nonempty(q.rationale) || (!legacy(q) && (!hasLatin(q.rationale) || !hasHan(q.rationaleZh))) || !categories.includes(q.category) || !Array.isArray(q.capabilityIds) || !q.capabilityIds.length || q.capabilityIds.some(id => !value.capabilities.some(c => c.id === id)) || !nonempty(q.evidence) || !snapshot.text.includes(q.evidence)) fail('question grounding or bilingual schema');
-    if (!value.capabilities.some(c => q.capabilityIds.includes(c.id) && q.evidence === c.evidence)) fail('question evidence does not support linked capability');
+  for (const [i, q] of value.questions.entries()) {
+    const names=legacy(q)?legacyNames:['id', 'text', 'meaningZh', 'rationale', 'rationaleZh', 'category', 'capabilityIds', 'evidence'], at = `analysis questions[${i}]`;
+    if (!fields(q, names)) invalid(at, SHAPE);
+    if (!nonempty(q.id)) invalid(`${at}.id`, 'empty');
+    if (!nonempty(q.text)) invalid(`${at}.text`, 'empty');
+    if (!legacy(q) && !hasLatin(q.text)) invalid(`${at}.text`, LATIN);
+    if (!legacy(q) && !hasHan(q.meaningZh)) invalid(`${at}.meaningZh`, HAN);
+    if (!nonempty(q.rationale)) invalid(`${at}.rationale`, 'empty');
+    if (!legacy(q) && !hasLatin(q.rationale)) invalid(`${at}.rationale`, LATIN);
+    if (!legacy(q) && !hasHan(q.rationaleZh)) invalid(`${at}.rationaleZh`, HAN);
+    if (!categories.includes(q.category)) invalid(`${at}.category`, 'unknown category');
+    if (!Array.isArray(q.capabilityIds) || !q.capabilityIds.length || q.capabilityIds.some(id => !value.capabilities.some(c => c.id === id))) invalid(`${at}.capabilityIds`, 'empty or unknown capability');
+    if (!nonempty(q.evidence)) invalid(`${at}.evidence`, 'empty');
+    if (!snapshot.text.includes(q.evidence)) invalid(`${at}.evidence`, 'not in job snapshot');
+    if (!value.capabilities.some(c => q.capabilityIds.includes(c.id) && q.evidence === c.evidence)) fail(`question evidence does not support linked capability at questions[${i}]`);
   }
   return {capabilities: value.capabilities.map(({id, description, evidence, kind}) => ({id, description, evidence, kind})), questions: value.questions.map(q => legacy(q)?{id:q.id,text:q.text,rationale:q.rationale,category:q.category,capabilityIds:q.capabilityIds,evidence:q.evidence}:{id:q.id,text:q.text,meaningZh:q.meaningZh,rationale:q.rationale,rationaleZh:q.rationaleZh,category:q.category,capabilityIds:q.capabilityIds,evidence:q.evidence})};
 }
 export function validateFeedback(value, transcript) {
-  const valid = v => fields(v, ['text', 'textZh', 'quote']) && hasLatin(v.text) && hasHan(v.textZh) && nonempty(v.quote) && transcript.includes(v.quote);
-  requireValue(fields(value, ['ratings', 'strength', 'priorityImprovement']) && fields(value.ratings, dimensions) && dimensions.every(d => fields(value.ratings[d], ['level', 'quote', 'reason', 'reasonZh']) && Number.isInteger(value.ratings[d]?.level) && value.ratings[d].level >= 1 && value.ratings[d].level <= 4 && nonempty(value.ratings[d].quote) && transcript.includes(value.ratings[d].quote) && hasLatin(value.ratings[d].reason) && hasHan(value.ratings[d].reasonZh)) && valid(value.strength) && valid(value.priorityImprovement), 'Invalid provider output: bilingual feedback schema or transcript citation', 502);
+  // Same acceptance rules as ever; only the rejection now says which check failed.
+  if (!fields(value, ['ratings', 'strength', 'priorityImprovement'])) invalid('feedback', SHAPE);
+  if (!fields(value.ratings, dimensions)) invalid('feedback ratings', SHAPE);
+  for (const d of dimensions) {
+    const r = value.ratings[d], at = `feedback ratings.${d}`;
+    if (!fields(r, ['level', 'quote', 'reason', 'reasonZh'])) invalid(at, SHAPE);
+    if (!Number.isInteger(r.level) || r.level < 1 || r.level > 4) invalid(`${at}.level`, 'out of range');
+    if (!nonempty(r.quote)) invalid(`${at}.quote`, 'empty');
+    if (!transcript.includes(r.quote)) invalid(`${at}.quote`, 'not in transcript');
+    if (!hasLatin(r.reason)) invalid(`${at}.reason`, LATIN);
+    if (!hasHan(r.reasonZh)) invalid(`${at}.reasonZh`, HAN);
+  }
+  for (const name of ['strength', 'priorityImprovement']) { const failure = findingFailure(value[name], quote => transcript.includes(quote)); if (failure) invalid(`feedback ${name}${failure[0]}`, failure[1]); }
   return {ratings: Object.fromEntries(dimensions.map(d => [d, {level: value.ratings[d].level, quote: value.ratings[d].quote, reason: value.ratings[d].reason, reasonZh:value.ratings[d].reasonZh}])), strength: {text: value.strength.text, textZh:value.strength.textZh, quote: value.strength.quote}, priorityImprovement: {text: value.priorityImprovement.text, textZh:value.priorityImprovement.textZh, quote: value.priorityImprovement.quote}};
 }
 
@@ -63,10 +98,15 @@ export function questionSetView(analysis, records, snapshotId) {
 }
 
 export function validateCoaching(value, mode, transcript = '') {
-  requireValue(fields(value, ['text','explanationZh']) && nonempty(value.text) && value.text.length <= 12000 && hasHan(value.explanationZh) && value.explanationZh.length <= 4000 && (['hint','gap'].includes(mode) ? hasHan(value.text) : hasLatin(value.text)), 'Invalid provider output: coaching schema', 502);
+  if (!fields(value, ['text','explanationZh'])) invalid('coaching', SHAPE);
+  if (!nonempty(value.text)) invalid('coaching text', 'empty');
+  if (value.text.length > 12000) invalid('coaching text', 'too long');
+  if (!hasHan(value.explanationZh)) invalid('coaching explanationZh', HAN);
+  if (value.explanationZh.length > 4000) invalid('coaching explanationZh', 'too long');
+  if (['hint','gap'].includes(mode) ? !hasHan(value.text) : !hasLatin(value.text)) invalid('coaching text', ['hint','gap'].includes(mode) ? HAN : LATIN);
   if (['rewrite','ideas'].includes(mode)) {
     const numbers = transcript.match(/\d+(?:[.,]\d+)*/g) || [];
-    requireValue((value.text.match(/\d+(?:[.,]\d+)*/g)||[]).every(n => numbers.includes(n)), 'Invalid provider output: invented numeric detail', 502);
+    if (!(value.text.match(/\d+(?:[.,]\d+)*/g)||[]).every(n => numbers.includes(n))) invalid('coaching text', 'has an invented number');
   }
   return {text:value.text, explanationZh:value.explanationZh};
 }
@@ -75,27 +115,38 @@ export function validateCoaching(value, mode, transcript = '') {
 // quote one of the learner's own session answers verbatim, so the summary is evidence
 // rather than flattery; skipped questions supply no transcript and are never assessed.
 export function validateMockSummary(value, transcripts) {
-  const valid = v => fields(v, ['text','textZh','quote']) && hasLatin(v.text) && v.text.length <= 2000 && hasHan(v.textZh) && v.textZh.length <= 2000 && nonempty(v.quote) && transcripts.some(transcript => transcript.includes(v.quote));
   requireValue(Array.isArray(transcripts) && transcripts.length > 0, 'A session with no answers has nothing to assess', 409);
-  requireValue(fields(value, ['strength','priorityImprovement']) && valid(value.strength) && valid(value.priorityImprovement), 'Invalid provider output: session summary schema or answer citation', 502);
+  if (!fields(value, ['strength','priorityImprovement'])) invalid('session summary', SHAPE);
+  for (const name of ['strength', 'priorityImprovement']) { const failure = findingFailure(value[name], quote => transcripts.some(transcript => transcript.includes(quote)), {limit: 2000, where: 'not in any answer'}); if (failure) invalid(`session summary ${name}${failure[0]}`, failure[1]); }
   const finding = v => ({text: v.text, textZh: v.textZh, quote: v.quote});
   return {strength: finding(value.strength), priorityImprovement: finding(value.priorityImprovement)};
 }
 
 export function validateFollowUp(value) {
-  requireValue(fields(value, ['text','meaningZh']) && hasLatin(value.text) && value.text.length <= 1000 && hasHan(value.meaningZh) && value.meaningZh.length <= 1000, 'Invalid provider output: bilingual follow-up schema', 502);
+  if (!fields(value, ['text','meaningZh'])) invalid('follow-up', SHAPE);
+  if (!hasLatin(value.text)) invalid('follow-up text', LATIN);
+  if (value.text.length > 1000) invalid('follow-up text', 'too long');
+  if (!hasHan(value.meaningZh)) invalid('follow-up meaningZh', HAN);
+  if (value.meaningZh.length > 1000) invalid('follow-up meaningZh', 'too long');
   return {text:value.text, meaningZh:value.meaningZh};
 }
 
 export function validateCorrections(value, transcript) {
-  const fail = () => requireValue(false, 'Invalid provider output: key-sentence correction schema, citation, or invented detail', 502);
-  if (!fields(value, ['corrections']) || !Array.isArray(value.corrections) || value.corrections.length > 2) fail();
+  if (!fields(value, ['corrections']) || !Array.isArray(value.corrections)) invalid('corrections', SHAPE);
+  if (value.corrections.length > 2) invalid('corrections', 'more than two');
   const numbersIn = text => text.match(/\d+(?:[.,]\d+)*/g) || [];
-  for (const item of value.corrections) {
-    if (!fields(item, ['original','rewrite','reasonZh']) || !nonempty(item.original) || !transcript.includes(item.original) || !hasLatin(item.rewrite) || item.rewrite.length > 2000 || !hasHan(item.reasonZh) || item.reasonZh.length > 2000) fail();
+  for (const [i, item] of value.corrections.entries()) {
+    const at = `corrections[${i}]`;
+    if (!fields(item, ['original','rewrite','reasonZh'])) invalid(at, SHAPE);
+    if (!nonempty(item.original)) invalid(`${at}.original`, 'empty');
+    if (!transcript.includes(item.original)) invalid(`${at}.original`, 'not in transcript');
+    if (!hasLatin(item.rewrite)) invalid(`${at}.rewrite`, LATIN);
+    if (item.rewrite.length > 2000) invalid(`${at}.rewrite`, 'too long');
+    if (!hasHan(item.reasonZh)) invalid(`${at}.reasonZh`, HAN);
+    if (item.reasonZh.length > 2000) invalid(`${at}.reasonZh`, 'too long');
     // Evidence safety: a correction may only reuse numbers the learner already stated.
     const allowed = numbersIn(item.original);
-    if (!numbersIn(item.rewrite).every(number => allowed.includes(number))) fail();
+    if (!numbersIn(item.rewrite).every(number => allowed.includes(number))) invalid(`${at}.rewrite`, 'has an invented number');
   }
   return {corrections: value.corrections.map(({original, rewrite, reasonZh}) => ({original, rewrite, reasonZh}))};
 }

@@ -42,7 +42,7 @@ test('one real answer can finish; assistance is separate, cached, and never beco
 
 test('coaching validates language and rejects invented numeric metrics',()=>{
   assert.throws(()=>validateCoaching({text:'I improved it by 90 percent.',explanationZh:'更自然。'},'rewrite','I improved it.'),/invented/);
-  assert.throws(()=>validateCoaching({text:'English hint',explanationZh:'提示'},'hint'),/schema/);
+  assert.throws(()=>validateCoaching({text:'English hint',explanationZh:'提示'},'hint'),/coaching text has no Han characters/);
   assert.equal(validateCoaching({text:'I tested 10 cases.',explanationZh:'保留事實。'},'rewrite','I tested 10 cases.').text,'I tested 10 cases.');
 });
 

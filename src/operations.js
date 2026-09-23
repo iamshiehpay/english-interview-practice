@@ -5,8 +5,22 @@ import {AppError, requireValue, redactSecrets} from './domain.js';
 // returned. Keep a short, redacted reason with the operation instead.
 // Only an AppError's `reason` is ours to keep; anything else fails closed to nothing.
 const failureReason = error => redactSecrets(error?.reason, 200) || '';
+// A model output that parses but fails our validation (a quote not copied exactly, a
+// Chinese field with no Han characters) is intermittent: the same input usually passes
+// on the next call. Ask once more with the same inputs; nothing else is retried — a
+// timeout, cancellation, sign-in, rate limit or transport error comes from `call`, not
+// `validate`, and propagates untouched. The acceptance rules do not change.
+export const isValidationRejection = error => error instanceof AppError && error.status === 502 && /^Invalid provider output:/.test(error.message);
+export async function withValidationRetry(call, validate, {signal, onRejection} = {}) {
+  for (let attempt = 1; ; attempt++) {
+    signal?.throwIfAborted();
+    const output = await call();
+    try { return await validate(output); }
+    catch (error) { if (!isValidationRejection(error)) throw error; onRejection?.(error, output, attempt); if (attempt === 2) throw error; }
+  }
+}
 export class Operations {
-  constructor(store, timeoutMs=30000){this.store=store;this.timeoutMs=timeoutMs;this.controllers=new Map();}
+  constructor(store, timeoutMs=30000){this.store=store;this.timeoutMs=timeoutMs;this.controllers=new Map();this.notes=new Map();}
   async recover(){
     if(!Object.values(this.store.data.operations||{}).some(o=>o.state==='pending'))return;
     await this.store.transact(d=>{for(const o of Object.values(d.operations||{}))if(o.state==='pending'){o.state='failed';o.retryable=true;o.errorCode='INTERRUPTED';} });
@@ -15,7 +29,7 @@ export class Operations {
     requireValue(Object.hasOwn(this.store.data.operations||{},id),'Operation not found',404);
     if(this.store.data.operations[id].state!=='pending')return this.store.data.operations[id];
     this.controllers.get(id)?.abort(new AppError('Operation cancelled',409));
-    return this.store.transact(d=>{const o=d.operations?.[id];requireValue(o,'Operation not found',404);if(o.state==='pending'){o.state='cancelled';o.retryable=true;o.errorCode='CANCELLED';}return o;});
+    return this.store.transact(d=>{const o=d.operations?.[id];requireValue(o,'Operation not found',404);if(o.state==='pending'){Object.assign(o,this.notes.get(id));o.state='cancelled';o.retryable=true;o.errorCode='CANCELLED';}return o;});
   }
   // A per-entry operation's targetId is `${ownerId}:${entryId}`, so cancelling an owner
   // must also cancel the operations scoped to its parts.
@@ -42,6 +56,11 @@ export class Operations {
     requireValue(!this.controllers.has(id),'Operation already pending',409);
     requireValue(this.controllers.size<4,'Four operations are already pending; wait or cancel one',429);
     const attempt=(previous?.attempt||0)+1,controller=new AbortController();this.controllers.set(id,controller);
+    // Metadata an execution asks to keep on its operation record (validationRetries,
+    // firstRejection). Callers pass our own content-free wording only; it is written
+    // whether the operation succeeds, fails or is cancelled, so a retried rejection
+    // stays visible as evidence even when the second output was accepted.
+    const notes={};this.notes.set(id,notes);const note=fields=>{for(const [key,value] of Object.entries(fields))notes[key]=typeof value==='string'?redactSecrets(value,200):value;};
     const epoch=this.store.data.epoch||0;
     try {
       await this.store.transact(d => {
@@ -57,22 +76,22 @@ export class Operations {
         for (const operation of old.slice(0, Math.max(0, Object.keys(d.operations).length - 100))) delete d.operations[operation.id];
       });
     } catch (error) {
-      this.controllers.delete(id);
+      this.controllers.delete(id);this.notes.delete(id);
       throw error;
     }
     const check=d=>requireValue(!controller.signal.aborted && (d.epoch||0)===epoch && d.operations?.[id]?.state==='pending' && d.operations[id].attempt===attempt,'Operation cancelled or superseded',409);
     let timer;
     try{
       const aborted=new Promise((_,reject)=>{controller.signal.addEventListener('abort',()=>reject(controller.signal.reason||new AppError('Operation cancelled',409)),{once:true});timer=setTimeout(()=>controller.abort(new AppError('Provider operation timed out; retry your original action',504)),this.timeoutMs);});
-      const complete=(d,result)=>{check(d);Object.assign(d.operations[id],{state:'succeeded',retryable:false,resultId:result?.id||null,finishedAt:new Date().toISOString()});d.operationReceipts??={};d.operationReceipts[id]={id,kind,targetId,fingerprint,attempt,state:'succeeded',resultId:result?.id||null};};
-      const result=await Promise.race([execute({signal:controller.signal,check,complete}),aborted]);
+      const complete=(d,result)=>{check(d);Object.assign(d.operations[id],notes,{state:'succeeded',retryable:false,resultId:result?.id||null,finishedAt:new Date().toISOString()});d.operationReceipts??={};d.operationReceipts[id]={id,kind,targetId,fingerprint,attempt,state:'succeeded',resultId:result?.id||null};};
+      const result=await Promise.race([execute({signal:controller.signal,check,complete,note,kind}),aborted]);
       await this.store.transact(d=>{if(d.operations?.[id]?.state==='succeeded'&&d.operations[id].attempt===attempt)return;complete(d,result);});
       return result;
     }catch(error){
       if(this.store.data.operations?.[id]?.state==='succeeded'&&this.store.data.operations[id].attempt===attempt)return replay(this.store.data.operations[id]);
       if(!controller.signal.aborted)controller.abort(error);
-      await this.store.transact(d=>{const o=d.operations?.[id];if(o&&o.attempt===attempt&&o.state==='pending')Object.assign(o,{state:controller.signal.aborted&&controller.signal.reason?.status===409?'cancelled':'failed',retryable:true,errorCode:error.status===504?'TIMEOUT':error.status===429?'RATE_LIMIT':'OPERATION_FAILED',errorMessage:failureReason(error),finishedAt:new Date().toISOString()});});
+      await this.store.transact(d=>{const o=d.operations?.[id];if(o&&o.attempt===attempt&&o.state==='pending')Object.assign(o,notes,{state:controller.signal.aborted&&controller.signal.reason?.status===409?'cancelled':'failed',retryable:true,errorCode:error.status===504?'TIMEOUT':error.status===429?'RATE_LIMIT':'OPERATION_FAILED',errorMessage:failureReason(error),finishedAt:new Date().toISOString()});});
       throw error;
-    }finally{clearTimeout(timer);if(this.controllers.get(id)===controller)this.controllers.delete(id);}
+    }finally{clearTimeout(timer);if(this.controllers.get(id)===controller){this.controllers.delete(id);this.notes.delete(id);}}
   }
 }
