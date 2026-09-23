@@ -22,6 +22,11 @@ export function validateManifest(m){
   for(const job of m.jobs)assert.deepEqual(m.cases.filter(c=>c.jobId===job.id).map(c=>c.category).sort(),[...categories].sort());
   for(const tag of ['irrelevant','unsupported-claim','mixed-language','transcription-noise','experience-gap','absent-JD-requirement'])assert.ok(m.cases.some(c=>c.tags.includes(tag)),tag);
 }
+export function checkFrozenAnalysis(frozen,expected){
+  assert.equal(frozen.schemaVersion,2,'Frozen analysis schema changed; use --refresh-analysis and re-review');assert.equal(frozen.contractVersion,expected.contractVersion,'Frozen model contract changed; use --refresh-analysis and re-review');
+  for(const key of ['model','effort','serviceTier'])assert.ok(Object.hasOwn(frozen,key)&&frozen[key]===expected[key],`Frozen ${key} changed or missing; use --refresh-analysis and re-review labels`);
+  assert.equal(frozen.jdChecksum,expected.jdChecksum,'JD fixtures changed; refresh and review');
+}
 export function checkAnalysis(a,job){
   assert.ok(a.capabilities.length>0);assert.ok(a.questions.length>=8&&a.questions.length<=12);
   assert.equal(new Set(a.capabilities.map(c=>c.id)).size,a.capabilities.length);assert.equal(new Set(a.questions.map(q=>q.id)).size,a.questions.length);

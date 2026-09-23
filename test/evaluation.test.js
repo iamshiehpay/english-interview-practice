@@ -1,7 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {validateManifest,checkAnalysis,checkFeedback,stability,labelStatus,creatorStatus,dimensions} from '../evaluation/checks.js';
+import {validateManifest,checkAnalysis,checkFrozenAnalysis,checkFeedback,stability,labelStatus,creatorStatus,dimensions} from '../evaluation/checks.js';
 import {FakeLanguageModel} from '../src/providers.js';
 const manifest=JSON.parse(await readFile(new URL('../evaluation/v1/manifest.json',import.meta.url)));
 test('evaluation fixtures cover required matrix and reject missing/duplicate cases',()=>{
@@ -31,4 +31,11 @@ test('approved human labels bind to exact inputs and transcript evidence; stale 
   const labels={schemaVersion:1,labels:packet.map(p=>({caseId:p.caseId,inputChecksum:p.inputChecksum,status:'approved',reviewer:'Human',reviewedAt:'2026-09-18T00:00:00Z',rationale:'Reasoned hypothetical support.',ranges:Object.fromEntries(dimensions.map(d=>[d,[2,3]])),evidenceQuotes:['test the failure path'],requiredFindings:[],forbiddenFindings:[]}))};
   assert.equal(labelStatus(packet,labels).pass,true);labels.labels[0].inputChecksum='old';assert.equal(labelStatus(packet,labels).pass,false);
   labels.labels[0].inputChecksum=packet[0].inputChecksum;labels.labels[0].evidenceQuotes=['invented evidence'];assert.equal(labelStatus(packet,labels).pass,false);
+});
+test('frozen analysis is reused only when contract, model, effort, service tier and JDs all match',()=>{
+  const expected={contractVersion:'3.0.0',model:'gpt-5.6-luna',effort:'xhigh',serviceTier:'priority',jdChecksum:'abc'},frozen={schemaVersion:2,...expected,entries:[]};
+  checkFrozenAnalysis(frozen,expected);
+  for(const [key,value] of [['model','gpt-5.6-sol'],['effort','medium'],['serviceTier',null],['jdChecksum','other'],['contractVersion','2.0.0'],['schemaVersion',1]])assert.throws(()=>checkFrozenAnalysis({...frozen,[key]:value},expected));
+  for(const key of ['effort','serviceTier']){const legacy={...frozen};delete legacy[key];assert.throws(()=>checkFrozenAnalysis(legacy,expected),/missing/);assert.throws(()=>checkFrozenAnalysis(legacy,{...expected,[key]:undefined}),/missing/);}
+  checkFrozenAnalysis({...frozen,effort:null,serviceTier:null},{...expected,effort:null,serviceTier:null});
 });
