@@ -11,11 +11,12 @@ const followUpContext=({primaryQuestion,primaryAnswer,previousFollowUps=[]})=>({
   primaryAnswer:{transcript:primaryAnswer.transcript},
   previousFollowUps:previousFollowUps.map(node=>({question:{text:node.question.text,meaningZh:node.question.meaningZh},answer:{transcript:node.answer.transcript}}))
 });
-export const CODEX_DEFAULT_MODEL='gpt-5.6-luna',CODEX_DEFAULT_EFFORT='xhigh';
+// serviceTier 'priority' is the catalog id of Codex Fast mode (1.5x speed, more subscription usage).
+export const CODEX_DEFAULT_MODEL='gpt-5.6-luna',CODEX_DEFAULT_EFFORT='xhigh',CODEX_DEFAULT_SERVICE_TIER='priority';
 export class CodexLanguageModel {
-  constructor({profile=resolve('.coach-codex'),binary='codex',model=CODEX_DEFAULT_MODEL,effort=CODEX_DEFAULT_EFFORT,spawnProcess,verifyVersion=true,timeoutMs=180000,auditMode=false,auditRuntime}={}){
-    this.profile=profile;this.binary=binary;this.model=model;this.effort=effort;this.spawnProcess=spawnProcess;this.verifyVersion=verifyVersion;this.timeoutMs=timeoutMs;this.auditMode=auditMode;this.auditRuntime=auditRuntime;
-    this.name=`Codex / ChatGPT subscription / ${model} / ${effort}`;this.external=true;this.contractVersion=MODEL_CONTRACT_VERSION;
+  constructor({profile=resolve('.coach-codex'),binary='codex',model=CODEX_DEFAULT_MODEL,effort=CODEX_DEFAULT_EFFORT,serviceTier=CODEX_DEFAULT_SERVICE_TIER,spawnProcess,verifyVersion=true,timeoutMs=180000,auditMode=false,auditRuntime}={}){
+    this.profile=profile;this.binary=binary;this.model=model;this.effort=effort;this.serviceTier=serviceTier||null;this.spawnProcess=spawnProcess;this.verifyVersion=verifyVersion;this.timeoutMs=timeoutMs;this.auditMode=auditMode;this.auditRuntime=auditRuntime;
+    this.name=`Codex / ChatGPT subscription / ${model} / ${effort}${this.serviceTier==='priority'?' / fast':''}`;this.external=true;this.contractVersion=MODEL_CONTRACT_VERSION;
   }
   async session(signal,run,audit){
     if(signal?.aborted)throw new AppError('Codex operation cancelled',409);
@@ -39,7 +40,7 @@ export class CodexLanguageModel {
       requireValue(started.thread?.ephemeral===true&&started.thread.path===null&&started.approvalPolicy==='never'&&started.sandbox?.type==='readOnly'&&started.sandbox.networkAccess===false&&started.instructionSources?.length===0&&started.model===this.model&&started.modelProvider==='openai'&&started.cwd===runtime.cwd&&started.runtimeWorkspaceRoots?.length===0&&started.thread.environments?.length===0&&started.multiAgentMode==='explicitRequestOnly'&&started.activePermissionProfile===null,'Codex isolation contract was not honored',503);
       const threadId=started.thread.id;
       try{
-        const turn=await rpc.request('turn/start',{threadId,input:[{type:'text',text:JSON.stringify({...context,_retentionMarker:canary})}],outputSchema:schema,effort:this.effort,summary:'none',approvalPolicy:'never',sandboxPolicy:{type:'readOnly',networkAccess:false},environments:[]});
+        const turn=await rpc.request('turn/start',{threadId,input:[{type:'text',text:JSON.stringify({...context,_retentionMarker:canary})}],outputSchema:schema,effort:this.effort,...(this.serviceTier?{serviceTier:this.serviceTier}:{}),summary:'none',approvalPolicy:'never',sandboxPolicy:{type:'readOnly',networkAccess:false},environments:[]});
         rpc.turnId=turn.turn.id;
         const completed=await rpc.waitFor('turn/completed',p=>p.threadId===threadId&&p.turn?.id===turn.turn.id);
         requireValue(completed.turn.status==='completed','Codex could not complete the response; check usage limits or retry',502);

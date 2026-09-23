@@ -92,9 +92,15 @@ test('unconfirmed process exit preserves temporary state instead of deleting und
 });
 test('Codex sends the configured reasoning effort and names it',async t=>{
  const {p,calls}=await provider(t);
- assert.equal(p.effort,'xhigh');assert.match(p.name,/gpt-5\.6-luna \/ xhigh$/);
+ assert.equal(p.effort,'xhigh');assert.match(p.name,/gpt-5\.6-luna \/ xhigh \/ fast$/);
  await p.analyze({snapshot:{text:'Build APIs'}});
- assert.equal(calls.find(c=>c.method==='turn/start').params.effort,'xhigh');
+ assert.equal(calls.find(c=>c.method==='turn/start').params.effort,'xhigh');assert.equal(calls.find(c=>c.method==='turn/start').params.serviceTier,'priority');
  p.effort='low';await p.analyze({snapshot:{text:'Build APIs'}});
  assert.equal(calls.filter(c=>c.method==='turn/start').at(-1).params.effort,'low');
+ p.serviceTier=null;await p.analyze({snapshot:{text:'Build APIs'}});
+ assert.ok(!('serviceTier' in calls.filter(c=>c.method==='turn/start').at(-1).params));
+});
+test('the server accepts the 180s Codex operation timeout and still bounds it',async t=>{
+ const {api}=await harness(t,fake,{operationTimeoutMs:180000});assert.equal((await api('/providers')).status,200);
+ await assert.rejects(harness(t,fake,{operationTimeoutMs:300001}),/between 10 and 300000/);
 });
