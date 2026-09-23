@@ -289,6 +289,14 @@ try {
  const toggle=el('[data-job-id] [aria-expanded]');if(!toggle)throw Error('No job with practice records to expand');
  toggle.click();await wait(()=>el('.job-detail .record-card'),'mobile job detail');
  if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow on job detail');
+ // A long job title (here a rename) is shown truncated, with the full title as its tooltip.
+ const longTitle='Senior Staff Machine Learning Platform Engineer, Retrieval and Evaluation Infrastructure (Taipei)';
+ const renamedJob=el('[data-job-id]').dataset.jobId,jobCard=()=>el('[data-job-id="'+renamedJob+'"]');
+ jobCard().querySelector('.more-menu summary').click();click([...jobCard().querySelectorAll('button')].find(b=>b.textContent.trim()==='重新命名'));
+ await wait(()=>el('#rename-input'),'rename input');fill('#rename-input',longTitle);click(btn('儲存名稱'));await wait(()=>el('#notice').textContent.includes('職缺名稱已更新'),'job renamed');
+ const longHead=jobCard().querySelector('h3');
+ if(longHead.getAttribute('title')!==longTitle||longHead.textContent.length>61||!longHead.textContent.endsWith('…'))throw Error('Long job title not truncated with a full-title tooltip: '+longHead.textContent);
+ if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow with a long job title');
  fill('#job-search','zzz-no-match');await wait(()=>el('.job-list .empty'),'search filters job list');
  if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow on filtered job list');
  `);
@@ -357,6 +365,14 @@ try {
  await shot('mock');
  await run(`
  const jobId=sessionStorage.getItem('mock-job');
+ // Listening mode in the room: play hides the question, 顯示題目 reveals it and focuses it.
+ HTMLMediaElement.prototype.play=function(){this.dispatchEvent(new Event('ended'));return Promise.resolve();};
+ const listen=el('#mock-read-aloud .listening-mode');if(!listen)throw Error('No listening-mode switch in the mock room');
+ listen.checked=true;listen.dispatchEvent(new Event('change',{bubbles:true}));
+ click('#mock-read-aloud .read-aloud-play');await wait(()=>el('#mock-question').hidden,'mock question hidden on play');
+ click('#mock-read-aloud .read-aloud-reveal');await wait(()=>!el('#mock-question').hidden,'mock question revealed');
+ if(document.activeElement!==el('#mock-question'))throw Error('Revealing the mock question did not focus it');
+ listen.checked=false;listen.dispatchEvent(new Event('change',{bubbles:true}));
  const mockBtn=t=>[...document.querySelectorAll('#mock-view button')].find(b=>b.textContent.trim()===t);
  if(mockBtn('看一個示範回答')||mockBtn('給我一個提示')||mockBtn('幫我整理成英文')||mockBtn('幫我講得更自然'))throw Error('Assistance offered during a mock session');
  if(!document.body.innerText.includes('整場結束後才會給回饋'))throw Error('Session does not explain that feedback comes at the end');
@@ -437,5 +453,5 @@ try {
  if((await ws()).recordings[rid])throw Error('Deleting the practice left the recording behind');
  if((await fetch('/api/recordings/'+rid)).status!==404)throw Error('A deleted recording is still playable');
  `);
- console.log('Browser smoke PASS: resume default/opt-out, read-aloud (no autoplay, replay, speed, no overlap), three-minute recording with a visible clock, transcript replace/append handoff, retained Answer Recordings with playback and deletion, a full three-question Short Mock Session (no coaching during, skip, summary quoting the learner, per-question feedback on demand), draft failure/reload recovery, feedback retry, key-sentence corrections (normal/retry/no-change/evidence-safe), Focus-Point same-job practice, job-centred Records navigation, optional revision, separate AI assistance, one-answer completion and mobile layout.');
+ console.log('Browser smoke PASS: resume default/opt-out, read-aloud (no autoplay, replay, speed, no overlap), three-minute recording with a visible clock, transcript replace/append handoff, retained Answer Recordings with playback and deletion, a full three-question Short Mock Session (no coaching during, skip, summary quoting the learner, per-question feedback on demand), draft failure/reload recovery, feedback retry, key-sentence corrections (normal/retry/no-change/evidence-safe), Focus-Point same-job practice, job-centred Records navigation, optional revision, separate AI assistance, one-answer completion, the dark mock room scoped to its view (listening mode, record control, theme-color reverting), 我的進步 from the rail, truncated job titles and mobile layout.');
 }finally{await browser('close').catch(()=>{});if(server)await new Promise(r=>server.close(r));await rm(directory,{recursive:true,force:true});}
