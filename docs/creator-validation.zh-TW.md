@@ -1,4 +1,4 @@
-# 創辦人真實使用驗收 Runbook
+# 創作者真實使用驗收 Runbook
 
 這份文件是唯一需要照著做的清單。所有按鈕文字、頁籤名稱都已對照 `public/index.html`、`public/app.js`、`public/voice.js` 的實際中文字串核對過，照上面寫的文字找就對了，不用自己判斷。
 
@@ -112,7 +112,7 @@
 在專案根目錄建立 `.workspace/validation-notes.md`（`.workspace/` 已整個列在 `.gitignore`，不會被送進版本控制），用下面模板記錄五次練習：
 
 ```markdown
-# 創辦人驗收觀察紀錄（私人，不進 git）
+# 創作者驗收觀察紀錄（私人，不進 git）
 
 ## 練習 1 — JD 02 六度 / role-fit / 文字
 - 開始時間／結束時間：
@@ -264,11 +264,11 @@ for (const r of Object.values(w.records || {})) {
 npm run evaluate -- --release
 ```
 
-**預期輸出**：這次跑完，`creator` 這一關會 PASS（因為 ledger 已經有 5 筆、涵蓋 ≥2 個 snapshotId、≥2 個類別、至少一個 experienceGap、至少一個 inducedFailure，且 `creator`／`attestedAt` 都已填），但整體 `releaseStatus` 仍會是 `BLOCKED`，因為人工標註（human labels）跟獨立雙語語意審查（semantic review）這兩關本來就還沒做，屬於預期中會擋住的部分，不代表創辦人驗收本身有問題。`blockers` 陣列裡不應該再出現「Creator five-loop real-use validation pending」。
+**預期輸出**：這次跑完，`creator` 這一關會 PASS（因為 ledger 已經有 5 筆、涵蓋 ≥2 個 snapshotId、≥2 個類別、至少一個 experienceGap、至少一個 inducedFailure，且 `creator`／`attestedAt` 都已填），但整體 `releaseStatus` 仍會是 `BLOCKED`，因為人工標註（human labels）跟獨立雙語語意審查（semantic review）這兩關本來就還沒做，屬於預期中會擋住的部分，不代表創作者驗收本身有問題。`blockers` 陣列裡不應該再出現「Creator five-loop real-use validation pending」。
 
 ## 5. 完成後告訴 Claude 什麼
 
-五次都做完、`evaluation/v3/creator-validation.json` 也填完（含 `creator`／`attestedAt`）之後，回來跟 Claude 說「完成」，或直接貼 `.workspace/validation-notes.md` 的整體結論段落。接下來 Claude 會接手：跑 Codex 訂閱評估（`npm run evaluate -- --codex --accept-subscription-usage`）、安排 AI 語意審查（`v3` 的雙語一致性）、準備人工標註（human labels）所需的 review packet，這些都是創辦人驗收以外的另外兩道關卡。
+五次都做完、`evaluation/v3/creator-validation.json` 也填完（含 `creator`／`attestedAt`）之後，回來跟 Claude 說「完成」，或直接貼 `.workspace/validation-notes.md` 的整體結論段落。接下來 Claude 會接手：跑 Codex 訂閱評估（`npm run evaluate -- --codex --accept-subscription-usage`）、安排 AI 語意審查（`v3` 的雙語一致性）、準備人工標註（human labels）所需的 review packet，這些都是創作者驗收以外的另外兩道關卡。
 
 ## 6. 疑難排解
 
