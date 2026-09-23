@@ -301,12 +301,6 @@ button:focus-visible, summary:focus-visible, [tabindex]:focus-visible, a:focus-v
 
 .practice-shell { display: flex; flex-direction: column; gap: 16px; }
 .practice-header { padding: 16px clamp(20px, 4vw, 34px) 6px; border-radius: 22px; }
-.stepper { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; padding: 0; margin: 0; list-style: none; }
-.stepper li { position: relative; padding: 14px 10px 14px 24px; color: var(--ink-soft); border-top: 3px solid var(--line); font-size: 12px; }
-.stepper li::before { position: absolute; left: 0; content: "○"; }
-.stepper li.done, .stepper li.current { color: var(--teal-dark); border-color: var(--teal); font-weight: 700; }
-.stepper li.done::before { content: "✓"; }
-.stepper li.current::before { content: "●"; }
 .practice-body { display: flex; flex-direction: column; gap: 16px; padding: 0; }
 .question-phase, .practice-body > .answer-area, .next-steps { padding: clamp(22px, 4vw, 34px); }
 #attempt-history { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
@@ -392,8 +386,6 @@ footer { padding: 24px; color: var(--ink-soft); border-top: 1px solid var(--line
   .start-card { grid-template-columns: 1fr; gap: 8px; padding: 24px 20px; }
   .section-number { font-size: 28px; }
   .practice-header { padding: 12px 15px 4px; }
-  .stepper li { padding: 10px 3px 10px 0; text-align: center; }
-  .stepper li::before { display: block; position: static; }
   .question-phase, .practice-body > .answer-area, .next-steps { padding: 22px 18px; }
   .job-line { align-items: flex-start; flex-direction: column; gap: 4px; }
   .job-line .job-title { align-self: stretch; max-width: 100%; white-space: normal; }
@@ -403,7 +395,6 @@ footer { padding: 24px; color: var(--ink-soft); border-top: 1px solid var(--line
 
 @media (max-width: 480px) {
   h1 { font-size: 34px; }
-  .stepper li { font-size: 10px; line-height: 1.35; }
   .button-row > button { width: 100%; margin-right: 0; }
 }
 
@@ -596,3 +587,205 @@ mark { background: var(--accent-soft); color: var(--text); border-radius: 4px; }
 .listening-toggle { display: inline-flex; align-items: center; gap: 6px; margin: 0; font-size: 14px; color: var(--ink-soft); }
 .listening-toggle input { margin: 0; }
 .read-aloud-reveal { border-color: var(--teal); color: var(--teal-dark); }
+
+/* =====================================================================
+   Practice workbench (issue 0023) — topbar step indicator; two panes at
+   ≥1024px (question + answer | feedback with a sticky footer); below that,
+   你的回答／回饋 tabs under the question and the footer docked to the
+   viewport bottom. Controls here use 6-8px radii; no pill buttons.
+   ===================================================================== */
+.steps { display: flex; align-items: center; gap: 4px; margin: 0 0 0 auto; padding: 0; color: var(--muted); font: 500 var(--fs-12)/1 var(--font-zh); list-style: none; white-space: nowrap; }
+.steps:not([hidden]) + .topbar-status { margin-left: var(--s-4); }
+.step { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px 0 4px; border-radius: var(--r-xs); }
+.step i { display: grid; flex: none; width: 16px; height: 16px; place-items: center; border: 1px solid var(--border-strong); border-radius: 50%; font: 600 10px/1 var(--font-mono); font-style: normal; }
+.step i svg { width: 9px; height: 9px; stroke-width: 3; }
+.step.done { color: var(--text-2); }
+.step.done i { color: #fff; background: var(--text-2); border-color: var(--text-2); }
+.step.now { color: var(--accent-text); background: var(--accent-soft); }
+.step.now i { color: #fff; background: var(--accent); border-color: var(--accent); }
+.step-line { width: 14px; height: 1px; background: var(--border-strong); }
+
+/* Practice view: tokens for type, radii and controls. */
+#practice-view.active { animation: fade .2s ease-out; }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+#practice-view .practice-shell { max-width: 820px; }
+#practice-view .practice-body { gap: var(--s-4); padding: 0; }
+#practice-view h1 { margin-bottom: var(--s-3); font-size: var(--fs-28); line-height: 1.3; }
+#practice-view h2 { margin-bottom: var(--s-3); font: 600 var(--fs-16)/1.4 var(--font-zh); letter-spacing: 0; }
+#practice-view h3 { margin-bottom: var(--s-2); font: 600 var(--fs-14)/1.4 var(--font-zh); }
+#practice-view .question-text { max-width: 62ch; margin-bottom: var(--s-3); font: 600 var(--fs-20)/1.4 var(--font-ui); letter-spacing: -.01em; }
+#practice-view .follow-up-question { font-size: var(--fs-16); }
+#practice-view .eyebrow { margin-bottom: var(--s-2); color: var(--accent-text); font: 600 var(--fs-12)/1.3 var(--font-zh); letter-spacing: .04em; }
+#practice-view p, #practice-view li { font-size: var(--fs-14); }
+#practice-view .meta, #practice-view .draft-status { font-size: var(--fs-12); }
+#practice-view summary { color: var(--accent-text); font: 600 var(--fs-13)/1.5 var(--font-zh); }
+#practice-view details { margin: var(--s-2) 0; }
+#practice-view label { margin: var(--s-4) 0 var(--s-2); font: 600 var(--fs-13)/1.4 var(--font-zh); }
+
+#practice-view button.primary, #practice-view button.secondary, #practice-view button.ghost, #practice-view button.danger {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 32px; margin: 4px 6px 4px 0; padding: 6px 12px;
+  border: 1px solid transparent; border-radius: var(--r-sm);
+  font: 500 var(--fs-13)/1.3 var(--font-zh); transition: background .12s, border-color .12s;
+}
+#practice-view button:not(:disabled):hover { transform: none; }
+#practice-view button.primary { color: #fff; background: var(--accent); border-color: var(--accent); font-weight: 600; }
+#practice-view button.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+#practice-view button.secondary { color: var(--accent-text); background: var(--surface); border-color: var(--accent-line); }
+#practice-view button.secondary:hover { background: var(--accent-soft); }
+#practice-view button.ghost { color: var(--text-2); background: transparent; border-color: var(--border-strong); }
+#practice-view button.ghost:hover { color: var(--text); background: var(--hover); }
+#practice-view button.wide { width: 100%; min-height: 40px; margin: var(--s-3) 0 0; font-size: var(--fs-14); }
+#practice-view button:focus-visible, #practice-view summary:focus-visible, #practice-view [tabindex]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+#practice-view .button-row { gap: 0; margin-top: var(--s-3); }
+#practice-view textarea, #practice-view select, #practice-view input { border-color: var(--border-strong); border-radius: var(--r-md); }
+#practice-view textarea { padding: var(--s-3) var(--s-4); font-size: var(--fs-14); line-height: 1.7; }
+#practice-view textarea:focus, #practice-view select:focus { border-color: var(--accent); outline: 0; box-shadow: 0 0 0 3px var(--accent-soft); }
+#practice-view .read-aloud { gap: var(--s-2); margin: var(--s-2) 0; }
+#practice-view .read-aloud button { min-height: 28px; padding: 4px 10px; font-size: var(--fs-12); }
+#practice-view .read-aloud select { width: auto; height: 28px; padding: 0 8px; border-radius: var(--r-sm); font-size: var(--fs-12); }
+#practice-view .listening-toggle { margin: 0; font: 400 var(--fs-12)/1.4 var(--font-zh); }
+
+#practice-view .question-phase { padding: var(--s-6); background: var(--surface); border: var(--hair); border-radius: var(--r-md); box-shadow: none; }
+#practice-view .question-card { border-radius: var(--r-md); }
+#practice-view .question-card .english { font-size: var(--fs-16); }
+#practice-view .category-group > h2 { font-size: var(--fs-14); }
+#practice-view blockquote { margin: var(--s-2) 0; padding: var(--s-2) var(--s-3); font-size: var(--fs-14); border-radius: var(--r-sm); }
+#practice-view .detail-panel { padding: var(--s-3) var(--s-4); border-radius: var(--r-md); }
+#practice-view .provider-warning, #practice-view .focus-origin-banner, #practice-view .complete-banner, #practice-view .focus-box,
+#practice-view .correction-card, #practice-view .answer-help, #practice-view .follow-up-flow { border-radius: var(--r-md); }
+#practice-view .provider-warning { padding: var(--s-3) var(--s-4); }
+#practice-view .coaching-caveat, #practice-view .legacy-note { border-radius: var(--r-sm); }
+#practice-view .follow-up-state { border-radius: var(--r-xs); }
+#practice-view .answer-help > summary { min-height: 40px; padding: var(--s-2) var(--s-4); }
+#practice-view .answer-help-body { padding: 0 var(--s-4) var(--s-4); }
+
+.q-head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); margin-bottom: var(--s-3); }
+.chip { display: inline-flex; align-items: center; max-width: 100%; min-height: 22px; padding: 2px 8px; overflow: hidden; color: var(--text-2); background: var(--subtle); border: var(--hair); border-radius: var(--r-xs); font: 500 var(--fs-12)/1.3 var(--font-zh); text-overflow: ellipsis; white-space: nowrap; }
+.chip-accent { color: var(--accent-text); background: var(--accent-soft); border-color: var(--accent-line); }
+
+/* The learner's own English: monospace, shown as written. */
+.transcript, #practice-view textarea.transcript-input, .transcript-diff blockquote {
+  font-family: var(--font-mono); font-size: var(--fs-14); line-height: 1.75; letter-spacing: -.01em;
+}
+#practice-view textarea.transcript-input { min-height: 200px; }
+#practice-view textarea.transcript-input::placeholder { font-family: var(--font-zh); }
+#practice-view .transcript { margin: var(--s-2) 0; padding: var(--s-3) var(--s-4); color: var(--text); background: var(--surface); border: var(--hair); border-radius: var(--r-md); white-space: pre-wrap; overflow-wrap: anywhere; }
+.sec-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s-3); }
+.sec-head h2 { margin: 0 !important; }
+
+/* Two panes. The workbench spans the full width beside the rail. */
+body.workbench-mode main { width: 100%; max-width: none; padding: 0; }
+body.workbench-mode #operations:not(:empty), body.workbench-mode #error:not(:empty), body.workbench-mode #notice:not(:empty) { margin: var(--s-3) var(--s-6); }
+.workbench {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 440px;
+  grid-template-rows: auto 1fr;
+  grid-template-areas: "question feedback" "answer feedback";
+  min-height: calc(100vh - var(--topbar-offset, 48px));
+  min-height: calc(100dvh - var(--topbar-offset, 48px));
+  background: var(--surface);
+  border-bottom: var(--hair);
+}
+.wb-question { grid-area: question; min-width: 0; padding: var(--s-6) var(--s-8) 0; }
+.wb-answer { grid-area: answer; min-width: 0; padding: var(--s-2) var(--s-8) var(--s-8); }
+.wb-question > *, .wb-answer > * { max-width: 780px; }
+#practice-view .workbench .question-phase { padding: 0; background: none; border: 0; }
+.wb-tabs { display: none; }
+.wb-answer > .answer-area, .wb-answer > details, .wb-answer > .follow-up-flow, .wb-answer > .follow-up-history { margin: var(--s-6) 0 0; }
+.wb-answer > .answer-area { padding-top: var(--s-5); border-top: var(--hair); }
+.wb-answer > .revise-target { padding: var(--s-3) var(--s-4); background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: var(--r-md); }
+.wb-answer > .revise-target h2 { font-size: var(--fs-14); }
+.wb-answer .follow-up-flow { padding: var(--s-5); background: var(--canvas); border: var(--hair); }
+.wb-answer .follow-up-question { margin: var(--s-3) 0 var(--s-2); }
+.wb-answer .voice-panel { margin-top: var(--s-4); padding-top: var(--s-3); }
+.wb-answer .voice-panel h3 { margin-bottom: var(--s-1); }
+
+.wb-feedback { grid-area: feedback; display: flex; flex-direction: column; min-width: 0; background: var(--canvas); border-left: var(--hair); }
+.fb-scroll {
+  position: sticky;
+  top: var(--topbar-offset, 48px);
+  max-height: calc(100vh - var(--topbar-offset, 48px) - var(--foot-h, 0px));
+  max-height: calc(100dvh - var(--topbar-offset, 48px) - var(--foot-h, 0px));
+  overflow: auto;
+  padding: var(--s-5) var(--s-5) var(--s-6);
+}
+.fb-foot { position: sticky; bottom: 0; z-index: 2; display: flex; flex-direction: column; gap: var(--s-1); margin-top: auto; padding: var(--s-3) var(--s-5); background: var(--surface); border-top: var(--hair); }
+.foot-note { margin: 0; color: var(--muted); font: 400 var(--fs-12)/1.5 var(--font-zh); }
+.foot-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); }
+.foot-group { display: contents; }
+#practice-view .foot-actions button { margin: 0; }
+#practice-view .foot-actions #complete-practice, .foot-actions .completion-lock { margin-left: auto; }
+.foot-actions .completion-lock { margin-top: 0; font-size: var(--fs-13); }
+.wb-answer, .fb-scroll, .follow-up-flow, .fb-section, .follow-up-feedback { scroll-margin-top: calc(var(--topbar-offset, 48px) + var(--s-4)); }
+
+/* Feedback pane content: the existing feedback blocks, on hairline cards. */
+.fb-title { display: flex; align-items: baseline; gap: var(--s-2); }
+.fb-sub, .fb-empty { color: var(--muted); font: 400 var(--fs-13)/1.6 var(--font-zh); }
+.fb-empty { margin-top: var(--s-2); padding: var(--s-4); border: 1px dashed var(--border-strong); border-radius: var(--r-md); }
+.fb-scroll > * + * { margin-top: var(--s-5); }
+.fb-scroll > .fb-title + .fb-sub, .fb-scroll > .fb-title + .fb-empty { margin-top: var(--s-2); }
+.fb-scroll .feedback-feature { gap: var(--s-3); margin: var(--s-3) 0 0; }
+.fb-scroll .feedback-card { padding: var(--s-3) var(--s-4); background: var(--surface); border: var(--hair); border-left: 3px solid var(--border-strong); border-radius: var(--r-md); }
+.fb-scroll .feedback-card.strength { border-left-color: var(--ok-line); }
+.fb-scroll .feedback-card.priority { border-left-color: var(--warn-line); }
+.fb-scroll .feedback-card h3 { color: var(--text); }
+.fb-scroll .feedback-card blockquote { font-size: var(--fs-13); }
+.fb-scroll .ratings > .detail-panel { background: var(--surface); }
+.fb-scroll .rating-level { color: var(--accent-text); font-family: var(--font-mono); }
+.fb-scroll .correction-card { padding: var(--s-3) var(--s-4); background: var(--surface); }
+.fb-scroll #attempt-history { margin-top: var(--s-4); padding-top: var(--s-3); }
+.fb-scroll .complete-banner, .fb-scroll .focus-box, .fb-scroll .focus-progress, .fb-scroll .follow-up-feedback, .fb-scroll .coaching-result {
+  margin-bottom: 0; padding: var(--s-4); background: var(--surface); border: var(--hair); border-radius: var(--r-md); box-shadow: none;
+}
+.fb-scroll .complete-banner { background: var(--accent-soft); border-color: var(--accent-line); }
+.fb-scroll .focus-progress { border-left: 3px solid var(--warn-line); }
+.fb-scroll .follow-up-feedback > h3 { margin-bottom: var(--s-2); color: var(--text); font-size: var(--fs-16); }
+.fb-scroll .focus-box label { margin-top: var(--s-1); }
+.fb-scroll .focus-box .meta { margin: var(--s-2) 0 0; }
+.fb-scroll .optional-actions { margin: var(--s-5) 0 0; }
+
+/* 1024-1279px: narrower feedback pane; step labels become icons. */
+@media (max-width: 1279px) {
+  .workbench { grid-template-columns: minmax(0, 1fr) 400px; }
+  .wb-question { padding: var(--s-5) var(--s-6) 0; }
+  .wb-answer { padding: var(--s-2) var(--s-6) var(--s-6); }
+  .steps .step { padding: 0 4px; }
+  .steps .step span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
+/* <1024px: question on top, 你的回答／回饋 tabs, footer docked to the viewport bottom. */
+@media (max-width: 1023px) {
+  .workbench { display: block; min-height: 0; border-bottom: 0; }
+  .wb-question { padding: var(--s-4) var(--s-5); border-bottom: var(--hair); }
+  .wb-tabs {
+    position: sticky; top: var(--topbar-offset, 48px); z-index: 5;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4px;
+    padding: 6px var(--s-4); background: rgb(250 250 250 / .94); border-bottom: var(--hair); backdrop-filter: blur(8px);
+  }
+  .wb-tabs button { display: flex; align-items: center; justify-content: center; gap: 6px; height: 40px; color: var(--muted); background: var(--subtle); border: var(--hair); border-radius: var(--r-sm); font: 500 var(--fs-14)/1 var(--font-zh); }
+  .wb-tabs button[aria-selected="true"] { color: var(--text); background: var(--surface); border-color: var(--border-strong); box-shadow: 0 1px 1px rgb(0 0 0 / .04); }
+  .wb-tabs .count { padding: 3px 5px; color: var(--accent-text); background: var(--accent-soft); border-radius: 3px; font: 600 11px/1 var(--font-mono); }
+  .wb-answer { padding: var(--s-2) var(--s-5) var(--s-6); }
+  .wb-answer > :first-child { margin-top: var(--s-2); }
+  .wb-answer > .answer-area:first-child { padding-top: 0; border-top: 0; }
+  .wb-feedback { display: block; background: var(--canvas); border-left: 0; }
+  .fb-scroll { position: static; max-height: none; overflow: visible; padding: var(--s-4) var(--s-5) var(--s-6); }
+  .workbench[data-tab="answer"] .fb-scroll, .workbench[data-tab="feedback"] .wb-answer { display: none; }
+  .fb-foot { position: fixed; right: 0; bottom: 0; left: 0; z-index: 20; padding: var(--s-2) var(--s-4) calc(var(--s-2) + env(safe-area-inset-bottom, 0px)); box-shadow: 0 -4px 12px rgb(24 24 27 / .06); }
+  .fb-foot .foot-note { display: none; }
+  #practice-view .foot-actions button { flex: 1 1 auto; min-height: 40px; font-size: var(--fs-14); }
+  .foot-actions .completion-lock { flex: 1 1 100%; margin-left: 0; }
+  body.workbench-mode .app-main { padding-bottom: var(--foot-h, 0px); }
+  .wb-answer, .fb-scroll, .follow-up-flow, .fb-section, .follow-up-feedback { scroll-margin-top: calc(var(--topbar-offset, 48px) + 60px); }
+}
+@media (max-width: 767px) {
+  .crumb.has-job .crumb-view, .crumb.has-job .crumb-sep { display: none; }
+  .steps { gap: 2px; }
+  .steps .step-line { width: 6px; }
+  .steps .step { padding: 0 2px; }
+  #practice-view .question-text { font-size: 18px; }
+  #practice-view .question-phase { padding: var(--s-4); }
+  .wb-question { padding: var(--s-4); }
+  .wb-answer, .fb-scroll { padding-inline: var(--s-4); }
+  body.workbench-mode #operations:not(:empty), body.workbench-mode #error:not(:empty), body.workbench-mode #notice:not(:empty) { margin: var(--s-2) var(--s-4); }
+}

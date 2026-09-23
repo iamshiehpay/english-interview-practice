@@ -228,11 +228,42 @@ async function leaveEditor() {
 const viewLabels = {home:'開始練習', practice:'開始練習', mock:'三題短場模擬', discovery:'找職缺', history:'練習紀錄', progress:'我的進步', evidence:'我的履歷', settings:'設定'};
 const railViews = {practice:'home', mock:'home'};
 function setJobContext(title) {
-  const value = truncate(title || '', 80);
-  $('#crumb-job-title').textContent = value;
-  $('#crumb-job-title').title = value;
-  $('#crumb-job').hidden = !value;
+  const full = String(title || '').replace(/\s+/g, ' ').trim();
+  $('#crumb-job-title').textContent = truncate(full);
+  $('#crumb-job-title').title = full;
+  $('#crumb-job').hidden = !full;
+  $('.crumb').classList.toggle('has-job', Boolean(full));
 }
+// The practice step indicator in the topbar: 題目／作答／回饋／追問（可選）.
+// `current` 0-3 marks the step in progress; 4 means the Practice Loop is completed.
+const practiceSteps = ['題目', '作答', '回饋', '追問（可選）'];
+const checkIcon = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m5 12 5 5 9-10"/></svg>';
+function setSteps(current) {
+  const list = $('#crumb-steps');
+  list.hidden = current === undefined;
+  if (current === undefined) { list.replaceChildren(); return; }
+  list.setAttribute('aria-label', current > 3 ? '練習進度：已完成' : `練習進度：${practiceSteps[current]}（第 ${current + 1} 步，共 4 步）`);
+  list.innerHTML = practiceSteps.map((label, index) => {
+    const state = index < current ? 'done' : index === current ? 'now' : '';
+    return `${index ? '<li class="step-line" aria-hidden="true"></li>' : ''}<li class="step ${state}" title="${escape(label)}"${state === 'now' ? ' aria-current="step"' : ''}><i aria-hidden="true">${state === 'done' ? checkIcon : index + 1}</i><span>${escape(label)}</span></li>`;
+  }).join('');
+}
+// Sticky offsets depend on the topbar (which wraps on phones) and on the practice
+// footer (which wraps when it holds several actions), so both are measured.
+const layoutObserver = new ResizeObserver(() => syncLayoutMetrics());
+let observedFoot = null;
+function syncLayoutMetrics() {
+  const root = document.documentElement.style;
+  root.setProperty('--topbar-offset', `${$('.topbar').offsetHeight}px`);
+  const foot = $('#practice .fb-foot');
+  if (foot !== observedFoot) {
+    if (observedFoot) layoutObserver.unobserve(observedFoot);
+    if (foot) layoutObserver.observe(foot);
+    observedFoot = foot;
+  }
+  root.setProperty('--foot-h', `${foot?.offsetHeight || 0}px`);
+}
+layoutObserver.observe($('.topbar'));
 function setMenuOpen(open, {restoreFocus = false} = {}) {
   const toggle = $('#menu-toggle');
   document.body.classList.toggle('menu-open', open);
@@ -257,6 +288,8 @@ function markView(name) {
   });
   $('#crumb-view').textContent = viewLabels[name] || '';
   setJobContext('');
+  setSteps();
+  document.body.classList.remove('workbench-mode');
   setMenuOpen(false);
   window.scrollTo({top:0, behavior:'smooth'});
 }
@@ -279,17 +312,16 @@ document.querySelectorAll('[data-view]').forEach(control => control.addEventList
 
 async function refreshWorkspace() { workspace = await api('/workspace'); return workspace; }
 
-function stepper(stage) {
-  const labels = ['選擇職缺', '選一題', '試著回答', '回饋與收穫'];
-  return `<ol class="stepper">${labels.map((label,index) => `<li class="${index < stage ? 'done' : index === stage ? 'current' : ''}"${index === stage ? ' aria-current="step"' : ''}><span>${escape(label)}</span></li>`).join('')}</ol>`;
-}
 function truncate(text, max = 60) {
   const value = String(text ?? '').replace(/\s+/g, ' ').trim();
   return value.length > max ? value.slice(0, max).trimEnd() + '…' : value;
 }
-function practiceFrame({stage=1, snapshot, content}) {
-  const jobLine = snapshot ? `<div class="job-line"><span class="job-label">職缺：</span><span class="job-title">${escape(truncate(firstLine(snapshot.text)))}</span></div>` : '';
-  return `<article class="practice-shell"><header class="practice-header">${stepper(stage)}</header>${jobLine}<div class="practice-body">${content}</div></article>`;
+// The job and the step now live in the topbar breadcrumb; the page body keeps only
+// the practice content.
+function practiceFrame({step=0, snapshot, content}) {
+  setJobContext(snapshot ? jobTitle(snapshot) : '');
+  setSteps(step);
+  return `<article class="practice-shell"><div class="practice-body">${content}</div></article>`;
 }
 
 function renderHome() {
@@ -362,7 +394,7 @@ $('#capture').addEventListener('click', async event => {
 async function showAnalysisFailure(snapshotId, error) {
   clearDraftSession(); disposeVoice(); followUpVoice.dispose(); followUpVoice.dispose = () => {}; followUpVoice.draftId = null; resetReadAloud(); markView('practice'); currentSnapshotId = snapshotId;
   const snapshot = workspace.snapshots[snapshotId] || await api(`/snapshots/${snapshotId}`);
-  $('#practice').innerHTML = practiceFrame({stage:1, snapshot, content:`<div class="provider-warning"><h2>職缺已保存，題目尚未產生</h2><p>${escape(error.message)}</p><p>你不需要重新貼上職缺。可以直接重試這一步。</p><div id="analysis-retry"></div></div>`});
+  $('#practice').innerHTML = practiceFrame({snapshot, content:`<div class="provider-warning"><h2>職缺已保存，題目尚未產生</h2><p>${escape(error.message)}</p><p>你不需要重新貼上職缺。可以直接重試這一步。</p><div id="analysis-retry"></div></div>`});
   button('重試產生題目', async () => {
     await api(`/snapshots/${snapshotId}/analysis`, {});
     await refreshWorkspace();
@@ -397,8 +429,8 @@ async function showQuestion(snapshotId, questionId, suppliedAnalysis) {
   const meaning = question.meaningZh || '這是舊版題目，目前沒有保存中文題意；英文原題完整保留。';
   const previous = incompleteForQuestion(snapshotId, question.id);
   const providerGate = modelReady() ? '' : `<div class="provider-warning"><strong>目前還不能取得模型回饋。</strong><p>請先到設定完成 Codex 登入與驗證；若要先整理想法，文字草稿仍會保存在本機。</p><div id="question-provider-gate"></div></div>`;
-  const content = `<div id="recommended-question" class="question-phase"><p class="question-kicker">${recommended ? '建議先練' : '目前選擇'}｜${escape(categories[question.category] || question.category)}</p><h1 class="question-text" lang="en">${escape(question.text)}</h1><div id="question-read-aloud"></div><details open><summary>查看中文題意</summary><div class="detail-panel"><p>${escape(meaning)}</p></div></details>${providerGate}<div class="button-row" id="question-actions"></div></div>`;
-  $('#practice').innerHTML = practiceFrame({stage:1, snapshot, content});
+  const content = `<div id="recommended-question" class="question-phase"><div class="q-head"><span class="chip${recommended ? ' chip-accent' : ''}">${recommended ? '建議先練' : '目前選擇'}｜${escape(categories[question.category] || question.category)}</span></div><h1 class="question-text" lang="en">${escape(question.text)}</h1><div id="question-read-aloud"></div><details open><summary>查看中文題意</summary><div class="detail-panel"><p>${escape(meaning)}</p></div></details>${providerGate}<div class="button-row" id="question-actions"></div></div>`;
+  $('#practice').innerHTML = practiceFrame({snapshot, content});
   readAloud($('#question-read-aloud'), {snapshotId, questionId:question.id}, '朗讀題目', questionText($('#recommended-question')));
   const actions = $('#question-actions');
   const begin = async () => {
@@ -432,7 +464,7 @@ async function showQuestionList(snapshotId, suppliedAnalysis) {
     }).join('')}</section>`;
   }).join('');
   const content = `<p class="eyebrow">完整題組</p><h1>選一題來練習</h1><p>題目依類型整理；切換題目不會重新呼叫模型。</p><div class="button-row" id="question-list-actions"></div><div id="question-list" class="question-list">${groups}</div>`;
-  $('#practice').innerHTML = practiceFrame({stage:1, snapshot, content});
+  $('#practice').innerHTML = practiceFrame({snapshot, content});
   button('回到推薦題', () => showRecommended(snapshotId), $('#question-list-actions'), {kind:'ghost'});
   if (analysis.questions.length < 40) button('另外新增四題', async () => {
     await api(`/snapshots/${snapshotId}/questions`, {});
@@ -723,45 +755,45 @@ function followUpHistoryHtml(followUps, corrections = {}) {
   </details>`;
 }
 
-function followUpHtml(record, complete) {
+// A follow-up is split across the workbench: its question and the learner's answer
+// belong to the answer pane, its Chinese feedback to the feedback pane. The
+// #follow-up-actions row goes wherever its actions act: under the answer box while
+// answering, in the feedback pane while feedback is retried, and in the pane footer
+// before the first follow-up and after a follow-up's feedback.
+function followUpWorkHtml(record, complete) {
   const followUps = Array.isArray(record.followUps) ? record.followUps : [];
   const current = followUps.at(-1);
-  if (!current) {
-    if (complete) return '';
-    return `<div class="follow-up-flow follow-up-invitation" aria-labelledby="follow-up-title">
-      <h3 id="follow-up-title">想練面試官接著會問什麼？</h3>
-      <p class="meta">依你剛才保存的正式回答產生一題追問，每道主問最多兩次。</p>
-      <div id="follow-up-actions" class="button-row"></div>
-    </div>`;
-  }
-  const number = followUps.length;
+  if (!current) return '';
   const attempt = current.attempt;
   const feedback = attempt?.feedback;
   let content = '';
   if (!attempt && !complete) {
     content = `<label for="follow-up-answer">你的追問回答</label>
-      <textarea id="follow-up-answer" rows="6" placeholder="只寫下你想在面試中正式說出的英文回答。">${escape(current.transcriptDraft?.transcript || '')}</textarea>
+      <textarea id="follow-up-answer" class="transcript-input" rows="6" placeholder="只寫下你想在面試中正式說出的英文回答。">${escape(current.transcriptDraft?.transcript || '')}</textarea>
       <p id="follow-up-draft-status" class="draft-status" aria-live="polite">${current.transcriptDraft ? '已帶入這次的語音轉錄，可以直接送出，或先修改。' : '可以打字，也可以用語音回答。'}</p>
       <div id="follow-up-voice-entry"></div>
       <div id="follow-up-actions" class="button-row"></div>`;
   } else if (!attempt) {
     content = '<p class="meta">這題尚未作答；你已提前結束並保存這次練習。</p>';
-  } else if (!feedback) {
-    content = `<h3>你的回答已保存</h3><blockquote lang="en">${escape(attempt.transcript)}</blockquote>
-      <p>中文回饋尚未完成。請重試取得回饋，再決定要繼續追問或結束；正式回答不會重複保存。</p>
-      ${complete ? '' : '<div id="follow-up-actions" class="button-row"></div>'}`;
   } else {
-    content = `<details><summary>查看你的追問回答</summary><blockquote lang="en">${escape(attempt.transcript)}</blockquote></details>${playerHtml(attempt,{label:'回聽這次的追問錄音'})}
-      <section class="follow-up-feedback" aria-labelledby="follow-up-feedback-title"><h3 id="follow-up-feedback-title" tabindex="-1">這次追問的中文回饋</h3>${feedbackHtml(feedback)}<div id="follow-up-corrections" class="corrections-area" aria-live="polite"></div></section>
-      ${complete ? '' : '<div id="follow-up-actions" class="button-row"></div>'}`;
+    content = `<p class="meta">${feedback ? '你的追問回答' : '你的回答已保存'}</p><div class="transcript" lang="en">${escape(attempt.transcript)}</div>${playerHtml(attempt,{label:'回聽這次的追問錄音'})}`;
   }
   return `${followUpHistoryHtml(followUps, record.corrections)}<section class="follow-up-flow" aria-labelledby="follow-up-title">
-    <div class="follow-up-heading"><p class="eyebrow">追問 ${number} / 2</p><span class="follow-up-state">${feedback ? '回饋已完成' : attempt ? '等待回饋' : '等待回答'}</span></div>
+    <div class="follow-up-heading"><p class="eyebrow">追問 ${followUps.length} / 2</p><span class="follow-up-state">${feedback ? '回饋已完成' : attempt ? '等待回饋' : '等待回答'}</span></div>
     <h2 id="follow-up-title" class="follow-up-question" lang="en">${escape(current.question.text)}</h2>
     <div id="follow-up-read-aloud"></div>
     <details open><summary>中文題意</summary><p class="meaning">${escape(current.question.meaningZh)}</p></details>
     ${content}
   </section>`;
+}
+
+function followUpFeedbackHtml(record, complete) {
+  const followUps = Array.isArray(record.followUps) ? record.followUps : [];
+  const current = followUps.at(-1);
+  const attempt = current?.attempt;
+  if (!attempt) return '';
+  if (!attempt.feedback) return `<div class="provider-warning follow-up-pending"><p class="eyebrow">追問 ${followUps.length} / 2</p><p>追問回答已保存，中文回饋尚未完成。請重試取得回饋，再決定要繼續追問或結束；正式回答不會重複保存。</p>${complete ? '' : '<div id="follow-up-actions" class="button-row"></div>'}</div>`;
+  return `<section class="follow-up-feedback" aria-labelledby="follow-up-feedback-title"><p class="eyebrow">追問 ${followUps.length} / 2</p><h3 id="follow-up-feedback-title" tabindex="-1">這次追問的中文回饋</h3>${feedbackHtml(attempt.feedback)}<div id="follow-up-corrections" class="corrections-area" aria-live="polite"></div></section>`;
 }
 
 async function createFromFocus(sourceId) {
@@ -851,16 +883,14 @@ async function submitFollowUp(record, followUp, submissionId) {
       pending.textContent = '追問回答已保存，正在取得中文回饋…';
       pendingActions.append(pending);
     }
-    if (stillCurrent) {
-      $('#complete-practice')?.remove();
-      const focusBox = $('#focus')?.closest('.focus-box');
-      if (focusBox && !focusBox.querySelector('.completion-lock')) {
-        const lock = document.createElement('p');
-        lock.className = 'completion-lock';
-        lock.setAttribute('role','status');
-        lock.textContent = '追問回答已保存；完成中文回饋後才能結束練習。';
-        focusBox.append(lock);
-      }
+    const done = stillCurrent ? $('#complete-practice') : null;
+    if (done) {
+      // The footer's completion action waits for the follow-up's Chinese feedback.
+      const lock = document.createElement('p');
+      lock.className = 'completion-lock';
+      lock.setAttribute('role','status');
+      lock.textContent = '追問回答已保存；完成中文回饋後才能結束練習。';
+      done.replaceWith(lock);
     }
     setNotice('追問回答已保存。正在取得中文回饋…');
     control.textContent = '正在取得中文回饋…';
@@ -909,6 +939,58 @@ async function requestFollowUpFeedback(recordId, followUpId) {
   }
 }
 
+// Practice workbench: ≥1024px the question and answer sit left and the feedback
+// pane right, its footer holding the completion action; <1024px 你的回答／回饋 are
+// tabs under the question and the footer is docked to the bottom of the viewport.
+const narrowLayout = () => window.matchMedia('(max-width: 1023px)').matches;
+const feedbackNoteCount = feedback => feedback ? 2 + Object.keys(feedback.ratings || {}).length : 0;
+function showTab(tab, {scroll = false} = {}) {
+  const workbench = $('#practice .workbench');
+  if (!workbench) return;
+  workbench.dataset.tab = tab;
+  workbench.querySelectorAll('[role="tab"]').forEach(control => {
+    const selected = control.dataset.tab === tab;
+    control.setAttribute('aria-selected', String(selected));
+    control.tabIndex = selected ? 0 : -1;
+  });
+  // Switching after scrolling far down one tab starts the other tab at its top.
+  const tabs = workbench.querySelector('.wb-tabs');
+  if (scroll && narrowLayout() && tabs.getBoundingClientRect().top <= tabs.offsetHeight + $('.topbar').offsetHeight) {
+    workbench.querySelector(tab === 'answer' ? '.wb-answer' : '.fb-scroll').scrollIntoView({block:'start'});
+  }
+}
+function setupWorkbench() {
+  const workbench = $('#practice .workbench');
+  const tabs = [...workbench.querySelectorAll('[role="tab"]')];
+  tabs.forEach((control, index) => {
+    control.addEventListener('click', () => showTab(control.dataset.tab, {scroll:true}));
+    control.addEventListener('keydown', event => {
+      const offset = {ArrowRight:1, ArrowLeft:-1}[event.key];
+      if (!offset) return;
+      event.preventDefault();
+      const next = tabs[(index + offset + tabs.length) % tabs.length];
+      showTab(next.dataset.tab, {scroll:true});
+      next.focus();
+    });
+  });
+  showTab(workbench.dataset.tab);
+  document.body.classList.add('workbench-mode');
+  syncLayoutMetrics();
+}
+// Brings a feedback heading into view: the feedback tab on a phone, the feedback
+// pane's own scroll on a desktop (so the question and answer stay where they are).
+function revealFeedback(target) {
+  if (!target) return;
+  showTab('feedback');
+  const section = target.closest('.follow-up-feedback, .fb-section') || target;
+  requestAnimationFrame(() => {
+    target.focus({preventScroll:true});
+    if (narrowLayout()) { section.scrollIntoView({behavior:'smooth', block:'start'}); return; }
+    const pane = target.closest('.fb-scroll');
+    if (pane) pane.scrollTo({top:pane.scrollTop + section.getBoundingClientRect().top - pane.getBoundingClientRect().top - 16, behavior:'smooth'});
+  });
+}
+
 async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedback=false,followUpFresh=false} = {}) {
   if (!(await leaveEditor())) return;
   clearDraftSession(); disposeVoice(); followUpVoice.dispose(); followUpVoice.dispose = () => {}; followUpVoice.draftId = null; resetReadAloud(); disposeVoice = () => {}; markView('practice'); currentRecordId = recordId;
@@ -921,31 +1003,61 @@ async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedb
   const currentFollowUp = followUps.at(-1);
   const followUpFeedbackPending = Boolean(currentFollowUp?.attempt && !currentFollowUp.attempt.feedback);
   const editor = !complete && !feedbackOnly && (!last || (last.feedback && record.attempts.length===1 && (editing || record.writtenDraft)));
-  let body = `${record.focusOrigin ? `<div class="focus-origin-banner"><p class="eyebrow">延續練習重點</p><p>這一題延續你上次的練習重點：<strong>${escape(record.focusOrigin.focusPoint.replace(/[。．.!！?？,，、;；\s]+$/u, ''))}</strong>，換一個情境、同一份職缺再練一次。</p></div>` : ''}<section class="question-phase"><p class="question-kicker">${escape(categories[record.question.category] || record.question.category)}</p><h1 class="question-text" lang="en">${escape(record.question.text)}</h1><div id="question-read-aloud"></div><details open><summary>中文題意</summary><p class="meaning">${escape(record.question.meaningZh || '舊版題目未保存中文題意。')}</p></details></section>`;
+  const questionHtml = `${record.focusOrigin ? `<div class="focus-origin-banner"><p class="eyebrow">延續練習重點</p><p>這一題延續你上次的練習重點：<strong>${escape(record.focusOrigin.focusPoint.replace(/[。．.!！?？,，、;；\s]+$/u, ''))}</strong>，換一個情境、同一份職缺再練一次。</p></div>` : ''}<section class="question-phase" aria-label="題目"><div class="q-head"><span class="chip">${escape(categories[record.question.category] || record.question.category)}</span></div><h1 class="question-text" lang="en">${escape(record.question.text)}</h1><div id="question-read-aloud"></div><details open><summary>中文題意</summary><p class="meaning">${escape(record.question.meaningZh || '舊版題目未保存中文題意。')}</p></details></section>`;
+  let work = '', feedbackPane = '', foot = '', tab = 'answer', step = 1;
   if (last && !last.feedback) {
-    body += `<section class="answer-area"><h2>你的回答已保存</h2><details><summary>查看回答</summary><blockquote>${escape(last.transcript)}</blockquote></details>${playerHtml(last)}<p>回饋尚未完成，可以重試，不會重複提交回答。</p><div id="feedback-retry-actions"></div></section>`;
+    step = 2; tab = 'feedback';
+    work = `<section class="answer-area"><div class="sec-head"><h2>你的回答已保存</h2></div><div class="transcript" lang="en">${escape(last.transcript)}</div>${playerHtml(last)}</section>`;
+    feedbackPane = `<div class="fb-title"><h2>回饋</h2></div><div class="provider-warning"><p>回饋尚未完成，可以重試，不會重複提交回答。</p><div id="feedback-retry-actions"></div></div>`;
   } else if (editor) {
-    if(last)body+=`<section class="answer-area"><h2>這次，試著改這一點</h2><p>${escape(last.feedback.priorityImprovement.textZh || '請選擇一項下次想練習的重點。')}</p><blockquote>${escape(last.feedback.priorityImprovement.quote)}</blockquote></section>`;
-    body+=`<section class="answer-area"><h2>${last?'自己再試一次':'先用自己的方式回答'}</h2>${guidanceHtml()}<label for="answer">${last?'修改你的回答':'你的回答'}</label><textarea id="answer" rows="7" placeholder="先說出你的想法，不用一次就完美。"></textarea><p id="draft-status" class="draft-status" aria-live="polite"></p><button id="retry-draft" class="ghost" hidden type="button">重試儲存草稿</button><div id="voice-entry"></div><button id="submit-answer" class="primary wide" type="button">${last?'送出修改並取得回饋':'送出並取得回饋'}</button></section>`;
-    if(last)body+='<div id="finish-while-editing"></div>';
+    if(last)work+=`<section class="answer-area revise-target"><h2>這次，試著改這一點</h2><p>${escape(last.feedback.priorityImprovement.textZh || '請選擇一項下次想練習的重點。')}</p><blockquote>${escape(last.feedback.priorityImprovement.quote)}</blockquote></section>`;
+    work+=`<section class="answer-area"><h2>${last?'自己再試一次':'先用自己的方式回答'}</h2>${guidanceHtml()}<label for="answer">${last?'修改你的回答':'你的回答'}</label><textarea id="answer" class="transcript-input" rows="7" placeholder="先說出你的想法，不用一次就完美。"></textarea><p id="draft-status" class="draft-status" aria-live="polite"></p><button id="retry-draft" class="ghost" hidden type="button">重試儲存草稿</button><div id="voice-entry"></div><button id="submit-answer" class="primary wide" type="button">${last?'送出修改並取得回饋':'送出並取得回饋'}</button></section>`;
+    feedbackPane = last
+      ? `<div class="fb-title"><h2>上一次回答的回饋</h2></div><p class="fb-sub">修改時可以對照這份回饋；送出修改後會得到新的回饋。</p>${feedbackHtml(last.feedback)}`
+      : '<div class="fb-title"><h2>回饋</h2></div><p class="fb-empty">送出回答後，中文回饋會出現在這裡：一項做得好的地方、一項優先改進，以及四項評分，每一點都引用你的原句。</p>';
+    if(last)foot='<div id="finish-while-editing" class="foot-actions"></div>';
   } else if(last) {
-    if(complete)body+='<div id="practice-complete" class="complete-banner"><strong>今天又多練習了一點。</strong><p>本次回答與回饋已保存。</p></div>';
+    step = complete ? 4 : currentFollowUp ? 3 : 2;
+    tab = currentFollowUp && !currentFollowUp.attempt && !complete ? 'answer' : 'feedback';
+    work+=`<section class="answer-area"><div class="sec-head"><h2>你的回答</h2>${record.attempts.length>1?`<span class="meta">第 ${record.attempts.length} 次回答</span>`:''}</div>${playerHtml(last)}<div class="transcript" lang="en">${escape(last.transcript)}</div></section>`;
     if(record.attempts.length===2) {
       const first=record.attempts[0];
       const same=first.transcript.trim()===last.transcript.trim();
-      body+=`<section class="answer-area"><h2>${same?'這次回答尚未修改':'看看這次的調整'}</h2><p>${same?'兩次內容相同，沒有文字修改可比較。':'先前的練習重點：'+escape(first.feedback.priorityImprovement.textZh || '此筆舊紀錄沒有中文說明。')}</p>${same?'':`<details open><summary>關鍵句前後對照</summary>${changedTextHtml(first.transcript,last.transcript)}</details>`}</section>`;
+      work+=`<section class="answer-area"><h2>${same?'這次回答尚未修改':'看看這次的調整'}</h2><p>${same?'兩次內容相同，沒有文字修改可比較。':'先前的練習重點：'+escape(first.feedback.priorityImprovement.textZh || '此筆舊紀錄沒有中文說明。')}</p>${same?'':`<details open><summary>關鍵句前後對照</summary><div class="transcript-diff">${changedTextHtml(first.transcript,last.transcript)}</div></details>`}</section>`;
     }
-    body+=`<section class="answer-area"><h2 id="feedback-heading" tabindex="-1">給這次回答的一點建議</h2>${playerHtml(last)}${feedbackHtml(last.feedback)}<div id="corrections" class="corrections-area" aria-live="polite"></div><details id="attempt-history"><summary>查看回答紀錄（${record.attempts.length} 個版本）</summary><label for="attempt-version">選擇回答版本</label><select id="attempt-version">${record.attempts.map((a,i)=>`<option value="${i}" ${i===record.attempts.length-1?'selected':''}>第 ${i+1} 次回答 · ${escape(dateLabel(a.submittedAt))}</option>`).join('')}</select><div id="attempt-detail"></div></details></section>`;
-    if(complete && record.focusOrigin){const priority=last.feedback.priorityImprovement;body+=`<section class="answer-area focus-progress"><h2>這個重點練得如何？</h2><p class="meta">上次的練習重點</p><blockquote>${escape(record.focusOrigin.focusPoint)}</blockquote><p class="meta">這次回答的優先改進</p><blockquote>${escape(priority.textZh || priority.text || '－')}</blockquote>${priority.quote?`<p class="meta">依據你這次的原句</p><blockquote lang="en">${escape(priority.quote)}</blockquote>`:''}<p>對照上次的重點與這次的回饋，由你判斷這個重點是否已改善；系統不會替你宣稱進步。</p></section>`;}
-    if(record.unsubmittedDraft)body+=`<details><summary>未送出的修改草稿（未評分）</summary><blockquote>${escape(record.unsubmittedDraft.transcript)}</blockquote></details>`;
+    if(record.unsubmittedDraft)work+=`<details><summary>未送出的修改草稿（未評分）</summary><blockquote>${escape(record.unsubmittedDraft.transcript)}</blockquote></details>`;
+    work+=followUpWorkHtml(record, complete);
+    if(complete)feedbackPane+='<div id="practice-complete" class="complete-banner"><strong>今天又多練習了一點。</strong><p>本次回答與回饋已保存。</p></div>';
+    feedbackPane+=`<section class="fb-section" aria-labelledby="feedback-heading"><h2 id="feedback-heading" tabindex="-1">給這次回答的一點建議</h2>${feedbackHtml(last.feedback)}<div id="corrections" class="corrections-area" aria-live="polite"></div><details id="attempt-history"><summary>查看回答紀錄（${record.attempts.length} 個版本）</summary><label for="attempt-version">選擇回答版本</label><select id="attempt-version">${record.attempts.map((a,i)=>`<option value="${i}" ${i===record.attempts.length-1?'selected':''}>第 ${i+1} 次回答 · ${escape(dateLabel(a.submittedAt))}</option>`).join('')}</select><div id="attempt-detail"></div></details></section>`;
+    if(complete && record.focusOrigin){const priority=last.feedback.priorityImprovement;feedbackPane+=`<section class="answer-area focus-progress"><h2>這個重點練得如何？</h2><p class="meta">上次的練習重點</p><blockquote>${escape(record.focusOrigin.focusPoint)}</blockquote><p class="meta">這次回答的優先改進</p><blockquote>${escape(priority.textZh || priority.text || '－')}</blockquote>${priority.quote?`<p class="meta">依據你這次的原句</p><blockquote lang="en">${escape(priority.quote)}</blockquote>`:''}<p>對照上次的重點與這次的回饋，由你判斷這個重點是否已改善；系統不會替你宣稱進步。</p></section>`;}
+    feedbackPane+=followUpFeedbackHtml(record, complete);
+    feedbackPane+=`<div class="optional-actions">${complete?'':'<p class="optional-label">其他選擇</p>'}<div id="feedback-actions" class="button-row"></div><div id="rewrite-result" aria-live="polite"></div></div>`;
     const focus=record.focusPoint || last.feedback.priorityImprovement.textZh || '請選擇一項下次想練習的重點。';
-    const optional=`<div class="optional-actions">${complete?'':'<p class="optional-label">其他選擇</p>'}<div id="feedback-actions" class="button-row"></div><div id="rewrite-result" aria-live="polite"></div></div>`;
-    const completion=complete
-      ?`<div class="focus-box completed"><p class="eyebrow">下次可以接著練</p><p>${escape(focus)}</p><div id="completed-actions"></div></div>`
-      :`<div class="focus-box"><p class="eyebrow">完成這次練習</p><label for="focus">下次練習重點（可以修改）</label><textarea id="focus" rows="2" maxlength="500">${escape(focus)}</textarea>${followUpFeedbackPending?'<p class="completion-lock" role="status">追問回答已保存；完成中文回饋後才能結束練習。</p>':'<button id="complete-practice" class="primary" type="button">結束並保存</button>'}</div>`;
-    body+=`<section class="next-steps"><p class="eyebrow next-steps-title">接下來</p>${followUpHtml(record,complete)}${optional}${completion}</section>`;
+    feedbackPane+=complete
+      ?`<div class="focus-box completed"><p class="eyebrow">下次可以接著練</p><p>${escape(focus)}</p></div>`
+      :`<div class="focus-box"><p class="eyebrow">完成這次練習</p><label for="focus">下次練習重點（可以修改）</label><textarea id="focus" rows="2" maxlength="500">${escape(focus)}</textarea><p class="meta">確認後按「結束並保存」，這一句就是這次練習存下來的重點。</p></div>`;
+    if (complete) foot = '<div id="completed-actions" class="foot-actions"></div>';
+    else {
+      // #follow-up-actions sits here before the first follow-up and once a follow-up has
+      // feedback; then it carries 結束並保存 itself, so #complete-practice is not repeated.
+      const footFollowUp = !currentFollowUp || Boolean(currentFollowUp.attempt?.feedback);
+      const end = followUpFeedbackPending
+        ? '<p class="completion-lock" role="status">追問回答已保存；完成中文回饋後才能結束練習。</p>'
+        : currentFollowUp?.attempt?.feedback ? '' : '<button id="complete-practice" class="primary" type="button">結束並保存</button>';
+      foot = `<p class="meta foot-note">${currentFollowUp ? '每道主問最多追問兩次；' : '追問可選，每道主問最多兩次；'}隨時可以結束並保存。</p><div class="foot-actions"><div id="revise-actions" class="foot-group"></div>${footFollowUp ? '<div id="follow-up-actions" class="foot-group"></div>' : ''}${end}</div>`;
+    }
   }
-  $('#practice').innerHTML = practiceFrame({stage:last?.feedback?3:2,snapshot,content:body});
+  const noteCount = feedbackNoteCount(last?.feedback) + feedbackNoteCount(currentFollowUp?.attempt?.feedback);
+  const content = `<article class="workbench" data-tab="${tab}">
+    <div class="wb-question">${questionHtml}</div>
+    <div class="wb-tabs" role="tablist" aria-label="作答與回饋"><button type="button" role="tab" id="tab-answer" aria-controls="wb-answer" data-tab="answer">你的回答</button><button type="button" role="tab" id="tab-feedback" aria-controls="wb-feedback" data-tab="feedback">回饋${noteCount ? ` <span class="count">${noteCount}</span>` : ''}</button></div>
+    <section id="wb-answer" class="wb-answer" role="tabpanel" aria-labelledby="tab-answer">${work}</section>
+    <aside class="wb-feedback" aria-label="回饋"><div id="wb-feedback" class="fb-scroll" role="tabpanel" aria-labelledby="tab-feedback">${feedbackPane}</div>${foot ? `<div class="fb-foot">${foot}</div>` : ''}</aside>
+  </article>`;
+  setJobContext(jobTitle(snapshot));
+  setSteps(step);
+  $('#practice').innerHTML = content;
+  setupWorkbench();
   readAloud($('#question-read-aloud'), {recordId:record.id}, '朗讀題目', questionText($('#question-read-aloud')?.closest('.question-phase')));
   if (currentFollowUp) readAloud($('#follow-up-read-aloud'), {recordId:record.id, followUpId:currentFollowUp.id}, '朗讀追問題目', questionText($('#follow-up-read-aloud')?.closest('.follow-up-flow')));
   // Corrections rendered inside the collapsed follow-up history are static markup, so
@@ -954,7 +1066,7 @@ async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedb
   if ($('#attempt-version')) {
     const renderAttempt = () => {
       const index=Number($('#attempt-version').value), attempt=record.attempts[index];
-      $('#attempt-detail').innerHTML=`<h3>第 ${index+1} 次回答</h3><blockquote lang="en">${escape(attempt.transcript)}</blockquote>${playerHtml(attempt,{label:`回聽第 ${index+1} 次回答`})}${index<record.attempts.length-1?feedbackHtml(attempt.feedback):'<p class="meta">此版本的回饋已顯示在上方。</p>'}`;
+      $('#attempt-detail').innerHTML=`<h3>第 ${index+1} 次回答</h3><blockquote class="transcript" lang="en">${escape(attempt.transcript)}</blockquote>${playerHtml(attempt,{label:`回聽第 ${index+1} 次回答`})}${index<record.attempts.length-1?feedbackHtml(attempt.feedback):'<p class="meta">此版本的回饋已顯示在上方。</p>'}`;
     };
     $('#attempt-version').addEventListener('change',renderAttempt);
     renderAttempt();
@@ -968,24 +1080,27 @@ async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedb
   const followUpActions = $('#follow-up-actions');
   if (last?.feedback && !complete && followUpActions) {
     if (!currentFollowUp) {
-      const start = button('讓面試官追問',()=>startFollowUp(record.id),followUpActions);
+      const start = button('讓面試官追問',()=>startFollowUp(record.id),followUpActions,{kind:'secondary'});
       start.disabled = !modelReady();
     } else if (!currentFollowUp.attempt) {
       const submissionId = crypto.randomUUID();
       const submit = button('送出並取得中文回饋',()=>submitFollowUp(record,currentFollowUp,submissionId),followUpActions,{id:'submit-follow-up'});
       submit.disabled = !modelReady();
-      button('結束並保存',finish,followUpActions,{kind:'ghost'});
+      // 結束並保存 stays in the pane footer (#complete-practice) while answering.
       mountFollowUpVoice(record, currentFollowUp);
-      requestAnimationFrame(() => $('#follow-up-answer')?.focus({preventScroll:true}));
+      requestAnimationFrame(() => {
+        $('#follow-up-answer')?.focus({preventScroll:true});
+        $('#practice .follow-up-flow')?.scrollIntoView({behavior:'smooth', block:'start'});
+      });
     } else if (!currentFollowUp.attempt.feedback) {
       const retry = button('重試取得中文回饋',()=>requestFollowUpFeedback(record.id,currentFollowUp.id),followUpActions);
       retry.disabled = !modelReady();
     } else {
       if (followUps.length < 2) {
-        const next = button('繼續追問',()=>startFollowUp(record.id),followUpActions);
+        const next = button('繼續追問',()=>startFollowUp(record.id),followUpActions,{kind:'secondary'});
         next.disabled = !modelReady();
       }
-      button('結束並保存',finish,followUpActions,{kind:followUps.length < 2?'secondary':'primary'});
+      button('結束並保存',finish,followUpActions);
     }
   }
   if(last&&!last.feedback)button('重試取得回饋',()=>requestFeedback(record.id),$('#feedback-retry-actions'));
@@ -996,11 +1111,11 @@ async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedb
     button('看一個示範回答',()=>showCoaching(record,'illustrative',$('#hint-result')),$('#hint-actions'),{kind:'ghost'});
     button('幫我整理成英文',()=>showCoaching(record,'ideas',$('#ideas-result'),$('#ideas').value),$('#ideas-actions'),{kind:'secondary'});
     if(last){button('回到回饋，先不修改',()=>showRecord(record.id,{feedbackOnly:true}),$('#finish-while-editing'),{kind:'secondary'});button('保存草稿，稍後再練',()=>navigate('home'),$('#finish-while-editing'),{kind:'ghost'});}
-    const switcher=document.createElement('div');switcher.className='button-row';$('#practice .practice-body').append(switcher);
+    const switcher=document.createElement('div');switcher.className='button-row';$('#wb-answer').append(switcher);
     button('換一題',async()=>{if(!(await leaveEditor()))return;const analysis=await analysisView(record.snapshotId);const index=analysis.questions.findIndex(q=>q.id===record.question.id);await showQuestion(record.snapshotId,analysis.questions[(index+1)%analysis.questions.length].id,analysis);},switcher,{kind:'ghost',id:'next-question'});
     button('查看全部題目',()=>showQuestionList(record.snapshotId),switcher,{kind:'ghost',id:'view-all-questions'});
   } else if(last?.feedback) {
-    if(!complete && !followUpFeedbackPending && record.attempts.length<2)button('自己再試一次',()=>showRecord(record.id,{editing:true}),$('#feedback-actions'));
+    if(!complete && !followUpFeedbackPending && record.attempts.length<2)button('自己再試一次',()=>showRecord(record.id,{editing:true}),$('#revise-actions'),{kind:'secondary'});
     button('幫我講得更自然',()=>showCoaching(record,'rewrite',$('#rewrite-result')),$('#feedback-actions'),{kind:'secondary'});
     if(!complete) {
       if($('#complete-practice'))$('#complete-practice').addEventListener('click',async event=>{event.currentTarget.disabled=true;try{await finish();}catch(error){setError(error.message);if($('#complete-practice'))$('#complete-practice').disabled=false;}});
@@ -1008,7 +1123,10 @@ async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedb
   }
   if (last?.feedback && $('#corrections')) setupCorrections(record, last.id, $('#corrections'), focusFeedback);
   if (currentFollowUp?.attempt?.feedback && $('#follow-up-corrections')) setupCorrections(record, currentFollowUp.attempt.id, $('#follow-up-corrections'), followUpFresh);
-  if (focusFeedback) { const heading = $('#feedback-heading'); if (heading) requestAnimationFrame(() => { heading.scrollIntoView({behavior:'smooth', block:'start'}); heading.focus({preventScroll:true}); }); }
+  if (focusFeedback) revealFeedback($('#feedback-heading'));
+  if (followUpFresh) revealFeedback($('#follow-up-feedback-title'));
+  if (!narrowLayout()) $('#practice .fb-scroll')?.scrollTo({top:0});
+  syncLayoutMetrics();
 }
 
 // Short Mock Session: three questions in a row, no coaching in between, one overall
