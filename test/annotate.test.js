@@ -47,7 +47,8 @@ test('overlapping and partially overlapping quotes split into segments that carr
   assert.deepEqual(idsOf('Second, '), ['strength', 'fix']);
   assert.deepEqual(idsOf('when user ask'), ['strength', 'priority', 'relevance', 'fix']);
   assert.deepEqual(idsOf(' a question'), ['priority', 'relevance', 'fix']);
-  assert.deepEqual(idsOf(', the system retrieve the top five clauses.'), ['fix']);
+  assert.deepEqual(idsOf(','), ['fix'], 'the comma after a tagged segment is split off to stay with the tag');
+  assert.deepEqual(idsOf(' the system retrieve the top five clauses.'), ['fix']);
   // A quote spanning two sentences is cut at the sentence boundary and starts in sentence 2.
   assert.equal(result.sentenceOf.strength, 2);
   assert.equal(result.sentenceOf.priority, 3);
@@ -62,6 +63,25 @@ test('adjacent quotes touch without sharing a segment', () => {
   const text = 'Alpha beta gamma.';
   const segments = annotateTranscript(text, [{id: 'a', quote: 'Alpha '}, {id: 'b', quote: 'beta'}]).sentences[0].segments;
   assert.deepEqual(segments.map(s => [s.text, s.ids]), [['Alpha ', ['a']], ['beta', ['b']], [' gamma.', []]]);
+});
+
+test('punctuation right after a tagged quote is glued to it without changing the text', () => {
+  const text = 'I fixed the cache. Then we shipped, and users noticed?! Later it broke .';
+  const quotes = [{id: 'a', quote: 'fixed the cache'}, {id: 'b', quote: 'we shipped'}, {id: 'c', quote: 'users noticed'}, {id: 'd', quote: 'it broke '}, {id: 'e', quote: 'Then'}];
+  const result = annotateTranscript(text, quotes);
+  const segments = result.sentences.flatMap(row => row.segments);
+  assert.equal(segments.map(s => s.text).join(''), text, 'segments still rebuild the transcript');
+  for (const segment of segments) assert.equal(text.slice(segment.start, segment.end), segment.text);
+  const glued = segments.filter(s => s.glue).map(s => s.text);
+  assert.deepEqual(glued, ['.', ',', '?!'], 'a stop, a comma and a run of marks each follow their tag');
+  // The glued piece is plain text (no quote covers it), and each quote still ends once.
+  assert.ok(segments.filter(s => s.glue).every(s => s.ids.length === 0 && s.ends.length === 0));
+  for (const id of ['a', 'b', 'c', 'd', 'e']) assert.equal(segments.filter(s => s.ends.includes(id)).length, 1, id);
+  // No glue after a space ("broke ." keeps its gap) or after a segment where no quote ends.
+  assert.equal(segments.find(s => s.start === text.lastIndexOf('.')).glue, undefined);
+  // A punctuation segment that is itself inside another quote keeps that quote's ids.
+  const inner = annotateTranscript('Alpha beta.', [{id: 'x', quote: 'beta'}, {id: 'y', quote: 'beta.'}]).sentences[0].segments;
+  assert.deepEqual(inner.map(s => [s.text, s.ids, s.ends, Boolean(s.glue)]), [['Alpha ', [], [], false], ['beta', ['x', 'y'], ['x'], false], ['.', ['y'], ['y'], true]]);
 });
 
 test('word diff marks only what changed and rebuilds both sentences', () => {

@@ -582,7 +582,7 @@ function annotatedTranscriptHtml(key, {tag = 'div', corrections = true, legend =
   }
   const rows = model.sentences.map(row => {
     const kinds = new Set();
-    const html = row.segments.map(segment => {
+    const pieces = row.segments.map(segment => {
       const ids = segment.ids.filter(id => corrections || model.byId.get(id).kind !== 'fix');
       // A whitespace-only segment (the gap between two sentences) is never a mark.
       if (!ids.length || !segment.text.trim()) return escape(segment.text);
@@ -591,8 +591,21 @@ function annotatedTranscriptHtml(key, {tag = 'div', corrections = true, legend =
       segmentKinds.forEach(kind => kinds.add(kind));
       const tags = segment.ends.filter(id => ids.includes(id)).map(id => tagHtml(model.byId.get(id))).join('');
       const titles = [...new Set(notes.map(note => note.title))].join('、');
-      return `<mark class="mk ${segmentKinds.map(kind => `mk-${kind}`).join(' ')}" data-notes="${ids.join(' ')}" tabindex="0" role="button" aria-describedby="${ids.map(id => `${noteDomId(id)}-d`).join(' ')}" title="回饋：${escape(titles)}（按 Enter 查看）">${escape(segment.text)}${tags ? `<span class="tags">${tags}</span>` : ''}</mark>`;
-    }).join('');
+      // The last word and its tags never break apart (.mk-end); a very long "word"
+      // (a URL) is left free to wrap so it cannot overflow a phone-width line.
+      const [, head, last] = segment.text.match(/^([\s\S]*?)(\S{0,24})$/);
+      const body = tags ? `${escape(head)}<span class="mk-end">${escape(last)}<span class="tags">${tags}</span></span>` : escape(segment.text);
+      return `<mark class="mk ${segmentKinds.map(kind => `mk-${kind}`).join(' ')}" data-notes="${ids.join(' ')}" tabindex="0" role="button" aria-describedby="${ids.map(id => `${noteDomId(id)}-d`).join(' ')}" title="回饋：${escape(titles)}（按 Enter 查看）">${body}</mark>`;
+    });
+    // Punctuation split off after a tag (`glue`, see annotate.js) is kept on the tag's
+    // line: the pair sits in a no-wrap .mk-run while the mark inside wraps normally.
+    let html = '';
+    row.segments.forEach((segment, index) => {
+      if (segment.glue) return;
+      let run = pieces[index], glued = false;
+      for (let next = index + 1; row.segments[next]?.glue; next++) { run += pieces[next]; glued = true; }
+      html += glued ? `<span class="mk-run">${run}</span>` : run;
+    });
     const rowFixes = fixes.get(row.n) || [];
     const kind = rowFixes.length ? 'fix' : ['warn', 'ok', 'rate'].find(value => kinds.has(value));
     return `<div class="srow${kind ? ` has-${kind}` : ''}" data-s="${row.n}"><span class="gut" data-n="${row.n}" aria-hidden="true"></span><div class="stext">${html}</div>${rowFixes.map(note => correctionDiffHtml(note, entry, row.n)).join('')}</div>`;

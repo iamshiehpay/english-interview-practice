@@ -77,10 +77,33 @@ export function annotateTranscript(text, quotes) {
   });
   for (const [id, segment] of Object.entries(lastSegment)) segment.ends.push(id);
   for (const row of rows) for (const segment of row.segments) segment.ends.sort((a, b) => order.get(a) - order.get(b));
+  for (const row of rows) row.segments = glueTrailingPunctuation(row.segments);
   // The sentence each located quote ends in (where an inline correction is shown).
   const endSentenceOf = {};
   for (const anchor of anchors) endSentenceOf[anchor.id] = sentences.findIndex(sentence => anchor.end <= sentence.end) + 1;
   return {sentences: rows, sentenceOf, endSentenceOf, missing};
+}
+
+// A quote's tag is drawn right after its last word as an inline box, and browsers
+// may break the line between that box and the punctuation that follows, leaving
+// "." or "," alone at the start of the next line. So punctuation directly after a
+// tagged segment (one where a quote ends, with no space before the punctuation) is
+// split off into its own segment flagged `glue`, which the renderer keeps on the
+// same line as the tag. The split never changes the text: the segments still
+// concatenate to the transcript, and a quote's `ends` stay on its last segment.
+const trailingPunctuation = /^[.,!?;:…)\]}"'”’]+/u;
+function glueTrailingPunctuation(segments) {
+  const out = [];
+  for (const segment of segments) {
+    const previous = out.at(-1);
+    const match = previous?.ends.length && !/\s$/.test(previous.text) ? segment.text.match(trailingPunctuation) : null;
+    if (!match) { out.push(segment); continue; }
+    const cut = segment.start + match[0].length;
+    if (cut === segment.end) { out.push({...segment, glue: true}); continue; }
+    out.push({text: match[0], start: segment.start, end: cut, ids: segment.ids, ends: [], glue: true});
+    out.push({...segment, text: segment.text.slice(match[0].length), start: cut});
+  }
+  return out;
 }
 
 // Word-level diff of `before` against `after`. Tokens are words, single
