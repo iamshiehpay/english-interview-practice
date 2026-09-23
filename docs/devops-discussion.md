@@ -1,6 +1,6 @@
 # 下一批規劃：雲端部署與 DevOps
 
-日期：2026-09-23。狀態：使用者要求以 grill-with-docs 討論，尚未產生 ADR／PRD／issue，未確認的選項不視為定案。
+日期：2026-09-23。狀態：grill-with-docs 討論已於 2026-09-23 完成 Q1–Q10，尚未產生 ADR／PRD／issue；未列在「已確認決策」的選項不視為定案。
 
 ## 起點
 
@@ -79,8 +79,19 @@
   - 里程碑由使用者手動打 semver tag；CI 將同一個已測試 image 加上版本 tag（不重建），並自動建立 GitHub Release，內容由 Conventional Commits 產生（feat／fix 分類）。
   - 不另維護 `CHANGELOG.md`，GitHub Release 即 changelog。
   - 版本意義綁定 MVP：首次上線打 `v0.9.0`（功能齊但 issue 0008 驗證未過）；創作者 5 次真實練習完成、評估解除 BLOCKED 後打 `v1.0.0`。
+- **完成的定義**（達成即打 `v0.9.0`）。使用者於 2026-09-23 確認。每項都要有可查的證據：
+  1. README 最上方有 Demo 網址與 CI badge。
+  2. README 內有 Mermaid 架構圖（GitHub Actions → Artifact Registry → Cloud Run，含監控）。
+  3. Dashboard 截圖。
+  4. `infra/` 的 Terraform 能從零建出全部資源，`terraform plan` 無漂移。
+  5. 刻意推一個會讓 smoke 失敗的版本，驗證 CI 自動 rollback，過程記錄於 `docs/verification/`。
+  6. 觸發一次告警並確認 email 收到。
+  7. Trivy 掃描無 HIGH／CRITICAL。
+  8. ADR 0020：本機限定改為公開 Demo 的產品邊界變更。
+  9. `docs/devops/runbook.md`：部署、rollback、Demo 額滿、budget 告警的處理。
+  10. `docs/devops/cost.md`：逐項說明為何是 $0，及 2027 年告警收費的應對。
+  - 明確不做：Kubernetes、staging／prod 多環境、Cloudflare（未達觸發條件）、真實模型的 Demo。
 
 ## 待討論問題
 
-- 種子資料之後要不要換成真實模型跑出來的紀錄（fake 輸出的說服力較弱）？
-- 完成的定義是什麼：能展示哪些 DevOps 成果（CI badge、IaC、監控截圖、架構圖、runbook）才算做完？
+- 種子資料之後要不要換成真實模型跑出來的紀錄（fake 輸出的說服力較弱）？延後到 `v1.0.0` 之後再決定：屆時已有創作者的真實練習，可評估挑選去識別化的紀錄當種子。
