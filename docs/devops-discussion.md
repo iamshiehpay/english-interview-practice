@@ -30,7 +30,7 @@
    - 不做多使用者 SaaS（需要資料庫、帳號、加密，等於重寫並推翻 ADR 0008／0013）。
 4. **CI／CD**：GitHub Actions — 測試 → 建 image → 推 GHCR → 部署；IaC 變更跑 `plan`。
 5. **託管候選**（待決）：
-   - Cloudflare Tunnel + Access：app 留在本機 Mac，保留 Codex 訂閱；免費；Mac 關機即離線；正式網址需要 Cloudflare 上的網域。
+   - Cloudflare Tunnel：Demo 容器跑在本機 Mac；免費；Mac 關機即離線（Demo 用 fake provider，不需要 Codex）；正式網址需要 Cloudflare 上的網域。
    - 免費或小型 VM（Oracle Cloud Always Free、AWS Lightsail／EC2、GCP e2）＋ Docker ＋ Caddy：24 小時在線，但無法用 Codex 訂閱。
    - Fly.io ＋ volume。
 6. **IaC**：Terraform（依託管選擇用 Cloudflare 或雲端 provider）。
@@ -40,14 +40,17 @@
 
 - 專案定位：求職作品集。2026-09-23。
 - 順序：先完成 MVP 驗證，再做部署；Cloudflare 最後考慮。2026-09-23。
-- 練習用 Codex 預設改為 `gpt-5.6-luna`、reasoning effort `xhigh`，Codex 逾時提高到 180 秒。已實作於 `914c842`。2026-09-23。
+- 練習用 Codex 預設改為 `gpt-5.6-luna`、reasoning effort `xhigh`，Codex 逾時提高到 180 秒。已實作於 `914c842`；server 原本拒絕超過 120 秒的逾時，上限改為 300 秒，修正於 `31badc4`。2026-09-23。
 - Issue 0010–0021 狀態改為 `awaiting-human-validation`。已提交於 `94614ed`。2026-09-23。
 - **部署對象**：雲端只放給面試官／招募者看的公開 Demo，免登入、隨時可開、不含個人資料、不花 API 費用；創作者本人的日常練習留在本機 Mac（使用 Codex 訂閱）。使用者於 2026-09-23 確認（「本來就是這樣」）。
+- **Demo 資料隔離**：每位訪客一份獨立的暫存 workspace（以 cookie 區分 session），建立時複製一組種子資料（示範職缺與已完成的練習紀錄），閒置 1 小時自動刪除；頁面顯示「Demo 使用示範模型，請勿輸入真實個人資料」。種子資料先用 fake 模型產生。使用者於 2026-09-23 確認。這需要修改 server 依 session 選擇 store，屬於程式變更，須寫進 ADR 0020。
+- **練習用模型維持 Codex 訂閱**：`gpt-5.6-luna`、xhigh、預設開 Fast 模式（service tier `priority`，1.5 倍速、較耗訂閱額度），已實作於 `27a1190`。合成 Practice Loop 從 118 秒降到 78 秒。2026-09-23。
+- **不做 Claude 訂閱 provider（暫緩）**：2026-09-23 查證，Claude Agent SDK 文件仍寫明未經核准不得讓第三方產品提供 claude.ai 登入或訂閱額度；2026 年的計費調整已暫停，個人自用 `claude -p` 仍計入訂閱額度。本專案要公開為作品集，把訂閱登入做成功能不合適，且要重做與 Codex 同等的隔離。使用者表示「如果不行就保留 codex」。
 
 ## 待討論問題
 
 - 作品集想展示哪個雲端平台的能力（AWS／GCP／Cloudflare）？這會決定託管與 IaC 選擇。
-- 公開 Demo 的資料：fake provider 的示範輸出夠不夠說服面試官？是否需要預先放一組「真實模型跑過的」唯讀示範紀錄？
+- 種子資料之後要不要換成真實模型跑出來的紀錄（fake 輸出的說服力較弱）？
 - 每月預算上限？是否購買網域？
 - 服務需要 24 小時在線嗎？
 - 完成的定義是什麼：能展示哪些 DevOps 成果（CI badge、IaC、監控截圖、架構圖、runbook）才算做完？
