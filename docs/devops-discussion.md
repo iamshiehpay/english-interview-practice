@@ -50,18 +50,24 @@
   - 需要的程式變更：`src/server.js:762` 監聽位址寫死 `127.0.0.1`（ADR 0013 的刻意設計），改為 `HOST` 環境變數，本機預設不變，僅容器設 `0.0.0.0`；須寫進 ADR 0020。
   - 不選 Cloudflare Workers 改寫（方案 C）：`src/` 21 個檔案中 11 個使用 `node:fs`／`child_process`／`http`，要維護兩種執行環境並放棄零依賴；列為 DevOps 完成後的獨立架構延伸。`store.js` 抽成可替換介面的重構兩者共用。
 - **CI／CD 範圍**（GitHub Actions）。使用者於 2026-09-23 確認。
-  - PR／分支 push（只檢查）：`npm test`、`npm run evaluate`（fake provider）、`docker build` 後啟動容器打 `/api/providers` smoke、Trivy 映像掃描、hadolint、`terraform fmt`／`validate`／`plan`（結果貼到 PR）。
+  - PR／分支 push（只檢查）：`npm test`、`npm run evaluate`（fake provider）、`docker build` 後啟動容器打 `/api/health` smoke、Trivy 映像掃描、hadolint、`terraform fmt`／`validate`／`plan`（結果貼到 PR）。
   - 合併到 `main`（部署）：以上全部 → image 以 git SHA 為 tag 推 Artifact Registry → 以 Workload Identity Federation 部署 Cloud Run（GitHub 不存 GCP 金鑰）→ 對正式網址 smoke → 失敗自動把流量切回上一個 revision。
   - `terraform apply` 不自動執行，需在 GitHub Environment 手動核准。
   - 暫不納入：`test:browser`（需在 CI 安裝 agent-browser 與 Chromium，慢且易不穩定，先留本機）、真實模型評估（花錢、需金鑰，維持本機手動）。
 - **GitHub repo**：公開；從目前 HEAD 建立 `main`，保留完整 47 個 commit 歷史（不 squash）；推送前以 gitleaks 掃描完整歷史內容；`main` 設保護（必須經 PR、CI 通過）；合併後刪除 `ui-ux-practice-loop-refinements`。使用者於 2026-09-23 確認。
   - Commit 作者 email 維持 `iamshiehpay@gmail.com`，不改寫歷史：該 email 已出現在使用者至少 4 個公開 repo，改寫換不到隱私且會改變所有 hash。若日後要隱藏，於帳號層級（全域 git 設定＋GitHub「Keep my email addresses private」）處理。使用者於 2026-09-23 接受建議。
   - 推送前由使用者自行確認 `docs/portfolio/demo.webm` 無不想公開的內容。
+- **監控與告警**。使用者於 2026-09-23 確認。
+  - 限制：Cloud Run 的 `/tmp` 是記憶體檔案系統，訪客 workspace 佔用實例 RAM；滿了會 OOM 重啟並清空所有進行中 Demo。
+  - App 端（程式變更）：同時最多 50 個 Demo session，超過先淘汰最久未動者、全部活躍則回「Demo 目前額滿」；每個 workspace 上限 2 MB；log 改為帶 `severity` 的 JSON 行，只記 session 建立／過期／數量，不記使用者輸入。
+  - GCP 端（Terraform）：uptime check 每 5 分鐘打 `/api/health`（已存在於 `src/server.js:89`）；email 告警：uptime 失敗、5xx 率 5 分鐘 >5%、記憶體 >80%；billing budget 超過 $1 通知；Dashboard（請求數、延遲、錯誤率、記憶體、Demo session 數）。
+  - 不自架 Prometheus／Grafana。
+- **成本目標：每月 $0**。使用者於 2026-09-23 確認。所有託管、監控、registry、state 儲存選擇須落在免費額度內；會產生費用的項目須先列出並經使用者同意。
 
 ## 待討論問題
 
 - 種子資料之後要不要換成真實模型跑出來的紀錄（fake 輸出的說服力較弱）？
-- 每月預算上限？是否購買網域？
+- 不買網域的話，網址用 `*.run.app`（或邊緣層的 `*.workers.dev`）是否可接受？
 - 服務需要 24 小時在線嗎？
 - 完成的定義是什麼：能展示哪些 DevOps 成果（CI badge、IaC、監控截圖、架構圖、runbook）才算做完？
 - 版本與發布策略：tag、changelog、image 版本號。
