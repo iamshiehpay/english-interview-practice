@@ -1,5 +1,5 @@
 ---
-status: ready-for-agent
+status: awaiting-human-validation
 ---
 
 # Home redesign: five-second hero, flow strip, static feedback preview
@@ -107,3 +107,54 @@ request; confirm the existing "貼 JD → 產生題目" flow still works end to 
 
 Not blocked by 0024, but coordinate class names with it (see **What to
 build**) since both touch the feedback-preview markup.
+
+## Comments
+
+2026-09-23: Implemented and automatically verified; visual acceptance by the
+creator is pending, hence `awaiting-human-validation`.
+
+- **Layout.** `#home-view` is now `#resume-practice` (unchanged logic, still
+  first) → `.home-grid`: left `.home-main` = `.home-hero` (eyebrow, `<h1
+  id="home-title">`, lead, `ol.flow` with 貼上職缺／依職缺出題／開口回答／逐句回饋)
+  + the JD form; right `figure.home-preview`. Two columns at ≥1024px (flow
+  strip 4×1 at ≥1280px, 2×2 below), one column below 1024px with the preview
+  after the form. `#home-progress` stays under the grid.
+- **JD form.** Same controls, IDs, label, placeholder and order (`#jd`,
+  `#resume-choice`, difficulty `<details>`, `#generation-disclosure`,
+  `#provider-gate`, `#capture`); restyled with the tokens (hairline card,
+  mono textarea, 6px buttons, full-width `#capture`). The form's decorative
+  eyebrow 「開始新練習」 was dropped (the hero has its own); `#start-title`
+  「你想準備哪個職缺？」 stays. Copy adapted from the mockup: step 1 says
+  「貼上職缺描述全文」 (no 104 URL) and step 3 「錄音或打字都可以」. No 104-URL
+  toggle, no other input mode.
+- **Preview.** `homePreviewSample` in `public/app.js` (a fictional backend
+  question, a three-sentence transcript, strength, priority improvement and
+  four ratings) is registered with `registerAnnotation('home-sample', …)` and
+  rendered once by `renderHomePreview()` through `annotatedTranscriptHtml`
+  (with the legend) and `feedbackHtml` — the same markup and classes as the
+  practice screen, so it follows 0024's layout automatically. One rating
+  (論據與例子) is shown expanded. It makes no request (only the app's usual
+  `/api/providers`, `/api/health`, `/api/workspace`, `/api/operations` were
+  loaded). The panel is labelled 「回饋會長這樣」 + a 「範例」 chip + 「固定的示範內容，
+  不是你的練習資料。」; its body is `inert`, so none of its marks/notes/rating
+  rows take focus or clicks, and screen readers get a text summary via the
+  figure's `aria-describedby`.
+- **用範例職缺試試 not added.** Neither the PRD nor this issue asks for it and
+  `examples/` holds no fictional JD (only a fictional resume).
+- **Smoke / runbook.** Because the preview puts four `.ratings .rating` rows
+  in the DOM, the two practice rating checks in `test/browser-smoke.js` are
+  scoped to `#practice-view`; one assertion was added on the home page (four
+  flow steps, an inert labelled preview with marks and rating bars). No ID or
+  label changed. `docs/creator-validation.zh-TW.md` gains one paragraph on
+  where things are on the home page and that the 範例 panel is not the
+  learner's data.
+- **Verification.** `npm test` 187/187; `npm run test:browser` PASS
+  (learner-flow screenshots restored; re-baselining is 0028). Fake provider,
+  empty workspace: at 1440×900 `#capture` ends at y≈809 (above the fold); at
+  1024 and 390 no horizontal overflow; at 390×844 hero and flow strip are
+  visible without scrolling and `#capture` is one short scroll away. With an
+  unfinished record the 繼續上次練習 card appears first and 繼續練習 reopens it
+  (at 1440 `#capture` then sits just below the fold). Keyboard: topbar →
+  `#jd` → 調整題目深度 → `#capture`, nothing in the preview is reachable.
+  Screenshots in
+  [`docs/verification/ui-redesign-0025/`](../verification/ui-redesign-0025/).
