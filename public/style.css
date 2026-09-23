@@ -41,22 +41,6 @@
   --rail-w: 224px;
   --topbar-h: 48px;
 
-  /* Legacy names, kept only as aliases of the tokens above so views not yet
-     restyled (issues 0023-0027) follow the new palette. Do not add new uses. */
-  --ink: var(--text);
-  --ink-soft: var(--muted);
-  --paper: var(--surface);
-  --mist: var(--subtle);
-  --sky: var(--accent-soft);
-  --line: var(--border);
-  --teal: var(--accent);
-  --teal-dark: var(--accent-text);
-  --mint: var(--accent-soft);
-  --coral: var(--del);
-  --coral-soft: var(--del-bg);
-  --yellow: var(--warn-line);
-  --shadow: var(--shadow-pop);
-
   font-family: var(--font-ui);
   color: var(--text);
   background: var(--canvas);
@@ -249,8 +233,8 @@ h3 { margin-bottom: var(--s-2); font: 600 var(--fs-14)/1.4 var(--font-zh); }
   margin-inline: auto;
   padding: clamp(24px, 4vw, 42px);
 }
-.section-number { color: var(--line); font-family: Georgia, serif; font-size: 42px; line-height: 1; }
-.resume-card { width: min(830px, 100%); margin: 0 0 24px auto; padding: 22px 26px; border-left: 1px solid var(--line); }
+.section-number { color: var(--border); font-family: Georgia, serif; font-size: 42px; line-height: 1; }
+.resume-card { width: min(830px, 100%); margin: 0 0 24px auto; padding: 22px 26px; border-left: 1px solid var(--border); }
 .resume-card h2 { margin-bottom: 5px; font-size: 20px; }
 .resume-card .actions { margin-top: 14px; }
 
@@ -311,15 +295,15 @@ button:focus-visible, summary:focus-visible, [tabindex]:focus-visible, a:focus-v
 .practice-header { padding: 16px clamp(20px, 4vw, 34px) 6px; border-radius: var(--r-md); }
 .practice-body { display: flex; flex-direction: column; gap: 16px; padding: 0; }
 .question-phase, .practice-body > .answer-area, .next-steps { padding: clamp(22px, 4vw, 34px); }
-#attempt-history { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
-.job-line { display: flex; align-items: center; gap: 8px; margin: 0 6px; color: var(--ink-soft); font-size: 13px; }
-.job-line .job-label { flex: 0 0 auto; color: var(--ink-soft); font-weight: 650; }
-.job-line .job-title { flex: 1 1 auto; min-width: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); font-size: 15px; font-weight: 650; }
-.question-kicker { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 14px; color: var(--teal); font-size: 13px; font-weight: 700; }
-.question-kicker::before { width: 22px; height: 2px; background: var(--yellow); content: ""; }
+#attempt-history { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); }
+.job-line { display: flex; align-items: center; gap: 8px; margin: 0 6px; color: var(--muted); font-size: 13px; }
+.job-line .job-label { flex: 0 0 auto; color: var(--muted); font-weight: 650; }
+.job-line .job-title { flex: 1 1 auto; min-width: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text); font-size: 15px; font-weight: 650; }
+.question-kicker { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 14px; color: var(--accent); font-size: 13px; font-weight: 700; }
+.question-kicker::before { width: 22px; height: 2px; background: var(--warn-line); content: ""; }
 .question-text { max-width: 820px; margin-bottom: 18px; font-size: clamp(22px, 2.6vw, 28px); line-height: 1.28; }
-.recommendation { max-width: 720px; padding-left: 15px; color: var(--ink-soft); border-left: 3px solid var(--yellow); }
-.recommendation strong { color: var(--ink); }
+.recommendation { max-width: 720px; padding-left: 15px; color: var(--muted); border-left: 3px solid var(--warn-line); }
+.recommendation strong { color: var(--text); }
 
 details { margin: var(--s-3) 0; }
 summary { color: var(--accent-text); cursor: pointer; font: 600 var(--fs-13)/1.5 var(--font-zh); }
@@ -337,27 +321,27 @@ summary { color: var(--accent-text); cursor: pointer; font: 600 var(--fs-13)/1.5
 
 .answer-area { margin: 0; }
 .answer-area textarea { min-height: 230px; font-family: var(--font-ui); font-size: 17px; line-height: 1.75; }
-.draft-status { min-height: 24px; margin-top: 6px; color: var(--ink-soft); font-size: 13px; }
+.draft-status { min-height: 24px; margin-top: 6px; color: var(--muted); font-size: 13px; }
 .draft-status.error { color: var(--del); font-weight: 700; }
 .prompt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 18px 0; }
-.prompt-grid details { margin: 0; padding: 14px 16px; background: var(--mist); border-radius: 16px; }
+.prompt-grid details { margin: 0; padding: 14px 16px; background: var(--subtle); border-radius: 16px; }
 .provider-warning { margin: var(--s-3) 0; padding: var(--s-3) var(--s-4); background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: var(--r-md); font-size: var(--fs-14); }
 .provider-warning p { margin: var(--s-1) 0 0; }
 
 .feedback-feature { display: grid; grid-template-columns: 1fr; gap: 22px; margin: 18px 0 4px; }
-.feedback-card { padding: 0 0 0 16px; border-left: 3px solid var(--line); box-shadow: none; }
-.feedback-card.strength { border-left-color: var(--teal); }
-.feedback-card.priority { border-left-color: var(--yellow); }
+.feedback-card { padding: 0 0 0 16px; border-left: 3px solid var(--border); box-shadow: none; }
+.feedback-card.strength { border-left-color: var(--accent); }
+.feedback-card.priority { border-left-color: var(--warn-line); }
 .feedback-card blockquote { font-size: 13px; }
 .legacy-note { padding: 10px 13px; background: var(--subtle); border-radius: 8px; }
 
-.revision-block { margin-top: 36px; padding-top: 30px; border-top: 1px solid var(--line); }
+.revision-block { margin-top: 36px; padding-top: 30px; border-top: 1px solid var(--border); }
 .attempts { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
-.attempt-column { min-width: 0; padding: 22px; background: var(--mist); border-radius: 24px; }
+.attempt-column { min-width: 0; padding: 22px; background: var(--subtle); border-radius: 24px; }
 .attempt-column > blockquote { background: white; }
 .attempt-column .feedback-feature { grid-template-columns: 1fr; }
-.focus-box { margin-top: 26px; padding: 24px; background: var(--mint); border-radius: 24px; }
-.complete-banner { margin: 0 0 25px; padding: 22px 25px; background: var(--mint); border: 1px solid var(--accent-line); border-radius: 24px; }
+.focus-box { margin-top: 26px; padding: 24px; background: var(--accent-soft); border-radius: 24px; }
+.complete-banner { margin: 0 0 25px; padding: 22px 25px; background: var(--accent-soft); border: 1px solid var(--accent-line); border-radius: 24px; }
 
 
 .split-list { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
@@ -366,7 +350,7 @@ summary { color: var(--accent-text); cursor: pointer; font: 600 var(--fs-13)/1.5
 .list-card p { margin-bottom: var(--s-2); }
 .list-card button { margin-bottom: 0; }
 
-footer { padding: 24px; color: var(--ink-soft); border-top: 1px solid var(--line); text-align: center; font-size: 12px; }
+footer { padding: 24px; color: var(--muted); border-top: 1px solid var(--border); text-align: center; font-size: 12px; }
 
 @media (max-width: 800px) {
   main { width: min(100% - 32px, 1120px); padding-top: 45px; }
@@ -395,19 +379,19 @@ footer { padding: 24px; color: var(--ink-soft); border-top: 1px solid var(--line
 p, h1, h2, h3 { text-wrap: pretty; overflow-wrap: anywhere; }
 .practice-shell { max-width: 880px; margin-inline: auto; }
 .practice-body { padding: clamp(24px, 5vw, 48px); }
-.practice-header { background: var(--paper); }
+.practice-header { background: var(--surface); }
 .job-line { margin-bottom: 24px; }
-.meaning { margin-top: 12px; color: var(--ink-soft); }
+.meaning { margin-top: 12px; color: var(--muted); }
 .check-label { display: flex; align-items: center; gap: 10px; }
 .check-label input { flex: none; width: 16px; height: 16px; min-height: 0; margin: 0; padding: 0; accent-color: var(--accent); }
 .home-progress { max-width: 830px; margin: 40px auto 0; }
 .resume-card { margin-inline: auto; }
 .coaching-text { white-space: pre-wrap; line-height: 1.8; }
-.coaching-result { background: var(--mint); }
-.coaching-caveat { margin: 0 0 12px; padding: 9px 13px; background: var(--subtle); border: 1px solid var(--accent-line); border-radius: var(--r-sm); color: var(--teal-dark); font-size: 13px; font-weight: 650; }
+.coaching-result { background: var(--accent-soft); }
+.coaching-caveat { margin: 0 0 12px; padding: 9px 13px; background: var(--subtle); border: 1px solid var(--accent-line); border-radius: var(--r-sm); color: var(--accent-text); font-size: 13px; font-weight: 650; }
 .answer-area textarea { font-family: inherit; }
 .feedback-card { padding: 2px 0 2px 16px; }
-.feedback-card h3 { color: var(--teal-dark); }
+.feedback-card h3 { color: var(--accent-text); }
 .feedback-card blockquote { font-size: 16px; }
 .ideas-panel { margin-top: 24px; }
 .section-number { display: none; }
@@ -419,8 +403,8 @@ main { padding-top: 48px; }
 .answer-help {
   margin: 0 0 24px;
   padding: 0;
-  background: var(--mist);
-  border: 1px solid var(--line);
+  background: var(--subtle);
+  border: 1px solid var(--border);
   border-radius: 20px;
 }
 .answer-help > summary {
@@ -430,33 +414,33 @@ main { padding-top: 48px; }
 }
 .answer-help-body { padding: 0 18px 18px; }
 .answer-help-body > .meta { margin-bottom: 10px; }
-.answer-help .ideas-panel { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
+.answer-help .ideas-panel { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
 .answer-help .ideas-panel label { margin-top: 0; }
 
 .follow-up-flow {
   margin: 34px 0 26px;
   padding: clamp(22px, 4vw, 32px);
   background: var(--canvas);
-  border: 1px solid var(--line);
+  border: 1px solid var(--border);
   border-radius: 24px;
 }
 .follow-up-invitation { background: transparent; border: 1px dashed var(--border-strong); }
-.follow-up-invitation h3 { margin-bottom: 4px; color: var(--teal-dark); font-size: 16px; }
-.follow-up-invitation > p:not(.eyebrow) { max-width: 650px; color: var(--ink-soft); }
+.follow-up-invitation h3 { margin-bottom: 4px; color: var(--accent-text); font-size: 16px; }
+.follow-up-invitation > p:not(.eyebrow) { max-width: 650px; color: var(--muted); }
 .next-steps { margin: 0; }
 .next-steps-title { margin-bottom: 14px; }
 .next-steps > .follow-up-flow { margin-top: 0; }
 .optional-actions { margin: 8px 0 20px; }
-.optional-label { margin-bottom: 2px; color: var(--ink-soft); font-size: 12px; font-weight: 700; letter-spacing: .14em; }
+.optional-label { margin-bottom: 2px; color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .14em; }
 .optional-actions .button-row { margin-top: 6px; }
 .follow-up-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .follow-up-heading .eyebrow { margin-bottom: 0; }
 .follow-up-state {
   flex: 0 0 auto;
   padding: 4px 10px;
-  color: var(--teal-dark);
-  background: var(--paper);
-  border: 1px solid var(--line);
+  color: var(--accent-text);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 999px;
   font-size: 12px;
   font-weight: 700;
@@ -464,11 +448,11 @@ main { padding-top: 48px; }
 .follow-up-question { max-width: 720px; margin: 18px 0 14px; font-size: clamp(22px, 3vw, 30px); }
 .follow-up-flow textarea { min-height: 180px; font-size: 16px; line-height: 1.7; }
 .follow-up-flow .button-row { margin-top: 20px; }
-.follow-up-feedback { margin-top: 26px; padding-top: 24px; border-top: 1px solid var(--line); }
-.follow-up-feedback > h3 { margin-bottom: 16px; color: var(--teal-dark); font-size: 19px; }
+.follow-up-feedback { margin-top: 26px; padding-top: 24px; border-top: 1px solid var(--border); }
+.follow-up-feedback > h3 { margin-bottom: 16px; color: var(--accent-text); font-size: 19px; }
 .follow-up-history { margin: 26px 0; }
 .follow-up-history > summary { min-height: 44px; padding-block: 9px; }
-.completion-lock { margin: 14px 0 0; color: var(--teal-dark); font-size: 14px; font-weight: 700; }
+.completion-lock { margin: 14px 0 0; color: var(--accent-text); font-size: 14px; font-weight: 700; }
 
 @media (max-width: 480px) {
   .answer-help-body { padding-inline: 14px; }
@@ -485,10 +469,10 @@ mark { background: var(--accent-soft); color: var(--text); border-radius: 4px; }
 .corrections-none { margin: 14px 0 0; }
 
 /* 0011 — continue a Focus Point in the same job. */
-.focus-origin-banner { margin-bottom: 20px; padding: 14px 18px; background: var(--mint); border: 1px solid var(--accent-line); border-radius: 18px; }
+.focus-origin-banner { margin-bottom: 20px; padding: 14px 18px; background: var(--accent-soft); border: 1px solid var(--accent-line); border-radius: 18px; }
 .focus-origin-banner .eyebrow { margin-bottom: 4px; }
-.focus-origin-banner strong { color: var(--teal-dark); }
-.focus-progress { border-left: 4px solid var(--yellow); }
+.focus-origin-banner strong { color: var(--accent-text); }
+.focus-progress { border-left: 4px solid var(--warn-line); }
 
 /* Read aloud: a quiet inline control that never competes with the question. */
 .read-aloud { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 10px 0 4px; }
@@ -497,14 +481,14 @@ mark { background: var(--accent-soft); color: var(--text); border-radius: 4px; }
 .read-aloud .meta { margin: 0; }
 
 /* Recording: the elapsed clock must be readable at a glance while speaking. */
-.voice-panel { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
-.recording-clock { margin: 10px 0 2px; font-variant-numeric: tabular-nums; font-weight: 600; color: var(--ink); }
+.voice-panel { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); }
+.recording-clock { margin: 10px 0 2px; font-variant-numeric: tabular-nums; font-weight: 600; color: var(--text); }
 .recording-clock.near-limit { color: var(--del); }
 /* Microphone evidence: which input is live, how loud it is, and what was captured.
    These answer "did it hear me?" locally, before any audio is sent anywhere. */
 .voice-input-label { margin: 6px 0 2px; }
 .voice-level-box { margin: 8px 0 2px; }
-.voice-level-box label { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--ink-soft); }
+.voice-level-box label { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); }
 .voice-level { flex: 1; max-width: 260px; height: 10px; }
 .voice-level-note, .voice-recording-summary { margin: 4px 0 0; }
 .voice-preview { margin: 10px 0 4px; }
@@ -517,9 +501,9 @@ mark { background: var(--accent-soft); color: var(--text); border-radius: 4px; }
 .answer-recording audio { width: 100%; max-width: 420px; }
 
 /* Listening mode: the toggle stays quiet, the reveal control stays obvious. */
-.listening-toggle { display: inline-flex; align-items: center; gap: 6px; margin: 0; font-size: 14px; color: var(--ink-soft); }
+.listening-toggle { display: inline-flex; align-items: center; gap: 6px; margin: 0; font-size: 14px; color: var(--muted); }
 .listening-toggle input { margin: 0; }
-.read-aloud-reveal { border-color: var(--teal); color: var(--teal-dark); }
+.read-aloud-reveal { border-color: var(--accent); color: var(--accent-text); }
 
 /* =====================================================================
    Practice workbench (issue 0023) — topbar step indicator; two panes at
@@ -1196,7 +1180,7 @@ h2 .count { padding: 2px 6px; color: var(--muted); background: var(--subtle); bo
    not the rail or topbar, changes colour. Inside the room the workbench token
    names are re-pointed at the room palette, so shared components (buttons,
    inputs, chips, feedback notes, marks, rating bars, the voice panel) follow
-   it without room-specific copies. Aliases and --hair are re-declared too:
+   it without room-specific copies. --hair is re-declared too:
    a custom property that uses var() is resolved where it is declared.
    ===================================================================== */
 .room {
@@ -1215,9 +1199,6 @@ h2 .count { padding: 2px 6px; color: var(--muted); background: var(--subtle); bo
   --warn: #F5B453; --warn-bg: rgb(245 158 11 / .16); --warn-line: #F5B453;
   --del: #F97066; --del-bg: rgb(240 68 56 / .16); --ins: #4ADE80; --ins-bg: rgb(34 197 94 / .16);
   --hair: 1px solid var(--m-border);
-  --ink: var(--text); --ink-soft: var(--muted); --paper: var(--surface); --mist: var(--subtle); --sky: var(--accent-soft);
-  --line: var(--border); --teal: var(--accent); --teal-dark: var(--accent-text); --mint: var(--accent-soft);
-  --coral: var(--del); --coral-soft: var(--del-bg); --yellow: var(--warn-line);
   color-scheme: dark;
   display: flex;
   flex-direction: column;
