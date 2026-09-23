@@ -6,7 +6,7 @@
 
 - [ ] 這五次練習必須是**你本人**親自貼職缺、親自打字或親自開口回答；不能用 AI（包含 Claude／ChatGPT／Codex）幫你生成答案再貼進去。這是要驗證產品在真人使用下是否成立，不是要再測一次模型。
 - [ ] 不要把私人資料（履歷全文、身分資訊、公司內部職缺全文如果有保密疑慮）貼到**公開**文件裡。這份 runbook、`evaluation/v3/creator-validation.json` 會進 git／可能公開；後者只會存 `recordId`、`snapshotId`、題目類別、時間戳、`inputMode`、是否有 Experience Gap／induced failure 這些**識別碼與分類**，不存任何回答內容或職缺全文。
-- [ ] 練習當下產生的逐字回答、錄音、真實感想，只寫在本機、未進 git 的 `.workspace/validation-notes.md`（第 3 節有模板；`.workspace/` 已整個列在 `.gitignore`）。
+- [ ] 練習當下產生的逐字回答、錄音、真實感想，只寫在本機、未進 git 的 `.workspace/validation-notes.md`（第 4 節有模板；`.workspace/` 已整個列在 `.gitignore`）。
 - [ ] 三題短場模擬（導覽列看不到，是首頁某些狀態才會出現的「三題短場模擬」流程）**不算**這裡的 Practice Loop，`app.js` 原始碼註解本身也寫明「It is not a Practice Loop and never produces a Focus Point」。五次練習一律走單題練習（貼 JD → 選題 → 回答 → 回饋 → 結束並保存）。
 
 ## 1. 事前準備
@@ -26,7 +26,53 @@
   - 要用的話，點導覽列「**我的履歷**」→「**選擇檔案**」上傳 PDF/DOCX/TXT（最多 5 MB）。頁面上會註明「保存在本機；搭配 JD 產題時才會傳送文字給模型」——也就是履歷檔案本身只存在你這台機器，不會整份傳出去，只有在你勾選搭配履歷產題時，履歷的文字內容才會被送給模型。
   - 不想用的話，首頁貼 JD 那一頁如果出現「搭配履歷：...」的勾選框，取消勾選即可只用 JD 出題；沒有履歷時這裡只會顯示提示文字，不影響操作。
 
-## 2. 五次練習
+## 2. 答題方法
+
+這裡只提供方法、結構、回憶提示、與帶佔位符的通用英文句型，**不會寫任何示範句子或跟創作者經驗有關的內容**——驗收要求的是創作者本人的非合成（non-synthetic）回答，寫死的範例答案只會讓這份練習失去意義。
+
+### 2.1 通用原則
+
+- 口說目標約 1.5–2.5 分鐘（約 200–350 字）；先在第一句直接回答問題，再補充支持細節。
+- 一個具體例子勝過三個模糊帶過的例子。
+- 數字只在真的記得時才講；記不清楚就誠實講大概或質化結果（例如「大概」「我沒有精確數字，但…」），不要編造沒發生過的雇主、指標或功勞歸屬——教練會抓到，而且回饋的 support 面向本來就是看真實佐證給分，不是看數字漂不漂亮。
+- 中間卡住可以停頓；用口語講、不要照稿念（紙上列幾個關鍵字提醒自己是可以的）。
+
+### 2.2 各類別的答題結構
+
+- **職務動機與適配（role-fit）**：為什麼想做這個角色 → JD 裡的哪一點跟你做過的事情有關 → 你能帶來什麼／想學什麼。
+- **經驗與專案深度（experience-depth）**：背景脈絡 → 你自己實際負責的那一段（用「我」而不是只用「我們」）→ 一個真的做過取捨的困難決定 → 結果 → 如果重來會怎麼做不同。
+- **行為與情境判斷（behavioral）**：STAR（情境 Situation、任務 Task、行動 Action、結果 Result）+ 事後反思；S／T 合起來大概佔全部篇幅的 20%，A（行動）要講得最完整。
+- **技術說明（technical-communication）**：先用一句話重述問題 → 整體做法概觀 → 關鍵設計決策與其中的取捨 → 你會怎麼驗證／評估 → 風險與可能失敗的地方 → 搭一個具體例子。
+
+### 2.3 誠實承認沒經驗（Experience Gap）
+
+模式：先平實承認沒做過 → 講你真的做過、最接近的鄰近經驗 → 具體說如果要做這件事你會怎麼一步步進行 → 你會怎麼補這個差距／怎麼快速學。generic 英文句型（填入你自己的內容，不是照抄）：
+
+- "I haven't [done X] in production, but I've [adjacent real thing]."
+- "If I were doing it here, I would first..., then..., and finally..."
+- "I don't have hands-on experience with [X], though I understand the concept from [related exposure]."
+- "To close that gap, I'd start by [concrete first step], then validate by [concrete check]."
+
+### 2.4 英文句型庫（通用句型，填入你自己的內容）
+
+- 開場／先講結論："The short answer is..."／"To answer directly, ..."／"My answer is [X], and here's why."／"Let me start with the outcome, then explain how I got there."
+- 標示架構："There are [N] parts to how I'd approach this..."／"Let me break this into two parts: first..., second..."／"I'll walk through this in three steps."／"Before the details, here's the structure of my answer."
+- 舉例子："For example, in [project], I..."／"A concrete case that illustrates this is..."／"Let me give you one specific instance."／"To make this concrete, ..."
+- 講取捨："The trade-off was between [A] and [B]."／"I chose [A] over [B] because..."／"There's no free lunch here — [A] costs you [B]."／"In hindsight, the trade-off I'd reconsider is..."
+- 誠實講數字："Roughly [X], though I don't have the exact figure."／"I don't remember the precise number, but the direction was..."／"It was on the order of [X]."／"I'd want to verify the exact number before quoting it, but qualitatively..."
+- 承認不確定："I'm not fully certain, but my best understanding is..."／"That's an area I'd need to dig into further."／"I haven't verified this myself, so take it as a hypothesis."／"I don't have a strong opinion here yet."
+- 收尾："So to sum up, ..."／"That's roughly how I'd approach it."／"Happy to go deeper into any part of this."／"That's the core of it — let me know if you want more detail on [part]."
+
+### 2.5 教練常抓到的錯誤
+
+背景鋪陳太長、只講「我們」沒講「我」、通篇沒有具體例子、講了 buzzword 卻沒解釋、講了無法查證的數字、答非所問（沒有真正回答題目問的東西）。
+
+### 2.6 履歷與示範回答
+
+- 如果上傳了履歷，題目可能會參照履歷內容；回答時仍然只能用你真實發生過的經驗，不能因為履歷這樣寫就順著編。
+- 「不知道怎麼回答？」裡的**示範回答（Illustrative Answer）**本來就明講是「假設性」的教學示範，不算你的作答；只能在**送出自己的作答之後**才去看，而且不能把示範回答的內容抄進「自己再試一次」的修訂版本——抄進去會讓那次修訂失去真實性（non-synthetic）。
+
+## 3. 五次練習
 
 每一次的共同流程（細節見各次段落）：
 **首頁貼 JD 或練習紀錄選既有職缺 → 儲存職缺並產生題目（若是新 JD）→ 選一類題目 → 用文字或語音回答 → 送出並取得回饋 → 依該次要求做額外動作（修訂比較／誠實承認沒經驗／檢查有無憑空加要求／取消再重試／存 Focus Point）→ 按「結束並保存」。**
@@ -48,18 +94,27 @@
 
 ### 練習 1／5 — JD 02（六度科技 AI Engineer）・role-fit・文字
 
+**答題前準備（2 分鐘）**：
+- JD 提到「Build AI solutions using techniques such as RAG, prompt engineering, tool/function calling, agents, and structured outputs」：回想一次你真的做過、最貼近這些技術的專案，是哪一個？
+- JD 提到「Ability to independently explore ambiguous problems, experiment quickly, and turn ideas into working solutions」：想一次你自己摸索、快速試錯做出成果的經驗。
+
 - [ ] 貼 `.workspace/validation-jds/02-liudu-tech-ai-engineer-virtual-insurance.txt`（去掉第一行）產生題目。
 - [ ] 若推薦題不是 role-fit（「職務動機與適配」），按「查看全部（N）」在該分類底下選一題，按「選這一題」。
 - [ ] 按「**開始回答**」。
 - [ ] 在「你的回答」欄位用**文字**親自作答，按「**送出並取得回饋**」。
 - [ ] 等回饋（基準約 16–20 秒，實際 JD 可能更久）。
 - [ ] 回饋出現後，按「**自己再試一次**」（只有 `attempts.length < 2` 時才會出現這顆按鈕）。
-- [ ] 在「修改你的回答」欄位做一次**有意義的修改**（不是隨便加句號），按「**送出修改並取得回饋**」。
+- [ ] 在「修改你的回答」欄位做一次**有意義的修改**：只針對第一次回饋裡「下次練習重點」那一點修改，不要整段重寫（不是隨便加句號），這樣兩次比較才有意義，按「**送出修改並取得回饋**」。
 - [ ] 第二次回饋出現後，頁面會多一段「看看這次的調整」／「關鍵句前後對照」（兩次文字不同才會顯示對照；相同的話會寫「這次回答尚未修改」，代表這次沒做到比較，之後要重練一次真的有改的版本）。也可以展開「查看回答紀錄（2 個版本）」，用「選擇回答版本」下拉切換看第一次跟第二次各自的回饋。
 - [ ] 觀察：兩次回饋卡片裡「你的原句」引用的句子，是不是真的出現在你剛才打的文字裡（逐字比對，不是大意像就好）。
 - [ ] 在「下次練習重點（可以修改）」欄位確認或修改內容，按「**結束並保存**」。
 
 ### 練習 2／5 — JD 01（Taiwan AI Labs Senior LLM Engineer）・technical-communication・語音
+
+**答題前準備（2 分鐘）**：這題本來就是要練習誠實承認沒經驗，先想清楚落差在哪再開始答。
+- JD 提到「Hands-on experience training or adapting LLMs, including dataset design, fine-tuning, or preference optimization」：你有做過嗎？如果沒有，你做過最接近的是什麼（例如換模型比較、prompt 調整、RAG 優化）？
+- JD 提到「Experience designing evaluation strategies or frameworks for LLM or NLP systems」：你有沒有自己設計過評測方式或指標，哪怕規模很小？
+- 如果兩者都真的沒做過：如果現在要你從零開始做 fine-tuning，你會先查什麼、第一步會做什麼？
 
 - [ ] 貼 `.workspace/validation-jds/01-taiwan-ai-labs-senior-llm-engineer.txt`（去掉第一行）產生題目。
 - [ ] 在「查看全部」頁「技術說明」分類底下選一題你**確實沒做過**的能力（例如 fine-tuning／RL／大規模評測，若 JD 有寫這類 stretch 要求），按「選這一題」→「開始回答」。
@@ -73,6 +128,10 @@
 
 ### 練習 3／5 — JD 03（Synopsys Verdi Assistant）・behavioral・文字
 
+**答題前準備（2 分鐘）**：
+- JD 提到「balancing speed with quality」：想一次你在時間壓力下真的要在速度與品質之間取捨的情況。
+- JD 提到「Strong debugging and root-cause analysis skills in multi-component systems」：想一次你真的追查過跨元件、不好抓的 bug 的經驗。
+
 - [ ] 貼 `.workspace/validation-jds/03-synopsys-verdi-assistant-llm-mcp-agent.txt`（去掉第一行）產生題目。這份 JD 內文有明講是英文面試，之後回饋內容理論上不會另外幫你加中文面試的假設。
 - [ ] 在「查看全部」頁「行為與情境判斷」分類底下選一題，按「選這一題」→「開始回答」。
 - [ ] 用**文字**親自作答，按「送出並取得回饋」。
@@ -81,6 +140,10 @@
 
 ### 練習 4／5 — 沿用練習 3 的 JD 03 快照・experience-depth・語音・刻意觸發失敗
 
+**答題前準備（2 分鐘）**：
+- JD 提到「Design and implement the Master Agent and Sub-Agent framework that orchestrates multi-step workflows」：哪個專案是你真正主導設計、不只是參與的部分？
+- JD 提到「Define, develop, and maintain agent skills, including skill specifications, prompt engineering, tool bindings」：你負責的那一段具體是什麼？結果怎麼驗證的？
+
 先示範怎麼「用既有快照重新開一題」而不是重貼 JD：
 
 - [ ] 導覽列點「**練習紀錄**」。
@@ -88,13 +151,18 @@
 - [ ] 會進入推薦題頁，按「查看全部（N）」，在「經驗與專案深度」分類底下選一題**跟練習 3 不同**的題目，按「選這一題」→「開始回答」。
 - [ ] 用**語音**作答：按「開始錄音」、說完後按「停止並轉成文字」、確認轉錄文字、按「**送出並取得回饋**」。
 - [ ] **送出後立刻**觀察頁面最上方的「操作」區塊：會多一張卡片顯示「**取得回饋・進行中**」，旁邊有「**取消取得回饋**」按鈕。Fast 模式回饋約 16–20 秒完成，所以要在送出後**幾秒內**盡快點下「取消取得回饋」。
-- [ ] 確認操作卡片狀態變成「**取得回饋・已取消**」，並且題目頁會顯示「回饋尚未完成，可以重試」與「**重試取得回饋**」按鈕（你剛才的回答本身仍保留，不會遺失）。
+- [ ] 確認操作卡片狀態變成「**取得回饋・已取消**」，並且題目頁會顯示「回饋尚未完成，可以重試」與「**重試取得回饋**」按鈕（你剛才的回答本身仍保留，不會遺失，**不用重新錄音**）。
   - 若還沒點到取消，回饋就已經完成了，這次**不算**成功案例，記下時間點，換一次作答重來一次（不佔用另一份 JD，同一題再試一次即可）。
 - [ ] 按「**重試取得回饋**」，等待這次成功取得回饋。
 - [ ] 在觀察紀錄記下：取消後的畫面文字、重試後是否正常完成、有沒有任何資料看起來遺失或重複。
 - [ ] 按「結束並保存」。
 
 ### 練習 5／5 — JD 05（優必達）或 JD 04（Vpin）・自選類別・文字・驗證 Focus Point 持久化
+
+**答題前準備（2 分鐘）**：依你選的 JD 挑一組想：
+- 若選 JD 05（優必達）：JD 提到「Support fine-tuning of domain-specialized models — data prep, training, evaluation, and iteration」：回想你做過最接近的資料準備或模型迭代經驗。
+- 若選 JD 04（Vpin）：JD 提到「Hands-on RAG experience: vector search, hybrid retrieval, or GraphRAG」：回想你做過的 RAG 或檢索相關專案，你負責哪一段？
+- 通用：先想清楚等一下「下次練習重點」要寫哪一個具體技能，不要寫空泛的「加強英文」。
 
 - [ ] 任選 `.workspace/validation-jds/05-ubitus-junior-ai-engineer.txt` 或 `.workspace/validation-jds/04-vpin-ai-engineer-knowledge-graph-rag.txt`（去掉第一行）貼上、產生題目。
 - [ ] 任選一類題目作答（文字），送出並取得回饋。
@@ -107,7 +175,7 @@
 
 ---
 
-## 3. 每次練習的觀察紀錄表（私人檔案，不進 git）
+## 4. 每次練習的觀察紀錄表（私人檔案，不進 git）
 
 在專案根目錄建立 `.workspace/validation-notes.md`（`.workspace/` 已整個列在 `.gitignore`，不會被送進版本控制），用下面模板記錄五次練習：
 
@@ -140,9 +208,9 @@
 - 是否有任何回饋內容讓我不放心拿去給真的面試準備使用：
 ```
 
-## 4. 取得 ID 並填寫 ledger
+## 5. 取得 ID 並填寫 ledger
 
-### 4.1 從本機 API 取出五次記錄的 ID
+### 5.1 從本機 API 取出五次記錄的 ID
 
 伺服器要保持在跑（`npm run start:speech`）。這個 repo 零依賴，直接用內建的 `node` 解析 JSON，不需要 `jq`：
 
@@ -167,7 +235,7 @@ for (const r of Object.values(w.records || {})) {
 
 這會為每一筆**已完成**（`status === "completed"`）的練習記錄印出一行 JSON，包含 `recordId`、`snapshotId`、題目類別 `category`、完成時間 `completedAt`，以及這筆記錄的作答有沒有用到語音 `voiceUsed`。核對這五行跟你剛才實際做的五次練習一一對得上（時間順序、類別）。
 
-### 4.2 填寫 `evaluation/v3/creator-validation.json`
+### 5.2 填寫 `evaluation/v3/creator-validation.json`
 
 目前檔案內容是空殼：
 
@@ -258,7 +326,7 @@ for (const r of Object.values(w.records || {})) {
 "attestedAt": "填寫當下的 ISO8601 時間，例如 2026-09-23T12:00:00+08:00"
 ```
 
-### 4.3 跑檢查
+### 5.3 跑檢查
 
 ```sh
 npm run evaluate -- --release
@@ -266,11 +334,11 @@ npm run evaluate -- --release
 
 **預期輸出**：這次跑完，`creator` 這一關會 PASS（因為 ledger 已經有 5 筆、涵蓋 ≥2 個 snapshotId、≥2 個類別、至少一個 experienceGap、至少一個 inducedFailure，且 `creator`／`attestedAt` 都已填），但整體 `releaseStatus` 仍會是 `BLOCKED`，因為人工標註（human labels）跟獨立雙語語意審查（semantic review）這兩關本來就還沒做，屬於預期中會擋住的部分，不代表創作者驗收本身有問題。`blockers` 陣列裡不應該再出現「Creator five-loop real-use validation pending」。
 
-## 5. 完成後告訴 Claude 什麼
+## 6. 完成後告訴 Claude 什麼
 
 五次都做完、`evaluation/v3/creator-validation.json` 也填完（含 `creator`／`attestedAt`）之後，回來跟 Claude 說「完成」，或直接貼 `.workspace/validation-notes.md` 的整體結論段落。接下來 Claude 會接手：跑 Codex 訂閱評估（`npm run evaluate -- --codex --accept-subscription-usage`）、安排 AI 語意審查（`v3` 的雙語一致性）、準備人工標註（human labels）所需的 review packet，這些都是創作者驗收以外的另外兩道關卡。
 
-## 6. 疑難排解
+## 7. 疑難排解
 
 - **回饋或產生題目失敗，訊息提到「isolation verification」或系統提示要跑 `codex:verify`**：這是 Codex 428（本機隔離驗證失效）。畫面上會顯示「Codex 需要重新完成本機隔離驗證：請在專案終端執行 npm run codex:verify，完成後再重試」。照做，完成後回到畫面重試原本那個操作即可，不用重貼 JD。
 - **設定頁顯示「尚未完成 Codex 登入」，或操作失敗訊息是「請先到設定完成 Codex 登入與驗證」**：這是 401／未登入。終端機執行 `npm run codex:login` 完成登入，再回設定頁按「重新檢查狀態」。
