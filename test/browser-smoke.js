@@ -26,13 +26,26 @@ const fakeMicrophone=()=>{
 };
 `;
 const run=code=>browser('eval',`(async()=>{${helpers}${code}})()`);
+// Full-page screenshots: the shell is sticky (rail, topbar) and the feedback pane scrolls
+// inside itself, so a full-page capture would clip the feedback list and float the bars.
+// For the capture only, a temporary style lays the shell and panes out statically; it is
+// removed right after, so no assertion ever runs against it. It is a constructed
+// stylesheet because the page's CSP (style-src 'self') blocks an injected <style>.
+const staticShell='@media (min-width:1024px){.rail{position:static!important;height:auto!important}}.topbar,.wb-tabs,.fb-scroll,.fb-foot,.home-preview,.summary-overall{position:static!important}.fb-scroll{max-height:none!important;overflow:visible!important}body.workbench-mode .app-main{padding-bottom:0!important}';
+const shot=async name=>{
+  await run(`const sheet=new CSSStyleSheet();sheet.replaceSync(${JSON.stringify(staticShell)});window.__screenshotSheet=sheet;document.adoptedStyleSheets=[...document.adoptedStyleSheets,sheet];await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));`);
+  try{await browser('screenshot',resolve(`docs/verification/learner-flow/${name}.png`),'--full');}
+  finally{await run(`document.adoptedStyleSheets=document.adoptedStyleSheets.filter(s=>s!==window.__screenshotSheet);`);}
+};
 try {
  ({server}=await createApplication({directory}));await new Promise(r=>server.listen(0,'127.0.0.1',r));const url=`http://127.0.0.1:${server.address().port}`;
  await browser('set','viewport','1440','900');await browser('open',url);
  await mkdir('docs/verification/learner-flow',{recursive:true});
  await run(`await wait(()=>!el('#capture').disabled,'ready');if(el('#home-view .flow')?.children.length!==4||!el('#home-preview[inert] .transcript.annotated mark.mk')||!el('#home-preview .ratings .rating .bar')||!/範例/.test(el('.home-preview .preview-head')?.textContent))throw Error('Home hero flow or labelled static feedback preview missing');el('nav [data-view="evidence"]').focus();`);
  await browser('press','Enter');await run(`await wait(()=>el('#resume-text'),'keyboard resume navigation');el('nav [data-view="home"]').focus();`);await browser('press','Enter');
- await browser('screenshot',resolve('docs/verification/learner-flow/home.png'));
+ // Only the Short Mock Session is dark; every other view keeps the light scheme.
+ await run(`if(document.querySelector('.room')||document.body.classList.contains('room-mode')||el('meta[name="theme-color"]').content!=='#FAFAFA')throw Error('Home is not in the light scheme');`);
+ await shot('home');
  await run(`
  click('[data-view="evidence"]');await wait(()=>el('#evidence-view').classList.contains('active')&&el('#resume-text'),'resume form');
  const originalExtractFetch=window.fetch.bind(window);
@@ -177,7 +190,7 @@ try {
  el('#attempt-history').open=false;
 
  `);
- await browser('screenshot',resolve('docs/verification/learner-flow/feedback.png'),'--full');
+ await shot('feedback');
  await run(`
  click('#complete-practice');await wait(()=>el('#practice-complete'),'saved');
  const completedId=sessionStorage.getItem('record');const completedSnapshot=(await ws()).records[completedId].snapshotId;
@@ -190,10 +203,16 @@ try {
  fill('#answer','This time I add a concrete indexing example with its trade-offs to support the plan.');click('#submit-answer');await wait(()=>el('#complete-practice'),'focus practice feedback');
  click('#complete-practice');await wait(()=>el('.focus-progress'),'focus progress shown');
  if(!el('.focus-progress').textContent.includes('系統不會替你宣稱進步'))throw Error('Focus progress must not fabricate improvement');
+ // 我的進步 is reached from the rail and shows its four counts over the Focus Points.
+ click('nav [data-view="progress"]');await wait(()=>el('#progress-view').classList.contains('active')&&el('#progress .stat-strip'),'progress view from the nav');
+ if(el('#crumb-view').textContent!=='我的進步'||el('nav [data-view="progress"]').getAttribute('aria-current')!=='page')throw Error('Progress view not marked as the current destination');
+ const progressItems=await fetch('/api/progress').then(r=>r.json());
+ const statLabels=[...document.querySelectorAll('#progress .stat-strip dt')].map(n=>n.textContent),statTotal=[...document.querySelectorAll('#progress .stat-strip dd')].reduce((sum,n)=>sum+Number(n.textContent),0);
+ if(statLabels.join()!=='需加強,改善中,已解決,單次重點'||!progressItems.length||statTotal!==progressItems.length)throw Error('Progress counts do not match the Focus Points: '+statLabels.join()+' '+statTotal+'/'+progressItems.length);
  `);
  await browser('set','viewport','390','844');
- await run(`if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow');if(btn('查看參考表達'))throw Error('Old reference outline shown');click('nav [data-view="home"]');await wait(()=>el('#use-resume'),'home');el('#use-resume').checked=false;fill('#jd','Build services and discuss engineering trade-offs.');click('#capture');await wait(()=>el('#recommended-question'),'JD only');click('#question-actions button');await wait(()=>el('#answer'),'editor');`);
- await browser('screenshot',resolve('docs/verification/learner-flow/mobile.png'),'--full');
+ await run(`if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow');if(btn('查看參考表達'))throw Error('Old reference outline shown');click('nav [data-view="home"]');await wait(()=>el('#use-resume'),'home');if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow on home');el('#use-resume').checked=false;fill('#jd','Build services and discuss engineering trade-offs.');click('#capture');await wait(()=>el('#recommended-question'),'JD only');click('#question-actions button');await wait(()=>el('#answer'),'editor');`);
+ await shot('mobile');
  await run(`
  click(btn('看一個示範回答'));await wait(()=>el('#hint-result .coaching-text'),'illustrative');
  if(!el('#hint-result .coaching-caveat')||!el('#hint-result .coaching-caveat').textContent.includes('這是假設示範，請替換成你自己的經驗'))throw Error('Illustrative caveat missing');
@@ -327,9 +346,17 @@ try {
  await run(`
  click('[data-view="history"]');await wait(()=>el('#job-search'),'history for the mock session');
  fill('#job-search','');await wait(()=>el('[data-job-id]'),'job list restored after clearing the search');
- const jobId=el('[data-job-id]').dataset.jobId;
+ const jobId=el('[data-job-id]').dataset.jobId;sessionStorage.setItem('mock-job',jobId);
  click('[data-job-id="'+jobId+'"] #mock-'+jobId);await wait(()=>el('#mock-answer'),'mock session started');
  if(!el('.mock-progress').textContent.includes('第 1 / 3 題'))throw Error('Session progress not shown: '+el('.mock-progress').textContent);
+ // The session runs in the dark room: scoped to the mock view, with its own theme colour.
+ if(!el('#mock-view .room')||[...document.querySelectorAll('.room')].some(r=>!r.closest('#mock-view')))throw Error('Dark room missing or outside the mock view');
+ if(getComputedStyle(el('#mock-view .room')).colorScheme!=='dark'||el('meta[name="theme-color"]').content==='#FAFAFA')throw Error('Mock room is not dark or theme-color was not switched');
+ if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow in the mock room');
+ `);
+ await shot('mock');
+ await run(`
+ const jobId=sessionStorage.getItem('mock-job');
  const mockBtn=t=>[...document.querySelectorAll('#mock-view button')].find(b=>b.textContent.trim()===t);
  if(mockBtn('看一個示範回答')||mockBtn('給我一個提示')||mockBtn('幫我整理成英文')||mockBtn('幫我講得更自然'))throw Error('Assistance offered during a mock session');
  if(!document.body.innerText.includes('整場結束後才會給回饋'))throw Error('Session does not explain that feedback comes at the end');
@@ -342,8 +369,11 @@ try {
  if(document.body.innerText.includes('本次做得好的地方'))throw Error('A Feedback Report appeared between questions');
  // Voice works inside a session too.
  fakeMicrophone();
- click(mockBtn('開始錄音'));await wait(()=>el('#mock-view .recording-clock')&&!el('#mock-view .recording-clock').hidden,'session recording started');
- click(mockBtn('停止並轉成文字'));await wait(()=>el('#mock-answer').value.includes('demonstration transcript'),'session transcript lands in the answer box');
+ const recName=()=>el('#mock-record').getAttribute('aria-label')||el('#mock-record').textContent.trim();
+ if(recName()!=='開始錄音')throw Error('Record control not named 開始錄音: '+recName());
+ click('#mock-record');await wait(()=>el('#mock-view .recording-clock')&&!el('#mock-view .recording-clock').hidden,'session recording started');
+ await wait(()=>recName()==='停止並轉成文字','record control renamed while recording');
+ click('#mock-record');await wait(()=>el('#mock-answer').value.includes('demonstration transcript'),'session transcript lands in the answer box');
  click('#mock-submit');await wait(()=>el('.mock-progress').textContent.includes('第 3 / 3 題'),'advanced to the third question');
  // Skipping is honest: recorded as skipped, never assessed.
  window.confirm=()=>true;
@@ -372,6 +402,7 @@ try {
  if(Object.values(wsNow.records).some(r=>(r.attempts||[]).some(a=>sessionTexts.has(a.transcript))))throw Error('Session answer leaked into a Practice Record');
  if(Object.values(wsNow.records).some(r=>r.focusPoint&&sessionTexts.has(r.focusPoint)))throw Error('Session produced a Focus Point');
  click('[data-view="history"]');await wait(()=>el('[data-job-id]'),'history after the session');
+ if(el('meta[name="theme-color"]').content!=='#FAFAFA'||document.body.classList.contains('room-mode')||getComputedStyle(el('#history-view')).colorScheme.includes('dark'))throw Error('Dark scheme leaked out of the mock view');
  const jobToggle=el('[data-job-id="'+jobId+'"] [aria-expanded]');
  if(!jobToggle)throw Error('Job has no practice to expand after the session');
  if(jobToggle.getAttribute('aria-expanded')!=='true')jobToggle.click();
