@@ -28,7 +28,7 @@
 2. **容器化**：多階段 Dockerfile、非 root、健康檢查端點、`WORKSPACE_DIR` 掛 volume。
 3. **雲端只部署公開 Demo**（見已確認決策「部署對象」）：只用 fake provider，不接真實 API、不存個人資料，給面試官點開試用。私人站不上雲，本機 `npm start` 照舊。
    - 不做多使用者 SaaS（需要資料庫、帳號、加密，等於重寫並推翻 ADR 0008／0013）。
-4. **CI／CD**：GitHub Actions — 測試 → 建 image → 推 GHCR → 部署；IaC 變更跑 `plan`。
+4. **CI／CD**：GitHub Actions，見已確認決策「CI／CD 範圍」（registry 改為 Artifact Registry）。
 5. **託管**：GCP Cloud Run ＋ 選配 Cloudflare Worker 邊緣層（見已確認決策）。
 6. **IaC**：Terraform（Google provider；邊緣層加 Cloudflare provider）。
 7. **維運**：結構化 log、健康檢查與可用性監控、`workspace.json` 與錄音的定期備份。
@@ -49,6 +49,11 @@
   - Cloudflare Worker 放在 Cloud Run 前面，負責自訂網域、限流、Turnstile 防濫用、靜態檔快取；不存 workspace。拿掉不影響主架構。
   - 需要的程式變更：`src/server.js:762` 監聽位址寫死 `127.0.0.1`（ADR 0013 的刻意設計），改為 `HOST` 環境變數，本機預設不變，僅容器設 `0.0.0.0`；須寫進 ADR 0020。
   - 不選 Cloudflare Workers 改寫（方案 C）：`src/` 21 個檔案中 11 個使用 `node:fs`／`child_process`／`http`，要維護兩種執行環境並放棄零依賴；列為 DevOps 完成後的獨立架構延伸。`store.js` 抽成可替換介面的重構兩者共用。
+- **CI／CD 範圍**（GitHub Actions）。使用者於 2026-09-23 確認。
+  - PR／分支 push（只檢查）：`npm test`、`npm run evaluate`（fake provider）、`docker build` 後啟動容器打 `/api/providers` smoke、Trivy 映像掃描、hadolint、`terraform fmt`／`validate`／`plan`（結果貼到 PR）。
+  - 合併到 `main`（部署）：以上全部 → image 以 git SHA 為 tag 推 Artifact Registry → 以 Workload Identity Federation 部署 Cloud Run（GitHub 不存 GCP 金鑰）→ 對正式網址 smoke → 失敗自動把流量切回上一個 revision。
+  - `terraform apply` 不自動執行，需在 GitHub Environment 手動核准。
+  - 暫不納入：`test:browser`（需在 CI 安裝 agent-browser 與 Chromium，慢且易不穩定，先留本機）、真實模型評估（花錢、需金鑰，維持本機手動）。
 
 ## 待討論問題
 
