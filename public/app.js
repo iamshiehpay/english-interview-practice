@@ -274,6 +274,9 @@ $('#menu-toggle').addEventListener('click', () => setMenuOpen(!document.body.cla
 $('.rail-scrim').addEventListener('click', () => setMenuOpen(false, {restoreFocus:true}));
 document.addEventListener('keydown', event => { if (event.key === 'Escape' && document.body.classList.contains('menu-open')) setMenuOpen(false, {restoreFocus:true}); });
 
+// theme-color values: the light --canvas (as shipped in index.html) and the room's --m-bg.
+const lightThemeColor = $('meta[name="theme-color"]')?.getAttribute('content') || '#FAFAFA';
+const roomThemeColor = '#0B0B0E';
 function markView(name) {
   viewToken += 1;
   currentView = name;
@@ -287,6 +290,10 @@ function markView(name) {
   setJobContext('');
   setSteps();
   document.body.classList.remove('workbench-mode');
+  // The Short Mock Session is the one dark screen: the browser chrome follows it
+  // there and returns to the light canvas everywhere else.
+  document.body.classList.toggle('room-mode', name === 'mock');
+  $('meta[name="theme-color"]')?.setAttribute('content', name === 'mock' ? roomThemeColor : lightThemeColor);
   setMenuOpen(false);
   window.scrollTo({top:0, behavior:'smooth'});
 }
@@ -526,8 +533,10 @@ const annotationKey = value => String(value || 'answer').replace(/[^\w-]/g, '_')
 const noteDomId = id => `note-${id}`;
 // Registers one answer (its transcript, feedback and any loaded corrections) so its
 // transcript and its notes can be rendered in different panes and still link.
-function registerAnnotation(key, {transcript, feedback, corrections, recordId, attemptId} = {}) {
-  annotations.set(key, {transcript: String(transcript || ''), feedback, corrections: corrections || null, recordId, attemptId});
+// `extraNotes` are notes that quote this answer from elsewhere (a Session Summary
+// finding quoting one session answer), marked and linked like the answer's own.
+function registerAnnotation(key, {transcript, feedback, corrections, recordId, attemptId, extraNotes} = {}) {
+  annotations.set(key, {transcript: String(transcript || ''), feedback, corrections: corrections || null, recordId, attemptId, extraNotes: extraNotes || []});
   return key;
 }
 function registerAttempt(record, attempt) {
@@ -540,6 +549,7 @@ function annotationNotes(key, feedback = annotations.get(key)?.feedback, correct
   if (feedback?.priorityImprovement) notes.push({id:`${key}-priority`, kind:'warn', tag:'改', title:'這次優先改進', quote:feedback.priorityImprovement.quote});
   for (const [dimension, rating] of Object.entries(feedback?.ratings || {})) notes.push({id:`${key}-${dimension}`, kind:'rate', tag:dimensionTags[dimension] || '評', title:dimensions[dimension] || dimension, quote:rating.quote});
   (corrections || []).forEach((item, index) => notes.push({id:`${key}-fix${index}`, kind:'fix', tag:'±', title:`關鍵句修正 ${index + 1}`, quote:item.original, correction:item, index}));
+  notes.push(...(annotations.get(key)?.extraNotes || []));
   return notes;
 }
 const warnedQuotes = new Set();
@@ -1409,8 +1419,16 @@ async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedb
 
 // Short Mock Session: three questions in a row, no coaching in between, one overall
 // read at the end. It is not a Practice Loop and never produces a Focus Point.
+// Every mock screen renders inside one `.room`: the dark interview room (issue
+// 0027). The dark tokens are scoped to that element, so no other view turns dark.
 let mockVoice = {draftId: null, dispose: () => {}};
 function disposeMockVoice() { mockVoice.dispose(); mockVoice = {draftId: null, dispose: () => {}}; }
+const mmss = seconds => `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`;
+// Progress as one segment per question (done / skipped / now) beside the words.
+function roomTop(session, label, {current = -1, exit = false} = {}) {
+  const dots = session.entries.map((entry, index) => `<i class="${index === current ? 'now' : entry.skipped ? 'skipped' : (entry.answer || index < current || current < 0) ? 'done' : ''}"></i>`).join('');
+  return `<header class="room-top"><p class="room-title">三題短場模擬</p><div class="prog"><span class="prog-dots" aria-hidden="true">${dots}</span><p class="mock-progress">${escape(label)}</p></div>${exit ? '<div class="room-exit" id="mock-exit"></div>' : ''}</header>`;
+}
 
 async function startMockSession(snapshotId) {
   setError();
@@ -1430,40 +1448,64 @@ async function showMockSession(sessionId, {summaryFresh = false} = {}) {
   // Keep the cached workspace current so Records shows this session without a reload.
   await refreshWorkspace().catch(() => {});
   const snapshot = workspace.snapshots[session.snapshotId];
-  const jobLine = snapshot ? `<div class="job-line"><span class="job-label">職缺：</span><span class="job-title">${escape(truncate(jobTitle(snapshot)))}</span></div>` : '';
+  // The job lives in the topbar breadcrumb, as on the practice screen.
+  setJobContext(snapshot ? jobTitle(snapshot) : '');
   const host = $('#mock');
   if (session.status === 'in-progress') {
     const index = session.entries.findIndex(entry => entry.id === session.currentEntryId);
     const entry = session.entries[index];
-    host.innerHTML = `<article class="practice-shell"><header class="practice-header"><p class="eyebrow">三題短場模擬</p><p class="mock-progress">第 ${session.currentPosition} / ${session.questionCount} 題</p></header>${jobLine}<div class="practice-body">
-      <section class="question-phase"><p class="question-kicker">${escape(categories[entry.question.category] || entry.question.category)}</p><h1 class="question-text" lang="en">${escape(entry.question.text)}</h1><div id="question-read-aloud"></div><details open><summary>中文題意</summary><p class="meaning">${escape(entry.question.meaningZh || '舊版題目未保存中文題意。')}</p></details></section>
-      <section class="answer-area"><p class="meta">模擬進行中不提供提示、示範或英文協助；整場結束後才會給回饋，也才能請教練幫忙。答不出來可以跳過，不會被當成錯誤答案。</p>
-        <label for="mock-answer">你的回答</label><textarea id="mock-answer" rows="7" placeholder="像面試一樣，先把想說的講出來。">${escape(session.transcriptDraft?.entryId === entry.id ? session.transcriptDraft.transcript : '')}</textarea>
-        <p id="mock-answer-status" class="draft-status" aria-live="polite">${session.transcriptDraft?.entryId === entry.id ? '已帶入這次的語音轉錄，可以直接送出，或先修改。' : '可以打字，也可以用語音回答。'}</p>
-        <div id="mock-voice-entry"></div>
-        <div class="button-row" id="mock-actions"></div>
-      </section></div></article>`;
-    readAloud($('#question-read-aloud'), {snapshotId: session.snapshotId, questionId: entry.question.id}, '朗讀題目', questionText($('#question-read-aloud')?.closest('.question-phase')));
+    const limit = providerInfo?.speech?.recordingLimitSeconds || 180;
+    // The resting waveform is a fixed decorative shape; while recording it draws the
+    // input level voice.js already measures (see mountRoomRecorder).
+    const bars = '<i></i>'.repeat(64);
+    host.innerHTML = `<div class="room" data-rec="idle">${roomTop(session, `第 ${session.currentPosition} / ${session.questionCount} 題`, {current: index, exit: true})}<div class="room-body">
+      <section class="stage question-phase" aria-labelledby="mock-question">
+        <p class="cat"><span class="chip">${escape(categories[entry.question.category] || entry.question.category)}</span><span>第 ${session.currentPosition} 題</span></p>
+        <h1 id="mock-question" class="big-q question-text" lang="en">${escape(entry.question.text)}</h1>
+        <p class="hidden-q" aria-hidden="true">聽力模式：題目先藏起來，像真的面試一樣用聽的。朗讀結束後不會自動出現，需要時按「顯示題目」。</p>
+        <div id="mock-read-aloud" class="stage-tools"></div>
+        <details><summary>中文題意</summary><p class="meaning">${escape(entry.question.meaningZh || '舊版題目未保存中文題意。')}</p></details>
+      </section>
+      <section class="console" aria-label="作答">
+        <div class="wave" aria-hidden="true">${bars}</div>
+        <div class="console-row">
+          <p class="timer"><span class="dot" aria-hidden="true"></span><span class="visually-hidden">錄音時間</span><b id="mock-elapsed">00:00</b><span class="timer-limit">/ ${mmss(limit)}</span></p>
+          <button type="button" id="mock-record" class="rec-btn" aria-describedby="mock-record-hint"><span class="rec-icon" aria-hidden="true"></span><span class="rec-text">開始錄音</span></button>
+          <p id="mock-record-hint" class="rec-hint">按下錄音開始作答，最多 ${Math.round(limit / 60)} 分鐘。</p>
+        </div>
+        <p id="mock-record-live" class="visually-hidden" role="status"></p>
+        <p class="rec-label">模擬進行中不提供提示、示範或英文協助；整場結束後才會給回饋，也才能請教練幫忙。答不出來可以跳過，不會被當成錯誤答案。</p>
+        <div class="answer-box">
+          <label for="mock-answer">你的回答</label><textarea id="mock-answer" class="transcript-input" rows="4" placeholder="像面試一樣，先把想說的講出來。錄音轉成的文字也會放在這裡。">${escape(session.transcriptDraft?.entryId === entry.id ? session.transcriptDraft.transcript : '')}</textarea>
+          <p id="mock-answer-status" class="draft-status" aria-live="polite">${session.transcriptDraft?.entryId === entry.id ? '已帶入這次的語音轉錄，可以直接送出，或先修改。' : '可以打字，也可以用語音回答。'}</p>
+        </div>
+        <div class="button-row console-actions" id="mock-actions"></div>
+      </section>
+      <section id="mock-voice-entry" class="voice-details" aria-label="錄音細節"></section>
+    </div></div>`;
+    // Inline style attributes are blocked by the CSP; bar heights are set through CSSOM.
+    host.querySelectorAll('.wave i').forEach((bar, i) => bar.style.setProperty('--h', `${14 + Math.round(56 * Math.abs(Math.sin(i * 1.7) * Math.cos(i * .37)))}%`));
+    readAloud($('#mock-read-aloud'), {snapshotId: session.snapshotId, questionId: entry.question.id}, '朗讀題目', questionText($('#mock .stage')));
     mountMockVoice(session, entry);
     const submissionId = crypto.randomUUID();
+    button('跳過這一題', async () => {
+      if (!window.confirm('跳過這一題？這一題會記成「跳過」，不會有回饋，也不會被當成錯誤答案。')) return;
+      await api(`/mock-sessions/${session.id}/skip`, {entryId: entry.id});
+      await advanceMockSession(session.id);
+    }, $('#mock-actions'), {kind: 'ghost', id: 'mock-skip'});
     button(session.currentPosition === session.questionCount ? '送出並結束這場模擬' : '送出，下一題', async () => {
       const transcript = $('#mock-answer').value;
       if (!transcript.trim()) { setError('請先寫下你的英文回答，或選擇跳過這一題。'); $('#mock-answer').focus(); return; }
       await api(`/mock-sessions/${session.id}/answer`, {entryId: entry.id, transcript, submissionId, ...(mockVoice.draftId ? {transcriptDraftId: mockVoice.draftId} : {})});
       await advanceMockSession(session.id);
     }, $('#mock-actions'), {id: 'mock-submit'});
-    button('跳過這一題', async () => {
-      if (!window.confirm('跳過這一題？這一題會記成「跳過」，不會有回饋，也不會被當成錯誤答案。')) return;
-      await api(`/mock-sessions/${session.id}/skip`, {entryId: entry.id});
-      await advanceMockSession(session.id);
-    }, $('#mock-actions'), {kind: 'secondary', id: 'mock-skip'});
-    button('先離開，稍後繼續', () => navigate('history'), $('#mock-actions'), {kind: 'ghost'});
+    button('先離開，稍後繼續', () => navigate('history'), $('#mock-exit'), {kind: 'ghost'});
     requestAnimationFrame(() => $('#mock-answer')?.focus({preventScroll: true}));
     return;
   }
   if (session.status === 'awaiting-summary') {
-    host.innerHTML = `<article class="practice-shell"><header class="practice-header"><p class="eyebrow">三題短場模擬</p><p class="mock-progress">三題都完成了</p></header>${jobLine}<div class="practice-body">
-      <section class="answer-area"><h1>正在整理整場回饋</h1><p>回答已保存在本機。這一步會用整場的回答產生一項優點與一項優先重點。</p><div class="button-row" id="mock-actions"></div></section></div></article>`;
+    host.innerHTML = `<div class="room">${roomTop(session, '三題都完成了')}<div class="room-body">
+      <section class="room-wait"><h1>正在整理整場回饋</h1><p>回答已保存在本機。這一步會用整場的回答產生一項優點與一項優先重點。</p><div class="button-row" id="mock-actions"></div></section></div></div>`;
     const run = async () => { await api(`/mock-sessions/${session.id}/summary`, {}); await showMockSession(session.id, {summaryFresh: true}); };
     button('取得整場回饋', run, $('#mock-actions'));
     button('先離開，稍後再看', () => navigate('history'), $('#mock-actions'), {kind: 'ghost'});
@@ -1471,26 +1513,49 @@ async function showMockSession(sessionId, {summaryFresh = false} = {}) {
     run().catch(error => setError(error.message));
     return;
   }
-  renderMockSummary(session, jobLine);
+  renderMockSummary(session);
 }
 
-function renderMockSummary(session, jobLine) {
+// The Session Summary uses the same note pattern as a Feedback Report. Each finding
+// quotes one session answer verbatim (checked on the server against the session's
+// transcripts), so the quote is shown in the note and also marked in that
+// question's answer, linked both ways like any other feedback quote.
+function renderMockSummary(session) {
   const nothing = session.summary?.nothingToAssess;
-  const finding = (title, item, kind) => `<article class="feedback-card ${kind}"><h3>${escape(title)}</h3><p>${escape(item.textZh)}</p><blockquote><strong>你的原句</strong><br>${escape(item.quote)}</blockquote></article>`;
-  const overall = nothing
-    ? '<p class="provider-warning">這場模擬三題都跳過了，沒有可以評的內容。下一次挑一題先講三句也好。</p>'
-    : `<div class="feedback-feature">${finding('整場做得好的地方', session.summary.strength, 'strength')}${finding('整場優先改進', session.summary.priorityImprovement, 'priority')}</div>`;
   annotations.clear();
+  const quoted = new Map();
+  const findings = nothing ? [] : [['strength', 'ok', '優', '整場做得好的地方'], ['priorityImprovement', 'warn', '改', '整場優先改進']].map(([name, kind, tag, title]) => {
+    const item = session.summary[name];
+    // Anchored at the first answer that contains the quote, as quotes are within one answer.
+    const index = session.entries.findIndex(entry => !entry.skipped && entry.answer?.transcript?.includes(item.quote));
+    const entry = session.entries[index];
+    const key = entry ? annotationKey(`mock-${entry.id}`) : null;
+    const note = {id: `${key || 'mock-summary'}-session-${name}`, kind, tag, title, quote: item.quote};
+    if (entry) quoted.set(entry.id, [...(quoted.get(entry.id) || []), note]);
+    return {item, note, index, key};
+  });
   const entries = session.entries.map((entry, index) => {
     const head = `<p class="eyebrow">第 ${index + 1} 題・${escape(categories[entry.question.category] || entry.question.category)}</p><h3 lang="en">${escape(entry.question.text)}</h3>`;
-    if (entry.skipped) return `<article class="list-card mock-entry"><span class="mock-skipped">已跳過</span>${head}<p class="meta">這一題你選擇跳過，沒有回答，因此沒有評分。</p></article>`;
-    const key = registerAnnotation(annotationKey(`mock-${entry.id}`), {transcript: entry.answer.transcript, feedback: entry.feedback});
-    return `<article class="list-card mock-entry" data-entry-id="${escape(entry.id)}">${head}<details><summary>查看你的回答</summary>${annotatedTranscriptHtml(key, {tag:'blockquote'})}${playerHtml(entry.answer, {label: '回聽這一題的錄音'})}</details><div class="mock-entry-feedback" aria-live="polite"></div></article>`;
+    if (entry.skipped) return `<article class="list-card mock-entry is-skipped"><span class="mock-skipped">已跳過</span>${head}<p class="meta">這一題你選擇跳過，沒有回答，因此沒有評分。</p></article>`;
+    const key = registerAnnotation(annotationKey(`mock-${entry.id}`), {transcript: entry.answer.transcript, feedback: entry.feedback, extraNotes: quoted.get(entry.id)});
+    return `<article class="list-card mock-entry" data-entry-id="${escape(entry.id)}">${head}<details><summary>查看你的回答</summary>${annotatedTranscriptHtml(key, {tag:'blockquote', legend: true})}${playerHtml(entry.answer, {label: '回聽這一題的錄音'})}</details><div class="mock-entry-feedback" aria-live="polite"></div></article>`;
   }).join('');
-  $('#mock').innerHTML = `<article class="practice-shell"><header class="practice-header"><p class="eyebrow">三題短場模擬</p><p class="mock-progress">已完成 · ${escape(dateLabel(session.completedAt))}</p></header>${jobLine}<div class="practice-body">
-    <section class="answer-area"><h1 id="mock-summary-heading" tabindex="-1">整場回饋</h1><p class="meta">這是整場的一項優點與一項優先重點，不是分數，也不是錄取判斷。逐題回饋要看再展開。</p>${overall}</section>
-    <section class="answer-area"><h2>逐題</h2>${entries}</section>
-    <div class="button-row" id="mock-summary-actions"></div></div></article>`;
+  const finding = ({item, note, index, key}) => {
+    const n = key ? annotationModel(key).sentenceOf[note.id] : 0;
+    const ref = n ? `<button type="button" class="ref" data-jump="${escape(note.id)}" aria-label="在第 ${index + 1} 題的回答中標出第 ${n} 句" title="${escape(note.quote)}"><span aria-hidden="true">↳</span> 第 ${index + 1} 題・第 ${n} 句</button>` : '';
+    return `<article class="feedback-card note note-${note.kind}" id="${noteDomId(note.id)}" data-note-id="${escape(note.id)}" tabindex="-1">
+      <header>${tagHtml(note)}<h3>${escape(note.title)}</h3>${ref}</header>
+      <p id="${noteDomId(note.id)}-d"><span class="visually-hidden">${escape(note.title)}：</span>${escape(item.textZh || item.text)}</p>
+      <p class="note-quote" lang="en"><span class="visually-hidden" lang="zh-Hant">你的原句：</span>${escape(item.quote)}</p>
+    </article>`;
+  };
+  const overall = nothing
+    ? '<p class="provider-warning">這場模擬三題都跳過了，沒有可以評的內容。下一次挑一題先講三句也好。</p>'
+    : `<div class="feedback-feature fb-sec">${findings.map(finding).join('')}</div>`;
+  $('#mock').innerHTML = `<div class="room room-summary">${roomTop(session, `已完成 · ${dateLabel(session.completedAt)}`)}<div class="room-body summary-body">
+    <section class="summary-overall" aria-labelledby="mock-summary-heading"><h1 id="mock-summary-heading" tabindex="-1">整場回饋</h1><p class="meta">這是整場的一項優點與一項優先重點，不是分數，也不是錄取判斷。逐題回饋要看再展開。</p>${overall}</section>
+    <section class="summary-entries" aria-labelledby="mock-entries-heading"><h2 id="mock-entries-heading">逐題</h2>${entries}</section>
+    <div class="button-row" id="mock-summary-actions"></div></div></div>`;
   document.querySelectorAll('.mock-entry[data-entry-id]').forEach(card => {
     const panel = card.querySelector('.mock-entry-feedback');
     const entryId = card.dataset.entryId;
@@ -1521,7 +1586,7 @@ function mountMockVoice(session, entry) {
   if (!host || !textarea) return;
   mockVoice.draftId = session.transcriptDraft?.entryId === entry.id ? session.transcriptDraft.id : null;
   const status = $('#mock-answer-status');
-  mockVoice.dispose = mountVoice(host, {
+  const disposePanel = mountVoice(host, {
     path: `/mock-sessions/${session.id}/entries/${entry.id}/transcription`,
     api,
     provider: providerInfo?.speech,
@@ -1540,6 +1605,78 @@ function mountMockVoice(session, entry) {
     onTranscriptionEnd: () => { textarea.readOnly = false; $('#mock-submit').disabled = false; },
     onError: error => setError(localizeError(error.message, error.status || 400))
   });
+  const disposeRecorder = mountRoomRecorder();
+  mockVoice.dispose = () => { disposeRecorder(); disposePanel(); };
+}
+
+// The room's single record control drives voice.js's own recorder: its start and
+// stop buttons stay in the page (hidden inside the room) and do the work, so the
+// recording, three-minute cap and transcription are exactly those of every other
+// answer path. The room only mirrors their state — the control's name, the elapsed
+// time and the input level voice.js already measures — read from the panel's DOM.
+function mountRoomRecorder() {
+  const room = $('#mock .room'), record = $('#mock-record'), host = $('#mock-voice-entry');
+  const panel = host?.querySelector('.voice-panel');
+  if (!room || !record || !panel) return () => {};
+  const limit = providerInfo?.speech?.recordingLimitSeconds || 180;
+  const warnAt = Math.max(5, limit - (providerInfo?.speech?.recordingWarningSeconds || 30));
+  const elapsed = $('#mock-elapsed'), hint = $('#mock-record-hint'), live = $('#mock-record-live'), label = record.querySelector('.rec-text');
+  const bars = [...room.querySelectorAll('.wave i')];
+  const levels = [];
+  let state = '', startedAt = 0, frame = 0, lastSample = 0, warned = false, recorded = false;
+  const control = name => panel.isConnected ? panel.querySelector(`.voice-${name}`) : null;
+  const read = () => {
+    if (!panel.isConnected) return 'text';
+    if (!control('stop').disabled) return 'recording';
+    if (control('start').disabled) return 'busy';
+    return control('retry').hidden ? 'idle' : 'failed';
+  };
+  const paintLevels = () => bars.forEach((bar, i) => {
+    const value = levels[levels.length - bars.length + i];
+    bar.style.setProperty('--h', `${value === undefined ? 4 : Math.round(6 + value * 94)}%`);
+  });
+  const tick = now => {
+    const seconds = Math.min(limit, (Date.now() - startedAt) / 1000);
+    elapsed.textContent = mmss(seconds);
+    room.classList.toggle('near-limit', seconds >= warnAt);
+    // Announced once, not every second.
+    if (seconds >= warnAt && !warned) { warned = true; live.textContent = `快到 ${Math.round(limit / 60)} 分鐘上限了，請開始收尾（剩下約 ${Math.max(0, Math.round(limit - seconds))} 秒）。`; }
+    const meter = panel.querySelector('.voice-level');
+    const measured = meter && !meter.hidden && !meter.closest('[hidden]');
+    room.dataset.level = measured ? 'live' : 'none';
+    if (measured && now - lastSample > 80) { lastSample = now; levels.push(Number(meter.value) || 0); if (levels.length > bars.length) levels.shift(); paintLevels(); }
+    frame = requestAnimationFrame(tick);
+  };
+  const sync = () => {
+    const next = read();
+    if (next === state) return;
+    const previous = state;
+    state = next;
+    room.dataset.rec = next;
+    record.setAttribute('aria-disabled', String(next === 'busy'));
+    cancelAnimationFrame(frame);
+    if (next === 'recording') {
+      startedAt = Date.now(); warned = false; recorded = true; levels.length = 0; live.textContent = '';
+      paintLevels();
+      frame = requestAnimationFrame(tick);
+    } else room.classList.remove('near-limit');
+    label.textContent = {recording: '停止並轉成文字', busy: previous === 'recording' ? '正在轉成文字…' : '正在開啟麥克風…', failed: '重新錄音'}[next] || '開始錄音';
+    hint.textContent = {
+      recording: `錄音中。再按一次停止並轉成文字；${Math.round(limit / 60)} 分鐘時會自動停止。`,
+      busy: previous === 'recording' ? '正在把錄音轉成文字，完成後會放進回答框。' : '請允許瀏覽器使用麥克風。',
+      failed: '轉成文字失敗，錄音還在：可以在下方「錄音細節」重試轉錄，或重新錄音、改用打字。',
+      text: '已改用打字作答。',
+      idle: recorded ? '已停止。可以送出，或再按一次重新錄音。' : `按下錄音開始作答，最多 ${Math.round(limit / 60)} 分鐘。`
+    }[next];
+  };
+  record.addEventListener('click', () => {
+    if (state === 'recording') control('stop')?.click();
+    else if (state === 'idle' || state === 'failed') control('start')?.click();
+  });
+  const observer = new MutationObserver(sync);
+  observer.observe(host, {subtree: true, childList: true, attributes: true, attributeFilter: ['disabled', 'hidden']});
+  sync();
+  return () => { observer.disconnect(); cancelAnimationFrame(frame); };
 }
 
 async function advanceMockSession(sessionId) {

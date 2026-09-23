@@ -160,9 +160,9 @@ export function mountVoice(parent, {recordId, path, api, provider, beforeTranscr
   let audioContext, audioSource, levelFrame, previewUrl, recordingStartedAt, observedLevel = null;
   const elapsed = document.createElement('p'); elapsed.className = 'recording-clock'; elapsed.hidden = true;
   const status = document.createElement('p'); status.className = 'meta'; status.setAttribute('role', 'status');
-  const start = document.createElement('button'); start.textContent = '開始錄音'; start.className = 'secondary';
-  const stop = document.createElement('button'); stop.textContent = '停止並轉成文字'; stop.className = 'secondary'; stop.disabled = true;
-  const retry = document.createElement('button'); retry.textContent = '重試語音轉錄'; retry.className = 'secondary'; retry.hidden = true;
+  const start = document.createElement('button'); start.textContent = '開始錄音'; start.className = 'secondary voice-start';
+  const stop = document.createElement('button'); stop.textContent = '停止並轉成文字'; stop.className = 'secondary voice-stop'; stop.disabled = true;
+  const retry = document.createElement('button'); retry.textContent = '重試語音轉錄'; retry.className = 'secondary voice-retry'; retry.hidden = true;
   const discard = document.createElement('button'); discard.textContent = '捨棄錄音，改用文字'; discard.className = 'ghost';
   const inputLabel = document.createElement('p'); inputLabel.className = 'meta voice-input-label'; inputLabel.textContent = '麥克風：開始錄音後顯示目前輸入來源。';
   const levelBox = document.createElement('div'); levelBox.className = 'voice-level-box'; levelBox.hidden = true;

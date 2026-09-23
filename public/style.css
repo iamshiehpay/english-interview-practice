@@ -516,12 +516,6 @@ mark { background: var(--accent-soft); color: var(--text); border-radius: 4px; }
 .answer-recording .meta { margin-bottom: 6px; }
 .answer-recording audio { width: 100%; max-width: 420px; }
 
-/* Short Mock Session: one question at a time, clearly not a Practice Loop. */
-.mock-progress { margin: 0; color: var(--ink-soft); font-size: 14px; font-weight: 600; }
-.mock-entry { margin-bottom: 14px; }
-.mock-entry h3 { margin: 4px 0 8px; font-size: 16px; }
-.mock-skipped { display: inline-block; margin-bottom: 6px; padding: 3px 10px; border-radius: 999px; background: var(--mist); color: var(--ink-soft); font-size: 13px; }
-
 /* Listening mode: the toggle stays quiet, the reveal control stays obvious. */
 .listening-toggle { display: inline-flex; align-items: center; gap: 6px; margin: 0; font-size: 14px; color: var(--ink-soft); }
 .listening-toggle input { margin: 0; }
@@ -1190,4 +1184,206 @@ h2 .count { padding: 2px 6px; color: var(--muted); background: var(--subtle); bo
 }
 @media (max-width: 340px) {
   .fit-breakdown { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* =====================================================================
+   Short Mock Session — the dark interview room (issue 0027). Everything dark
+   lives under .room, which only the mock session renders: no other view, and
+   not the rail or topbar, changes colour. Inside the room the workbench token
+   names are re-pointed at the room palette, so shared components (buttons,
+   inputs, chips, feedback notes, marks, rating bars, the voice panel) follow
+   it without room-specific copies. Aliases and --hair are re-declared too:
+   a custom property that uses var() is resolved where it is declared.
+   ===================================================================== */
+.room {
+  --m-bg: #0B0B0E; --m-surface: #141418; --m-raised: #1C1C22; --m-border: #2A2A32;
+  --m-text: #EDEDF0; --m-muted: #9D9DA8; --m-accent: #9A9AF8; --m-accent-soft: #23234A;
+  --m-rec: #F04438; --m-rec-soft: rgb(240 68 56 / .16);
+  /* Room-only values the mockup does not define: an input/control outline at
+     3:1 on --m-surface and --m-bg, a secondary text colour, and the semantic
+     feedback colours below (text AA on --m-surface, fills AA behind --m-text). */
+  --m-border-strong: #62626E; --m-text-2: #C4C4CC;
+  --canvas: var(--m-bg); --surface: var(--m-surface); --subtle: var(--m-raised); --hover: var(--m-raised);
+  --border: var(--m-border); --border-strong: var(--m-border-strong);
+  --text: var(--m-text); --text-2: var(--m-text-2); --muted: var(--m-muted);
+  --accent: var(--m-accent); --accent-hover: #B4B4FA; --accent-text: var(--m-accent); --accent-soft: var(--m-accent-soft); --accent-line: #5A5AA8;
+  --ok: #4ADE80; --ok-bg: rgb(34 197 94 / .16); --ok-line: #4ADE80;
+  --warn: #F5B453; --warn-bg: rgb(245 158 11 / .16); --warn-line: #F5B453;
+  --del: #F97066; --del-bg: rgb(240 68 56 / .16); --ins: #4ADE80; --ins-bg: rgb(34 197 94 / .16);
+  --hair: 1px solid var(--m-border);
+  --ink: var(--text); --ink-soft: var(--muted); --paper: var(--surface); --mist: var(--subtle); --sky: var(--accent-soft);
+  --line: var(--border); --teal: var(--accent); --teal-dark: var(--accent-text); --mint: var(--accent-soft);
+  --coral: var(--del); --coral-soft: var(--del-bg); --yellow: var(--warn-line);
+  color-scheme: dark;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - var(--topbar-offset, 48px));
+  min-height: calc(100dvh - var(--topbar-offset, 48px));
+  color: var(--m-text);
+  background: var(--m-bg);
+  font-family: var(--font-ui);
+}
+body.room-mode main { width: 100%; max-width: none; padding: 0; }
+body.room-mode #operations:not(:empty), body.room-mode #error:not(:empty), body.room-mode #notice:not(:empty) { margin: var(--s-3) var(--s-6); }
+#mock-view.active { animation: fade .2s ease-out; }
+.room :focus-visible, .room button:focus-visible, .room summary:focus-visible, .room [tabindex]:focus-visible { outline: 2px solid var(--m-accent); outline-offset: 2px; }
+.room input:focus-visible, .room select:focus-visible { outline: 2px solid var(--m-accent); outline-offset: 2px; }
+.room textarea::placeholder { color: var(--m-muted); }
+.room h1, .room h2, .room h3 { color: var(--m-text); }
+.room .meta { color: var(--m-muted); }
+.room button.primary { color: var(--m-bg); background: var(--m-text); border-color: var(--m-text); }
+.room button.primary:hover { background: #FFFFFF; border-color: #FFFFFF; }
+.room button.secondary { color: var(--m-text); background: var(--m-surface); border-color: var(--m-border-strong); }
+.room button.secondary:hover, .room button.ghost:hover { color: var(--m-text); background: var(--m-raised); }
+.room button.ghost { color: var(--m-text-2); border-color: var(--m-border); }
+.room .chip { color: var(--m-accent); background: var(--m-accent-soft); border-color: transparent; }
+.room .provider-warning { color: var(--m-text); background: var(--warn-bg); border-color: rgb(245 180 83 / .45); }
+.room details { margin: var(--s-2) 0; }
+.room summary { color: var(--m-accent); font: 500 var(--fs-13)/1.5 var(--font-zh); }
+.room .rate > summary { color: var(--m-text); font: 500 var(--fs-13)/1.2 var(--font-zh); }
+
+/* Top strip: what this is, where you are (one segment per question), a way out. */
+.room-top { display: flex; align-items: center; gap: var(--s-4); min-height: 56px; padding: var(--s-2) var(--s-6); border-bottom: 1px solid var(--m-border); }
+.room-title { flex: none; margin: 0; font: 600 var(--fs-13)/1.2 var(--font-zh); }
+.prog { display: flex; align-items: center; gap: var(--s-3); margin: 0 auto; }
+.prog-dots { display: flex; gap: 6px; }
+.prog-dots i { width: 40px; height: 4px; background: var(--m-border); border-radius: 2px; }
+.prog-dots i.done { background: var(--m-muted); }
+.prog-dots i.skipped { background: transparent; box-shadow: inset 0 0 0 1px var(--m-muted); }
+.prog-dots i.now { background: var(--m-accent); }
+.mock-progress { margin: 0; color: var(--m-muted); font: 500 var(--fs-12)/1 var(--font-zh); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.room-exit { flex: none; }
+.room-exit button { margin: 0; }
+.room-body { display: flex; flex: 1; flex-direction: column; width: 100%; max-width: 1008px; margin: 0 auto; padding: 0 var(--s-6) var(--s-8); }
+
+/* The question stage: category, the question large, the read-aloud tools. */
+.room .stage { display: flex; flex: 1; flex-direction: column; justify-content: center; min-height: 0; padding: var(--s-12) 0 var(--s-8); background: none; border: 0; border-radius: 0; }
+.stage .cat { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); margin: 0 0 var(--s-5); color: var(--m-muted); font: 500 var(--fs-12)/1 var(--font-zh); }
+.room .big-q { max-width: 30ch; margin: 0; color: var(--m-text); font: 600 var(--fs-32)/1.3 var(--font-ui); letter-spacing: -.02em; text-wrap: balance; }
+/* Listening mode hides the question (issue 0021's own hidden attribute); this
+   dashed stand-in keeps the stage from looking broken. Screen readers get the
+   read-aloud status and the 顯示題目 control instead. */
+.hidden-q { display: none; margin: 0; padding: var(--s-6); color: var(--m-muted); border: 1px dashed var(--m-border-strong); border-radius: var(--r-md); font: 400 var(--fs-16)/1.6 var(--font-zh); }
+.stage:has(.big-q[hidden]) .hidden-q { display: block; }
+.stage-tools .read-aloud { gap: var(--s-2); margin: var(--s-5) 0 0; }
+.stage-tools .read-aloud button { min-height: 32px; margin: 0; padding: 4px 12px; font-size: var(--fs-13); }
+.stage-tools .read-aloud select { width: auto; min-height: 32px; height: 32px; padding: 0 8px; font-size: var(--fs-13); }
+.stage-tools .read-aloud .meta { font-size: var(--fs-12); }
+.room .read-aloud-reveal { color: var(--m-text); background: var(--m-accent-soft); border-color: var(--m-accent); }
+/* The listening-mode checkbox drawn as a switch; it stays a labelled checkbox. */
+.room .listening-toggle { gap: var(--s-2); margin: 0; color: var(--m-text-2); font: 500 var(--fs-12)/1.3 var(--font-zh); cursor: pointer; }
+.room .listening-toggle input { position: relative; flex: none; width: 30px; height: 18px; min-height: 0; margin: 0; padding: 0; appearance: none; background: var(--m-border-strong); border: 0; border-radius: 9px; cursor: pointer; transition: background .15s; }
+.room .listening-toggle input::after { content: ""; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; background: var(--m-text); border-radius: 50%; transition: transform .15s; }
+.room .listening-toggle input:checked { background: var(--m-accent); }
+.room .listening-toggle input:checked::after { background: var(--m-bg); transform: translateX(12px); }
+.room .listening-toggle input:focus { box-shadow: none; }
+.stage details p { margin: var(--s-2) 0 0; color: var(--m-text-2); font: 400 var(--fs-14)/1.7 var(--font-zh); }
+
+/* The console: waveform, timer, one record control, the answer box, skip/submit. */
+.console { padding: var(--s-4) var(--s-5); background: var(--m-surface); border: 1px solid var(--m-border); border-radius: var(--r-md); }
+.wave { display: flex; align-items: center; gap: 3px; height: 56px; margin-bottom: var(--s-4); }
+.wave i { flex: 1; min-width: 0; height: var(--h, 12%); background: #34343D; border-radius: 2px; transition: height .08s linear; }
+.room[data-rec="recording"] .wave i { background: var(--m-rec); opacity: .85; }
+/* Without a measured level the bars only breathe together: a "recording" cue,
+   not a fake waveform. */
+.room[data-rec="recording"][data-level="none"] .wave i { height: 40%; animation: breathe 1.6s ease-in-out infinite alternate; }
+@keyframes breathe { from { opacity: .35; } to { opacity: .85; } }
+.console-row { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: var(--s-4); }
+.timer { display: flex; align-items: center; gap: 10px; margin: 0; color: var(--m-text); font: 500 var(--fs-16)/1 var(--font-mono); font-variant-numeric: tabular-nums; }
+.timer .timer-limit { color: var(--m-muted); }
+.timer .dot { width: 8px; height: 8px; background: var(--m-border-strong); border-radius: 50%; }
+.room[data-rec="recording"] .timer .dot { background: var(--m-rec); animation: blink 1s steps(2) infinite; }
+.room.near-limit .timer b { color: var(--m-rec); }
+@keyframes blink { 50% { opacity: .2; } }
+.rec-btn { display: flex; flex-direction: column; align-items: center; gap: var(--s-2); margin: 0; padding: 0; color: var(--m-text); background: none; border: 0; border-radius: var(--r-md); font: 500 var(--fs-12)/1.3 var(--font-zh); }
+.rec-icon { display: grid; width: 68px; height: 68px; place-items: center; background: var(--m-raised); border: 2px solid var(--m-border-strong); border-radius: 50%; transition: box-shadow .15s, border-color .15s; }
+.rec-icon::after { content: ""; width: 26px; height: 26px; background: var(--m-rec); border-radius: 50%; transition: width .15s, height .15s, border-radius .15s; }
+.rec-btn:hover .rec-icon { box-shadow: 0 0 0 6px var(--m-rec-soft); }
+.room[data-rec="recording"] .rec-icon { border-color: var(--m-rec); box-shadow: 0 0 0 8px var(--m-rec-soft); }
+.room[data-rec="recording"] .rec-icon::after { width: 22px; height: 22px; border-radius: 5px; }
+.rec-btn[aria-disabled="true"] { cursor: progress; }
+.rec-btn[aria-disabled="true"] .rec-icon { opacity: .5; }
+.room .rec-btn:focus-visible { outline: 0; }
+.rec-btn:focus-visible .rec-icon { outline: 2px solid var(--m-accent); outline-offset: 4px; }
+.rec-hint { margin: 0; color: var(--m-muted); font: 400 var(--fs-12)/1.5 var(--font-zh); text-align: right; }
+.room[data-rec="text"] .wave, .room[data-rec="text"] .timer, .room[data-rec="text"] .rec-btn { display: none; }
+.room[data-rec="text"] .console-row { grid-template-columns: minmax(0, 1fr); }
+.room[data-rec="text"] .rec-hint { text-align: left; }
+.rec-label { margin: var(--s-4) 0 0; padding-top: var(--s-3); color: var(--m-muted); border-top: 1px solid var(--m-border); font: 400 var(--fs-12)/1.6 var(--font-zh); }
+.answer-box label { margin: var(--s-4) 0 var(--s-2); color: var(--m-text); }
+.answer-box textarea { min-height: 112px; background: var(--m-bg); font-family: var(--font-mono); font-size: var(--fs-14); line-height: 1.7; }
+.answer-box textarea::placeholder { font-family: var(--font-zh); }
+.answer-box textarea[readonly] { color: var(--m-muted); }
+.room .draft-status { min-height: 0; margin: var(--s-1) 0 0; color: var(--m-muted); font-size: var(--fs-12); }
+.console-actions { justify-content: flex-end; gap: var(--s-2); margin-top: var(--s-3); }
+.console-actions button { margin: 0; }
+.console-actions #mock-submit { min-width: 132px; }
+
+/* voice.js's panel below the console: its start/stop and clock are driven by the
+   room's record control above, so only the evidence stays visible here — the
+   microphone in use, the level note, the local preview, the status, retry and
+   "use text instead", plus the data-flow disclosure. */
+.voice-details .voice-panel { margin: var(--s-4) 0 0; padding: var(--s-3) var(--s-5); background: transparent; border: 1px solid var(--m-border); border-radius: var(--r-md); }
+.voice-details .voice-panel h3 { margin: 0 0 var(--s-1); color: var(--m-text-2); font-size: var(--fs-13); }
+.voice-details .voice-panel .meta { font-size: var(--fs-12); line-height: 1.6; }
+.voice-details .voice-start, .voice-details .voice-stop, .voice-details .recording-clock { display: none; }
+.voice-details .voice-level-box label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.voice-details .voice-panel button { margin: var(--s-2) var(--s-2) 0 0; }
+.voice-details .voice-panel p[role="status"]:not(:empty) { margin: var(--s-2) 0 0; color: var(--m-text); }
+
+/* Waiting for the summary. */
+.room-wait { max-width: 640px; margin: 0 auto; padding: var(--s-12) 0; }
+.room-wait p { color: var(--m-text-2); }
+
+/* Session Summary: the two findings as notes (same pattern as a Feedback
+   Report, each with its verbatim quote and a link to it in the answer), then
+   each question, its answer and its feedback on demand. */
+.summary-body { display: grid; grid-template-columns: minmax(0, 380px) minmax(0, 1fr); grid-template-areas: "overall entries" "actions actions"; align-items: start; align-content: start; gap: var(--s-6) var(--s-8); max-width: 1160px; padding-top: var(--s-8); }
+.summary-overall { grid-area: overall; position: sticky; top: calc(var(--topbar-offset, 48px) + var(--s-6)); }
+.summary-entries { grid-area: entries; min-width: 0; }
+#mock-summary-actions { grid-area: actions; margin: 0; padding-top: var(--s-4); border-top: 1px solid var(--m-border); }
+.summary-overall h1 { margin-bottom: var(--s-2); font-size: var(--fs-28); }
+/* The heading only receives focus from script (to start reading there); it is not a control. */
+.room .summary-overall h1:focus-visible { outline: 0; }
+.summary-entries h2 { margin: 0 0 var(--s-3); color: var(--m-text-2); }
+.room .feedback-feature { display: block; margin: var(--s-4) 0 0; }
+.room .feedback-card { padding: var(--s-3) var(--s-4); border: 1px solid var(--m-border); }
+.room .feedback-card h3 { color: var(--m-text); }
+.room .note-quote { color: var(--m-text); background: var(--m-raised); }
+.room .mock-entry { margin-bottom: var(--s-3); padding: var(--s-4) var(--s-5); }
+.room .mock-entry > h3 { margin: var(--s-1) 0 var(--s-2); font: 600 var(--fs-16)/1.45 var(--font-ui); letter-spacing: -.01em; }
+.room .mock-entry .eyebrow { margin: 0; color: var(--m-muted); }
+.room .mock-entry.is-skipped { background: transparent; border-style: dashed; }
+.mock-skipped { display: inline-block; margin-bottom: var(--s-2); padding: 2px 8px; color: var(--m-text-2); border: 1px dashed var(--m-border-strong); border-radius: var(--r-xs); font: 500 var(--fs-12)/1.3 var(--font-zh); }
+.room .mock-entry blockquote.transcript { background: var(--m-bg); }
+.room .mock-entry-feedback:not(:empty) { margin-top: var(--s-2); }
+.room .mock-entry-feedback > button { margin: 0 var(--s-2) 0 0; }
+.room .coaching-result { background: var(--m-raised); border-color: var(--m-border); }
+
+@media (max-width: 1023px) {
+  .summary-body { grid-template-columns: minmax(0, 1fr); grid-template-areas: "overall" "entries" "actions"; }
+  .summary-overall { position: static; }
+}
+@media (max-width: 767px) {
+  .room-top { flex-wrap: wrap; gap: var(--s-2) var(--s-3); padding: var(--s-2) var(--s-4); }
+  .room-exit { margin-left: auto; }
+  .prog { flex-basis: 100%; order: 3; margin: 0; }
+  .prog-dots { flex: 1; }
+  .prog-dots i { flex: 1; width: auto; }
+  .room-body { padding: 0 var(--s-2) var(--s-4); }
+  .room .stage { padding: var(--s-6) var(--s-2) var(--s-5); }
+  .room .big-q { font-size: 22px; }
+  .console { padding: var(--s-3); }
+  .wave { height: 40px; gap: 2px; margin-bottom: var(--s-3); }
+  .wave i:nth-child(2n) { display: none; }
+  .console-row { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "timer rec" "hint hint"; gap: var(--s-2) var(--s-3); }
+  .timer { grid-area: timer; }
+  .rec-btn { grid-area: rec; }
+  .rec-hint { grid-area: hint; text-align: left; }
+  .room[data-rec="text"] .console-row { grid-template-areas: "hint"; }
+  .rec-icon { width: 60px; height: 60px; }
+  .console-actions button { flex: 1 1 auto; }
+  .voice-details .voice-panel { padding: var(--s-3); }
+  .summary-body { gap: var(--s-5); padding: var(--s-5) var(--s-2) var(--s-4); }
+  .room .mock-entry { padding: var(--s-3); }
 }
