@@ -1,5 +1,5 @@
 import {mountVoice, mountReadAloud, resetReadAloud, hasPendingRecording} from './voice.js';
-import {annotateTranscript, wordDiff, elideUnchanged} from './annotate.js';
+import {annotateTranscript, collapseTags, wordDiff, elideUnchanged} from './annotate.js';
 
 const $ = selector => document.querySelector(selector);
 const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -565,6 +565,17 @@ function annotationModel(key) {
   return {...model, notes, byId: new Map(notes.map(note => [note.id, note]))};
 }
 const tagHtml = note => `<span class="tag tag-${note.kind}" data-tag="${escape(note.tag)}" aria-hidden="true"></span>`;
+// The tags drawn at one spot in the transcript. More than three at the same spot
+// (every rating quoting the same sentence, plus a Session Summary finding) would
+// push the line apart, so they collapse to the first two and a "+N" chip; the
+// group's accessible name and tooltip then list every note it stands for.
+function tagGroupHtml(notes) {
+  const ids = notes.map(note => note.id).join(' ');
+  const {shown, more} = collapseTags(notes);
+  if (!more) return `<span class="tags" data-tags="${escape(ids)}">${shown.map(tagHtml).join('')}</span>`;
+  const label = `${notes.length} 則回饋：${notes.map(note => `${note.tag} ${note.title}`).join('、')}`;
+  return `<span class="tags tags-many" data-tags="${escape(ids)}" role="img" aria-label="${escape(label)}" title="${escape(label)}">${shown.map(tagHtml).join('')}<span class="tag tag-more" data-tag="+${more}" aria-hidden="true"></span></span>`;
+}
 function diffRunsHtml(runs, {announce = false} = {}) {
   const hidden = text => announce ? `<span class="visually-hidden">${text}</span>` : '';
   return runs.map(run => run.op === '=' ? escape(run.text)
@@ -601,19 +612,23 @@ function annotatedTranscriptHtml(key, {tag = 'div', corrections = true, legend =
   }
   const rows = model.sentences.map(row => {
     const kinds = new Set();
+    const shown = id => corrections || model.byId.get(id).kind !== 'fix';
     const pieces = row.segments.map(segment => {
-      const ids = segment.ids.filter(id => corrections || model.byId.get(id).kind !== 'fix');
-      // A whitespace-only segment (the gap between two sentences) is never a mark.
-      if (!ids.length || !segment.text.trim()) return escape(segment.text);
-      const notes = ids.map(id => model.byId.get(id));
-      const segmentKinds = [...new Set(notes.map(note => note.kind))];
-      segmentKinds.forEach(kind => kinds.add(kind));
-      const tags = segment.ends.filter(id => ids.includes(id)).map(id => tagHtml(model.byId.get(id))).join('');
-      const titles = [...new Set(notes.map(note => note.title))].join('、');
+      const ids = segment.ids.filter(shown);
+      // A segment's tags belong to the quotes whose tag position is its end: usually
+      // quotes ending here, or quotes that stopped earlier inside this word.
+      const tagNotes = segment.ends.filter(shown).map(id => model.byId.get(id));
       // The last word and its tags never break apart (.mk-end); a very long "word"
       // (a URL) is left free to wrap so it cannot overflow a phone-width line.
       const [, head, last] = segment.text.match(/^([\s\S]*?)(\S{0,24})$/);
-      const body = tags ? `${escape(head)}<span class="mk-end">${escape(last)}<span class="tags">${tags}</span></span>` : escape(segment.text);
+      const body = tagNotes.length ? `${escape(head)}<span class="mk-end">${escape(last)}${tagGroupHtml(tagNotes)}</span>` : escape(segment.text);
+      // A whitespace-only segment (the gap between two sentences) is never a mark;
+      // nor is the rest of a word after a quote that stopped inside it.
+      if (!ids.length || !segment.text.trim()) return body;
+      const notes = ids.map(id => model.byId.get(id));
+      const segmentKinds = [...new Set(notes.map(note => note.kind))];
+      segmentKinds.forEach(kind => kinds.add(kind));
+      const titles = [...new Set(notes.map(note => note.title))].join('、');
       return `<mark class="mk ${segmentKinds.map(kind => `mk-${kind}`).join(' ')}" data-notes="${ids.join(' ')}" tabindex="0" role="button" aria-describedby="${ids.map(id => `${noteDomId(id)}-d`).join(' ')}" title="回饋：${escape(titles)}（按 Enter 查看）">${body}</mark>`;
     });
     // Punctuation split off after a tag (`glue`, see annotate.js) is kept on the tag's
@@ -757,10 +772,11 @@ const linkState = {hover:null, focus:null};
 const linkIds = node => !node ? [] : node.dataset.notes ? node.dataset.notes.split(' ') : [node.dataset.noteId];
 const linkTarget = node => node?.closest?.('mark[data-notes], [data-note-id]') || null;
 function paintLinks() {
-  document.querySelectorAll('mark.mk.is-active, [data-note-id].is-active').forEach(node => node.classList.remove('is-active'));
+  document.querySelectorAll('mark.mk.is-active, .tags.is-active, [data-note-id].is-active').forEach(node => node.classList.remove('is-active'));
   const ids = new Set([linkState.hover, linkState.focus].flatMap(linkIds));
   if (!ids.size) return;
   document.querySelectorAll('mark[data-notes]').forEach(mark => { if (mark.dataset.notes.split(' ').some(id => ids.has(id))) mark.classList.add('is-active'); });
+  document.querySelectorAll('.tags[data-tags]').forEach(tags => { if (tags.dataset.tags.split(' ').some(id => ids.has(id))) tags.classList.add('is-active'); });
   document.querySelectorAll('[data-note-id]').forEach(note => { if (ids.has(note.dataset.noteId)) note.classList.add('is-active'); });
 }
 function pulse(node) { node.classList.remove('pulse'); void node.offsetWidth; node.classList.add('pulse'); }

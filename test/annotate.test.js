@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {locateQuotes, splitSentences, annotateTranscript, wordDiff, elideUnchanged} from '../public/annotate.js';
+import {locateQuotes, splitSentences, annotateTranscript, tagPosition, collapseTags, wordDiff, elideUnchanged} from '../public/annotate.js';
 
 const T = 'I would design it in three parts. First, we store the documents. Second, when user ask a question, the system retrieve the top five clauses. Third, we need evaluation';
 const joined = runs => runs.map(run => run.text).join('');
@@ -82,6 +82,62 @@ test('punctuation right after a tagged quote is glued to it without changing the
   // A punctuation segment that is itself inside another quote keeps that quote's ids.
   const inner = annotateTranscript('Alpha beta.', [{id: 'x', quote: 'beta'}, {id: 'y', quote: 'beta.'}]).sentences[0].segments;
   assert.deepEqual(inner.map(s => [s.text, s.ids, s.ends, Boolean(s.glue)]), [['Alpha ', [], [], false], ['beta', ['x', 'y'], ['x'], false], ['.', ['y'], ['y'], true]]);
+});
+
+test('a quote ending inside a word keeps its exact highlight but tags after the whole word', () => {
+  const text = 'I enjoy APIs. I would aim to learn how the team runs Kubernetes at scale.';
+  const quote = 'I would aim to l';
+  const result = annotateTranscript(text, [{id: 'a', quote}]);
+  const segments = result.sentences.flatMap(row => row.segments);
+  assert.equal(segments.map(s => s.text).join(''), text, 'segments still rebuild the transcript');
+  for (const segment of segments) assert.equal(text.slice(segment.start, segment.end), segment.text);
+  // The mark covers exactly the quote's characters, not the rest of the word.
+  assert.equal(segments.filter(s => s.ids.includes('a')).map(s => s.text).join(''), quote);
+  // The tag goes after "learn", on the unmarked rest of the word.
+  const tagged = segments.find(s => s.ends.includes('a'));
+  assert.deepEqual([tagged.text, tagged.ids], ['earn', []]);
+  assert.equal(tagged.end, text.indexOf('learn') + 'learn'.length);
+  assert.equal(tagPosition(text, text.indexOf(quote) + quote.length), text.indexOf(' how'));
+  // An apostrophe between letters is part of the word; a hyphen or a space ends it.
+  assert.equal(tagPosition("we don't stop", 5), 8);
+  assert.equal(tagPosition('state-of-the-art', 3), 5);
+  assert.equal(tagPosition('two words', 3), 3, 'a quote ending at a word boundary keeps its position');
+  // Punctuation after the moved tag is glued to it, as after any tag.
+  const stop = annotateTranscript('We shipped it.', [{id: 'b', quote: 'We shipped i'}]).sentences[0].segments;
+  assert.deepEqual(stop.map(s => [s.text, s.ids, s.ends, Boolean(s.glue)]), [['We shipped i', ['b'], [], false], ['t', [], ['b'], false], ['.', [], [], true]]);
+  // Han characters are not space-separated words, so the tag is not pushed along.
+  assert.equal(tagPosition('我覺得很好', 2), 2);
+});
+
+test('many tags landing on one spot all end on that segment and collapse to two plus a count', () => {
+  const text = 'I enjoy APIs. I would aim to learn how the team works.';
+  const ids = ['strength', 'priority', 'relevance', 'support', 'structure', 'englishExpression', 'summary-strength', 'summary-priority'];
+  const quotes = ids.map((id, index) => ({id, quote: index % 2 ? 'I would aim to l' : 'aim to learn'}));
+  const segments = annotateTranscript(text, quotes).sentences.flatMap(row => row.segments);
+  assert.equal(segments.map(s => s.text).join(''), text);
+  const spots = segments.filter(s => s.ends.length);
+  assert.equal(spots.length, 1, 'quotes ending at the end of a word and inside it share one tag spot');
+  assert.deepEqual(spots[0].ends, ids, 'tags keep the quote order');
+  assert.equal(spots[0].text, 'earn');
+  assert.deepEqual(collapseTags(['a', 'b', 'c']), {shown: ['a', 'b', 'c'], more: 0}, 'three tags are shown as they are');
+  assert.deepEqual(collapseTags(['a', 'b', 'c', 'd']), {shown: ['a', 'b'], more: 2});
+  assert.deepEqual(collapseTags(ids), {shown: ['strength', 'priority'], more: 6});
+  assert.deepEqual(collapseTags([]), {shown: [], more: 0});
+});
+
+test('a quote ending at punctuation or at the very end of the transcript keeps its tag in place', () => {
+  const text = 'We cut costs, then we scaled';
+  const result = annotateTranscript(text, [{id: 'comma', quote: 'We cut costs,'}, {id: 'end', quote: 'we scaled'}, {id: 'tail', quote: 'then we sca'}]);
+  const segments = result.sentences.flatMap(row => row.segments);
+  assert.equal(segments.map(s => s.text).join(''), text);
+  // A quote that includes its punctuation is tagged right after that punctuation.
+  assert.equal(segments.find(s => s.ends.includes('comma')).end, text.indexOf(',') + 1);
+  // A quote ending at the last character, and one stopping inside the last word,
+  // both tag at the end of the transcript without overrunning it.
+  const last = segments.at(-1);
+  assert.equal(last.end, text.length);
+  assert.deepEqual(last.ends, ['end', 'tail']);
+  assert.equal(tagPosition(text, text.length), text.length);
 });
 
 test('word diff marks only what changed and rebuilds both sentences', () => {
