@@ -22,7 +22,7 @@ async function body(req, limit = 1000000) {
   try { const value=raw?JSON.parse(raw):{};requireValue(value && typeof value==='object' && !Array.isArray(value),'Expected JSON object');return value; } catch { throw new AppError('Invalid JSON object'); }
 }
 export async function createApplication({directory = '.workspace', languageModel = new FakeLanguageModel(), speechProvider = new FakeSpeechProvider(), jobSource = new FakeJobSource(), sourceTimeoutMs = 10000, operationTimeoutMs = 30000} = {}) {
-  requireValue(Number.isFinite(operationTimeoutMs) && operationTimeoutMs >= 10 && operationTimeoutMs <= 120000, 'Operation timeout must be between 10 and 120000 milliseconds');
+  requireValue(Number.isFinite(operationTimeoutMs) && operationTimeoutMs >= 10 && operationTimeoutMs <= 300000, 'Operation timeout must be between 10 and 300000 milliseconds');
   const store = await new LocalWorkspace(directory).open();
   const operations = new Operations(store, operationTimeoutMs);
   await operations.recover();
