@@ -1,5 +1,5 @@
 ---
-status: ready-for-human
+status: awaiting-human-validation
 ---
 
 # Record a three-minute answer and review the transcript before submitting

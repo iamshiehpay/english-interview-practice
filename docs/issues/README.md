@@ -1,6 +1,6 @@
 # Implementation Issues
 
-Local issue tracker for the Adaptive English Interview Coach. All issues below were approved as tracer-bullet vertical slices and are ready for an implementation agent.
+Local issue tracker for the Adaptive English Interview Coach. All issues below were approved as tracer-bullet vertical slices. `awaiting-human-validation` means implemented and automatically verified (see `docs/verification/`), pending the creator's real-use check.
 
 | Issue | Status | Blocked by |
 |---|---|---|
@@ -13,18 +13,18 @@ Local issue tracker for the Adaptive English Interview Coach. All issues below w
 | [0007 — Harden the Local Workspace and provider controls](./0007-harden-the-local-workspace-and-provider-controls.md) | completed | 0001, 0003, 0004 |
 | [0008 — Ship the Evaluation Suite and portfolio release](./0008-ship-the-evaluation-suite-and-portfolio-release.md) | awaiting-human-validation | 0002, 0003, 0005, 0006, 0007 |
 | [0009 — Add bounded optional follow-ups](./0009-add-bounded-optional-follow-ups.md) | completed | None |
-| [0010 — Add evidence-safe key-sentence corrections](./0010-add-evidence-safe-key-sentence-corrections.md) | ready-for-human | 0009 (completed) |
-| [0011 — Start Focus Point practice in the same job](./0011-start-focus-point-practice-in-the-same-job.md) | ready-for-human | 0009, 0010 |
-| [0012 — Reorganize Records by job](./0012-reorganize-records-by-job.md) | ready-for-human | 0009 |
-| [0013 — Refine Practice Loop UI clarity](./0013-refine-practice-loop-ui-clarity.md) | ready-for-human | 0001, 0009, 0010 |
-| [0014 — Read English practice text aloud](./0014-read-english-practice-text-aloud.md) | ready-for-human | None |
-| [0015 — Record a three-minute answer](./0015-record-a-three-minute-answer.md) | ready-for-human | None |
-| [0016 — Retain and replay Answer Recordings](./0016-retain-and-replay-answer-recordings.md) | ready-for-human | 0015 |
-| [0017 — Answer by voice in every answer path](./0017-answer-by-voice-in-every-answer-path.md) | ready-for-human | 0015, 0016 |
-| [0018 — Run a three-question Short Mock Session](./0018-run-a-three-question-short-mock-session.md) | ready-for-human | 0017 |
-| [0019 — Interpret a natural-language job request](./0019-interpret-a-natural-language-job-request.md) | ready-for-human | None |
-| [0020 — Curate five jobs with a Fit Breakdown](./0020-curate-five-jobs-with-a-fit-breakdown.md) | ready-for-human | 0019 |
-| [0021 — Hide the question in listening mode](./0021-hide-the-question-in-listening-mode.md) | ready-for-human | 0014 |
+| [0010 — Add evidence-safe key-sentence corrections](./0010-add-evidence-safe-key-sentence-corrections.md) | awaiting-human-validation | 0009 (completed) |
+| [0011 — Start Focus Point practice in the same job](./0011-start-focus-point-practice-in-the-same-job.md) | awaiting-human-validation | 0009, 0010 |
+| [0012 — Reorganize Records by job](./0012-reorganize-records-by-job.md) | awaiting-human-validation | 0009 |
+| [0013 — Refine Practice Loop UI clarity](./0013-refine-practice-loop-ui-clarity.md) | awaiting-human-validation | 0001, 0009, 0010 |
+| [0014 — Read English practice text aloud](./0014-read-english-practice-text-aloud.md) | awaiting-human-validation | None |
+| [0015 — Record a three-minute answer](./0015-record-a-three-minute-answer.md) | awaiting-human-validation | None |
+| [0016 — Retain and replay Answer Recordings](./0016-retain-and-replay-answer-recordings.md) | awaiting-human-validation | 0015 |
+| [0017 — Answer by voice in every answer path](./0017-answer-by-voice-in-every-answer-path.md) | awaiting-human-validation | 0015, 0016 |
+| [0018 — Run a three-question Short Mock Session](./0018-run-a-three-question-short-mock-session.md) | awaiting-human-validation | 0017 |
+| [0019 — Interpret a natural-language job request](./0019-interpret-a-natural-language-job-request.md) | awaiting-human-validation | None |
+| [0020 — Curate five jobs with a Fit Breakdown](./0020-curate-five-jobs-with-a-fit-breakdown.md) | awaiting-human-validation | 0019 |
+| [0021 — Hide the question in listening mode](./0021-hide-the-question-in-listening-mode.md) | awaiting-human-validation | 0014 |
 
 Implementation should proceed in dependency order. Start each issue in a fresh session with the PRD and only the selected issue as the implementation brief.
 

@@ -1,6 +1,6 @@
 # 0010 — Add evidence-safe key-sentence corrections
 
-Status: ready-for-human
+Status: awaiting-human-validation
 
 Implemented and verified by automated API tests and a focused browser regression on 2026-09-20 (deterministic demonstration provider, isolated workspaces). Human learner acceptance is still pending; see [verification](../verification/second-round-0010-0013.md).
 

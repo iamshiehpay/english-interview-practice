@@ -1,5 +1,5 @@
 ---
-status: ready-for-human
+status: awaiting-human-validation
 ---
 
 # Run a three-question Short Mock Session

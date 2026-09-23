@@ -1,5 +1,5 @@
 ---
-status: ready-for-human
+status: awaiting-human-validation
 ---
 
 # Answer by voice in every path that accepts an answer

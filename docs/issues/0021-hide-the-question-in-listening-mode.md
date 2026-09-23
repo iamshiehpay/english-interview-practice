@@ -1,5 +1,5 @@
 ---
-status: ready-for-human
+status: awaiting-human-validation
 ---
 
 # Hide the question in listening mode

@@ -1,5 +1,5 @@
 ---
-status: ready-for-human
+status: awaiting-human-validation
 ---
 
 <!-- Verified 2026-09-20: the header single-line fix, single completion control,

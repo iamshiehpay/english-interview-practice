@@ -1,6 +1,6 @@
 # 0012 — Reorganize Records by job
 
-Status: ready-for-human
+Status: awaiting-human-validation
 
 Implemented and verified by automated API tests and a focused browser regression (desktop 1440×900 and mobile 390×844) on 2026-09-20 (isolated workspaces). Human learner acceptance is still pending; see [verification](../verification/second-round-0010-0013.md).
 

@@ -1,5 +1,5 @@
 ---
-status: ready-for-human
+status: awaiting-human-validation
 ---
 
 # Interpret a natural-language job request into a confirmed Job Search Profile

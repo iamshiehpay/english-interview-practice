@@ -1,5 +1,5 @@
 ---
-status: ready-for-human
+status: awaiting-human-validation
 ---
 
 # Curate at most five jobs with a Fit Breakdown and practise from one

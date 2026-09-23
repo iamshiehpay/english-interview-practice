@@ -1,5 +1,5 @@
 ---
-status: ready-for-human
+status: awaiting-human-validation
 ---
 
 # Retain Answer Recordings locally and replay them from a Practice Record
