@@ -77,6 +77,7 @@ try {
  await wait(()=>!qText().hidden,'one-click reveal');
  if(qMeaning().hidden)throw Error('Chinese meaning not revealed');
  if(!el('.read-aloud-reveal').hidden)throw Error('Reveal control still shown after revealing');
+ if(document.activeElement!==qText())throw Error('Revealing the question dropped focus instead of moving it to the question');
  // A read-aloud failure must reveal the question rather than leave nothing.
  const realSpeech=window.fetch.bind(window);
  window.fetch=async(...a)=>{if(a[1]?.method==='POST'&&String(a[0]).endsWith('/api/speech'))return new Response(JSON.stringify({error:'synthetic failure'}),{status:503,headers:{'Content-Type':'application/json'}});return realSpeech(...a);};

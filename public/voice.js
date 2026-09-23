@@ -58,7 +58,14 @@ export function mountReadAloud(parent, reference, {api, provider, label = 'æœ—è®
     toggle.checked = listeningMode;
     box.append(toggleLabel, reveal);
     toggle.addEventListener('change', () => { setListeningMode(toggle.checked); if (!toggle.checked) showText(); });
-    reveal.addEventListener('click', () => { showText(); reveal.blur(); });
+    // The reveal button hides itself, so focus moves to the question it just showed
+    // (the first hideable element) instead of falling back to the page body.
+    reveal.addEventListener('click', () => {
+      showText();
+      const question = hidden[0];
+      if (!question.hasAttribute('tabindex')) question.setAttribute('tabindex', '-1');
+      question.focus();
+    });
     const follow = on => { if (toggle.checked !== on) { toggle.checked = on; if (!on) showText(); } };
     listeningListeners.add(follow);
     box.dataset.listening = 'available';
