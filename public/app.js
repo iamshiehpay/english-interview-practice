@@ -361,7 +361,7 @@ function renderHome() {
     const snapshot = workspace.snapshots[unfinished.snapshotId];
     const card = document.createElement('section');
     card.className = 'resume-card';
-    card.innerHTML = `<p class="eyebrow">繼續上次練習</p><h2>${escape(firstLine(snapshot?.text))}</h2><p>${escape(recordStates[unfinished.status] || unfinished.status)} · ${escape(unfinished.question.text)}</p><div class="actions"></div>`;
+    card.innerHTML = `<p class="eyebrow">繼續上次練習</p><h2 title="${escape(jobTitle(snapshot))}">${escape(truncate(jobTitle(snapshot)))}</h2><p>${escape(recordStates[unfinished.status] || unfinished.status)} · ${escape(unfinished.question.text)}</p><div class="actions"></div>`;
     button('繼續練習', () => showRecord(unfinished.id), card.querySelector('.actions'));
     parent.append(card);
   }
@@ -481,17 +481,26 @@ async function showQuestionList(snapshotId, suppliedAnalysis) {
   clearDraftSession(); disposeVoice(); followUpVoice.dispose(); followUpVoice.dispose = () => {}; followUpVoice.draftId = null; resetReadAloud(); markView('practice'); currentSnapshotId = snapshotId;
   const snapshot = workspace.snapshots[snapshotId];
   const analysis = suppliedAnalysis || await analysisView(snapshotId);
+  // One row per question: a state glyph (answered ✓ / draft / not yet) that repeats
+  // the row's own text, so the state never depends on colour alone.
+  let practisedTotal = 0;
   const groups = Object.entries(categories).map(([category,label]) => {
     const questions = analysis.questions.filter(question => question.category === category);
-    return `<section class="category-group"><h2>${escape(label)}</h2>${questions.map(question => {
+    let practised = 0;
+    const rows = questions.map(question => {
       const records = (analysis.history?.[question.id] || []).map(item => workspace.records?.[item.recordId]).filter(Boolean);
       const answered = records.filter(record => record.attempts?.length > 0).length;
       const hasDraft = records.some(record => record.attempts?.length === 0 && record.writtenDraft);
+      if (answered) practised += 1;
       const progress = answered ? `已作答 ${answered} 次${hasDraft ? ' · 另有未送出草稿' : ''}` : hasDraft ? '有未送出草稿' : '尚未作答';
-      return `<article class="question-card ${answered || hasDraft ? 'practised' : ''}" data-question-id="${escape(question.id)}"><p class="english" lang="en">${escape(question.text)}</p><p class="meta">${progress}${question.id === analysis.recommendation.questionId ? ' · 本次推薦' : ''}</p><button type="button" class="secondary">選這一題</button></article>`;
-    }).join('')}</section>`;
+      const state = answered ? 'answered' : hasDraft ? 'draft' : 'new';
+      const recommended = question.id === analysis.recommendation.questionId;
+      return `<article class="question-card q-${state}${answered || hasDraft ? ' practised' : ''}${recommended ? ' recommended' : ''}" data-question-id="${escape(question.id)}"><span class="q-state" aria-hidden="true">${state === 'answered' ? checkIcon : ''}</span><div class="q-main"><p class="english" lang="en">${escape(question.text)}</p><p class="meta"><span>${progress}</span>${recommended ? '<span class="chip chip-accent">本次推薦</span>' : ''}</p></div><button type="button" class="secondary">選這一題</button></article>`;
+    }).join('');
+    practisedTotal += practised;
+    return `<section class="category-group" aria-labelledby="group-${category}"><header class="group-head"><h2 id="group-${category}">${escape(label)}</h2><span class="meta">${questions.length} 題 · 已作答 ${practised} 題</span></header>${rows || '<p class="meta group-empty">這一類目前沒有題目。</p>'}</section>`;
   }).join('');
-  const content = `<p class="eyebrow">完整題組</p><h1>選一題來練習</h1><p>題目依類型整理；切換題目不會重新呼叫模型。</p><div class="button-row" id="question-list-actions"></div><div id="question-list" class="question-list">${groups}</div>`;
+  const content = `<p class="eyebrow">完整題組</p><h1>選一題來練習</h1><p>題目依類型整理；切換題目不會重新呼叫模型。</p><p class="meta list-summary">共 ${analysis.questions.length} 題 · 已作答 ${practisedTotal} 題</p><div class="button-row" id="question-list-actions"></div><div id="question-list" class="question-list">${groups}</div>`;
   $('#practice').innerHTML = practiceFrame({snapshot, content});
   button('回到推薦題', () => showRecommended(snapshotId), $('#question-list-actions'), {kind:'ghost'});
   if (analysis.questions.length < 40) button('另外新增四題', async () => {
@@ -1571,19 +1580,32 @@ async function deleteJob(snapshotId) {
   if (historyState.openJob === snapshotId) historyState.openJob = null;
   await refreshWorkspace(); renderHistory(); setNotice('這份職缺與相關練習已刪除，其他資料保留。');
 }
+// The "⋯" menu on a Records card: a native <details>, closed by Escape (focus returns
+// to its summary) or by a click anywhere outside it.
+function moreMenu(label) {
+  const menu = document.createElement('details'); menu.className = 'more-menu';
+  menu.innerHTML = `<summary aria-label="${escape(label)}" title="${escape(label)}"><span aria-hidden="true">⋯</span></summary><div class="more-panel"></div>`;
+  return menu;
+}
+document.addEventListener('click', event => document.querySelectorAll('details.more-menu[open]').forEach(menu => { if (!menu.contains(event.target)) menu.open = false; }));
+document.addEventListener('keydown', event => {
+  const menu = event.key === 'Escape' && event.target.closest?.('details.more-menu[open]');
+  if (menu) { menu.open = false; menu.querySelector('summary').focus(); }
+});
+const stateChip = (text, kind = '') => `<span class="chip state-chip${kind ? ` ${kind}` : ''}">${escape(text)}</span>`;
 function renderJobDetail(container, snapshot) {
   const records = sortRecent(Object.values(workspace.records || {}).filter(r => r.snapshotId === snapshot.id));
   const sessions = sortRecent(Object.values(workspace.mockSessions || {}).filter(s => s.snapshotId === snapshot.id));
   container.replaceChildren();
+  container.insertAdjacentHTML('beforeend', `<p class="detail-label">這份職缺的練習（${records.length + sessions.length}）</p>`);
   for (const session of sessions) {
     const done = session.status === 'completed';
     const answered = session.entries.filter(entry => entry.answer).length;
     const card = document.createElement('article'); card.className = 'list-card record-card mock-card'; card.dataset.sessionId = session.id;
-    card.innerHTML = `<p class="eyebrow">三題短場模擬 · ${done ? '已完成' : '進行中'}</p><p class="meta">${escape(dateLabel(session.completedAt || session.updatedAt || session.createdAt))} · 已作答 ${answered} / ${session.entries.length} 題${session.entries.some(entry => entry.skipped) ? ' · 有跳過的題目' : ''}</p><div class="button-row"></div>`;
+    card.innerHTML = `<div class="rec-main"><p class="rec-line">${stateChip('三題短場模擬', 'chip-mock')}${stateChip(done ? '已完成' : '進行中', done ? 'is-done' : 'is-open')}</p><p class="meta">${escape(dateLabel(session.completedAt || session.updatedAt || session.createdAt))} · 已作答 ${answered} / ${session.entries.length} 題${session.entries.some(entry => entry.skipped) ? ' · 有跳過的題目' : ''}</p></div><div class="button-row rec-actions"></div>`;
     const actions = card.querySelector('.button-row');
     button(done ? '查看整場回饋' : '繼續這場模擬', () => showMockSession(session.id), actions, {kind: 'secondary'});
-    const menu = document.createElement('details'); menu.className = 'more-menu';
-    menu.innerHTML = '<summary aria-label="更多動作">⋯</summary><div class="more-panel"></div>';
+    const menu = moreMenu('更多動作');
     button(done ? '刪除這場模擬' : '放棄這場模擬', () => abandonMockSession(session.id), menu.querySelector('.more-panel'), {kind: 'danger'});
     actions.append(menu);
     container.append(card);
@@ -1592,18 +1614,21 @@ function renderJobDetail(container, snapshot) {
   for (const record of records) {
     const followUps = Array.isArray(record.followUps) ? record.followUps : [];
     const card = document.createElement('article'); card.className = 'list-card record-card'; card.dataset.recordId = record.id;
-    const origin = record.focusOrigin ? ` · 延續重點：${escape(record.focusOrigin.focusPoint)}` : '';
+    const origin = record.focusOrigin ? `<p class="meta rec-origin">延續重點：${escape(record.focusOrigin.focusPoint)}</p>` : '';
     const followUpNote = followUps.length ? ` · ${followUps.length} 則追問` : '';
-    card.innerHTML = `<p class="eyebrow">${escape(recordStates[record.status] || record.status)}</p><h4 lang="en">${escape(record.question.text)}</h4><p class="meta">${escape(dateLabel(record.updatedAt || record.createdAt))}${followUpNote}${origin}</p><div class="button-row"></div>`;
+    const done = record.status === 'completed';
+    card.innerHTML = `<div class="rec-main"><p class="rec-line">${stateChip(recordStates[record.status] || record.status, done ? 'is-done' : 'is-open')}<span class="meta">${escape(dateLabel(record.updatedAt || record.createdAt))}${followUpNote}</span></p><h4 lang="en">${escape(record.question.text)}</h4>${origin}</div><div class="button-row rec-actions"></div>`;
     const actions = card.querySelector('.button-row');
-    button(record.status === 'completed' ? '查看紀錄' : '繼續練習', () => showRecord(record.id), actions, {kind:'secondary'});
-    const menu = document.createElement('details'); menu.className = 'more-menu';
-    menu.innerHTML = '<summary aria-label="更多動作">⋯</summary><div class="more-panel"></div>';
+    button(done ? '查看紀錄' : '繼續練習', () => showRecord(record.id), actions, {kind:'secondary'});
+    const menu = moreMenu('更多動作');
     button('刪除這筆練習', () => deleteRecord(record.id), menu.querySelector('.more-panel'), {kind:'danger'});
     actions.append(menu);
     container.append(card);
   }
 }
+// Re-rendering the list replaces its controls, so the control a keyboard user just
+// pressed is found again and refocused.
+function refocus(selector) { requestAnimationFrame(() => $(selector)?.focus({preventScroll: true})); }
 function renderHistory() {
   const host = $('#history'); if (!host) return; host.replaceChildren();
   const snapshots = Object.values(workspace.snapshots || {});
@@ -1614,7 +1639,8 @@ function renderHistory() {
   if (unfinished) {
     const snapshot = workspace.snapshots[unfinished.snapshotId];
     const card = document.createElement('article'); card.className = 'list-card continue-card';
-    card.innerHTML = `<p class="eyebrow">繼續上次練習</p><h3>${escape(jobTitle(snapshot))}</h3><p class="meta">${escape(recordStates[unfinished.status] || unfinished.status)} · ${escape(unfinished.question.text)}</p><div class="button-row"></div>`;
+    // Job titles are bounded everywhere (issue 0026): a pasted JD's first line is often a whole sentence.
+    card.innerHTML = `<div class="continue-main"><p class="eyebrow">繼續上次練習</p><h3 title="${escape(jobTitle(snapshot))}">${escape(truncate(jobTitle(snapshot)))}</h3><p class="meta">${escape(recordStates[unfinished.status] || unfinished.status)} · <span lang="en">${escape(unfinished.question.text)}</span></p></div><div class="button-row"></div>`;
     button('繼續練習', () => showRecord(unfinished.id), card.querySelector('.button-row'), {kind:'primary'});
     host.append(card);
   }
@@ -1625,7 +1651,7 @@ function renderHistory() {
   const search = controls.querySelector('#job-search');
   search.addEventListener('input', () => { historyState.query = search.value; historyState.page = 0; renderHistory(); const again = $('#job-search'); if (again) { again.focus(); const end = again.value.length; again.setSelectionRange(end, end); } });
   const filter = controls.querySelector('#job-filter'); filter.value = historyState.filter;
-  filter.addEventListener('change', () => { historyState.filter = filter.value; historyState.page = 0; renderHistory(); });
+  filter.addEventListener('change', () => { historyState.filter = filter.value; historyState.page = 0; renderHistory(); refocus('#job-filter'); });
 
   const allSessions = Object.values(workspace.mockSessions || {});
   const jobs = snapshots.map(snapshot => {
@@ -1643,6 +1669,9 @@ function renderHistory() {
     return true;
   }).sort((a, b) => b.activity - a.activity);
 
+  const count = document.createElement('p'); count.className = 'meta list-summary'; count.setAttribute('role', 'status');
+  count.textContent = filtered.length === jobs.length ? `共 ${jobs.length} 份職缺` : `符合 ${filtered.length} / ${jobs.length} 份職缺`;
+  host.append(count);
   const list = document.createElement('div'); list.className = 'job-list'; host.append(list);
   if (!filtered.length) { list.innerHTML = '<p class="empty">沒有符合的職缺。調整搜尋或篩選條件。</p>'; return; }
   const pageCount = Math.max(1, Math.ceil(filtered.length / JOBS_PER_PAGE));
@@ -1653,26 +1682,31 @@ function renderHistory() {
     const snapshot = job.snapshot;
     const open = historyState.openJob === snapshot.id;
     const renaming = historyState.renaming === snapshot.id;
-    const card = document.createElement('article'); card.className = 'list-card job-card'; card.dataset.jobId = snapshot.id;
-    card.innerHTML = `<div class="job-head"></div><div class="button-row job-actions"></div>${open ? '<div class="job-detail"></div>' : ''}`;
+    const analysed = Boolean(workspace.analyses[snapshot.id]);
+    const card = document.createElement('article'); card.className = `list-card job-card${open ? ' is-open' : ''}`; card.dataset.jobId = snapshot.id;
+    card.innerHTML = `<div class="job-row"><div class="job-head"></div><div class="button-row job-actions"></div></div>${open ? '<div class="job-detail"></div>' : ''}`;
     const head = card.querySelector('.job-head');
     if (renaming) {
       head.innerHTML = `<label for="rename-input" class="visually-hidden">職缺名稱</label><input id="rename-input" maxlength="120" value="${escape(job.title)}"><div class="button-row rename-actions"></div>`;
       const input = head.querySelector('#rename-input');
-      button('儲存名稱', async () => { await api(`/snapshots/${snapshot.id}/title`, {title: input.value}); historyState.renaming = null; await refreshWorkspace(); renderHistory(); setNotice('職缺名稱已更新。'); }, head.querySelector('.rename-actions'), {kind:'secondary'});
-      button('取消', () => { historyState.renaming = null; renderHistory(); }, head.querySelector('.rename-actions'), {kind:'ghost'});
+      button('儲存名稱', async () => { await api(`/snapshots/${snapshot.id}/title`, {title: input.value}); historyState.renaming = null; await refreshWorkspace(); renderHistory(); setNotice('職缺名稱已更新。'); refocus(`[data-job-id="${CSS.escape(snapshot.id)}"] .more-menu summary`); }, head.querySelector('.rename-actions'), {kind:'secondary'});
+      button('取消', () => { historyState.renaming = null; renderHistory(); refocus(`[data-job-id="${CSS.escape(snapshot.id)}"] .more-menu summary`); }, head.querySelector('.rename-actions'), {kind:'ghost'});
     } else {
-      head.innerHTML = `<h3>${escape(job.title)}</h3><p class="meta">最近活動 ${escape(dateLabel(job.activity))} · 已完成 ${job.completed} 次主練習${job.completedSessions ? ` · ${job.completedSessions} 場模擬` : ''}${job.hasUnfinished ? ' · 有進行中的練習' : ''}</p>`;
+      // The title is the truncated job title (the learner's rename, or the JD's first
+      // line), never the raw JD; the full title is the tooltip. There is no company field.
+      const stats = [`最近活動 ${escape(dateLabel(job.activity))}`, `已完成 ${job.completed} 次主練習`, ...(job.completedSessions ? [`${job.completedSessions} 場模擬`] : [])];
+      const flags = `${job.hasUnfinished ? stateChip('有進行中的練習', 'is-open') : ''}${analysed ? '' : stateChip('尚未產生題目')}`;
+      head.innerHTML = `<h3 title="${escape(job.title)}">${escape(truncate(job.title))}</h3><p class="meta job-stats">${stats.join(' · ')}${flags}</p>`;
     }
     const actions = card.querySelector('.job-actions');
-    button(workspace.analyses[snapshot.id] ? '開始新練習' : '產生題目', () => startJob(snapshot.id), actions, {kind:'primary'});
-    if (workspace.analyses[snapshot.id]) {
+    button(analysed ? '開始新練習' : '產生題目', () => startJob(snapshot.id), actions, {kind:'primary'});
+    if (analysed) {
       const running = job.sessions.find(session => session.status !== 'completed');
       button(running ? '繼續三題模擬' : '三題短場模擬', () => running ? showMockSession(running.id) : startMockSession(snapshot.id), actions, {kind:'secondary', id:`mock-${snapshot.id}`});
     }
     const items = job.records.length + job.sessions.length;
-    if (items) button(open ? '收合練習' : `查看練習（${items}）`, () => { historyState.openJob = open ? null : snapshot.id; renderHistory(); }, actions, {kind:'secondary', attributes:{'aria-expanded': String(open)}});
-    const menu = document.createElement('details'); menu.className = 'more-menu'; menu.innerHTML = '<summary aria-label="更多動作">⋯</summary><div class="more-panel"></div>';
+    if (items) button(open ? '收合練習' : `查看練習（${items}）`, () => { historyState.openJob = open ? null : snapshot.id; renderHistory(); refocus(`[data-job-id="${CSS.escape(snapshot.id)}"] [aria-expanded]`); }, actions, {kind:'ghost', attributes:{'aria-expanded': String(open)}});
+    const menu = moreMenu('更多動作');
     const panel = menu.querySelector('.more-panel');
     button('重新命名', () => { historyState.renaming = snapshot.id; renderHistory(); requestAnimationFrame(() => $('#rename-input')?.focus()); }, panel, {kind:'ghost'});
     button('刪除職缺', () => deleteJob(snapshot.id), panel, {kind:'danger'});
@@ -1682,17 +1716,83 @@ function renderHistory() {
   }
 
   if (pageCount > 1) {
-    const pager = document.createElement('div'); pager.className = 'button-row pager';
-    button('上一頁', () => { historyState.page -= 1; renderHistory(); }, pager, {kind:'ghost'}).disabled = historyState.page === 0;
+    const pager = document.createElement('nav'); pager.className = 'button-row pager'; pager.setAttribute('aria-label', '職缺分頁');
+    const turn = (offset, id) => { historyState.page += offset; renderHistory(); refocus($(`#${id}`)?.disabled ? '.pager button:not(:disabled)' : `#${id}`); };
+    button('上一頁', () => turn(-1, 'history-prev'), pager, {kind:'ghost', id:'history-prev'}).disabled = historyState.page === 0;
     const label = document.createElement('span'); label.className = 'meta'; label.textContent = `第 ${historyState.page + 1} / ${pageCount} 頁`; pager.append(label);
-    button('下一頁', () => { historyState.page += 1; renderHistory(); }, pager, {kind:'ghost'}).disabled = historyState.page >= pageCount - 1;
+    button('下一頁', () => turn(1, 'history-next'), pager, {kind:'ghost', id:'history-next'}).disabled = historyState.page >= pageCount - 1;
     host.append(pager);
   }
 }
 
+// 我的進步: every completed Practice Loop leaves one Focus Point. The same Focus
+// Point in two or more loops, or one the learner confirms, is a Recurring Weakness
+// whose status (active / improving / resolved) only the learner sets; each item
+// links back to the Practice Records it came from. Data: GET /api/progress.
+const progressStatus = {active:'需加強', improving:'改善中', resolved:'已解決'};
+const progressIcons = {
+  active:'<svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8"/><path d="M12 8v5M12 16h.01"/></svg>',
+  improving:'<svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m4 16 5-5 4 4 7-7"/><path d="M15 8h5v5"/></svg>',
+  resolved:checkIcon,
+  single:'<svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/></svg>'
+};
+async function decideProgressItem(id, input, focusSelector) {
+  await api(`/progress/${id}`, input);
+  await renderProgress();
+  if (focusSelector) refocus(`[data-progress-id="${CSS.escape(id)}"] ${focusSelector}`);
+}
+function progressItem(item) {
+  const evidence = [...item.evidence].sort((a, b) => new Date(b.completedAt || 0) - new Date(a.completedAt || 0));
+  const latest = evidence[0];
+  const status = item.recurring ? item.status : 'single';
+  const why = item.recurring ? (item.evidence.length >= 2 ? `出現在 ${item.evidence.length} 次練習` : '你確認會反覆出現') : item.rejected ? '你標記為不是反覆出現的問題' : '目前只出現在 1 次練習';
+  const card = document.createElement('article'); card.className = `list-card progress-item is-${status}`; card.dataset.progressId = item.id;
+  const label = item.recurring ? progressStatus[item.status] : '單次重點';
+  const rows = evidence.map(entry => {
+    const snapshot = workspace.snapshots?.[entry.snapshotId];
+    return `<li class="ev-row"><span class="ev-body"><span class="ev-q" lang="en" title="${escape(entry.questionText)}">${escape(entry.questionText)}</span><span class="meta"><span class="ev-job" title="${escape(jobTitle(snapshot))}">${escape(truncate(jobTitle(snapshot), 40))}</span> · ${escape(dateLabel(entry.completedAt))}</span></span><button type="button" class="ghost" data-open-record="${escape(entry.recordId)}">回顧練習</button></li>`;
+  }).join('');
+  card.innerHTML = `<header class="pi-head"><span class="chip status-chip">${progressIcons[status]}${escape(label)}</span><span class="meta">${escape(why)} · 最近 ${escape(dateLabel(latest?.completedAt))}</span></header>
+    <p class="pi-focus">${escape(item.focusPoint)}</p>
+    ${item.recurring ? `<div class="pi-status"><span class="meta" id="status-label-${escape(item.id)}">狀態由你決定</span><div class="seg" role="group" aria-labelledby="status-label-${escape(item.id)}"></div></div>` : ''}
+    <div class="pi-evidence"><p class="detail-label">相關練習（${evidence.length}）</p><ol class="ev-list">${rows}</ol></div>
+    <div class="button-row pi-actions"></div>`;
+  const seg = card.querySelector('.seg');
+  if (seg) for (const [value, text] of Object.entries(progressStatus)) {
+    button(text, () => decideProgressItem(item.id, {action:'status', status:value}, `[data-status="${value}"]`), seg, {kind:'seg-btn', attributes:{'aria-pressed': String(item.status === value), 'data-status': value}});
+  }
+  card.querySelectorAll('[data-open-record]').forEach(control => control.addEventListener('click', () => showRecord(control.dataset.openRecord).catch(error => setError(error.message))));
+  const actions = card.querySelector('.pi-actions');
+  if (latest && !(item.recurring && item.status === 'resolved')) button('針對這個重點再練一次', () => createFromFocus(latest.recordId), actions, {kind:'secondary'});
+  if (!item.recurring) button(item.rejected ? '改回反覆出現的問題' : '標記為反覆出現的問題', () => decideProgressItem(item.id, {action:'confirm'}, '.seg [aria-pressed="true"]'), actions, {kind:'ghost'});
+  else button('不是反覆出現的問題', () => decideProgressItem(item.id, {action:'reject'}, '.pi-actions button:last-child'), actions, {kind:'ghost'});
+  return card;
+}
 async function renderProgress() {
-  const records=sortRecent(Object.values(workspace.records).filter(r=>r.status==='completed'));
-  $('#progress').innerHTML=records.length?records.map(r=>`<article class="list-card"><p>${escape(r.focusPoint)}</p><p class="meta">${escape(dateLabel(r.completedAt))}</p></article>`).join(''):'<p>完成一次練習後，這裡會留下你的下一步。</p>';
+  const token = viewToken;
+  const host = $('#progress');
+  const items = await api('/progress');
+  if (viewToken !== token || currentView !== 'progress') return;
+  host.replaceChildren();
+  if (!items.length) { host.innerHTML = '<p class="empty">完成一次練習後，這裡會留下你的下一步。</p>'; return; }
+  const latest = item => Math.max(...item.evidence.map(entry => new Date(entry.completedAt || 0).getTime()));
+  const byRecent = list => list.sort((a, b) => latest(b) - latest(a));
+  const recurring = byRecent(items.filter(item => item.recurring && item.status !== 'resolved')).sort((a, b) => (a.status === 'improving') - (b.status === 'improving'));
+  const single = byRecent(items.filter(item => !item.recurring));
+  const resolved = byRecent(items.filter(item => item.recurring && item.status === 'resolved'));
+  const counts = [['需加強', recurring.filter(item => item.status === 'active').length], ['改善中', recurring.filter(item => item.status === 'improving').length], ['已解決', resolved.length], ['單次重點', single.length]];
+  host.insertAdjacentHTML('beforeend', `<p class="view-lead">每次完成練習都會留下一個「下次練習重點」。同一個重點出現在兩次以上的練習，或你確認它會反覆出現，就列為反覆出現的弱點；它的狀態由你決定，系統不會替你宣稱進步。</p>
+    <dl class="stat-strip">${counts.map(([label, value]) => `<div><dt>${label}</dt><dd>${value}</dd></div>`).join('')}</dl>`);
+  const group = (id, title, list, empty) => {
+    const section = document.createElement('section'); section.className = 'progress-group'; section.setAttribute('aria-labelledby', id);
+    section.innerHTML = `<h2 id="${id}">${title}<span class="count">${list.length}</span></h2>`;
+    if (!list.length) section.insertAdjacentHTML('beforeend', `<p class="empty">${empty}</p>`);
+    list.forEach(item => section.append(progressItem(item)));
+    host.append(section);
+  };
+  group('progress-recurring', '反覆出現的弱點', recurring, '目前沒有反覆出現的弱點。同一個重點出現在兩次練習，或你把單次重點標記為反覆出現後，會列在這裡。');
+  group('progress-single', '單次練習重點', single, '沒有只出現一次的練習重點。');
+  if (resolved.length) group('progress-resolved', '已解決', resolved, '');
 }
 
 async function renderEvidence({clearText=false}={}) {
@@ -1701,7 +1801,7 @@ async function renderEvidence({clearText=false}={}) {
   parent.textContent='正在讀取履歷…';
   const resume=await api('/resume');
   if(viewToken!==token)return;
-  parent.innerHTML=`<section class="settings-section"><h2>${resume?'目前使用的履歷':'讓問題更貼近你'}</h2><p>上傳一次，之後貼 JD 就會預設搭配這份履歷出題。</p><label class="field-label">上傳 PDF、DOCX 或 TXT（最多 5 MB）</label><div class="file-field"><label class="file-button" for="resume-file">選擇檔案</label><input type="file" id="resume-file" accept=".pdf,.docx,.txt" class="visually-hidden"><span id="resume-filename" class="file-name">尚未選擇檔案</span></div><p id="resume-extract-status" role="status"></p><label for="resume-name">檔名</label><input id="resume-name" value="${escape(resume?.name || '我的履歷')}"><label for="resume-text">履歷內容，可直接貼上或修正辨識結果</label><textarea id="resume-text" rows="14">${escape(resume?.text || '')}</textarea><p class="meta">保存在本機；搭配 JD 產題時才會傳送文字給模型。替換履歷不會改動舊練習。</p><div id="resume-actions"></div></section>`;
+  parent.innerHTML=`<section class="settings-section resume-form" aria-labelledby="resume-heading"><header class="section-head"><h2 id="resume-heading">${resume?'目前使用的履歷':'讓問題更貼近你'}</h2>${resume?'<span class="chip chip-accent">新練習預設使用</span>':''}</header><p class="section-lead">上傳一次，之後貼 JD 就會預設搭配這份履歷出題。</p><div class="upload-box"><p class="field-label" id="resume-file-label">上傳 PDF、DOCX 或 TXT（最多 5 MB）</p><div class="file-field"><label class="file-button" for="resume-file">選擇檔案</label><input type="file" id="resume-file" accept=".pdf,.docx,.txt" class="visually-hidden" aria-describedby="resume-file-label"><span id="resume-filename" class="file-name">尚未選擇檔案</span></div><p id="resume-extract-status" class="meta" role="status"></p></div><label for="resume-name">檔名</label><input id="resume-name" value="${escape(resume?.name || '我的履歷')}"><label for="resume-text">履歷內容，可直接貼上或修正辨識結果</label><textarea id="resume-text" rows="14">${escape(resume?.text || '')}</textarea><p class="meta">保存在本機；搭配 JD 產題時才會傳送文字給模型。替換履歷不會改動舊練習。</p><div id="resume-actions" class="button-row"></div></section>`;
   if(clearText)$('#resume-text').value='';
   let extracting=false, extractionId=0;
   $('#resume-file').addEventListener('change',async event=>{
@@ -1741,6 +1841,7 @@ function renderShortlist(run, results, save) {
   results.replaceChildren();
   const failed = (run.sourceStatus || []).filter(status => !status.ok);
   const header = document.createElement('div');
+  header.className = 'results-head';
   header.innerHTML = `<p class="meta">查詢時間 ${escape(dateLabel(run.capturedAt))} · 來源 ${escape((run.sourceStatus || []).filter(s => s.ok).map(s => s.source).join('、') || run.source)}</p>
     ${failed.length ? `<p class="meta">${escape(failed.map(s => `${s.source}：${s.error === 'rate-limited' ? '請求過多，稍後重試' : s.error === 'timed-out' ? '逾時' : '暫時無法連線'}`).join('；'))}。其他來源的結果仍然列在下面。</p>` : ''}
     <p class="meta">這是教練依公開職缺內容的判讀，不是雇主的評估，也不是保證錄取；不會替你投遞。${run.resumeUsed ? '適配說明會參考你目前保存的履歷。' : '目前沒有保存履歷，因此只依職缺內容判讀。'}</p>`;
@@ -1772,17 +1873,20 @@ function renderShortlist(run, results, save) {
 
   for (const job of run.shortlist) {
     const card = document.createElement('article'); card.className = 'list-card shortlist-card'; card.dataset.resultId = job.id;
-    const parts = Object.entries(fitParts).map(([key, label]) => `<div class="fit-part fit-${key}"><h4>${escape(label)}</h4>${job[key].length ? `<ul>${job[key].map(entry => `<li>${escape(entry)}</li>`).join('')}</ul>` : '<p class="meta">—</p>'}</div>`).join('');
-    card.innerHTML = `<h3>${escape(job.title)}</h3>
-      <p class="meta">${escape(job.location)} · ${escape(job.source)} · <span class="location-tag">${escape(locationTags[job.locationTag] || job.locationTag)}</span></p>
+    // Four separate parts, never a score. Each part differs by its glyph (CSS) and
+    // border style as well as its label, not by colour alone.
+    const parts = Object.entries(fitParts).map(([key, label]) => `<section class="fit-part fit-${key}" aria-label="${escape(label)}（${job[key].length} 項）"><div class="fit-head"><h4>${escape(label)}</h4><span class="fit-n" aria-hidden="true">${job[key].length}</span></div>${job[key].length ? `<ul>${job[key].map(entry => `<li>${escape(entry)}</li>`).join('')}</ul>` : '<p class="meta">—</p>'}</section>`).join('');
+    card.innerHTML = `<header class="sl-head"><h3 title="${escape(job.title)}">${escape(truncate(job.title))}</h3>
+      <p class="meta">${escape(job.location)} · ${escape(job.source)} · <span class="chip location-tag">${escape(locationTags[job.locationTag] || job.locationTag)}</span></p></header>
       <p class="why-fit">${escape(job.whyFitZh)}</p>
+      <p class="detail-label">適配拆解</p>
       <div class="fit-breakdown">${parts}</div>
-      <details><summary>查看取得的職缺內容</summary><blockquote>${escape(job.text)}</blockquote></details>
-      <p class="meta"><a href="${escape(job.sourceUrl)}" target="_blank" rel="noopener noreferrer">查看原始職缺</a></p>
-      <label class="check-label"><input type="checkbox" class="shortlist-resume" ${workspace.resume ? 'checked' : 'disabled'}>${workspace.resume ? `搭配履歷：${escape(workspace.resume.name)}` : '尚未保存履歷，將只依職缺出題'}</label>
+      <div class="sl-source"><details><summary>查看取得的職缺內容</summary><blockquote>${escape(job.text)}</blockquote></details>
+      <a href="${escape(job.sourceUrl)}" target="_blank" rel="noopener noreferrer">查看原始職缺<span class="visually-hidden">（在新分頁開啟）</span></a></div>
+      <div class="sl-foot"><label class="check-label"><input type="checkbox" class="shortlist-resume" ${workspace.resume ? 'checked' : 'disabled'}>${workspace.resume ? `搭配履歷：${escape(workspace.resume.name)}` : '尚未保存履歷，將只依職缺出題'}</label>
       <label class="visually-hidden" for="depth-${escape(job.id)}">練習深度</label>
       <select id="depth-${escape(job.id)}" class="shortlist-depth"><option value="standard">依職缺要求</option><option value="easier">簡單一點</option><option value="deeper">深入一點</option></select>
-      <div class="button-row"></div>`;
+      <div class="button-row"></div></div>`;
     button('保存並產生題目', async () => {
       const snapshot = await api(`/discovery/${run.id}/select`, {resultId: job.id, useResume: card.querySelector('.shortlist-resume').checked, difficulty: card.querySelector('.shortlist-depth').value});
       await refreshWorkspace();
@@ -1797,20 +1901,20 @@ function renderShortlist(run, results, save) {
 async function renderDiscovery() {
   const parent = $('#discovery'); parent.replaceChildren();
   const profile = await api('/job-search-profile');
-  const form = document.createElement('section'); form.className = 'settings-section';
   // Describe it in your own words; the product proposes criteria and you confirm them.
-  form.innerHTML = `<h2>用一句話說你想找什麼</h2><label for="search-request">例如：根據我的履歷，幫我找台灣適合轉職的 AI 職缺，最好能遠端</label>
+  const ask = document.createElement('section'); ask.className = 'settings-section search-ask'; ask.setAttribute('aria-labelledby', 'ask-heading');
+  ask.innerHTML = `<h2 id="ask-heading">用一句話說你想找什麼</h2><label for="search-request">例如：根據我的履歷，幫我找台灣適合轉職的 AI 職缺，最好能遠端</label>
     <textarea id="search-request" rows="3" placeholder="用中文或英文都可以。"></textarea>
     <p class="data-note" id="interpret-disclosure"></p>
     <div class="button-row" id="interpret-actions"></div>
-    <div id="interpret-result" aria-live="polite"></div>
-    <hr>
-    <h2>搜尋條件</h2>
-    <p>這些是實際會用來搜尋的條件，你可以直接修改。搜尋只會在你按下按鈕時進行，履歷不會送到職缺板。</p>`;
+    <div id="interpret-result" aria-live="polite"></div>`;
+  const form = document.createElement('section'); form.className = 'settings-section search-profile'; form.setAttribute('aria-labelledby', 'profile-heading');
+  form.innerHTML = `<h2 id="profile-heading">搜尋條件</h2>
+    <p class="section-lead" id="profile-hint">這些是實際會用來搜尋的條件，你可以直接修改；同一欄有多個條件時以逗號分隔。搜尋只會在你按下按鈕時進行，履歷不會送到職缺板。</p>
+    <div class="field-grid"></div><div class="button-row" id="profile-actions"></div>`;
   const labels = searchFieldLabels;
-  for (const [field,text] of Object.entries(labels)) form.insertAdjacentHTML('beforeend', `<label for="profile-${field}">${escape(text)}（以逗號分隔）</label><input id="profile-${field}" value="${escape((profile[field] || []).join(', '))}">`);
+  for (const [field,text] of Object.entries(labels)) form.querySelector('.field-grid').insertAdjacentHTML('beforeend', `<div class="field"><label for="profile-${field}">${escape(text)}</label><input id="profile-${field}" value="${escape((profile[field] || []).join(', '))}" aria-describedby="profile-hint"></div>`);
   const save = () => api('/job-search-profile', Object.fromEntries(Object.keys(labels).map(field => [field,$(`#profile-${field}`).value.split(',').map(value => value.trim()).filter(Boolean)])));
-  button('儲存搜尋條件', save, form, {kind:'secondary'});
   const results = document.createElement('div'); results.id = 'discovery-results';
   button('搜尋公開職缺', async () => {
     results.innerHTML = '<p class="meta">正在搜尋並整理精選職缺…</p>';
@@ -1819,10 +1923,12 @@ async function renderDiscovery() {
     try { run = await api('/discovery', {}); }
     catch (error) { results.innerHTML = '<p class="empty">這次搜尋沒有完成，搜尋條件仍保存在本機。可以稍後重試，或回首頁直接貼上職缺描述。</p>'; throw error; }
     renderShortlist(run, results, save);
-  }, form);
-  form.insertAdjacentHTML('beforeend', '<hr><label for="job-url">支援的 Greenhouse 職缺網址</label><input id="job-url" type="url" placeholder="https://job-boards.greenhouse.io/…">');
-  button('取得並保存職缺', async () => { const snapshot = await api('/snapshots/from-url', {url:$('#job-url').value}); await refreshWorkspace(); await api(`/snapshots/${snapshot.id}/analysis`, {}); await refreshWorkspace(); await showRecommended(snapshot.id); }, form, {kind:'secondary'});
-  parent.append(form, results);
+  }, form.querySelector('#profile-actions'));
+  button('儲存搜尋條件', save, form.querySelector('#profile-actions'), {kind:'secondary'});
+  const byUrl = document.createElement('section'); byUrl.className = 'settings-section search-url'; byUrl.setAttribute('aria-labelledby', 'url-heading');
+  byUrl.innerHTML = '<h2 id="url-heading">已經有職缺網址？</h2><label for="job-url">支援的 Greenhouse 職缺網址</label><input id="job-url" type="url" placeholder="https://job-boards.greenhouse.io/…"><div class="button-row" id="url-actions"></div>';
+  button('取得並保存職缺', async () => { const snapshot = await api('/snapshots/from-url', {url:$('#job-url').value}); await refreshWorkspace(); await api(`/snapshots/${snapshot.id}/analysis`, {}); await refreshWorkspace(); await showRecommended(snapshot.id); }, byUrl.querySelector('#url-actions'), {kind:'secondary'});
+  parent.append(ask, form, results, byUrl);
 
   $('#interpret-disclosure').textContent = providerInfo?.languageModel?.external
     ? `你寫的這句話會傳送給 ${providerInfo.languageModel.name} 來整理成搜尋條件。你的履歷不會送到職缺板。`
@@ -1835,7 +1941,7 @@ async function renderDiscovery() {
     try {
       const result = await api('/discovery/interpret', {request});
       const stated = Object.entries(searchFieldLabels).filter(([field]) => result.proposal[field]?.length);
-      panel.innerHTML = `<div class="provider-warning"><strong>我理解成這些條件</strong>
+      panel.innerHTML = `<div class="callout"><strong>我理解成這些條件</strong>
         ${stated.length ? `<ul class="interpreted-list">${stated.map(([field, label]) => `<li><strong>${escape(label)}</strong>：${escape(result.proposal[field].join('、'))}</li>`).join('')}</ul>` : '<p>你這句話裡沒有明確的條件。你可以直接在下面填寫。</p>'}
         <p class="meta">沒有講到的條件會留空，不會替你猜。確認後才會套用到下面的搜尋條件，也才會儲存。</p>
         <div class="button-row" id="interpret-confirm"></div></div>`;
@@ -1852,21 +1958,25 @@ async function renderDiscovery() {
 
 function renderSettings() {
   const parent = $('#provider-settings'); parent.replaceChildren();
-  const names = {languageModel:'題目與回饋',speech:'語音轉錄與朗讀',jobSource:'公開職缺來源'};
+  const names = {languageModel:'題目與回饋',speech:'語音轉錄與朗讀',jobSource:'公開職缺來源',jobCuration:'精選職缺與適配拆解'};
   for (const [role,info] of Object.entries(providerInfo || {})) {
-    const row = document.createElement('div'); row.className = 'provider-row';
+    const row = document.createElement('div'); row.className = `provider-row${info.external ? ' is-external' : ''}`;
     const access = !info.external ? '' : info.subscription ? '透過你的官方訂閱登入使用；用量依方案計算，不需在本機保存 API 金鑰。' : role === 'jobSource' ? '只讀取你指定的公開職缺板；不需金鑰，也不送出個人資料。' : '使用你在啟動時設定的 API 金鑰；金鑰只從伺服器環境讀取，不會存進本機資料、也不會出現在瀏覽器或畫面上。呼叫可能依供應商方案產生費用。';
     const speechNote = role !== 'speech' ? '' : info.demonstrationSpeech ? '目前的朗讀是本機示意音，不是真人語音。' : info.canSpeak ? '英文題目、示範回答與關鍵句修正可以朗讀；中文說明不會朗讀。' : '這個服務不支援朗讀，畫面上不會出現朗讀按鈕。';
-    row.innerHTML = `<h3>${escape(names[role] || role)}</h3><p>${escape(providerName(info))}</p><p class="meta">${info.external ? `可能送出：${escape(info.outbound.map(outboundLabel).join('；'))}` : '本機示範服務，不傳送資料到外部。'}</p>${speechNote ? `<p class="meta">${escape(speechNote)}</p>` : ''}${access ? `<p class="meta">${access}</p>` : ''}`;
+    // Data-flow disclosure: what each configured service may receive, and when.
+    const flow = info.external
+      ? `<div class="flow-box"><p class="flow-title">可能送出</p><ul class="flow-list">${info.outbound.map(item => `<li>${escape(outboundLabel(item))}</li>`).join('')}</ul></div>`
+      : '<p class="meta">本機示範服務，不傳送資料到外部。</p>';
+    row.innerHTML = `<div class="pr-role"><h3>${escape(names[role] || role)}</h3><span class="chip${info.external ? ' chip-accent' : ''}">${info.external ? '外部服務' : '只在本機'}</span></div><div class="pr-body"><p class="pr-name">${escape(providerName(info))}</p>${flow}${speechNote ? `<p class="meta">${escape(speechNote)}</p>` : ''}${access ? `<p class="meta">${access}</p>` : ''}</div>`;
     parent.append(row);
   }
   if (providerInfo?.languageModel?.subscription) {
-    const status = document.createElement('div'); status.className = `provider-warning`; status.innerHTML = `<strong>${languageStatus.ready ? 'Codex 訂閱服務已可使用' : languageStatus.authenticated ? '已登入，尚未完成本機驗證' : '尚未完成 Codex 登入'}</strong><p>${languageStatus.ready ? '文字題目與回饋會使用你的方案用量。' : '請在專案終端依 README 完成登入與驗證，再回來檢查。已寫的本機草稿不受影響。'}</p>`;
-    button('重新檢查狀態', async () => { languageStatus = await api('/providers/language-status'); renderSettings(); }, status, {kind:'secondary'});
+    const status = document.createElement('div'); status.className = languageStatus.ready ? 'callout status-box is-ready' : 'provider-warning status-box'; status.setAttribute('role', 'status'); status.innerHTML = `<strong>${languageStatus.ready ? 'Codex 訂閱服務已可使用' : languageStatus.authenticated ? '已登入，尚未完成本機驗證' : '尚未完成 Codex 登入'}</strong><p>${languageStatus.ready ? '文字題目與回饋會使用你的方案用量。' : '請在專案終端依 README 完成登入與驗證，再回來檢查。已寫的本機草稿不受影響。'}</p>`;
+    button('重新檢查狀態', async () => { languageStatus = await api('/providers/language-status'); renderSettings(); refocus('#recheck-status'); }, status, {kind:'secondary', id:'recheck-status'});
     parent.append(status);
   }
   const deletion = $('#delete-workspace'); deletion.replaceChildren();
-  deletion.innerHTML = `<p class="meta" id="recording-storage">${escape(recordingBytesLabel())}</p><p>這會刪除所有職缺、題目、練習紀錄、文字草稿、回答錄音與進步項目。若要繼續，請輸入 <strong>DELETE ALL LOCAL DATA</strong>。</p><label for="delete-all">確認文字</label><input id="delete-all" autocomplete="off">`;
+  deletion.innerHTML = `<p class="meta" id="recording-storage">${escape(recordingBytesLabel())}</p><p>這會刪除所有職缺、題目、練習紀錄、文字草稿、回答錄音與進步項目。若要繼續，請輸入 <strong class="confirm-phrase" lang="en">DELETE ALL LOCAL DATA</strong>。</p><label for="delete-all">確認文字</label><input id="delete-all" autocomplete="off" spellcheck="false">`;
   button('刪除全部本機資料', async () => {
     await api('/workspace/delete', {confirmation:$('#delete-all').value}); clearDraftSession(); disposeVoice(); followUpVoice.dispose(); followUpVoice.dispose = () => {}; followUpVoice.draftId = null; resetReadAloud(); await refreshWorkspace(); setNotice('所有本機資料已刪除。'); await navigate('home');
   }, deletion, {kind:'danger'});
@@ -1881,9 +1991,11 @@ async function showOperations() {
   operationsSignature = signature;
   parent.replaceChildren();
   for (const operation of visible) {
-    const row = document.createElement('div'); row.className = 'operation-card';
+    // One compact row per operation: a state glyph (spinner / ! / –) plus the state
+    // in words, so a failure never reads by colour alone.
+    const row = document.createElement('div'); row.className = `operation-card op-${operation.state}`;
     const state = {pending:'進行中',succeeded:'已完成',failed:'失敗',cancelled:'已取消'}[operation.state] || operation.state;
-    row.innerHTML = `<p><strong>${escape(operationNames[operation.kind] || operation.kind)}</strong> · ${escape(state)}${operation.retryable ? ' · 可從原操作重試' : ''}</p>`;
+    row.innerHTML = `<span class="op-icon" aria-hidden="true"></span><p class="op-line"><strong>${escape(operationNames[operation.kind] || operation.kind)}</strong><span class="op-sep" aria-hidden="true">·</span><span class="op-state">${escape(state)}</span>${operation.retryable ? '<span class="op-retry">· 可從原操作重試</span>' : ''}</p>`;
     // "失敗" on its own gives the learner nothing to act on. Show the recorded reason,
     // translated where we recognise it, so retrying is a decision rather than a guess.
     if (operation.errorMessage) {
