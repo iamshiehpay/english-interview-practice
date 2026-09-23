@@ -24,7 +24,7 @@
 
 未定案，列出供逐項確認。
 
-1. **Repo 就緒**：建立 `main`、推上 GitHub；推送前掃描機密（`.env`、`.workspace/`、`.coach-codex/` 已在 `.gitignore`）。
+1. **Repo 就緒**：見已確認決策「GitHub repo」（`.env`、`.workspace/`、`.coach-codex/` 已在 `.gitignore`）。
 2. **容器化**：多階段 Dockerfile、非 root、健康檢查端點、`WORKSPACE_DIR` 掛 volume。
 3. **雲端只部署公開 Demo**（見已確認決策「部署對象」）：只用 fake provider，不接真實 API、不存個人資料，給面試官點開試用。私人站不上雲，本機 `npm start` 照舊。
    - 不做多使用者 SaaS（需要資料庫、帳號、加密，等於重寫並推翻 ADR 0008／0013）。
@@ -54,6 +54,9 @@
   - 合併到 `main`（部署）：以上全部 → image 以 git SHA 為 tag 推 Artifact Registry → 以 Workload Identity Federation 部署 Cloud Run（GitHub 不存 GCP 金鑰）→ 對正式網址 smoke → 失敗自動把流量切回上一個 revision。
   - `terraform apply` 不自動執行，需在 GitHub Environment 手動核准。
   - 暫不納入：`test:browser`（需在 CI 安裝 agent-browser 與 Chromium，慢且易不穩定，先留本機）、真實模型評估（花錢、需金鑰，維持本機手動）。
+- **GitHub repo**：公開；從目前 HEAD 建立 `main`，保留完整 47 個 commit 歷史（不 squash）；推送前以 gitleaks 掃描完整歷史內容；`main` 設保護（必須經 PR、CI 通過）；合併後刪除 `ui-ux-practice-loop-refinements`。使用者於 2026-09-23 確認。
+  - Commit 作者 email 維持 `iamshiehpay@gmail.com`，不改寫歷史：該 email 已出現在使用者至少 4 個公開 repo，改寫換不到隱私且會改變所有 hash。若日後要隱藏，於帳號層級（全域 git 設定＋GitHub「Keep my email addresses private」）處理。使用者於 2026-09-23 接受建議。
+  - 推送前由使用者自行確認 `docs/portfolio/demo.webm` 無不想公開的內容。
 
 ## 待討論問題
 
