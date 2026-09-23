@@ -26,9 +26,7 @@
 
 1. **Repo 就緒**：建立 `main`、推上 GitHub；推送前掃描機密（`.env`、`.workspace/`、`.coach-codex/` 已在 `.gitignore`）。
 2. **容器化**：多階段 Dockerfile、非 root、健康檢查端點、`WORKSPACE_DIR` 掛 volume。
-3. **兩種部署模式，同一個 image**，以環境變數切換：
-   - 公開 Demo：只用 fake provider，不接真實 API、不存個人資料，給面試官點開試用。
-   - 私人站：放在登入保護後面，接真實模型，資料在持久化 volume。
+3. **雲端只部署公開 Demo**（見已確認決策「部署對象」）：只用 fake provider，不接真實 API、不存個人資料，給面試官點開試用。私人站不上雲，本機 `npm start` 照舊。
    - 不做多使用者 SaaS（需要資料庫、帳號、加密，等於重寫並推翻 ADR 0008／0013）。
 4. **CI／CD**：GitHub Actions — 測試 → 建 image → 推 GHCR → 部署；IaC 變更跑 `plan`。
 5. **託管候選**（待決）：
@@ -44,13 +42,12 @@
 - 順序：先完成 MVP 驗證，再做部署；Cloudflare 最後考慮。2026-09-23。
 - 練習用 Codex 預設改為 `gpt-5.6-luna`、reasoning effort `xhigh`，Codex 逾時提高到 180 秒。已實作於 `914c842`。2026-09-23。
 - Issue 0010–0021 狀態改為 `awaiting-human-validation`。已提交於 `94614ed`。2026-09-23。
+- **部署對象**：雲端只放給面試官／招募者看的公開 Demo，免登入、隨時可開、不含個人資料、不花 API 費用；創作者本人的日常練習留在本機 Mac（使用 Codex 訂閱）。使用者於 2026-09-23 確認（「本來就是這樣」）。
 
 ## 待討論問題
 
-- 部署給誰看？面試官試用、自己日常練習，還是兩者都要？
 - 作品集想展示哪個雲端平台的能力（AWS／GCP／Cloudflare）？這會決定託管與 IaC 選擇。
 - 公開 Demo 的資料：fake provider 的示範輸出夠不夠說服面試官？是否需要預先放一組「真實模型跑過的」唯讀示範紀錄？
-- 私人站要不要上雲，或只在本機加 Tunnel？
 - 每月預算上限？是否購買網域？
 - 服務需要 24 小時在線嗎？
 - 完成的定義是什麼：能展示哪些 DevOps 成果（CI badge、IaC、監控截圖、架構圖、runbook）才算做完？
