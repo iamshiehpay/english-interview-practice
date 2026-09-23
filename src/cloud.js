@@ -1,4 +1,4 @@
-import {CodexLanguageModel} from './codex-language.js';
+import {CodexLanguageModel,CODEX_DEFAULT_MODEL,CODEX_DEFAULT_EFFORT} from './codex-language.js';
 import {readFile} from 'node:fs/promises';
 import {AppError, requireValue, redactSecrets} from './domain.js';
 import {FakeLanguageModel} from './providers.js';
@@ -95,7 +95,7 @@ export class OpenAISpeechProvider {
 }
 export function configuredProviders(env=process.env){
   requireValue(['fake','openai','codex','claude'].includes(env.COACH_LANGUAGE_PROVIDER||'fake'),'Unsupported language provider');requireValue(['fake','openai'].includes(env.COACH_SPEECH_PROVIDER||'fake'),'Unsupported speech provider');
-  return {languageModel:env.COACH_LANGUAGE_PROVIDER==='codex'?new CodexLanguageModel({profile:env.COACH_CODEX_HOME,binary:env.COACH_CODEX_BIN||'codex',model:env.COACH_CODEX_MODEL||'gpt-5.6-sol'}):env.COACH_LANGUAGE_PROVIDER==='claude'?new ClaudeLanguageModel({apiKey:env.ANTHROPIC_API_KEY,model:env.COACH_CLAUDE_MODEL||'claude-sonnet-5',effort:env.COACH_CLAUDE_EFFORT??'high'}):env.COACH_LANGUAGE_PROVIDER==='openai'?new OpenAILanguageModel({apiKey:env.OPENAI_API_KEY,model:env.COACH_MODEL||'gpt-4.1-mini'}):new FakeLanguageModel(),speechProvider:env.COACH_SPEECH_PROVIDER==='openai'?new OpenAISpeechProvider({apiKey:env.OPENAI_API_KEY,model:env.COACH_SPEECH_MODEL||'gpt-4o-mini-transcribe',readAloudModel:env.COACH_TTS_MODEL||'gpt-4o-mini-tts',voice:env.COACH_TTS_VOICE||'alloy'}):new FakeSpeechProvider(),jobSource:greenhouseSources(env)};
+  return {languageModel:env.COACH_LANGUAGE_PROVIDER==='codex'?new CodexLanguageModel({profile:env.COACH_CODEX_HOME,binary:env.COACH_CODEX_BIN||'codex',model:env.COACH_CODEX_MODEL||CODEX_DEFAULT_MODEL,effort:env.COACH_CODEX_EFFORT||CODEX_DEFAULT_EFFORT}):env.COACH_LANGUAGE_PROVIDER==='claude'?new ClaudeLanguageModel({apiKey:env.ANTHROPIC_API_KEY,model:env.COACH_CLAUDE_MODEL||'claude-sonnet-5',effort:env.COACH_CLAUDE_EFFORT??'high'}):env.COACH_LANGUAGE_PROVIDER==='openai'?new OpenAILanguageModel({apiKey:env.OPENAI_API_KEY,model:env.COACH_MODEL||'gpt-4.1-mini'}):new FakeLanguageModel(),speechProvider:env.COACH_SPEECH_PROVIDER==='openai'?new OpenAISpeechProvider({apiKey:env.OPENAI_API_KEY,model:env.COACH_SPEECH_MODEL||'gpt-4o-mini-transcribe',readAloudModel:env.COACH_TTS_MODEL||'gpt-4o-mini-tts',voice:env.COACH_TTS_VOICE||'alloy'}):new FakeSpeechProvider(),jobSource:greenhouseSources(env)};
 }
 // Several boards can be configured together: an international employer's Taiwan roles
 // and its remote roles often live on different boards.

@@ -8,7 +8,7 @@ import {CodexLanguageModel} from '../src/codex-language.js';
 if(!process.argv.includes('--accept-subscription-usage'))throw Error('Pass --accept-subscription-usage for three synthetic model calls');
 const directory=await mkdtemp(join(tmpdir(),'coach-subscription-smoke-'));let server;
 try{
- ({server}=await createApplication({directory,languageModel:new CodexLanguageModel(),operationTimeoutMs:90000}));await new Promise(r=>server.listen(0,'127.0.0.1',r));
+ ({server}=await createApplication({directory,languageModel:new CodexLanguageModel(),operationTimeoutMs:180000}));await new Promise(r=>server.listen(0,'127.0.0.1',r));
  const api=async(path,data)=>{const res=await fetch(`http://127.0.0.1:${server.address().port}/api${path}`,{method:data===undefined?'GET':'POST',headers:{'Content-Type':'application/json'},body:data===undefined?undefined:JSON.stringify(data)});const result=await res.json();assert.equal(res.status,200,JSON.stringify(result));return result;};
  const snapshot=await api('/snapshots',{text:'Software Engineer. Build reliable Python APIs. Explain engineering trade-offs. Collaborate with product teams. Test invalid input and service failures.'});
  const analysis=await api(`/snapshots/${snapshot.id}/analysis`,{});console.log('PASS subscription JD analysis:',analysis.questions.length,'questions');

@@ -2,8 +2,8 @@ import {chmod} from 'node:fs/promises';
 import {join} from 'node:path';
 import {spawn} from 'node:child_process';
 import {runtimeProfile} from '../src/codex-profile.js';
-import {CodexLanguageModel} from '../src/codex-language.js';
-const provider=new CodexLanguageModel({profile:process.env.COACH_CODEX_HOME,binary:process.env.COACH_CODEX_BIN||'codex',model:process.env.COACH_CODEX_MODEL||'gpt-5.6-sol'});
+import {CodexLanguageModel,CODEX_DEFAULT_MODEL,CODEX_DEFAULT_EFFORT} from '../src/codex-language.js';
+const provider=new CodexLanguageModel({profile:process.env.COACH_CODEX_HOME,binary:process.env.COACH_CODEX_BIN||'codex',model:process.env.COACH_CODEX_MODEL||CODEX_DEFAULT_MODEL,effort:process.env.COACH_CODEX_EFFORT||CODEX_DEFAULT_EFFORT});
 try{
   if(process.argv.includes('login')){
     const runtime=await runtimeProfile(provider);

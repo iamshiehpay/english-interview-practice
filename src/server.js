@@ -748,7 +748,7 @@ export async function createApplication({directory = '.workspace', languageModel
   return {server, store};
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const {server} = await createApplication({directory: process.env.WORKSPACE_DIR || '.workspace', ...configuredProviders(), operationTimeoutMs: Number(process.env.COACH_TIMEOUT_MS || (['codex','claude'].includes(process.env.COACH_LANGUAGE_PROVIDER)?90000:30000))});
+  const {server} = await createApplication({directory: process.env.WORKSPACE_DIR || '.workspace', ...configuredProviders(), operationTimeoutMs: Number(process.env.COACH_TIMEOUT_MS || (process.env.COACH_LANGUAGE_PROVIDER==='codex'?180000:process.env.COACH_LANGUAGE_PROVIDER==='claude'?90000:30000))});
   const port = Number(process.env.PORT || 4310);
   server.once('error', error => {
     if (error.code === 'EADDRINUSE') {

@@ -90,3 +90,11 @@ test('unconfirmed process exit preserves temporary state instead of deleting und
  await assert.rejects(p.status(),{status:503});const cwd=processes[0].config.cwd;assert.ok(await readdir(cwd));
  await rm(join(cwd,'..'),{recursive:true,force:true});
 });
+test('Codex sends the configured reasoning effort and names it',async t=>{
+ const {p,calls}=await provider(t);
+ assert.equal(p.effort,'xhigh');assert.match(p.name,/gpt-5\.6-luna \/ xhigh$/);
+ await p.analyze({snapshot:{text:'Build APIs'}});
+ assert.equal(calls.find(c=>c.method==='turn/start').params.effort,'xhigh');
+ p.effort='low';await p.analyze({snapshot:{text:'Build APIs'}});
+ assert.equal(calls.filter(c=>c.method==='turn/start').at(-1).params.effort,'low');
+});
