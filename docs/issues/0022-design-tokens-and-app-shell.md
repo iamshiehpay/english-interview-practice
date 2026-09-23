@@ -1,8 +1,8 @@
 ---
-status: ready-for-agent
+status: awaiting-human-validation
 ---
 
-# Design tokens and app shell (left rail with 我的進步, top job-context bar, fonts, CSP)
+# Design tokens and app shell (left rail with 我的進步, top job-context bar, self-hosted fonts)
 
 ## Parent
 
@@ -31,13 +31,19 @@ mockup's own illustrative rail (`index.html:769-780`) does not include a
 「我的進步」 entry either; this issue deliberately adds one beyond what the
 mockup shows, because the PRD requires it independently of the mockup.
 
-`src/server.js:750` sends a CSP with no `font-src` and `style-src 'self'`,
-which blocks the Google Fonts `<link>` the mockup uses. The PRD's decision
-(see `docs/prd-ui-redesign.md`, "Fonts and Content-Security-Policy") is to
-keep the Google Fonts link and widen the CSP by exactly `style-src
-https://fonts.googleapis.com` and `font-src https://fonts.gstatic.com`,
-alongside a system-font fallback that is already present in the token
-definitions.
+> **Owner decision 2026-09-23 (overrides the original font/CSP plan below):**
+> do **not** load Google Fonts and do **not** widen the CSP. A Google Fonts
+> request on every page load would contact a third party regardless of
+> practice activity, conflicting with ADR 0013 (local-first, minimal data
+> sharing). Instead, self-host Latin-subset `woff2` files for Inter and
+> JetBrains Mono under `public/fonts/` (with their OFL licence texts), declare
+> them with `@font-face` + `font-display: swap`, and use the system CJK stack
+> for Chinese. See `docs/prd-ui-redesign.md`, "Fonts and
+> Content-Security-Policy".
+
+`src/server.js:750` sends a CSP with no `font-src`, so fonts fall back to
+`default-src 'self'`, which already permits same-origin font files. The only
+server change is serving the font files with `Content-Type: font/woff2`.
 
 ## What to build
 
@@ -48,14 +54,16 @@ definitions.
   the existing `--ink`/`--paper`/`--mist`/`--teal`/etc. tokens. Keep the same
   custom-property names as the mockup so later issues can be copy-pasted
   faithfully.
-- Add the Google Fonts `<link rel="preconnect">`/`<link rel="stylesheet">`
-  tags to `public/index.html` exactly as in the mockup (Inter, JetBrains
-  Mono, Noto Sans TC weights the mockup loads), and update `--font-ui`,
-  `--font-zh`, `--font-mono` to the mockup's stacks (each already ends in a
-  system-font fallback chain).
-- Update `src/server.js`'s CSP header (around line 750) to add
-  `style-src 'self' https://fonts.googleapis.com;` and `font-src 'self'
-  https://fonts.gstatic.com;`, changing no other directive.
+- Self-host Inter (400/500/600/700) and JetBrains Mono (400/500) as
+  Latin-subset `woff2` files in `public/fonts/` with their OFL licence texts;
+  declare them with `@font-face` and `font-display: swap`; set `--font-ui`,
+  `--font-zh`, `--font-mono` to stacks that put the system CJK fonts
+  (`"PingFang TC"`, `"Noto Sans TC"`, `"Microsoft JhengHei"`) right after the
+  Latin face. No Google Fonts `<link>`. *(2026-09-23 decision; replaces the
+  Google Fonts link.)*
+- Serve the font files from `src/server.js`'s static handler with
+  `Content-Type: font/woff2`; leave the CSP header unchanged. *(2026-09-23
+  decision; replaces widening `style-src`/`font-src`.)*
 - Rebuild the header/nav markup in `public/index.html` into the rail pattern:
   brand mark, primary 開始練習 entry, then 找職缺／練習紀錄／我的進步（NEW）／
   我的履歷 as `data-view` items, 設定 pinned at the bottom. Keep every
@@ -81,46 +89,43 @@ definitions.
 
 ## Acceptance criteria
 
-- [ ] `public/style.css` defines the full token set from the mockup's `:root`
+- [x] `public/style.css` defines the full token set from the mockup's `:root`
       (neutrals, accent, semantic feedback colours, font stacks, type scale,
       radii, spacing, shadow) under the same custom-property names.
-- [ ] The Google Fonts link loads Inter, JetBrains Mono and Noto Sans TC; if
-      the request is blocked (simulate by disabling the stylesheet in
-      devtools or removing network access), the page still renders legibly in
-      the system-font fallback with no invisible text.
-- [ ] `src/server.js`'s CSP header includes `style-src 'self'
-      https://fonts.googleapis.com` and `font-src 'self'
-      https://fonts.gstatic.com`, and no other directive is loosened.
-- [ ] The main navigation shows 開始練習／找職缺／練習紀錄／我的進步／我的履歷／
+- [x] Self-hosted Inter and JetBrains Mono load from `/fonts/*.woff2`
+      (served as `font/woff2`); if the font requests are blocked, the page
+      still renders legibly in the system-font fallback with no invisible
+      text. Chinese uses the system CJK stack. *(2026-09-23 decision.)*
+- [x] `src/server.js`'s CSP header is unchanged and the page makes no
+      third-party request. *(2026-09-23 decision; replaces widening the CSP.)*
+- [x] The main navigation shows 開始練習／找職缺／練習紀錄／我的進步／我的履歷／
       設定, each reachable by mouse click and by keyboard (Tab + Enter).
-- [ ] Clicking 我的進步 (or its mobile-menu equivalent) navigates to
+- [x] Clicking 我的進步 (or its mobile-menu equivalent) navigates to
       `#progress-view` and calls `renderProgress()`, exactly as
       `data-view="history"` already calls `renderHistory()`.
-- [ ] The rail collapses to icon-only between 1024px and 1279px width (all six
+- [x] The rail collapses to icon-only between 1024px and 1279px width (all six
       destinations still present and operable) and is replaced by a compact
       menu at <1024px (all six destinations still present and operable).
-- [ ] No view shows horizontal overflow at 390px width.
-- [ ] Existing `data-view` values (`home`, `discovery`, `history`, `evidence`,
+- [x] No view shows horizontal overflow at 390px width.
+- [x] Existing `data-view` values (`home`, `discovery`, `history`, `evidence`,
       `settings`) are unchanged; every existing `nav [data-view="..."]`
       selector in `test/browser-smoke.js` still matches, or is updated in
       this issue if the wrapping element changed.
-- [ ] `npm test` passes unmodified (this issue makes no server-behaviour
-      change beyond the CSP header, which no existing test asserts against a
-      stricter value — confirm this before finishing).
-- [ ] `npm run test:browser` passes, updated if any selector this issue
+- [x] `npm test` passes unmodified (this issue makes no server-behaviour
+      change beyond serving the font files).
+- [x] `npm run test:browser` passes, updated if any selector this issue
       touches requires it.
 
 ## Files likely touched
 
 - `public/style.css` (tokens; rail/breadcrumb/nav layout)
-- `public/index.html` (nav markup, font links, theme-color)
+- `public/index.html` (nav markup, theme-color)
+- `public/fonts/` (self-hosted Latin woff2 + OFL licence texts)
 - `public/app.js` (nav wiring only — `navigate()`, `markView()`, the
   `data-view` query, and whatever minimal glue makes `progress` navigable;
   not the view-render bodies)
-- `src/server.js` (CSP header, ~line 750)
+- `src/server.js` (static handler: serve `/fonts/*.woff2` as `font/woff2`; CSP unchanged)
 - `test/browser-smoke.js` (only if a nav selector's DOM path changes)
-- `README.md` / `.env.example` (one line noting the new outbound font
-  request, if either file documents outbound network behaviour today)
 
 ## How to verify
 
@@ -134,10 +139,56 @@ Manually load the app, resize the window through 1440 → 1200 → 900 → 390px
 and confirm the rail/menu behaviour and that 我的進步 is reachable and
 renders the same content the persona walkthrough already verified as correct
 (`docs/verification/persona-walkthrough-2026-09-23.md`, finding 1). Also
-confirm in devtools' Network tab that `fonts.googleapis.com` and
-`fonts.gstatic.com` requests succeed under the new CSP (previously they would
-have been blocked and reported in the console).
+confirm in devtools' Network tab that the only font requests are
+same-origin `/fonts/*.woff2` and that no third-party origin is contacted.
 
 ## Blocked by
 
 None — this is the first slice.
+
+## Comments
+
+2026-09-23: Implemented and automatically verified; visual acceptance by the
+creator is pending, hence `awaiting-human-validation`.
+
+- **Tokens.** `public/style.css` `:root` now holds the mockup's full token set
+  under the same names (plus `--rail-w`/`--topbar-h`). The old
+  `--ink`/`--paper`/`--mist`/`--teal`/… names remain only as aliases of the
+  new tokens so views not yet restyled follow the new palette; the warm
+  hard-coded hex values in view rules were mapped to tokens. Per-view layout
+  (card radii, spacing, type scale) is untouched and left to 0023-0027.
+- **Fonts (2026-09-23 decision).** `public/fonts/` holds Inter 400/500/600/700
+  and JetBrains Mono 400/500 Latin woff2 (`@fontsource/*` 5.3.0, ~140 KB
+  total) plus `LICENSE-Inter.txt` / `LICENSE-JetBrainsMono.txt` (SIL OFL 1.1).
+  `@font-face` uses `font-display: swap` and a Latin `unicode-range`. No
+  Google Fonts link; the CSP is byte-for-byte unchanged. With every font
+  request aborted the page still renders in the system fallback.
+- **Server.** The static handler serves an explicit allowlist of the six font
+  files as `font/woff2` (nothing else under `public/fonts/` is reachable).
+  New `test/static-assets.test.js` asserts the MIME type, the unchanged CSP
+  and that `index.html`/`style.css` reference no `http(s)://` origin.
+- **Shell.** `<header class="site-header">` + `.system-strip` were replaced by
+  `<aside class="rail">` (brand button + `<nav id="primary-nav"
+  aria-label="主要導覽">`) and a sticky `<header class="topbar">` holding the
+  menu button, a `<nav class="crumb" aria-label="目前位置">` breadcrumb
+  (`#crumb-view` + an empty, hidden `#crumb-job` slot that
+  `setJobContext(title)` fills — issue 0023 wires it) and the service status
+  (`#provider`) + 資料傳送說明. The rail's primary entry uses class
+  `nav-primary` (not the mockup's `primary`) to avoid the global
+  `button.primary` style. 我的進步 (`data-view="progress"`) is new.
+- **Responsive.** ≥1280px full 224px rail; 1024-1279px 56px icon rail (labels
+  visually hidden, still in the accessibility tree, plus `title` tooltips);
+  <1024px the rail becomes an off-canvas drawer opened by `#menu-toggle`
+  (`aria-expanded`, scrim click and Escape close it, choosing a destination
+  closes it); <768px the service status wraps to a second topbar line.
+- **Unchanged contracts.** All `data-view` values and every
+  `nav [data-view="..."]` selector in `test/browser-smoke.js` still match
+  (the rail's `<nav>` is first in the DOM); no smoke change was needed.
+  `docs/creator-validation.zh-TW.md` now describes the service status as
+  "頂列右側" instead of the removed "系統列" and notes where the rail/menu is.
+- **Verification.** `npm test` 180/180 pass; `npm run test:browser` PASS.
+  Screenshots at 1440/1200/390 (home, 我的進步, mobile drawer) in
+  [`docs/verification/ui-redesign-0022/`](../verification/ui-redesign-0022/).
+  Keyboard: Tab from the top of the page reaches 我的進步 and Enter opens
+  `#progress-view` with the breadcrumb reading 我的進步. No horizontal
+  overflow on any rail destination at 390px.

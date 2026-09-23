@@ -210,9 +210,9 @@ superseding the earlier "no UI changes during validation" sequencing (see
 
 ### Fonts, performance and disclosure
 
-26. As a Target Learner on a machine that cannot load Google Fonts, I want the
+26. As a Target Learner on a machine where the web fonts fail to load, I want the
     interface to still render legibly in system fonts, so that a blocked
-    network request never breaks the page.
+    or failed font request never breaks the page.
 27. As a Target Learner, I want the redesign to change nothing about what
     service receives my data or when, so that the trust model I already
     understand is unaffected by a visual change.
@@ -245,9 +245,9 @@ Tokens are defined in `docs/design/mockups/workbench-annotated-feedback/index.ht
 | Semantic (feedback only) | `--warn` / `--warn-bg` / `--warn-line` | `#A14C06` / `#FDF1D6` / `#D98A0B` |
 | Semantic (feedback only) | `--del` / `--del-bg` | `#B42318` / `#FDE7E5` |
 | Semantic (feedback only) | `--ins` / `--ins-bg` | `#157A3E` / `#DDF3E4` |
-| Type | `--font-ui` | `"Inter","Noto Sans TC",system-ui,-apple-system,"PingFang TC",sans-serif` |
-| Type | `--font-zh` | `"Noto Sans TC","Inter","PingFang TC",sans-serif` |
-| Type | `--font-mono` | `"JetBrains Mono","Noto Sans TC",ui-monospace,SFMono-Regular,Menlo,monospace` |
+| Type | `--font-ui` | `"Inter","PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,sans-serif` |
+| Type | `--font-zh` | `"PingFang TC","Noto Sans TC","Microsoft JhengHei","Inter",sans-serif` |
+| Type | `--font-mono` | `"JetBrains Mono","PingFang TC","Noto Sans TC","Microsoft JhengHei",ui-monospace,SFMono-Regular,Menlo,monospace` |
 | Type scale | `--fs-11 … --fs-32` | `11,12,13,14,16,20,28,32px` |
 | Radii | `--r-xs / --r-sm / --r-md` | `4px / 6px / 8px` |
 | Spacing (4px base) | `--s-1 … --s-12` | `4,8,12,16,20,24,32,48px` |
@@ -362,41 +362,52 @@ renamed or reordered.
 
 ### Fonts and Content-Security-Policy
 
-`src/server.js:750` currently sends:
+> **Decision changed 2026-09-23 (owner):** fonts are **self-hosted**, not
+> loaded from Google Fonts, and the CSP is **not** widened. Loading Google
+> Fonts would make every page load contact a third party regardless of
+> practice activity, which conflicts with
+> [ADR 0013](adr/0013-minimize-and-locally-control-practice-data.md)
+> (local-first, minimal data sharing). This replaces the earlier plan to add
+> `fonts.googleapis.com` / `fonts.gstatic.com` to the CSP.
+
+`src/server.js` keeps sending exactly:
 
 ```
 Content-Security-Policy: default-src 'self'; style-src 'self'; script-src 'self';
 connect-src 'self'; media-src 'self' blob:; object-src 'none'; base-uri 'none'
 ```
 
-There is no `font-src` directive, so it falls back to `default-src 'self'`,
-and `style-src 'self'` already blocks the Google Fonts `<link
-rel="stylesheet">`. Both must change for the mockup's Google Fonts link to
-work as written.
+There is no `font-src` directive, so fonts fall back to `default-src 'self'`,
+which already permits same-origin font files. The mockup's Google Fonts
+`<link>` tags are **not** carried into `public/index.html`.
 
-**Decision:** use the Google Fonts link as the mockup does (the learner
-already accepted this), and widen the CSP by exactly two origins:
+**What ships instead:**
 
-```
-style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;
-```
+- `public/fonts/` holds Latin-subset `woff2` files only: Inter 400/500/600/700
+  and JetBrains Mono 400/500 (from the `@fontsource/inter` and
+  `@fontsource/jetbrains-mono` 5.3.0 releases, about 140 KB in total), next to
+  their SIL Open Font License 1.1 texts (`LICENSE-Inter.txt`,
+  `LICENSE-JetBrainsMono.txt`).
+- `public/style.css` declares them with `@font-face`, `font-display: swap`
+  and a Latin `unicode-range`, so text is never invisible while a font loads
+  and Chinese characters never trigger a Latin font download.
+- Chinese has **no web font**: every stack puts the system CJK fonts
+  (`"PingFang TC"`, `"Noto Sans TC"`, `"Microsoft JhengHei"`) right after the
+  Latin face, then the generic fallback (see the Design System table).
+- The static handler in `src/server.js` serves an explicit allowlist of the
+  six font files with `Content-Type: font/woff2`; nothing else under
+  `public/fonts/` is reachable. `test/static-assets.test.js` asserts the font
+  MIME type, the unchanged CSP, and that `index.html`/`style.css` reference no
+  `http(s)://` origin.
 
-No other directive changes. `--font-ui`, `--font-zh`, and `--font-mono` each
-keep their existing system-font fallback chain (`system-ui`, `-apple-system`,
-`"PingFang TC"`, `"Noto Sans TC"`, `ui-monospace`, `SFMono-Regular`, `Menlo`,
-`monospace`) unchanged from the mockup, so a blocked or slow font request
-degrades to a legible system font rather than invisible text. `README.md` and
-`.env.example` (if either mentions outbound network behaviour) should note
-that loading the page now fetches CSS/fonts from `fonts.googleapis.com` and
-`fonts.gstatic.com` regardless of practice activity — this is a static asset
-fetch, not a data-processing provider call, and is unrelated to the existing
-speech/model provider disclosure, but it is a new unprompted outbound request
-and should be stated plainly rather than left implicit.
+Because nothing new leaves the machine, `README.md` and `.env.example` need no
+outbound-network note for fonts.
 
 ### Zero dependencies
 
-No npm package is added. The Google Fonts `<link>` is markup, not a
-dependency; everything else is vanilla HTML/CSS/JS exactly as today.
+No npm package is added. The font files are static assets copied into the
+repository, not a dependency; everything else is vanilla HTML/CSS/JS exactly
+as today.
 
 ## Responsive Rules
 
@@ -502,11 +513,12 @@ unmodified (this PRD changes no server code).
   (`docs/verification/persona-walkthrough-2026-09-23.md`, finding 4). This is
   unrelated to real mouse/keyboard use, but any browser-smoke automation
   written for the new DOM should account for it or note it if encountered.
-- **Font loading is a new unprompted outbound request** on every page load
-  (see **Fonts and Content-Security-Policy**). If this is judged
-  unacceptable after implementation, the fallback is to drop the Google
-  Fonts `<link>` and rely on the system-font stacks alone; the tokens already
-  support this without further CSS changes.
+- **Font loading** was originally planned as a Google Fonts request on every
+  page load; on 2026-09-23 the owner replaced it with self-hosted Latin fonts
+  (see **Fonts and Content-Security-Policy**), so the redesign adds no
+  outbound request. If the ~140 KB of font files is ever judged unnecessary,
+  deleting the `@font-face` rules leaves the system-font stacks working
+  without further CSS changes.
 - **Two-pane 1024-1280px width** was explicitly flagged in the mockup as
   tight (~560px answer column); the confirmed default (icon rail, 400px
   feedback pane) is the mockup's own answer to this, not a novel decision,
@@ -569,7 +581,7 @@ unmodified (this PRD changes no server code).
 
 | Issue | Scope |
 |---|---|
-| [0022](./issues/0022-design-tokens-and-app-shell.md) | Design tokens, app shell, left rail (with 我的進步), breadcrumb, fonts, CSP |
+| [0022](./issues/0022-design-tokens-and-app-shell.md) | Design tokens, app shell, left rail (with 我的進步), breadcrumb, self-hosted fonts (CSP unchanged) |
 | [0023](./issues/0023-practice-workbench-two-pane-and-mobile-tabs.md) | Practice screen two-pane workbench, mobile answer/feedback tabs, fixed 結束並保存 |
 | [0024](./issues/0024-annotated-feedback.md) | Annotated feedback: transcript marks, linked notes, rating bars, inline correction diff, overlapping quotes |
 | [0025](./issues/0025-home-redesign.md) | Home: five-second hero, flow strip, static feedback preview |

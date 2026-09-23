@@ -25,7 +25,7 @@ Local issue tracker for the Adaptive English Interview Coach. All issues below w
 | [0019 — Interpret a natural-language job request](./0019-interpret-a-natural-language-job-request.md) | awaiting-human-validation | None |
 | [0020 — Curate five jobs with a Fit Breakdown](./0020-curate-five-jobs-with-a-fit-breakdown.md) | awaiting-human-validation | 0019 |
 | [0021 — Hide the question in listening mode](./0021-hide-the-question-in-listening-mode.md) | awaiting-human-validation | 0014 |
-| [0022 — Design tokens and app shell (rail with 我的進步, fonts, CSP)](./0022-design-tokens-and-app-shell.md) | ready-for-agent | None |
+| [0022 — Design tokens and app shell (rail with 我的進步, self-hosted fonts)](./0022-design-tokens-and-app-shell.md) | awaiting-human-validation | None |
 | [0023 — Practice workbench: two-pane desktop, mobile tabs, fixed 結束並保存](./0023-practice-workbench-two-pane-and-mobile-tabs.md) | ready-for-agent | 0022 |
 | [0024 — Annotated feedback: transcript marks, rating bars, inline correction diff](./0024-annotated-feedback.md) | ready-for-agent | 0023 |
 | [0025 — Home redesign: five-second hero, flow strip, static feedback preview](./0025-home-redesign.md) | ready-for-agent | 0022 |
