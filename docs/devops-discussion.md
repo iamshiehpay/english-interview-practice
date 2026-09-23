@@ -29,11 +29,8 @@
 3. **雲端只部署公開 Demo**（見已確認決策「部署對象」）：只用 fake provider，不接真實 API、不存個人資料，給面試官點開試用。私人站不上雲，本機 `npm start` 照舊。
    - 不做多使用者 SaaS（需要資料庫、帳號、加密，等於重寫並推翻 ADR 0008／0013）。
 4. **CI／CD**：GitHub Actions — 測試 → 建 image → 推 GHCR → 部署；IaC 變更跑 `plan`。
-5. **託管候選**（待決）：
-   - Cloudflare Tunnel：Demo 容器跑在本機 Mac；免費；Mac 關機即離線（Demo 用 fake provider，不需要 Codex）；正式網址需要 Cloudflare 上的網域。
-   - 免費或小型 VM（Oracle Cloud Always Free、AWS Lightsail／EC2、GCP e2）＋ Docker ＋ Caddy：24 小時在線，但無法用 Codex 訂閱。
-   - Fly.io ＋ volume。
-6. **IaC**：Terraform（依託管選擇用 Cloudflare 或雲端 provider）。
+5. **託管**：GCP Cloud Run ＋ 選配 Cloudflare Worker 邊緣層（見已確認決策）。
+6. **IaC**：Terraform（Google provider；邊緣層加 Cloudflare provider）。
 7. **維運**：結構化 log、健康檢查與可用性監控、`workspace.json` 與錄音的定期備份。
 
 ## 已確認決策
@@ -46,10 +43,15 @@
 - **Demo 資料隔離**：每位訪客一份獨立的暫存 workspace（以 cookie 區分 session），建立時複製一組種子資料（示範職缺與已完成的練習紀錄），閒置 1 小時自動刪除；頁面顯示「Demo 使用示範模型，請勿輸入真實個人資料」。種子資料先用 fake 模型產生。使用者於 2026-09-23 確認。這需要修改 server 依 session 選擇 store，屬於程式變更，須寫進 ADR 0020。
 - **練習用模型維持 Codex 訂閱**：`gpt-5.6-luna`、xhigh、預設開 Fast 模式（service tier `priority`，1.5 倍速、較耗訂閱額度），已實作於 `27a1190`。合成 Practice Loop 從 118 秒降到 78 秒。2026-09-23。
 - **不做 Claude 訂閱 provider（暫緩）**：2026-09-23 查證，Claude Agent SDK 文件仍寫明未經核准不得讓第三方產品提供 claude.ai 登入或訂閱額度；2026 年的計費調整已暫停，個人自用 `claude -p` 仍計入訂閱額度。本專案要公開為作品集，把訂閱登入做成功能不合適，且要重做與 Codex 同等的隔離。使用者表示「如果不行就保留 codex」。
+- **託管：GCP Cloud Run（主）＋ Cloudflare Worker 邊緣層（選配、最後階段）**。使用者於 2026-09-23 確認。
+  - Cloud Run 跑自建的 Docker image（不用 Buildpacks source deploy），`max-instances=1`；Demo 不需要持久化儲存，實例重啟即清空進行中的 Demo，可接受。
+  - 訪客隔離在 app 內做（每個 session 一個暫存目錄），不依賴平台；Cloud Run 不保證 sticky routing。
+  - Cloudflare Worker 放在 Cloud Run 前面，負責自訂網域、限流、Turnstile 防濫用、靜態檔快取；不存 workspace。拿掉不影響主架構。
+  - 需要的程式變更：`src/server.js:762` 監聽位址寫死 `127.0.0.1`（ADR 0013 的刻意設計），改為 `HOST` 環境變數，本機預設不變，僅容器設 `0.0.0.0`；須寫進 ADR 0020。
+  - 不選 Cloudflare Workers 改寫（方案 C）：`src/` 21 個檔案中 11 個使用 `node:fs`／`child_process`／`http`，要維護兩種執行環境並放棄零依賴；列為 DevOps 完成後的獨立架構延伸。`store.js` 抽成可替換介面的重構兩者共用。
 
 ## 待討論問題
 
-- 作品集想展示哪個雲端平台的能力（AWS／GCP／Cloudflare）？這會決定託管與 IaC 選擇。
 - 種子資料之後要不要換成真實模型跑出來的紀錄（fake 輸出的說服力較弱）？
 - 每月預算上限？是否購買網域？
 - 服務需要 24 小時在線嗎？
