@@ -1,3 +1,5 @@
+> 本文件已由 [`creator-validation.zh-TW.md`](creator-validation.zh-TW.md) 取代，請改看那份逐步 runbook。
+
 # 五次文字練習驗收
 
 目前本機入口：http://127.0.0.1:4310 。重啟時在專案目錄執行 `npm run start:codex`。
