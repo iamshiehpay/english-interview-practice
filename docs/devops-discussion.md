@@ -74,9 +74,13 @@
 - **網址與冷啟動**。使用者於 2026-09-23 確認。
   - 不買網域，使用 Cloud Run 預設的 `*.run.app` 網址，放在 README 與履歷連結。日後買網域約 $10／年，架構不需變動。
   - 接受冷啟動：`min-instances=0`，閒置縮到 0，第一位訪客等約 1 秒（零依賴，啟動快）。常駐一個實例約 $10+／月，違反成本目標。README 註明此取捨，作為可說明的成本決策。
+- **版本與發布**。使用者於 2026-09-23 確認。
+  - 每次合併 `main` 仍自動部署，image 以 git SHA 為 tag。
+  - 里程碑由使用者手動打 semver tag；CI 將同一個已測試 image 加上版本 tag（不重建），並自動建立 GitHub Release，內容由 Conventional Commits 產生（feat／fix 分類）。
+  - 不另維護 `CHANGELOG.md`，GitHub Release 即 changelog。
+  - 版本意義綁定 MVP：首次上線打 `v0.9.0`（功能齊但 issue 0008 驗證未過）；創作者 5 次真實練習完成、評估解除 BLOCKED 後打 `v1.0.0`。
 
 ## 待討論問題
 
 - 種子資料之後要不要換成真實模型跑出來的紀錄（fake 輸出的說服力較弱）？
 - 完成的定義是什麼：能展示哪些 DevOps 成果（CI badge、IaC、監控截圖、架構圖、runbook）才算做完？
-- 版本與發布策略：tag、changelog、image 版本號。
