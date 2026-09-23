@@ -31,7 +31,7 @@ Local issue tracker for the Adaptive English Interview Coach. All issues below w
 | [0025 — Home redesign: five-second hero, flow strip, static feedback preview](./0025-home-redesign.md) | awaiting-human-validation | 0022 |
 | [0026 — Remaining views restyle (含練習紀錄標題截短)](./0026-remaining-views.md) | awaiting-human-validation | 0022 |
 | [0027 — Short Mock Session dark room](./0027-mock-session-dark-room.md) | awaiting-human-validation | 0022, 0024 |
-| [0028 — Verification: browser smoke, screenshots, runbook label sync](./0028-verification-and-runbook-sync.md) | ready-for-agent | 0022, 0023, 0024, 0025, 0026, 0027 |
+| [0028 — Verification: browser smoke, screenshots, runbook label sync](./0028-verification-and-runbook-sync.md) | awaiting-human-validation | 0022, 0023, 0024, 0025, 0026, 0027 |
 
 Implementation should proceed in dependency order. Start each issue in a fresh session with the PRD and only the selected issue as the implementation brief.
 

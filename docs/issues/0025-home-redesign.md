@@ -60,27 +60,27 @@ Only the existing "貼上 JD" text path is offered.
 
 ## Acceptance criteria
 
-- [ ] The home page shows an eyebrow, a heading, a lead paragraph, and a
+- [x] The home page shows an eyebrow, a heading, a lead paragraph, and a
       four-step flow strip above/beside the JD form, in the new tokens.
-- [ ] A visitor can identify what the product does (paste a job description →
+- [x] A visitor can identify what the product does (paste a job description →
       get job-grounded questions → answer by voice or text → get
       transcript-grounded Chinese feedback) without scrolling, at both
       1440px and 390px.
-- [ ] The existing `#jd` textarea, its label/placeholder text, `#capture`,
+- [x] The existing `#jd` textarea, its label/placeholder text, `#capture`,
       resume-choice, difficulty details, and `#generation-disclosure` are
       present and functionally unchanged.
-- [ ] No "104 網址" or any other job-input mode beyond pasted JD text is
+- [x] No "104 網址" or any other job-input mode beyond pasted JD text is
       shown.
-- [ ] A static feedback-preview panel is visible, clearly labelled as a
+- [x] A static feedback-preview panel is visible, clearly labelled as a
       fixed example, shows the annotated-mark pattern (or, if this issue
       lands before 0024, the planned mark classes), and makes zero network
       requests (confirm via devtools Network tab with the panel visible).
-- [ ] The "continue last practice" card still appears exactly when it did
+- [x] The "continue last practice" card still appears exactly when it did
       before (an unfinished Practice Record or session exists) and still
       links to the correct resume target.
-- [ ] No horizontal overflow at 390px width.
-- [ ] `npm test` passes unmodified.
-- [ ] `npm run test:browser` passes; the existing home-page flow assertions
+- [x] No horizontal overflow at 390px width.
+- [x] `npm test` passes unmodified.
+- [x] `npm run test:browser` passes; the existing home-page flow assertions
       (`fill('#jd', …); click('#capture'); …`) still work unmodified since no
       ID referenced by them changed.
 

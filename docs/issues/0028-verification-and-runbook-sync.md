@@ -1,5 +1,5 @@
 ---
-status: ready-for-agent
+status: awaiting-human-validation
 ---
 
 # Verification: browser smoke sync, new screenshots, creator-validation label sync
@@ -71,26 +71,26 @@ screen-region descriptions and selectors:
 
 ## Acceptance criteria
 
-- [ ] `npm test` passes with the fully redesigned app.
-- [ ] `npm run test:browser` passes end to end, exercising: home, a full
+- [x] `npm test` passes with the fully redesigned app.
+- [x] `npm run test:browser` passes end to end, exercising: home, a full
       practice loop (desktop and mobile-tab layouts), annotated feedback
       (including a hover/focus-link check), a follow-up, 練習紀錄 with a
       truncated job title, 我的進步 reached via the nav, the dark mock
       session (including listening mode and a skip), and no horizontal
       overflow anywhere at 390px.
-- [ ] `docs/creator-validation.zh-TW.md` no longer describes any screen
+- [x] `docs/creator-validation.zh-TW.md` no longer describes any screen
       region or nav path that does not match the redesigned app; the 我的
       進步 step is confirmed reachable exactly as the runbook instructs, with
       no workaround needed.
-- [ ] New 1440px and 390px screenshots exist for at least: home, practice
+- [x] New 1440px and 390px screenshots exist for at least: home, practice
       (desktop two-pane), practice (mobile tabs), dark mock session, and
       練習紀錄 with a visibly truncated title.
-- [ ] `docs/verification/ui-redesign.md` (the 2026-09-18 evidence) is marked
+- [x] `docs/verification/ui-redesign.md` (the 2026-09-18 evidence) is marked
       superseded rather than deleted or silently left to look current.
-- [ ] Each of issues 0022-0027 has its acceptance criteria fully checked and
+- [x] Each of issues 0022-0027 has its acceptance criteria fully checked and
       its status updated; `docs/issues/README.md`'s table reflects the final
       statuses.
-- [ ] A final read of `public/index.html`, `public/style.css`, `public/app.js`
+- [x] A final read of `public/index.html`, `public/style.css`, `public/app.js`
       and `public/voice.js` confirms no leftover reference to the old token
       names (`--ink`, `--paper`, `--mist`, `--teal`, `--coral`, `--yellow`)
       remains anywhere.
@@ -123,3 +123,70 @@ instruction still matches what is on screen, before marking this issue done.
 - [Issue 0025](./0025-home-redesign.md)
 - [Issue 0026](./0026-remaining-views.md)
 - [Issue 0027](./0027-mock-session-dark-room.md)
+
+## Comments
+
+2026-09-24: Implemented and automatically verified; visual acceptance by the
+creator is pending, hence `awaiting-human-validation`. Full record:
+[`docs/verification/ui-redesign-v2.md`](../verification/ui-redesign-v2.md).
+
+- **Evidence doc.** One combined doc (`ui-redesign-v2.md`, like
+  `learner-flow-v3.md`) instead of per-issue files, since 0022-0027 each
+  recorded their own verification in their issue comments and screenshot
+  folders. `ui-redesign.md` has a superseded note at the top.
+- **Fix: tags inside a word.** A quote that stops mid-word ("…I would aim to l"
+  of "learn", from the fake Session Summary) drew its tags between "l" and
+  "earn", and up to eight piled up there. The highlight still covers exactly
+  the quote; the tags move to the end of that word (`tagPosition()` in
+  `public/annotate.js`: letters, digits and an apostrophe between letters form
+  the word; Han/kana are not pushed along) and stay non-breaking with it and
+  any punctuation after it (0026's glue rule). More than three tags at one spot
+  collapse to the first two + `+N` (`collapseTags()`); the group is
+  `role="img"` with an accessible name and tooltip listing every note. Rating
+  tags outside a mark follow their `.tags` group's linked state. Four new tests
+  in `test/annotate.test.js`.
+- **Fix: 顯示題目 focus (from 0021).** `voice.js` moved focus to the revealed
+  question heading (`tabindex="-1"`) instead of `blur()`ing to `body`; checked
+  on the question screen, the practice screen and the mock room.
+- **Smoke.** Added: home in the light scheme; `.room` only inside `#mock-view`,
+  dark, theme-color switched, and reverting to `#FAFAFA` with no `room-mode`
+  after leaving; `#mock-record` renamed on start; listening mode + reveal
+  focus in the room; 我的進步 from the rail with counts matching
+  `/api/progress`; a 98-character renamed job truncated on its 練習紀錄 card;
+  no overflow at 390 on home and in the room. Full-page screenshots lay the
+  sticky shell and feedback pane out statically through a constructed
+  stylesheet adopted only for the capture (the CSP blocks an injected
+  `<style>`), and `docs/verification/learner-flow/` was re-baselined on purpose
+  (home, feedback, mobile, new mock).
+- **Legacy tokens.** The alias declarations (`--ink`, `--paper`, `--mist`,
+  `--teal`, `--coral`, `--yellow`, `--sky`, `--line`, `--mint`, `--shadow`)
+  are gone from `:root` and `.room`; every use names its workbench token.
+  Re-running the smoke gave byte-identical screenshots.
+- **Real model.** Codex on a temporary workspace, 3 Codex operations (analysis,
+  feedback first attempt, corrections) on JD 02 with a 156-word typed answer:
+  all 8 quotes linked verbatim, no unlinked-quote warnings, no mid-word quote,
+  sentence text equals the transcript, no overflow at 390. Screenshots in
+  [`docs/verification/ui-redesign-0028/`](../verification/ui-redesign-0028/).
+- **Runbook.** Walked with the fake provider; wording fixed for: mock session
+  entry (練習紀錄 card, dark room, not part of validation), 設定 at the bottom
+  of the rail / icon rail, depth select inside 調整題目深度, operations strip rows
+  (取得回饋 · 進行中 / 已取消, ✕ 清除), retry / answer history / Focus Point box
+  / 結束並保存 in the feedback pane and its footer, 我的進步 counts, tag
+  placement and `+N`. Added the measured JD 02 generation time (~2 min 45 s).
+  Rules sections and behavioural instructions unchanged.
+- **Screenshots AC.** Fresh 1440/390 shots across this round: home
+  (`ui-redesign-0025/`, `learner-flow/home.png`), practice two-pane
+  (`learner-flow/feedback.png`, `ui-redesign-0028/02`), practice mobile tabs
+  (`learner-flow/mobile.png`, `ui-redesign-0028/04`, `05`), dark mock
+  (`ui-redesign-0027/`, `learner-flow/mock.png`), 練習紀錄 with a truncated
+  title (`ui-redesign-0026/history-1440.png`, `history-390.png`).
+- **0022-0027.** Their acceptance criteria are all checked (0025's boxes had
+  been left unticked although its comment records each check; ticked here).
+  They stay `awaiting-human-validation` until the creator accepts them.
+- **Verification.** `npm test` 191/191; `npm run test:browser` PASS.
+- **Open.** Real-microphone waveform and real audio playback unverified;
+  Safari/Firefox untested; the real-model pass did not cover follow-ups, a
+  revision or the mock session. JD 02 pasted without its header gets the job
+  title 「[Job Overview]」 until renamed. Once during the real-model run the page
+  was found back on home after generation finished (analysis succeeded; likely
+  the browser tool reloading after a daemon error; not reproduced).

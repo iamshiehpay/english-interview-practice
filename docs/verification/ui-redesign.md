@@ -1,3 +1,5 @@
+> **Superseded (2026-09-24):** these screenshots show the pre-redesign layout. Current screen evidence for the workbench redesign is in [`ui-redesign-v2.md`](./ui-redesign-v2.md); this page is kept as history.
+
 # 中文引導與單題文字練習改版驗證
 
 日期：2026-09-18。狀態：本次改版實作、自動回歸、雙語語義審閱與驗收核對已完成。這不是 MVP 完成宣告；Issue 0008 人工標註與五次真人練習仍待完成。
