@@ -1,6 +1,8 @@
 # 下一批規劃：UI 視覺方向改版
 
-日期：2026-09-23。狀態：方向與 mockup 已確認（`design/mockups/workbench-annotated-feedback/`）；尚未產生 PRD／issue。實作排在創作者 5 次驗收練習之後，驗收期間不改 UI。
+日期：2026-09-23。狀態：方向與 mockup 已確認（`design/mockups/workbench-annotated-feedback/`）；PRD 與 issue 0022–0028 已產生（見 [`prd-ui-redesign.md`](./prd-ui-redesign.md)）。
+
+**2026-09-23 更新（取代下方「順序」第 1 點）**：使用者決定改版現在就做，排在創作者 5 次驗收練習之前，不等驗收完成；「驗收期間不改 UI」不再適用。理由：方向與 token 已確認，沒有理由讓創作者用即將淘汰的介面驗收。
 
 ## 起點
 
@@ -31,9 +33,11 @@
 
 ## 順序
 
-1. 創作者 5 次驗收練習使用現有 UI 完成（見 `creator-validation.zh-TW.md`）。
-2. 靜態 mockup（桌面練習、手機練習、首頁、深色模擬面試、現況對照）已完成，使用者於 2026-09-23 確認方向，存於 `design/mockups/workbench-annotated-feedback/`；設計 token 列在該檔 `:root`。
-3. Mockup 確認後，再產生 PRD 與 issue，由實作 subagent 依序執行。
+**2026-09-23 修正**：原第 1 點「創作者 5 次驗收練習使用現有 UI 完成，驗收期間不改 UI」已由使用者取代——改版現在就做，不等驗收完成。目前順序：
+
+1. 靜態 mockup（桌面練習、手機練習、首頁、深色模擬面試、現況對照）已完成，使用者於 2026-09-23 確認方向，存於 `design/mockups/workbench-annotated-feedback/`；設計 token 列在該檔 `:root`。
+2. PRD 與 issue 0022–0028 已產生（`prd-ui-redesign.md`、`issues/0022-*.md` 至 `issues/0028-*.md`），依相依順序由實作 subagent 執行。
+3. 創作者 5 次驗收練習排在改版之後（或與之並行，視創作者時間而定），用改版後的 UI 驗收——不再用即將淘汰的介面驗收一次、之後又要重跑。
 
 ## 待討論問題
 
