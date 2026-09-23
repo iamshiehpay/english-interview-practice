@@ -29,8 +29,8 @@
 3. **雲端只部署公開 Demo**（見已確認決策「部署對象」）：只用 fake provider，不接真實 API、不存個人資料，給面試官點開試用。私人站不上雲，本機 `npm start` 照舊。
    - 不做多使用者 SaaS（需要資料庫、帳號、加密，等於重寫並推翻 ADR 0008／0013）。
 4. **CI／CD**：GitHub Actions，見已確認決策「CI／CD 範圍」（registry 改為 Artifact Registry）。
-5. **託管**：GCP Cloud Run ＋ 選配 Cloudflare Worker 邊緣層（見已確認決策）。
-6. **IaC**：Terraform（Google provider；邊緣層加 Cloudflare provider）。
+5. **託管**：只用 GCP Cloud Run（見已確認決策）；Cloudflare 邊緣層僅在觸發條件出現時才加。
+6. **IaC**：Terraform（Google provider）。
 7. **維運**：結構化 log、健康檢查與可用性監控、`workspace.json` 與錄音的定期備份。
 
 ## 已確認決策
@@ -43,10 +43,11 @@
 - **Demo 資料隔離**：每位訪客一份獨立的暫存 workspace（以 cookie 區分 session），建立時複製一組種子資料（示範職缺與已完成的練習紀錄），閒置 1 小時自動刪除；頁面顯示「Demo 使用示範模型，請勿輸入真實個人資料」。種子資料先用 fake 模型產生。使用者於 2026-09-23 確認。這需要修改 server 依 session 選擇 store，屬於程式變更，須寫進 ADR 0020。
 - **練習用模型維持 Codex 訂閱**：`gpt-5.6-luna`、xhigh、預設開 Fast 模式（service tier `priority`，1.5 倍速、較耗訂閱額度），已實作於 `27a1190`。合成 Practice Loop 從 118 秒降到 78 秒。2026-09-23。
 - **不做 Claude 訂閱 provider（暫緩）**：2026-09-23 查證，Claude Agent SDK 文件仍寫明未經核准不得讓第三方產品提供 claude.ai 登入或訂閱額度；2026 年的計費調整已暫停，個人自用 `claude -p` 仍計入訂閱額度。本專案要公開為作品集，把訂閱登入做成功能不合適，且要重做與 Codex 同等的隔離。使用者表示「如果不行就保留 codex」。
-- **託管：GCP Cloud Run（主）＋ Cloudflare Worker 邊緣層（選配、最後階段）**。使用者於 2026-09-23 確認。
+- **託管：只用 GCP Cloud Run**。使用者於 2026-09-23 確認；Cloudflare 邊緣層原列為選配，同日討論後改為「有需要才加」。
   - Cloud Run 跑自建的 Docker image（不用 Buildpacks source deploy），`max-instances=1`；Demo 不需要持久化儲存，實例重啟即清空進行中的 Demo，可接受。
   - 訪客隔離在 app 內做（每個 session 一個暫存目錄），不依賴平台；Cloud Run 不保證 sticky routing。
-  - Cloudflare Worker 放在 Cloud Run 前面，負責自訂網域、限流、Turnstile 防濫用、靜態檔快取；不存 workspace。拿掉不影響主架構。
+  - Cloudflare 邊緣層（Worker 放在 Cloud Run 前面，負責網址、限流、Turnstile、靜態檔快取，不存 workspace）**暫不做**：多一個平台要多管帳號、權限、Terraform provider、state 與分散的 log，而在 Demo 規模下效益很小（egress 最壞約 $0.05／月且 gzip 可省大半；session 上限已擋住濫用；網址面試官只點一次）。作品集重點是每個元件都講得出存在理由。
+  - 觸發條件（任一出現才加邊緣層）：billing budget 告警實際寄出（開始有 egress 費用）、出現濫用使 Demo 常態額滿、購買了網域。
   - 需要的程式變更：`src/server.js:762` 監聽位址寫死 `127.0.0.1`（ADR 0013 的刻意設計），改為 `HOST` 環境變數，本機預設不變，僅容器設 `0.0.0.0`；須寫進 ADR 0020。
   - 不選 Cloudflare Workers 改寫（方案 C）：`src/` 21 個檔案中 11 個使用 `node:fs`／`child_process`／`http`，要維護兩種執行環境並放棄零依賴；列為 DevOps 完成後的獨立架構延伸。`store.js` 抽成可替換介面的重構兩者共用。
 - **CI／CD 範圍**（GitHub Actions）。使用者於 2026-09-23 確認。
@@ -66,15 +67,16 @@
 - **地區與成本細節**（依 2026-09-23 查詢的 GCP 官方價目，由子代理整理，未逐條複核）。使用者於 2026-09-23 確認。
   - Cloud Run、Artifact Registry 放 `asia-east1`（台灣，延遲最低、同區拉 image 不計費）；Terraform state bucket 放 `us-central1`（Cloud Storage Always Free 僅限 us-west1／us-central1／us-east1）。
   - Artifact Registry 設清理規則，只保留最近 5 個 image（免費 0.5 GB）。
-  - 唯一不確定的費用是 egress：Cloud Run 1 GB 免費流量文件寫「北美內」，台灣訪客流量可能計費，估最壞每月約 $0.05。緩解：server 回應加 gzip（程式變更）、最後階段 Cloudflare 邊緣層快取靜態檔。
+  - 唯一不確定的費用是 egress：Cloud Run 1 GB 免費流量文件寫「北美內」，台灣訪客流量可能計費，估最壞每月約 $0.05。緩解：server 回應加 gzip（程式變更）；若仍產生費用，觸發加 Cloudflare 邊緣層快取靜態檔。
   - Billing budget 門檻改為 $0.01（任何費用即通知）；budget 只通知、不會擋下費用。GCP 必須綁付款方式。
   - 告警政策目前免費，最快 2027-09-01 起每個指標每月 $0.35；2027-08 前重新評估（只留 uptime 告警或全關）。
   - 成本目標因此定義為「預期 $0，最壞每月幾分錢，任何費用立即通知」。真正保證 $0 只有 Cloudflare Workers（方案 C）。
+- **網址與冷啟動**。使用者於 2026-09-23 確認。
+  - 不買網域，使用 Cloud Run 預設的 `*.run.app` 網址，放在 README 與履歷連結。日後買網域約 $10／年，架構不需變動。
+  - 接受冷啟動：`min-instances=0`，閒置縮到 0，第一位訪客等約 1 秒（零依賴，啟動快）。常駐一個實例約 $10+／月，違反成本目標。README 註明此取捨，作為可說明的成本決策。
 
 ## 待討論問題
 
 - 種子資料之後要不要換成真實模型跑出來的紀錄（fake 輸出的說服力較弱）？
-- 不買網域的話，網址用 `*.run.app`（或邊緣層的 `*.workers.dev`）是否可接受？
-- 服務需要 24 小時在線嗎？
 - 完成的定義是什麼：能展示哪些 DevOps 成果（CI badge、IaC、監控截圖、架構圖、runbook）才算做完？
 - 版本與發布策略：tag、changelog、image 版本號。
