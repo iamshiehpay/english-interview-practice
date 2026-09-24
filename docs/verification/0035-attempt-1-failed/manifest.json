@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "attempt": 1,
+  "disposition": "failed before model inference",
+  "archivedAt": "2026-09-24T06:38:12.859Z",
+  "entries": [
+    {
+      "originalPath": "evaluation/results/codex-v3.json",
+      "archivedPath": "docs/verification/0035-attempt-1-failed/evaluation/results/codex-v3.json",
+      "bytes": 6310,
+      "sha256": "25cc238a5039e14f42c42077a8d72535e8c85adb9dc6f5ca6f04e6e0c7c8acfb"
+    },
+    {
+      "originalPath": "evaluation/v3/codex-review-packet.json",
+      "archivedPath": "docs/verification/0035-attempt-1-failed/evaluation/v3/codex-review-packet.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "originalPath": "evaluation/v3/codex-bilingual-audit.json",
+      "archivedPath": "docs/verification/0035-attempt-1-failed/evaluation/v3/codex-bilingual-audit.json",
+      "bytes": 140,
+      "sha256": "a2500471d8d38198a154a91cf923603aabc0168ad5f559ba1aa1036996a45f35"
+    },
+    {
+      "originalPath": "docs/portfolio/codex-v3-evaluation-summary.md",
+      "archivedPath": "docs/verification/0035-attempt-1-failed/docs/portfolio/codex-v3-evaluation-summary.md",
+      "bytes": 6634,
+      "sha256": "06fa98ce9edc99b303549c16709f82e53e87c3fe750b18415b4bed8ab4665f70"
+    },
+    {
+      "originalPath": "docs/verification/codex-v3-model-run-source.json",
+      "archivedPath": "docs/verification/0035-attempt-1-failed/docs/verification/codex-v3-model-run-source.json",
+      "bytes": 1941,
+      "sha256": "91905e2a7cc14f70df579916fff9572cd48955152bde43ff140cf17f556e57ff"
+    },
+    {
+      "originalPath": "docs/verification/0035-codex-evaluation.log",
+      "archivedPath": "docs/verification/0035-attempt-1-failed/docs/verification/0035-codex-evaluation.log",
+      "bytes": 574,
+      "sha256": "5d89f656df534400ae6030d6a6921efaeeea3cecb5f74d5bb3d7060cf7d9840c"
+    },
+    {
+      "originalPath": "docs/verification/0035-codex-evaluation-attempt.md",
+      "archivedPath": "docs/verification/0035-attempt-1-failed/docs/verification/0035-codex-evaluation-attempt.md",
+      "bytes": 3574,
+      "sha256": "a71b397737395263bba33186a75be0d3a8600c0fcdd88f5f57aebfbfa0129a40"
+    }
+  ],
+  "missingAtArchive": [
+    "evaluation/v3/codex-analysis.json"
+  ]
+}

@@ -1,0 +1,18 @@
+
+> evaluate
+> node evaluation/run.js --codex --accept-subscription-usage
+
+{
+  "automatedPass": true,
+  "stability": {
+    "stable": 80,
+    "total": 80,
+    "ratio": 1,
+    "pass": true
+  },
+  "releaseStatus": "BLOCKED",
+  "blockers": [
+    "Independent bilingual semantic review pending, stale or inconsistent",
+    "Human-labelled expectations pending or stale"
+  ]
+}

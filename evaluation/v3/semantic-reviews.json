@@ -1,9 +1,490 @@
 {
   "schemaVersion": 2,
   "contractVersion": "3.0.0",
-  "status": "pending-independent-ai-review",
-  "reviewerType": null,
-  "reviewer": null,
-  "reviewedAt": null,
-  "reviews": []
+  "status": "independent-ai-reviewed",
+  "reviewerType": "ai",
+  "reviewer": "Codex AI independent bilingual semantic reviewer (/root/review0031)",
+  "reviewedAt": "2026-09-24T07:07:16.088Z",
+  "reviews": [
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 1,
+      "outputChecksum": "02aa8e396bd908e6fc076882c85a880392956b61d7ac02230a9c84cb0a7a0b5d",
+      "verdict": "consistent",
+      "rationale": "Question and rationale in both languages ask about Mandarin retrieval motivation and measurable success. Both feedback versions credit the link to reliable answers and inspecting Mandarin-query failures, while identifying the absent success criteria and the mixed-language phrasing.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "03db228f04d24c411a3c9a56af4c0c5ca4851630ca92249edd481a7f51c12372",
+      "verdict": "consistent",
+      "rationale": "Both question versions allow either direct retrieval-evaluation experience or a hypothetical approach. All feedback pairs mark the unrelated instruction as off-topic, credit only intelligible grammar, and request a test set, relevance judgments, metrics, and trade-offs rather than inventing experience.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 1,
+      "outputChecksum": "595479efb243b3a595f1264861fe7f4b70f7c2c3c50afbed69136edcc114f8f3",
+      "verdict": "consistent",
+      "rationale": "Both question versions concern discussing model limitations with product colleagues and permit a hypothetical answer. The paired feedback credits joint review of failed user cases but says model limitations, product impact, and an outcome are missing; both note that no earlier attempt exists for comparison.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "4a3bcea9bf7da8e258d87f40555b33c9f1a8082ebbab2ef494c965745a19692b",
+      "verdict": "consistent",
+      "rationale": "Both question versions distinguish useful Mandarin answers from merely relevant documents. Feedback in both languages credits labelled queries, false-match inspection, and latency, then points out missing Mandarin-specific design and separate usefulness metrics; both say latency alone cannot establish that distinction.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 1,
+      "outputChecksum": "3dd43ee1f30fa47cb2f0c8b4737a1c535f339492cf7007d4b806be8e0a516b0b",
+      "verdict": "consistent",
+      "rationale": "Both question versions ask about payment APIs in Taipei and reliability. Feedback in both languages treats the bread-baking response as grammatical but off-topic, preserving the need for role-specific motivation and a reliability definition.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "6fe2e3ee4fb88a93450cb172994a26f9b59929fa6be48127655b4f42bd38778b",
+      "verdict": "consistent",
+      "rationale": "Both question versions allow a real PostgreSQL transaction example or a hypothetical investigation. Feedback in both languages credits the duplicate-request/idempotency mitigation but asks for the concurrency mechanism, rollback behavior, tests, and observed consistency outcome.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 1,
+      "outputChecksum": "a66d48bb6572f0500eaef969e326795950cc07a1a18fed9948040706f3694123",
+      "verdict": "consistent",
+      "rationale": "Both question versions ask for a blameless incident review or a hypothetical process. The feedback pairs identify unrelated demands rather than incident-review evidence, credit only understandable grammar, and recommend system factors and follow-up actions instead of personal blame.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "e61546151bbc37652920e42381580ad9571cca859da6b3cb7e2601a17bf1c4e9",
+      "verdict": "consistent",
+      "rationale": "Both question versions cover payment retries and downstream failure. Feedback in both languages credits a transaction and retry key for duplicate-charge prevention, but finds no downstream-failure handling, idempotent behavior explanation, or API return behavior.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 1,
+      "outputChecksum": "5758e53a36a0366782b7919a8a69e789079a06965e306e7339274ce289ee6575",
+      "verdict": "consistent",
+      "rationale": "Both question versions ask about Hsinchu product experiments and product context. Feedback in both languages credits the results-versus-causality distinction and interest in measurement, while noting absent location/product specifics and code-switching.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "99fe24f60d73985edce557d5ee7fe83246e4d11ce98c6bd4fcd5e4bd209ebb4c",
+      "verdict": "consistent",
+      "rationale": "Both question versions ask about missing-data investigation with SQL or Python. Feedback in both languages says the answer gives an orderly experiment-evaluation process instead, credits only its clarity, and asks for missing-data checks; the production-experiment wording is slightly looser in Chinese but does not reverse that finding.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 1,
+      "outputChecksum": "71ba9c694bfa0b4626d4956accf4e538de0e01c84e3cea541b095ac7fa9af477",
+      "verdict": "consistent",
+      "rationale": "Both question versions ask about communicating uncertainty to product managers. Feedback in both languages credits reproducible investigation of conflicting data but says the answer omits explicit stakeholder communication, business impact, and next steps.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "78e55051ed897763e1870e2a812509753ca6397d157d2cc1ecc789cc521aae26",
+      "verdict": "consistent",
+      "rationale": "Both question versions ask for SQL/Python investigation of missing rows and experimental bias. Feedback in both languages treats the unrelated sentence as grammatical but nonresponsive, and requests group comparison and a bias test.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 1,
+      "outputChecksum": "ad6a4276a94793abe744ca75388404c6fbe358806391cc4d8e2453691351a4e3",
+      "verdict": "consistent",
+      "rationale": "Both question versions ask about embedded sensor work in Hsinchu and a first contribution. Feedback in both languages credits debugging interest and reproducible testing but says neither is tied specifically to sensors/Hsinchu or an explicit first-action plan.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "a292041b5b59af502668909abb18f1b3393dc3169f4e461df588283a7ca086fc",
+      "verdict": "consistent",
+      "rationale": "Both question versions ask for a serial-only C-firmware debugging process. Feedback in both languages credits checking the connection and received bytes but finds no ordered timing analysis, diagnostic reasoning, or verification of a fix.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 1,
+      "outputChecksum": "314de672a35fda46dbd1d4fab2b7994b63ac9b54199f8894acde0df33b3ad6a6",
+      "verdict": "consistent",
+      "rationale": "Both question versions ask about hardware/software disagreement and allow a hypothetical answer. Feedback in both languages credits comparing measurement, hardware, and firmware evidence, but says conflict handling and resolution are missing.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "5450097d90f261942ac6fcb7d9fad4f397d21fb459d683df0b2a1ad9db6be866",
+      "verdict": "consistent",
+      "rationale": "Both question versions ask to isolate serial byte loss across firmware, protocol, and physical connection. Feedback in both languages rejects the unrelated implausible claims, credits only readable sentences, and proposes layered C receive, framing/checksum, and physical-link tests.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 1,
+      "outputChecksum": "16d53fa02dc5e25fef7ad46e772f5c2f9b92e258600bf3cdb26accbb873b8177",
+      "verdict": "consistent",
+      "rationale": "Both question versions ask about accessible interfaces in Taipei and first-month priorities. Feedback in both languages treats the personal-preference answer as clear English but off-topic, and requests role-specific motivation plus concrete first-month actions.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "4182b7ce89d091bb45cf609a5a5f7ded5a6336e9896e1b4143315cf71c7365f1",
+      "verdict": "consistent",
+      "rationale": "Both question versions ask how to investigate slow JavaScript with browser performance tools. Feedback in both languages credits the sequence of accessibility-testing steps only as clear expression, while saying it answers the wrong performance problem.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 1,
+      "outputChecksum": "1ae05e790b58bb76fa8a97f8569f39d38c76ebc09e9d5a0e789589e7d0afe070",
+      "verdict": "consistent",
+      "rationale": "Both question versions ask how to work with a designer when visual elegance raises usability concerns. Feedback in both languages credits a same-task comparison of two layouts, but finds no designer collaboration, trade-off discussion, or decision rule.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "56f81bdba682fe19499e2ce3f99614b7f8845006a8fc096fa7db2329ddff16fb",
+      "verdict": "consistent",
+      "rationale": "Both question versions ask for a concrete accessibility-versus-rendering explanation for a non-specialist designer. Feedback in both languages credits responsiveness gains with preserved keyboard focus and screen-reader announcements, but finds no concrete audience-friendly example.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 2,
+      "outputChecksum": "a312fe4585fd67f89b6a22d8aabc5991f16a6bc5c714c834121d003b662f9f37",
+      "verdict": "consistent",
+      "rationale": "Both versions retain the Mandarin-retrieval interest and initial evaluation action while saying the answer never defines success. The English-expression pair treats the Chinese phrase as contextually apt but recommends more consistent interview phrasing; the priority pair asks for concrete retrieval outcomes.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "e47017ee9e42b9bfee01e4d19cd40aa47bf35844c0e085fba4ca7a5ad44c73f6",
+      "verdict": "consistent",
+      "rationale": "The paired question still offers a hypothetical route. Both feedback languages reject the unrelated claims and request, preserve the narrow grammatical strength, and ask for labelled retrieval tests, relevance criteria, metrics, and error analysis.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 2,
+      "outputChecksum": "57140cde5f45b94161a3c7b7ad79176496b3ff3c7e1f216a283d1f23b9497993",
+      "verdict": "consistent",
+      "rationale": "Both languages credit the suggested joint check of failed user cases, yet say the model limitation, product context, trade-off, and resolution remain unstated. The structure and priority pairs preserve that partial-collaboration assessment.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "68f52d9ce5a99137182c76aa7e9ef270fecacd766e67adb9bb9b96519b0bf547",
+      "verdict": "consistent",
+      "rationale": "Both languages recognize labelled retrieval checks and latency measurement, but find no Mandarin coverage, judgement labels, or defensible split between document relevance and answer usefulness. The priority advice matches those omissions.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 2,
+      "outputChecksum": "2494bd68fd912366a812261398e2aec5dbb22e70274eb88625e4924ac43ccc60",
+      "verdict": "consistent",
+      "rationale": "Both feedback languages contrast a hobby answer with payment-API motivation and reliability. They agree the prose is clear but unsupported for the role, and both recommend correctness, failure handling, and observability as reliability dimensions.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "940730be2c8fc5bbf783c71c17ec15991e49a63d7b674d93e490b08ac55b93fe",
+      "verdict": "consistent",
+      "rationale": "Both languages credit the concrete transaction test and idempotency check while noting that PostgreSQL specificity, boundaries, isolation, rollback, and test results are absent. The priority advice carries those same technical gaps.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 2,
+      "outputChecksum": "f034e10303d1b4b1077fef9e84527ddb932c06f02aa1a6f31a6e0fe9bc5e5d7f",
+      "verdict": "consistent",
+      "rationale": "Both languages reject the disconnected claim as an incident-review answer while preserving the narrow concise-language strength. The priority pair recommends a hypothetical timeline, contributing conditions, and preventive actions rather than blaming individuals.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "a7a64e160092a3ab16ab72913e1765ac15d65cbb6b976f519bb8280d9e890fb8",
+      "verdict": "consistent",
+      "rationale": "Both languages credit the idempotency key against retry charges and identify downstream dependency failure as unanswered. Their structure and priority pairs agree that the two brief ideas do not cover both failure scenarios.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 2,
+      "outputChecksum": "32deec858872be21be8567e16a52d49351518dc2c7e72a46cdd13e964a8a420f",
+      "verdict": "consistent",
+      "rationale": "Both feedback versions credit causal reasoning and a measurement learning goal but find no explanation of why Hsinchu or the product context matters. The English-expression pair and Chinese counterpart both identify an untranslated Chinese clause.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "88f72a3482f3cf7b7e4f7ec9aa4a2f92b406568ec5a20e2cdc637c8c11e1553d",
+      "verdict": "consistent",
+      "rationale": "Both feedback languages identify experiment experience rather than missing-data diagnosis, while preserving the clear sequence as a limited strength. The priority pair asks for SQL/Python null patterns, affected segments, upstream pipeline checks, and validation.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 2,
+      "outputChecksum": "07af35700b8b6dac72c39da24a93a4becdc182c0ba5df1fb8af531bbb88b158a",
+      "verdict": "consistent",
+      "rationale": "Both languages credit evidence review, assumption checks, and a reproducible query, but find little decision-impact or communication framing for product managers. The priority advice aligns on what is uncertain, how it affects decisions, and what the query clarifies.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "5cf38af4df124d04c47648a9b2eab9215635776ece2d425691f8a5190ec20094",
+      "verdict": "consistent",
+      "rationale": "Both languages find no SQL/Python missing-row workflow or connection to experimental validity. They credit only clear grammar and consistently ask for a stepwise investigation of missingness and potential bias.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 2,
+      "outputChecksum": "f2e49907862ebabd4a13a4739482c824e047fcebc9096ab0906f28ba9b593879",
+      "verdict": "consistent",
+      "rationale": "Both languages credit a possible reproducible-testing contribution and the stated learning need, while finding no sensor-specific or Hsinchu motivation. The priority advice consistently asks for that role link and the first contribution.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "bfdb78ea658c4eac3760479a2ddee6d6100497641b5dbec9898b810a5fe8f692",
+      "verdict": "consistent",
+      "rationale": "Both languages preserve the two basic checks and the gap in a repeatable C-firmware investigation. The priority pair asks what each check confirms and how to replace the unspecified timing point with a concrete observation.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 2,
+      "outputChecksum": "db82da8bbe7938a79b871d3c8a71cfd6c8042d060cba3df0ebdd1d62bfb0f0ad",
+      "verdict": "consistent",
+      "rationale": "Both languages credit an evidence-first sequence while identifying missing communication, trade-offs, and action if the evidence remains disputed. The priority pair asks how to surface views, agree on a test, and decide next steps.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "ec1dcb7c3c3a1a4a4451166eb6eae84b1588ec1f9c2a1661553ccf98c523f912",
+      "verdict": "consistent",
+      "rationale": "Both languages find no serial-link diagnostic plan and flag unrelated exaggerated claims. The priority pair gives the same three-layer isolation path: C/driver capture, protocol framing/checksum checks, and controlled physical-link tests.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 2,
+      "outputChecksum": "3ed106ca85cb6c4c1b13ee26efeec26592b2032caf3b21242c2b46d3e72ab4c0",
+      "verdict": "consistent",
+      "rationale": "Both languages say the brief motivation is not connected to accessible web work in Taipei and lacks first-month priorities. They credit understandable grammar while making the same two-part correction.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "c7b52ea3d7988e093de2b1ac38bd2f44dd950cafdb8ef991687dd1787a644a1f",
+      "verdict": "consistent",
+      "rationale": "Both languages identify an accessibility-flow plan rather than browser performance diagnosis. They credit its ordered actions but ask for named performance tools, inspected evidence, and evidence-based change selection.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 2,
+      "outputChecksum": "4832e120025e59f541e988db20f6b5d7dd15c3d4e5bf6eb1700723feedc6951f",
+      "verdict": "consistent",
+      "rationale": "Both languages credit the controlled two-layout comparison while identifying the missing success criteria and designer decision process. The structure and priority pairs agree that testing alone is incomplete.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "d8ca0d8fc72a88e96a746d01c38af283627c445d779e51e4aca949ed96e71b96",
+      "verdict": "consistent",
+      "rationale": "Both languages credit deferring nonessential work while preserving focus and screen-reader announcements. They agree that technical terms, a designer-facing scenario, and a clear recommendation are missing.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 3,
+      "outputChecksum": "764f95e859cceed52e87da134e84d7c9460d0faee7922e3d2bd2aae6681afff2",
+      "verdict": "consistent",
+      "rationale": "Both versions credit the user-centered motivation and identify the same missing definition of success. They agree that switching into Chinese weakens an English interview answer and recommend measurable retrieval criteria tied to Mandarin-query failures.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "93e5a6b599cda70ae973644d8d288276b4168d5464d33c787897e8bfb5b9abe6",
+      "verdict": "consistent",
+      "rationale": "Both languages identify the unrelated instruction and absence of retrieval-quality reasoning. The strength remains limited to complete grammar; the priority advice consistently offers a hypothetical evaluation process with relevance judgments, metrics, and error analysis.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 3,
+      "outputChecksum": "64d526ea0f588e0612f99c5308060d91ea5b32ad9d442d340147037cd0f16fd7",
+      "verdict": "consistent",
+      "rationale": "Both feedback languages credit a collaborative review of failing cases while finding no explicit model limitation, product-colleague context, impact, or result. The English-expression pair also preserves the criticism of fillers and the phrase user cases.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "9ea7a9e38d1a049b9d39c8e9b4f19bad3dea1d4286c8e76cc2925fda12f91dc4",
+      "verdict": "consistent",
+      "rationale": "Both feedback versions name the same three starting activities and the missing annotation rubric, Mandarin query coverage, and answer-usefulness judgement. They agree that latency measures efficiency only and that the central gap remains unresolved.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 3,
+      "outputChecksum": "42b6ae182eef690bccf388ce2367a3ca7a11130e5ef9e2b55edad2d30f612cb2",
+      "verdict": "consistent",
+      "rationale": "Both feedback versions find no payment-API, Taipei, or reliability answer, while giving the same narrow strength for clear English. The priority pair consistently asks for role motivation and a reliability definition.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "62e4e5c0ce4e4a39869c0557edb8956bafd132588d890954477e6ea469607148",
+      "verdict": "consistent",
+      "rationale": "Both feedback versions describe a transaction test revealing a duplicate request and an idempotency fix, but neither treats that as proof of a completed investigation. They consistently ask for risk mechanism, transaction boundary, rollback/retry behavior, and automated verification.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 3,
+      "outputChecksum": "bf7dec5ada228908e720ab83c0a82725e3208fb4c08adaa6dd64ae527139901c",
+      "verdict": "consistent",
+      "rationale": "Both feedback versions find no incident review or blameless behavior and flag an unrelated directive. They agree that a hypothetical process should use a shared timeline, system/process contributors, and concrete follow-up actions.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "0468952059e1b36f81dad3d5dfbec62714d0ddb2360e10fbd83e3b02507d757e",
+      "verdict": "consistent",
+      "rationale": "Both feedback versions credit idempotency and a transaction for balance changes, but require key storage/checking, downstream-failure treatment, and ambiguous-outcome handling. The English pair treats the self-correction as minor and the Chinese pair does likewise.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 3,
+      "outputChecksum": "049fe7f27adc38c76ee5c789d076f0622af9dee261844bec838bf8045959f7b7",
+      "verdict": "consistent",
+      "rationale": "Both languages credit the link between experiments, causal interpretation, and metrics chosen by product teams. They agree the answer lacks Hsinchu-specific motivation and concrete product context, and that Chinese switching reduces English-interview polish.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "fc3a28360cf6ddb64d1c2148bf68eb3d4b92cb34e0ee811c3e6e21bc3fad4474",
+      "verdict": "consistent",
+      "rationale": "Both versions distinguish an experiment-design answer from the requested missing-data investigation. They credit concise sequencing and request SQL/Python steps to locate, profile, segment, and explain missing values.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 3,
+      "outputChecksum": "933c3518d0520a3cbf30af6a472411f5af99e8d7d6c049930e9dae74558811c5",
+      "verdict": "consistent",
+      "rationale": "Both feedback versions credit conflicting-data checks and a reproducible query, yet ask for explicit product-manager communication of confidence, impact, and next steps. They preserve the same clear-sequence strength.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "be95eab75f7abb599343075d2bb2820b9cf138356ea8205772817280699570b6",
+      "verdict": "consistent",
+      "rationale": "Both feedback versions identify the absence of SQL, Python, missing rows, and bias analysis. The paired priority improvement requests an ordered investigation and an assessment of whether missingness changes the result.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 3,
+      "outputChecksum": "c3c4f2e3688df1706d2726bd7393dacae3e60d7f661670cac2a3c79660233280",
+      "verdict": "consistent",
+      "rationale": "Both feedback versions credit debugging and reproducible testing but identify only partial coverage of sensor/Hsinchu interest and initial contribution. Their relevance, strength, and priority statements agree.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "2f6e6f0741fe354e429cbe26b992c1089f467ba944fc3233fecf103a77f3dda9",
+      "verdict": "consistent",
+      "rationale": "Both feedback versions credit physical-connection and byte inspection while calling the answer fragmentary. They agree on missing C-level tracing, timing/framing checks, and verification; both preserve the learner’s admission of not remembering timing.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 3,
+      "outputChecksum": "e5d9c04dc5dea89421996f81670f4fd1a69ddd2bd3dc2a7be662c9f072b4a975",
+      "verdict": "consistent",
+      "rationale": "Both feedback versions credit collaboration in comparing hardware and firmware evidence, yet say the answer stops before resolving the disagreement. They consistently request shared interpretation, a next test, and a joint decision.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "7c1208137f57b47d023c5343be212559a1eb29581423baa70d0236e05a8a664b",
+      "verdict": "consistent",
+      "rationale": "Both feedback versions find no separation of firmware, protocol, and physical causes. They give only a narrow clarity strength and agree on stepwise instrumentation, protocol validation, and physical checks with observations.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 3,
+      "outputChecksum": "be657cdcb29c816f924647fcd447b9978a171aa6067e0185126eb4892dd50cad",
+      "verdict": "consistent",
+      "rationale": "Both feedback versions identify the vague any-job preference instead of accessibility, Taipei, and first-month plans. They credit concise clarity and ask for product learning, accessibility needs, and team alignment as concrete priorities.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "3903c02b365c57da6791ad2023847a9a56105e899058008f6aff61145da6c688",
+      "verdict": "consistent",
+      "rationale": "Both feedback versions say the answer switches from slow JavaScript to accessibility, despite clear action verbs. Their priority pair asks for browser-tool measurements that justify a performance change.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 3,
+      "outputChecksum": "2d14343f69bf4474ad035dd9cb33a9eca36d230fedd6e0061a995266838efb54",
+      "verdict": "consistent",
+      "rationale": "Both feedback versions credit task-focused usability comparison but say the answer never explains collaboration or the final choice. They also align on filler/self-correction and the need to discuss elegance-versus-usability trade-offs with the designer.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "b5574c06995628261b59c40f9e2366e8de78e5862df5f3f807527308fa6ef272",
+      "verdict": "consistent",
+      "rationale": "Both feedback versions identify the performance/accessibility trade-off and the same preserved guardrails, but ask for a concrete before-and-after example suitable for a designer. The no-previous-attempt caveat appears in both priority statements.",
+      "contradictoryPairs": []
+    }
+  ]
 }

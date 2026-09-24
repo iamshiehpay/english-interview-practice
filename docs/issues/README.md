@@ -38,7 +38,7 @@ Local issue tracker for the Adaptive English Interview Coach. All issues below w
 | [0032 — Five common behavioural questions (常見行為題)](./0032-common-behavioural-questions.md) | completed | 0031 |
 | [0033 — ADR 0020: revised creator gate and persona loops in the ledger](./0033-adr-0020-revised-creator-gate.md) | completed | None |
 | [0034 — Fifth AI persona loop on Common Questions and AI attestation](./0034-fifth-persona-loop-and-ai-attestation.md) | completed | 0031, 0032, 0033 |
-| [0035 — Codex evaluation run (v3) and AI semantic review](./0035-codex-evaluation-and-semantic-review.md) | needs-info | None |
+| [0035 — Codex evaluation run (v3) and AI semantic review](./0035-codex-evaluation-and-semantic-review.md) | completed | None |
 | [0036 — AI-reviewed labels, offline release recheck, summary update](./0036-ai-reviewed-labels-and-release-recheck.md) | needs-info | 0035 (0034 for the final release status) |
 | [0037 — Direct links to individual Job Snapshots](./0037-job-snapshot-deep-links.md) | needs-triage | None |
 | [0038 — Select a reviewed Codex CLI for evaluation](./0038-review-codex-cli-01561-compatibility.md) | completed | None |

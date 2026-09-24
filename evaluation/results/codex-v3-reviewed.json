@@ -1,0 +1,85 @@
+{
+  "reviewVersion": "1.0.0",
+  "contractVersion": "3.0.0",
+  "generatedAt": "2026-09-24T07:08:05.049Z",
+  "rawReport": {
+    "generatedAt": "2026-09-24T07:01:37.894Z",
+    "provider": "Codex / ChatGPT subscription / gpt-5.6-luna / xhigh / fast",
+    "model": "gpt-5.6-luna",
+    "codeChecksum": "9e88cabc5cdc4a81f9546ea9b8aa75d7af439e8c75bd8cc9858407899740d8d5",
+    "checksum": "3cf85d6836013bf3dede3411a92bbe0278c5fe0c8481ba97fbbd42eb8f22d2cc"
+  },
+  "sourceEvidence": {
+    "rawCodeChecksum": "9e88cabc5cdc4a81f9546ea9b8aa75d7af439e8c75bd8cc9858407899740d8d5",
+    "capturedModelRunMatchesRaw": true,
+    "capturedNote": "Captured immediately before the single authorized Codex v3 evaluation run.",
+    "currentCodeChecksum": "9e88cabc5cdc4a81f9546ea9b8aa75d7af439e8c75bd8cc9858407899740d8d5",
+    "currentMatchesRaw": true,
+    "changedFiles": []
+  },
+  "artifactChecksums": {
+    "frozenAnalysis": "a3e3c4100817d58b542dded09bcc8460dc065a761674144e694cd5c24e1da6af",
+    "reviewPacket": "b591146bc1629e8057bbd8df7fe8306146ff7c091b390cf584dac91d2b3bed53",
+    "bilingualAudit": "aa01a58f626350525298e33cb833886ee48dfc14137c4dc76724ddae3c88e80c",
+    "semanticReviews": "7fa19415db3e0c233a5e04ee1e2a738b9d70fad7fc433e63af9df5698f8c9fc3",
+    "humanLabels": "aef4438c1ddeec2e57b2a7844601157dffdda5fdcc4c67223ef3c628f3078fd9",
+    "creatorValidation": "37dcbd31fda4637ba2dbab49c2a3d3689bdab689ffc7cf99f39752282f8d5a40"
+  },
+  "automaticRevalidation": {
+    "pass": true,
+    "cases": 20,
+    "repeats": 3,
+    "outputs": 60,
+    "stability": {
+      "stable": 80,
+      "total": 80,
+      "ratio": 1,
+      "pass": true
+    }
+  },
+  "bilingualGate": {
+    "status": "PASS",
+    "pass": true,
+    "reviewedOutputs": 60,
+    "reviewer": "Codex AI independent bilingual semantic reviewer (/root/review0031)",
+    "reviewedAt": "2026-09-24T07:07:16.088Z",
+    "errors": []
+  },
+  "humanLabels": {
+    "pass": false,
+    "status": "PENDING",
+    "approved": 0,
+    "errors": [
+      "ai-role-fit: missing, stale or invalid human approval",
+      "ai-experience-depth: missing, stale or invalid human approval",
+      "ai-behavioral: missing, stale or invalid human approval",
+      "ai-technical-communication: missing, stale or invalid human approval",
+      "backend-role-fit: missing, stale or invalid human approval",
+      "backend-experience-depth: missing, stale or invalid human approval",
+      "backend-behavioral: missing, stale or invalid human approval",
+      "backend-technical-communication: missing, stale or invalid human approval",
+      "data-role-fit: missing, stale or invalid human approval",
+      "data-experience-depth: missing, stale or invalid human approval",
+      "data-behavioral: missing, stale or invalid human approval",
+      "data-technical-communication: missing, stale or invalid human approval",
+      "embedded-role-fit: missing, stale or invalid human approval",
+      "embedded-experience-depth: missing, stale or invalid human approval",
+      "embedded-behavioral: missing, stale or invalid human approval",
+      "embedded-technical-communication: missing, stale or invalid human approval",
+      "frontend-role-fit: missing, stale or invalid human approval",
+      "frontend-experience-depth: missing, stale or invalid human approval",
+      "frontend-behavioral: missing, stale or invalid human approval",
+      "frontend-technical-communication: missing, stale or invalid human approval"
+    ]
+  },
+  "creator": {
+    "pass": true,
+    "status": "PASS",
+    "count": 5,
+    "validationMode": "ai-persona"
+  },
+  "releaseStatus": "BLOCKED",
+  "blockers": [
+    "Evaluation labels pending or stale"
+  ]
+}

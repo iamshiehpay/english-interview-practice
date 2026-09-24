@@ -1,5 +1,5 @@
 ---
-status: needs-info
+status: completed
 ---
 
 # Codex evaluation run (v3) and independent AI bilingual semantic review
@@ -45,9 +45,9 @@ runner version 2.0.0 and may need v3 support.
 
 - [x] The offline review step accepts valid v3 artifacts, rejects tampered or stale ones, and makes no model calls (tested).
 - [x] The Codex run happened exactly once under the pre-authorisation, and its automated checks and three-repeat stability pass (or failures are recorded under Comments without re-running silently).
-- [ ] The frozen v3 Codex analysis and the new review packet are committed.
-- [ ] The semantic-review artifact covers all 60 outputs; any `inconsistent` verdict is reported, not overridden.
-- [ ] The offline review step shows the semantic-review gate as PASS (human labels and creator gates may still be pending).
+- [x] The frozen v3 Codex analysis and the new review packet are committed.
+- [x] The semantic-review artifact covers all 60 outputs; any `inconsistent` verdict is reported, not overridden.
+- [x] The offline review step shows the semantic-review gate as PASS (human labels and creator gates may still be pending).
 - [x] The server on 4310 was not touched.
 
 ## Files likely touched
@@ -81,3 +81,14 @@ None — can start immediately.
 
 - The first preflight review failed provider-metadata coverage, which was fixed and independently passed. The subsequent whole-issue check failed on the terminal one-shot runtime outcome. After debugger root-cause review and the original developer's final no-retry audit, the third independent verification/review confirmed Standards PASS but overall Spec FAIL: criteria 1, 2 (recorded-failure alternative), and 6 supported; criteria 3–5 unmet.
 - Commit the new offline checker and explicitly failed artifacts for traceability, not as a successful Codex dataset. Resolving compatibility alone cannot create missing outputs or authorize another run. Fresh explicit authorization is required after reviewed compatibility is available. No semantic reviewer or label approver has approved any nonexistent output.
+
+### 2026-09-24 — One additional run explicitly authorized
+
+After the 65-call explanation and an explicit clarification question, the user approved one additional approximately 65-call Codex evaluation using the independently verified CLI, with evaluation work delegated to subagents. This is a new authorization for one attempt, not permission for automatic retries or to erase the first failure. Use the approved standalone 0.155.1 via `COACH_CODEX_BIN`; preserve the first failed raw report, empty packet/audit, source capture and log before writing a new canonical run. Separate agents execute, verify, and review the outputs. Do not perform another run if this newly authorized attempt fails.
+
+### 2026-09-24 — Additional authorized attempt completed
+
+- `prepare0035` executed the newly authorized run exactly once using reviewed CLI 0.155.1. It exited 0: five analyses, sixty feedback requests and outputs, no automated failures, stability 80/80. Source checksum matches the pre-run capture. The first failure remains intact in the [verified archive](../verification/0035-attempt-1-failed/manifest.json); see [attempt 2](../verification/0035-codex-evaluation-attempt-2.md). No additional rerun occurred.
+- Independent `review0031` compared all 60 bilingual outputs, recording exact output checksums and content-specific rationales: 60 consistent, zero inconsistent. A minor translation looseness is explicitly noted in its rationale. The accepted schema-2 AI artifact is saved as `evaluation/v3/semantic-reviews.json`; no human approval is claimed. Standards PASS and Spec PASS.
+- Independent `attest0034` verified the archive, provider metadata, five frozen analyses, twenty packet cases, sixty unique output/audit pairs, source integrity and tamper rejection. Full tests passed 216/216. [Verification report](../verification/0035-independent-artifact-verification.md).
+- `node evaluation/review-report.js` now exits 0: automatic PASS, bilingual semantic review PASS (60/60), creator PASS, labels PENDING, release BLOCKED pending 0036. These offline checks make no model calls. Port 4310 and real practice data were untouched.
