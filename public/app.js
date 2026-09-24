@@ -299,6 +299,7 @@ function markView(name) {
 }
 async function navigate(name) {
   if (!(await leaveEditor())) return;
+  if (location.hash.startsWith('#/snapshots')) history.replaceState(history.state, '', location.pathname + location.search);
   clearDraftSession();
   disposeVoice(); followUpVoice.dispose(); followUpVoice.dispose = () => {}; followUpVoice.draftId = null; resetReadAloud();
   disposeVoice = () => {};
@@ -426,11 +427,11 @@ $('#capture').addEventListener('click', async event => {
   }
 });
 
-async function showAnalysisFailure(snapshotId, error) {
+async function showAnalysisFailure(snapshotId, error, {fromLink = false} = {}) {
   clearDraftSession(); disposeVoice(); followUpVoice.dispose(); followUpVoice.dispose = () => {}; followUpVoice.draftId = null; resetReadAloud(); markView('practice'); currentSnapshotId = snapshotId;
   const snapshot = workspace.snapshots[snapshotId] || await api(`/snapshots/${snapshotId}`);
-  $('#practice').innerHTML = practiceFrame({snapshot, content:`<div class="provider-warning"><h2>職缺已保存，題目尚未產生</h2><p>${escape(error.message)}</p><p>你不需要重新貼上職缺。可以直接重試這一步。</p><div id="analysis-retry"></div></div>`});
-  button('重試產生題目', async () => {
+  $('#practice').innerHTML = practiceFrame({snapshot, content:`<div class="provider-warning"><h2>職缺已保存，題目尚未產生</h2><p>${escape(error.message)}</p><p>${fromLink ? '選擇產生題目後，才會開始分析這份職缺。' : '你不需要重新貼上職缺。可以直接重試這一步。'}</p><div id="analysis-retry"></div></div>`});
+  button(fromLink ? '產生題目' : '重試產生題目', async () => {
     await api(`/snapshots/${snapshotId}/analysis`, {});
     await refreshWorkspace();
     await showRecommended(snapshotId);
@@ -442,11 +443,11 @@ async function analysisView(snapshotId) {
   try { return await api(`/snapshots/${snapshotId}/analysis`); }
   catch (error) { if (error.status === 409) return null; throw error; }
 }
-async function showRecommended(snapshotId) {
+async function showRecommended(snapshotId, {fromLink = false} = {}) {
   if (!(await leaveEditor())) return;
   clearDraftSession(); disposeVoice(); followUpVoice.dispose(); followUpVoice.dispose = () => {}; followUpVoice.draftId = null; resetReadAloud(); markView('practice'); currentSnapshotId = snapshotId;
   const analysis = await analysisView(snapshotId);
-  if (!analysis) return showAnalysisFailure(snapshotId, new Error('這份職缺還沒有題目。'));
+  if (!analysis) return showAnalysisFailure(snapshotId, new Error('這份職缺還沒有題目。'), {fromLink});
   return showQuestion(snapshotId, analysis.recommendation.questionId, analysis);
 }
 
@@ -2199,7 +2200,26 @@ async function initialize() {
     renderSettings();
     renderHome();
     await showOperations();
+    await openInitialSnapshotLink();
   } catch (error) { setError(`無法開啟工作區：${error.message}`); }
+}
+
+async function openInitialSnapshotLink() {
+  if (!location.hash.startsWith('#/snapshots')) return;
+  const match = /^#\/snapshots\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i.exec(location.hash);
+  const snapshotId = match?.[1];
+  if (!snapshotId || !Object.hasOwn(workspace.snapshots, snapshotId)) {
+    await navigate('history');
+    setError('這份職缺連結找不到；職缺可能已刪除。');
+    return;
+  }
+  try { await showRecommended(snapshotId, {fromLink:true}); }
+  catch (error) {
+    if (error.status !== 404) throw error;
+    await refreshWorkspace();
+    await navigate('history');
+    setError('這份職缺連結找不到；職缺可能已刪除。');
+  }
 }
 
 renderHomePreview();
