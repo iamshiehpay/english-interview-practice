@@ -1,10 +1,14 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {readFile} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+import {mkdir,mkdtemp,readFile,rm,writeFile} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {dirname,join} from 'node:path';
+import {fileURLToPath} from 'node:url';
 import {FakeLanguageModel} from '../src/providers.js';
 import {MODEL_CONTRACT_VERSION} from '../src/model-contracts.js';
-import {checkBilingualConsistency,inputChecksum,outputChecksum,stability} from '../evaluation/checks.js';
-import {reviewArtifacts} from '../evaluation/review-report.js';
+import {checkBilingualConsistency,dimensions,inputChecksum,outputChecksum,stability} from '../evaluation/checks.js';
+import {captureModelRunSource,createReviewedReport,reviewArtifacts} from '../evaluation/review-report.js';
 
 const manifest=JSON.parse(await readFile(new URL('../evaluation/v1/manifest.json',import.meta.url)));
 
@@ -21,14 +25,15 @@ async function fixtures(){
     }
   }
   const stable=stability(results),codeChecksum='a'.repeat(64);
-  const raw={suiteVersion:manifest.suiteVersion,runnerVersion:'2.0.0',contractVersion:MODEL_CONTRACT_VERSION,generatedAt:'2026-09-18T00:00:00Z',codeChecksum,provider:'Codex / test',model:'gpt-test',mode:'live model on synthetic inputs',jobs:5,cases:20,repeats:3,providerCalls:60,analysisCalls:5,automatedPass:true,stability:stable,failures:[],results};
-  const frozen={schemaVersion:2,contractVersion:MODEL_CONTRACT_VERSION,model:'gpt-test',jdChecksum:(await import('node:crypto')).createHash('sha256').update(JSON.stringify(manifest.jobs)).digest('hex'),entries};
+  const raw={suiteVersion:manifest.suiteVersion,runnerVersion:'3.0.0',contractVersion:MODEL_CONTRACT_VERSION,generatedAt:'2026-09-24T00:00:00Z',codeChecksum,provider:'Codex / ChatGPT subscription / gpt-test / xhigh / fast',model:'gpt-test',configuration:{cliVersion:'1.0.0',effort:'xhigh',serviceTier:'priority',ephemeral:true,analysisPolicy:'one live generation per JD, frozen across three feedback repeats'},mode:'live model on synthetic inputs',jobs:5,cases:20,repeats:3,providerCalls:60,analysisCalls:5,automatedPass:true,stability:stable,failures:[],results};
+  const frozen={schemaVersion:2,contractVersion:MODEL_CONTRACT_VERSION,model:'gpt-test',effort:'xhigh',serviceTier:'priority',jdChecksum:(await import('node:crypto')).createHash('sha256').update(JSON.stringify(manifest.jobs)).digest('hex'),entries};
   const audit={schemaVersion:2,contractVersion:MODEL_CONTRACT_VERSION,status:'pending-independent-ai-review',automaticPass:true,cases:results.map(({caseId,repeat,outputChecksum,bilingualAudit})=>({caseId,repeat,outputChecksum,...bilingualAudit}))};
+  const reviewPacket=manifest.cases.map(c=>{const result=results.find(item=>item.caseId===c.id&&item.repeat===1);return {caseId:c.id,inputChecksum:result.inputChecksum,contractVersion:MODEL_CONTRACT_VERSION,job:manifest.jobs.find(job=>job.id===c.jobId).text,question:result.question,transcript:c.transcript,tags:c.tags,proposedExpectation:c.proposedExpectation,bilingualAudit:result.bilingualAudit,humanLabelTemplate:{caseId:c.id,inputChecksum:result.inputChecksum,status:'pending',reviewer:null,reviewedAt:null,ranges:Object.fromEntries(dimensions.map(d=>[d,null])),rationale:null,evidenceQuotes:[],requiredFindings:[],forbiddenFindings:[],bilingualSemanticConsistency:'pending'}};});
   const semanticReviews={schemaVersion:2,contractVersion:MODEL_CONTRACT_VERSION,reviewerType:'ai',reviewer:'Independent reviewer',reviewedAt:'2026-09-18T01:00:00Z',reviews:audit.cases.map(item=>({caseId:item.caseId,repeat:item.repeat,outputChecksum:item.outputChecksum,verdict:'consistent',rationale:'The paired coaching preserves the assessment and advice.',contradictoryPairs:[]}))};
   const protectedFiles=['src/model-contracts.js','src/model-schemas.js','src/domain.js','src/providers.js','src/cloud.js','src/codex-language.js'];
   const source={note:'Captured before later guard-only changes.',codeChecksum,files:{'evaluation/run.js':'b'.repeat(64),...Object.fromEntries(protectedFiles.map((file,index)=>[file,String(index+1).repeat(64)]))}};
   const currentSource={codeChecksum:'d'.repeat(64),files:{'evaluation/run.js':'e'.repeat(64),...Object.fromEntries(protectedFiles.map((file,index)=>[file,String(index+1).repeat(64)]))}};
-  return {raw,frozen,audit,semanticReviews,source,currentSource,manifest,humanLabels:{schemaVersion:2,contractVersion:MODEL_CONTRACT_VERSION,status:'pending-human-review',labels:[]},creator:{schemaVersion:2,contractVersion:MODEL_CONTRACT_VERSION,creator:null,attestedAt:null,loops:[]}};
+  return {raw,frozen,audit,reviewPacket,semanticReviews,source,currentSource,manifest,humanLabels:{schemaVersion:2,contractVersion:MODEL_CONTRACT_VERSION,status:'pending-human-review',labels:[]},creator:{schemaVersion:2,contractVersion:MODEL_CONTRACT_VERSION,creator:null,attestedAt:null,loops:[]}};
 }
 
 test('offline review verifies all sixty outputs and clears only the bilingual gate',async()=>{
@@ -56,11 +61,25 @@ test('missing semantic review remains pending and cannot imply human or creator 
   assert.equal(reviewed.humanLabels.pass,false);assert.equal(reviewed.creator.pass,false);assert.equal(reviewed.releaseStatus,'BLOCKED');
 });
 
+test('a substantive contradictory pair remains a failed semantic gate',async()=>{
+  const input=await fixtures(),review=input.semanticReviews.reviews[0];
+  review.verdict='inconsistent';review.contradictoryPairs=['question meaning'];review.rationale='The Chinese version changes the meaning of the question.';
+  const reviewed=reviewArtifacts(input);
+  assert.equal(reviewed.bilingualGate.status,'FAIL');
+  assert.equal(reviewed.bilingualGate.pass,false);
+  assert.match(reviewed.bilingualGate.errors[0],/inconsistent bilingual meaning/);
+  assert.equal(reviewed.releaseStatus,'BLOCKED');
+});
+
 test('offline review rejects stale source, frozen analysis, audit or generated-output checksums',async()=>{
   for(const mutate of [
     input=>input.source.codeChecksum='d'.repeat(64),
     input=>input.frozen.entries[0][1].questions[0].text='Changed frozen question',
     input=>input.audit.cases[0].outputChecksum='stale',
+    input=>input.reviewPacket[0].question.text='Changed packet question',
+    input=>input.reviewPacket[0].inputChecksum='stale',
+    input=>input.raw.runnerVersion='2.0.0',
+    input=>input.frozen.effort='high',
     input=>input.raw.results[0].feedback.ratings.relevance.reason='Changed after generation',
     input=>{const first=input.raw.results[0],other=input.frozen.entries[0][1].questions.find(question=>question.category===first.question.category&&question.id!==first.question.id);first.question=other;const c=input.manifest.cases.find(item=>item.id===first.caseId),job=input.manifest.jobs.find(item=>item.id===c.jobId);first.inputChecksum=inputChecksum(job,c,other);first.outputChecksum=outputChecksum(first.caseId,first.repeat,other,first.feedback);first.bilingualAudit=checkBilingualConsistency(other,first.feedback);const audited=input.audit.cases.find(item=>item.caseId===first.caseId&&item.repeat===first.repeat);Object.assign(audited,{outputChecksum:first.outputChecksum,...first.bilingualAudit});input.semanticReviews.reviews.find(item=>item.caseId===first.caseId&&item.repeat===first.repeat).outputChecksum=first.outputChecksum;}
   ]){
@@ -71,4 +90,52 @@ test('offline review rejects stale source, frozen analysis, audit or generated-o
 test('offline review rejects current model-contract code that differs from the captured live run',async()=>{
   const input=await fixtures();input.currentSource.files['src/domain.js']='f'.repeat(64);
   assert.throws(()=>reviewArtifacts(input),/Model-contract source changed after the live run/);
+});
+
+test('offline review rejects a paid-provider report disguised as a Codex run and stale Codex metadata',async()=>{
+  for(const [mutate,message] of [
+    [raw=>raw.provider='OpenAI API',/Codex subscription provider/],
+    [raw=>raw.provider='Codex / ChatGPT subscription / another-model / xhigh / fast',/Codex subscription provider/],
+    [raw=>raw.configuration.cliVersion='',/Codex CLI version/],
+    [raw=>raw.configuration.ephemeral=false,/ephemeral/],
+    [raw=>raw.configuration.analysisPolicy='reuse old analyses',/analysis policy/]
+  ]){
+    const input=await fixtures();mutate(input.raw);
+    assert.throws(()=>reviewArtifacts(input),message);
+  }
+});
+
+test('v3 artifact reader validates saved packet and captures ordered runner source once without model calls',async()=>{
+  const directory=await mkdtemp(join(tmpdir(),'coach-v3-review-')),root=join(directory,'evaluation'),codeRoot=join(dirname(fileURLToPath(import.meta.url)),'..');
+  try{
+    const input=await fixtures();
+    const captured=await captureModelRunSource({root,codeRoot});
+    input.raw.codeChecksum=captured.source.codeChecksum;
+    const runner=await readFile(join(codeRoot,'evaluation','run.js'),'utf8');
+    const runnerList=runner.match(/const codeHash=createHash\('sha256'\);for\(const file of (\[[^\]]+\])\)codeHash\.update/);
+    assert.ok(runnerList,'runner source hash list must be discoverable');
+    const runnerFiles=[...runnerList[1].matchAll(/'([^']+)'/g)].map(([,file])=>join('evaluation',file));
+    assert.deepEqual(Object.keys(captured.source.files),runnerFiles);
+    const expectedHash=createHash('sha256');
+    for(const file of runnerFiles)expectedHash.update(await readFile(join(codeRoot,file)));
+    assert.equal(captured.source.codeChecksum,expectedHash.digest('hex'));
+    assert.equal(captured.source.files['evaluation/run.js'].length,64);
+    assert.equal(captured.source.files['src/model-contracts.js'].length,64);
+    await assert.rejects(captureModelRunSource({root,codeRoot}),{code:'EEXIST'});
+    const artifacts={
+      'results/codex-v3.json':input.raw,'v3/codex-analysis.json':input.frozen,
+      'v3/codex-bilingual-audit.json':input.audit,'v3/codex-review-packet.json':input.reviewPacket,
+      'v3/semantic-reviews.json':input.semanticReviews,'v1/manifest.json':input.manifest,
+      'v3/human-labels.json':input.humanLabels,'v3/creator-validation.json':input.creator
+    };
+    for(const [path,value] of Object.entries(artifacts)){const target=join(root,path);await mkdir(dirname(target),{recursive:true});await writeFile(target,JSON.stringify(value));}
+    const {reviewed,output}=await createReviewedReport({root,codeRoot});
+    assert.equal(output,join(root,'results','codex-v3-reviewed.json'));
+    assert.equal(reviewed.sourceEvidence.currentMatchesRaw,true);
+    assert.equal(reviewed.bilingualGate.status,'PASS');
+    assert.equal(JSON.parse(await readFile(output)).artifactChecksums.reviewPacket.length,64);
+    input.reviewPacket[0].inputChecksum='stale';
+    await writeFile(join(root,'v3','codex-review-packet.json'),JSON.stringify(input.reviewPacket));
+    await assert.rejects(createReviewedReport({root,codeRoot}),/Saved Codex review packet differs/);
+  }finally{await rm(directory,{recursive:true,force:true});}
 });

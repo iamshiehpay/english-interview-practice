@@ -1,21 +1,30 @@
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
-import {readFile,writeFile} from 'node:fs/promises';
+import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import {dirname,join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {MODEL_CONTRACT_VERSION} from '../src/model-contracts.js';
-import {checkAnalysis,checkFeedback,checkBilingualConsistency,creatorStatus,inputChecksum,labelStatus,outputChecksum,semanticReviewStatus,stability,validateManifest} from './checks.js';
+import {checkAnalysis,checkFeedback,checkBilingualConsistency,creatorStatus,dimensions,inputChecksum,labelStatus,outputChecksum,semanticReviewStatus,stability,validateManifest} from './checks.js';
 
 const sha=value=>createHash('sha256').update(typeof value==='string'?value:JSON.stringify(value)).digest('hex');
 const same=(actual,expected,message)=>assert.deepEqual(actual,expected,message);
 const codeFiles=['evaluation/run.js','evaluation/checks.js','evaluation/job-grounded-analysis.js','src/common-questions.js','src/server.js','src/operations.js','src/store.js','src/domain.js','src/providers.js','src/cloud.js','src/codex-language.js','src/codex-profile.js','src/codex-rpc.js','src/codex-audit.js','src/codex-sandbox.js','src/codex-runtime.js','src/model-contracts.js','src/model-schemas.js'];
 const protectedModelFiles=['src/model-contracts.js','src/model-schemas.js','src/domain.js','src/providers.js','src/cloud.js','src/codex-language.js'];
 
-export function reviewArtifacts({raw,frozen,audit,semanticReviews,source,currentSource,manifest,humanLabels,creator}){
+export function reviewArtifacts({raw,frozen,audit,reviewPacket,semanticReviews,source,currentSource,manifest,humanLabels,creator}){
   validateManifest(manifest);
   assert.equal(raw.contractVersion,MODEL_CONTRACT_VERSION,'Raw report contract changed');
-  assert.equal(raw.runnerVersion,'2.0.0','Raw report runner changed');
+  assert.equal(raw.runnerVersion,'3.0.0','Raw report runner changed');
   assert.equal(raw.mode,'live model on synthetic inputs','Expected a live-model raw report');
+  assert.ok(typeof raw.model==='string'&&raw.model.trim(),'Codex model is required');
+  const configuration=raw.configuration;
+  assert.ok(configuration&&typeof configuration==='object'&&!Array.isArray(configuration),'Codex configuration is required');
+  assert.ok(typeof configuration.effort==='string'&&configuration.effort.trim(),'Codex reasoning effort is required');
+  assert.ok(Object.hasOwn(configuration,'serviceTier')&&(configuration.serviceTier===null||typeof configuration.serviceTier==='string'&&configuration.serviceTier.trim()),'Codex service tier must be recorded');
+  assert.equal(raw.provider,`Codex / ChatGPT subscription / ${raw.model} / ${configuration.effort}${configuration.serviceTier==='priority'?' / fast':''}`,'Expected Codex subscription provider');
+  assert.ok(typeof configuration.cliVersion==='string'&&configuration.cliVersion.trim(),'Codex CLI version is required');
+  assert.equal(configuration.ephemeral,true,'Codex evaluation must use ephemeral sessions');
+  assert.equal(configuration.analysisPolicy,'one live generation per JD, frozen across three feedback repeats','Codex analysis policy changed');
   assert.equal(raw.jobs,5);assert.equal(raw.cases,20);assert.equal(raw.repeats,3);
   assert.equal(raw.providerCalls,60,'Raw report must contain sixty independent feedback calls');
   assert.equal(raw.analysisCalls,5,'Raw report must contain five live analysis calls');
@@ -28,6 +37,8 @@ export function reviewArtifacts({raw,frozen,audit,semanticReviews,source,current
   for(const file of protectedModelFiles){assert.match(source.files[file],/^[a-f0-9]{64}$/,`Missing captured model-contract source hash: ${file}`);assert.equal(currentSource.files[file],source.files[file],`Model-contract source changed after the live run: ${file}`);}
 
   assert.equal(frozen.schemaVersion,2);assert.equal(frozen.contractVersion,MODEL_CONTRACT_VERSION);assert.equal(frozen.model,raw.model,'Frozen analysis model differs from raw report');
+  assert.equal(frozen.effort,raw.configuration?.effort,'Frozen analysis effort differs from raw report');
+  assert.equal(frozen.serviceTier,raw.configuration?.serviceTier,'Frozen analysis service tier differs from raw report');
   assert.equal(frozen.jdChecksum,sha(manifest.jobs),'Frozen analysis does not match evaluation jobs');
   assert.equal(frozen.entries.length,5);assert.equal(new Set(frozen.entries.map(([text])=>text)).size,5);
   const analyses=new Map(frozen.entries);
@@ -56,38 +67,54 @@ export function reviewArtifacts({raw,frozen,audit,semanticReviews,source,current
   const semantic=semanticReviewStatus(semanticAudits,semanticReviews);
   const hasInconsistency=(semanticReviews.reviews||[]).some(review=>review.verdict==='inconsistent');
   const bilingualStatus=semantic.pass?'PASS':hasInconsistency?'FAIL':'PENDING';
-  const packet=manifest.cases.map(c=>{const result=raw.results.find(item=>item.caseId===c.id&&item.repeat===1);return {caseId:c.id,inputChecksum:result.inputChecksum,contractVersion:MODEL_CONTRACT_VERSION,transcript:c.transcript};});
+  const packet=manifest.cases.map(c=>{const result=raw.results.find(item=>item.caseId===c.id&&item.repeat===1),job=manifest.jobs.find(item=>item.id===c.jobId);return {caseId:c.id,inputChecksum:result.inputChecksum,contractVersion:MODEL_CONTRACT_VERSION,job:job.text,question:result.question,transcript:c.transcript,tags:c.tags,proposedExpectation:c.proposedExpectation,bilingualAudit:result.bilingualAudit,humanLabelTemplate:{caseId:c.id,inputChecksum:result.inputChecksum,status:'pending',reviewer:null,reviewedAt:null,ranges:Object.fromEntries(dimensions.map(d=>[d,null])),rationale:null,evidenceQuotes:[],requiredFindings:[],forbiddenFindings:[],bilingualSemanticConsistency:'pending'}};});
+  same(reviewPacket,packet,'Saved Codex review packet differs from the raw report and fixtures');
   const labels=labelStatus(packet,humanLabels),creatorGate=creatorStatus(creator);
   const blockers=[];
   if(bilingualStatus!=='PASS')blockers.push('Independent bilingual semantic review pending, stale or inconsistent');
-  if(!labels.pass)blockers.push('Human-labelled expectations pending or stale');
-  if(!creatorGate.pass)blockers.push('Creator five-loop real-use validation pending');
+  if(!labels.pass)blockers.push('Evaluation labels pending or stale');
+  blockers.push(...creatorGate.errors);
   return {
     reviewVersion:'1.0.0',contractVersion:MODEL_CONTRACT_VERSION,generatedAt:new Date().toISOString(),
     rawReport:{generatedAt:raw.generatedAt,provider:raw.provider,model:raw.model,codeChecksum:raw.codeChecksum,checksum:sha(raw)},
     sourceEvidence:{rawCodeChecksum:source.codeChecksum,capturedModelRunMatchesRaw:true,capturedNote:source.note,currentCodeChecksum:currentSource.codeChecksum,currentMatchesRaw:currentSource.codeChecksum===source.codeChecksum,changedFiles:Object.keys(source.files).filter(file=>currentSource.files[file]!==source.files[file]).sort()},
-    artifactChecksums:{frozenAnalysis:sha(frozen),bilingualAudit:sha(audit),semanticReviews:sha(semanticReviews),humanLabels:sha(humanLabels),creatorValidation:sha(creator)},
+    artifactChecksums:{frozenAnalysis:sha(frozen),reviewPacket:sha(reviewPacket),bilingualAudit:sha(audit),semanticReviews:sha(semanticReviews),humanLabels:sha(humanLabels),creatorValidation:sha(creator)},
     automaticRevalidation:{pass:true,cases:20,repeats:3,outputs:60,stability:repeated},
     bilingualGate:{status:bilingualStatus,pass:semantic.pass,reviewedOutputs:semantic.reviewed.length,reviewer:semanticReviews.reviewer||null,reviewedAt:semanticReviews.reviewedAt||null,errors:semantic.errors},
     humanLabels:{pass:labels.pass,status:labels.pass?'PASS':'PENDING',approved:labels.approved.length,errors:labels.errors},
-    creator:{pass:creatorGate.pass,status:creatorGate.pass?'PASS':'PENDING',count:creatorGate.count},
-    releaseStatus:blockers.length?'BLOCKED':'PASS',blockers
+    creator:{pass:creatorGate.pass,status:creatorGate.pass?'PASS':'PENDING',count:creatorGate.count,validationMode:creatorGate.validationMode},
+    releaseStatus:blockers.length?'BLOCKED':creatorGate.validationMode==='ai-persona'?'AI-validated':'PASS',blockers
   };
 }
 
-export async function createReviewedReport({root=dirname(fileURLToPath(import.meta.url))}={}){
+export async function captureCurrentSource({codeRoot}={}){
+  const repoRoot=codeRoot||join(dirname(fileURLToPath(import.meta.url)),'..'),hash=createHash('sha256'),files={};
+  for(const file of codeFiles){const content=await readFile(join(repoRoot,file));hash.update(content);files[file]=createHash('sha256').update(content).digest('hex');}
+  return {codeChecksum:hash.digest('hex'),files};
+}
+
+export async function captureModelRunSource({root=dirname(fileURLToPath(import.meta.url)),codeRoot=join(root,'..')}={}){
+  const source={...await captureCurrentSource({codeRoot}),capturedAt:new Date().toISOString(),note:'Captured immediately before the single authorized Codex v3 evaluation run.'};
+  const output=join(root,'..','docs','verification','codex-v3-model-run-source.json');
+  await mkdir(dirname(output),{recursive:true});
+  await writeFile(output,JSON.stringify(source,null,2)+'\n',{flag:'wx'});
+  return {source,output};
+}
+
+export async function createReviewedReport({root=dirname(fileURLToPath(import.meta.url)),codeRoot=join(root,'..')}={}){
   const paths={
-    raw:join(root,'results','codex-v2.json'),frozen:join(root,'v2','codex-analysis.json'),audit:join(root,'v2','codex-bilingual-audit.json'),semanticReviews:join(root,'v2','semantic-reviews.json'),manifest:join(root,'v1','manifest.json'),humanLabels:join(root,'v2','human-labels.json'),creator:join(root,'v2','creator-validation.json'),source:join(root,'..','docs','verification','ui-redesign','model-run-source.json'),output:join(root,'results','codex-v2-reviewed.json')
+    raw:join(root,'results','codex-v3.json'),frozen:join(root,'v3','codex-analysis.json'),audit:join(root,'v3','codex-bilingual-audit.json'),reviewPacket:join(root,'v3','codex-review-packet.json'),semanticReviews:join(root,'v3','semantic-reviews.json'),manifest:join(root,'v1','manifest.json'),humanLabels:join(root,'v3','human-labels.json'),creator:join(root,'v3','creator-validation.json'),source:join(root,'..','docs','verification','codex-v3-model-run-source.json'),output:join(root,'results','codex-v3-reviewed.json')
   };
   const entries=await Promise.all(Object.entries(paths).filter(([name])=>name!=='output').map(async([name,path])=>[name,JSON.parse(await readFile(path,'utf8'))]));
-  const repoRoot=join(root,'..'),hash=createHash('sha256'),files={};
-  for(const file of codeFiles){const content=await readFile(join(repoRoot,file));hash.update(content);files[file]=createHash('sha256').update(content).digest('hex');}
-  const reviewed=reviewArtifacts({...Object.fromEntries(entries),currentSource:{codeChecksum:hash.digest('hex'),files}});
+  const reviewed=reviewArtifacts({...Object.fromEntries(entries),currentSource:await captureCurrentSource({codeRoot})});
   await writeFile(paths.output,JSON.stringify(reviewed,null,2)+'\n');
   return {reviewed,output:paths.output};
 }
 
 if(process.argv[1]&&fileURLToPath(import.meta.url)===process.argv[1]){
-  try{const {reviewed,output}=await createReviewedReport();console.log(JSON.stringify({output,bilingualGate:reviewed.bilingualGate.status,humanLabels:reviewed.humanLabels.status,creator:reviewed.creator.status,releaseStatus:reviewed.releaseStatus},null,2));if(reviewed.bilingualGate.status!=='PASS')process.exitCode=1;}
+  try{
+    if(process.argv.includes('--capture-source')){const {source,output}=await captureModelRunSource();console.log(JSON.stringify({output,codeChecksum:source.codeChecksum},null,2));}
+    else{const {reviewed,output}=await createReviewedReport();console.log(JSON.stringify({output,bilingualGate:reviewed.bilingualGate.status,humanLabels:reviewed.humanLabels.status,creator:reviewed.creator.status,releaseStatus:reviewed.releaseStatus},null,2));if(reviewed.bilingualGate.status!=='PASS')process.exitCode=1;}
+  }
   catch(error){console.error(`Offline evaluation review failed: ${error.message}`);process.exitCode=1;}
 }
