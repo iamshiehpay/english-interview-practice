@@ -10,10 +10,11 @@ const sha=value=>createHash('sha256').update(typeof value==='string'?value:JSON.
 const same=(actual,expected,message)=>assert.deepEqual(actual,expected,message);
 const codeFiles=['evaluation/run.js','evaluation/checks.js','evaluation/job-grounded-analysis.js','src/common-questions.js','src/server.js','src/operations.js','src/store.js','src/domain.js','src/providers.js','src/cloud.js','src/codex-language.js','src/codex-profile.js','src/codex-rpc.js','src/codex-audit.js','src/codex-sandbox.js','src/codex-runtime.js','src/model-contracts.js','src/model-schemas.js'];
 const protectedModelFiles=['src/model-contracts.js','src/model-schemas.js','src/domain.js','src/providers.js','src/cloud.js','src/codex-language.js'];
+const historicalCodexContract='3.0.0';
 
 export function reviewArtifacts({raw,frozen,audit,reviewPacket,semanticReviews,source,currentSource,manifest,humanLabels,creator}){
   validateManifest(manifest);
-  assert.equal(raw.contractVersion,MODEL_CONTRACT_VERSION,'Raw report contract changed');
+  assert.ok([historicalCodexContract,MODEL_CONTRACT_VERSION].includes(raw.contractVersion),'Raw report contract changed');
   assert.equal(raw.runnerVersion,'3.0.0','Raw report runner changed');
   assert.equal(raw.mode,'live model on synthetic inputs','Expected a live-model raw report');
   assert.ok(typeof raw.model==='string'&&raw.model.trim(),'Codex model is required');
@@ -34,9 +35,9 @@ export function reviewArtifacts({raw,frozen,audit,reviewPacket,semanticReviews,s
   assert.ok(source.note?.trim());assert.ok(source.files&&typeof source.files==='object');
   for(const required of ['evaluation/run.js','src/model-contracts.js'])assert.match(source.files[required],/^[a-f0-9]{64}$/,`Missing captured source hash: ${required}`);
   assert.match(currentSource.codeChecksum,/^[a-f0-9]{64}$/);assert.ok(currentSource.files&&typeof currentSource.files==='object');
-  for(const file of protectedModelFiles){assert.match(source.files[file],/^[a-f0-9]{64}$/,`Missing captured model-contract source hash: ${file}`);assert.equal(currentSource.files[file],source.files[file],`Model-contract source changed after the live run: ${file}`);}
+  for(const file of protectedModelFiles){assert.match(source.files[file],/^[a-f0-9]{64}$/,`Missing captured model-contract source hash: ${file}`);if(file==='src/model-contracts.js'&&raw.contractVersion===historicalCodexContract&&MODEL_CONTRACT_VERSION!==historicalCodexContract)continue;assert.equal(currentSource.files[file],source.files[file],`Model-contract source changed after the live run: ${file}`);}
 
-  assert.equal(frozen.schemaVersion,2);assert.equal(frozen.contractVersion,MODEL_CONTRACT_VERSION);assert.equal(frozen.model,raw.model,'Frozen analysis model differs from raw report');
+  assert.equal(frozen.schemaVersion,2);assert.equal(frozen.contractVersion,raw.contractVersion);assert.equal(frozen.model,raw.model,'Frozen analysis model differs from raw report');
   assert.equal(frozen.effort,raw.configuration?.effort,'Frozen analysis effort differs from raw report');
   assert.equal(frozen.serviceTier,raw.configuration?.serviceTier,'Frozen analysis service tier differs from raw report');
   assert.equal(frozen.jdChecksum,sha(manifest.jobs),'Frozen analysis does not match evaluation jobs');
@@ -45,7 +46,7 @@ export function reviewArtifacts({raw,frozen,audit,reviewPacket,semanticReviews,s
   for(const job of manifest.jobs){const analysis=analyses.get(job.text);assert.ok(analysis,`Missing frozen analysis for ${job.id}`);checkAnalysis(analysis,job);}
 
   assert.equal(raw.results.length,60,'Raw report must contain all sixty case repeats');
-  assert.equal(audit.schemaVersion,2);assert.equal(audit.contractVersion,MODEL_CONTRACT_VERSION);assert.equal(audit.automaticPass,true);assert.equal(audit.cases.length,60,'Bilingual audit must contain all sixty outputs');
+  assert.equal(audit.schemaVersion,2);assert.equal(audit.contractVersion,raw.contractVersion);assert.equal(audit.automaticPass,true);assert.equal(audit.cases.length,60,'Bilingual audit must contain all sixty outputs');
   const seen=new Set(),semanticAudits=[];
   for(const result of raw.results){
     const key=`${result.caseId}:${result.repeat}`;assert.ok(!seen.has(key),`Duplicate result ${key}`);seen.add(key);
@@ -53,9 +54,9 @@ export function reviewArtifacts({raw,frozen,audit,reviewPacket,semanticReviews,s
     const c=manifest.cases.find(item=>item.id===result.caseId);assert.ok(c,`Unknown case ${result.caseId}`);
     const job=manifest.jobs.find(item=>item.id===c.jobId),analysis=analyses.get(job.text);
     const selected=analysis.questions.find(question=>question.category===c.category);assert.ok(selected,`${key}: frozen category missing`);same(result.question,selected,`${key}: question differs from the frozen selected category question`);
-    assert.equal(result.inputChecksum,inputChecksum(job,c,result.question),`${key}: stale input checksum`);
+    assert.equal(result.inputChecksum,inputChecksum(job,c,result.question,raw.contractVersion),`${key}: stale input checksum`);
     checkFeedback(result.feedback,c);
-    assert.equal(result.outputChecksum,outputChecksum(result.caseId,result.repeat,result.question,result.feedback),`${key}: stale output checksum`);
+    assert.equal(result.outputChecksum,outputChecksum(result.caseId,result.repeat,result.question,result.feedback,raw.contractVersion),`${key}: stale output checksum`);
     const rebuilt=checkBilingualConsistency(result.question,result.feedback);assert.equal(rebuilt.pass,true,`${key}: automatic bilingual checks failed`);same(result.bilingualAudit,rebuilt,`${key}: raw bilingual audit changed`);
     const matches=audit.cases.filter(item=>item.caseId===result.caseId&&item.repeat===result.repeat);assert.equal(matches.length,1,`${key}: missing or duplicate audit`);const audited=matches[0];
     assert.equal(audited.outputChecksum,result.outputChecksum,`${key}: audit checksum changed`);same(audited.pairs,rebuilt.pairs,`${key}: audited bilingual pairs changed`);same(audited.errors,rebuilt.errors,`${key}: audited errors changed`);
@@ -64,12 +65,12 @@ export function reviewArtifacts({raw,frozen,audit,reviewPacket,semanticReviews,s
   for(const c of manifest.cases){const repeats=raw.results.filter(result=>result.caseId===c.id);assert.deepEqual(repeats.map(result=>result.repeat).sort(),[1,2,3]);assert.equal(new Set(repeats.map(result=>result.inputChecksum)).size,1,`${c.id}: input changed across repeats`);}
   const repeated=stability(raw.results);same(raw.stability,repeated,'Raw stability summary changed');assert.equal(repeated.pass,true,'Live rating stability failed');
 
-  const semantic=semanticReviewStatus(semanticAudits,semanticReviews);
+  const semantic=semanticReviewStatus(semanticAudits,semanticReviews,raw.contractVersion);
   const hasInconsistency=(semanticReviews.reviews||[]).some(review=>review.verdict==='inconsistent');
   const bilingualStatus=semantic.pass?'PASS':hasInconsistency?'FAIL':'PENDING';
-  const packet=manifest.cases.map(c=>{const result=raw.results.find(item=>item.caseId===c.id&&item.repeat===1),job=manifest.jobs.find(item=>item.id===c.jobId);return {caseId:c.id,inputChecksum:result.inputChecksum,contractVersion:MODEL_CONTRACT_VERSION,job:job.text,question:result.question,transcript:c.transcript,tags:c.tags,proposedExpectation:c.proposedExpectation,bilingualAudit:result.bilingualAudit,humanLabelTemplate:{caseId:c.id,inputChecksum:result.inputChecksum,status:'pending',reviewer:null,reviewedAt:null,ranges:Object.fromEntries(dimensions.map(d=>[d,null])),rationale:null,evidenceQuotes:[],requiredFindings:[],forbiddenFindings:[],bilingualSemanticConsistency:'pending'}};});
+  const packet=manifest.cases.map(c=>{const result=raw.results.find(item=>item.caseId===c.id&&item.repeat===1),job=manifest.jobs.find(job=>job.id===c.jobId);return {caseId:c.id,inputChecksum:result.inputChecksum,contractVersion:raw.contractVersion,job:job.text,question:result.question,transcript:c.transcript,tags:c.tags,proposedExpectation:c.proposedExpectation,bilingualAudit:result.bilingualAudit,humanLabelTemplate:{caseId:c.id,inputChecksum:result.inputChecksum,status:'pending',reviewer:null,reviewedAt:null,ranges:Object.fromEntries(dimensions.map(d=>[d,null])),rationale:null,evidenceQuotes:[],requiredFindings:[],forbiddenFindings:[],bilingualSemanticConsistency:'pending'}};});
   same(reviewPacket,packet,'Saved Codex review packet differs from the raw report and fixtures');
-  const labels=labelStatus(packet,humanLabels),comparedLabels=compareLabelExpectations(raw.results,labels.approved),creatorGate=creatorStatus(creator);
+  const labels=labelStatus(packet,humanLabels,raw.contractVersion),comparedLabels=compareLabelExpectations(raw.results,labels.approved),creatorGate=creatorStatus(creator);
   const labelPass=labels.pass&&comparedLabels.failures.length===0;
   const labelGate={pass:labelPass,status:labelPass?'PASS':humanLabels.labels?.length?'FAIL':'PENDING',mode:labels.mode,provenanceMode:humanLabels.labelProvenance?.mode||null,approved:labels.approved.length,comparedOutputs:comparedLabels.comparisons.length,errors:labels.errors,comparisonFailures:comparedLabels.failures};
   const blockers=[];
@@ -77,7 +78,7 @@ export function reviewArtifacts({raw,frozen,audit,reviewPacket,semanticReviews,s
   if(!labelPass)blockers.push('Evaluation labels pending, stale or outside approved expectations');
   blockers.push(...creatorGate.errors);
   return {
-    reviewVersion:'1.0.0',contractVersion:MODEL_CONTRACT_VERSION,generatedAt:new Date().toISOString(),
+    reviewVersion:'1.0.0',contractVersion:raw.contractVersion,generatedAt:new Date().toISOString(),
     rawReport:{generatedAt:raw.generatedAt,provider:raw.provider,model:raw.model,codeChecksum:raw.codeChecksum,checksum:sha(raw)},
     sourceEvidence:{rawCodeChecksum:source.codeChecksum,capturedModelRunMatchesRaw:true,capturedNote:source.note,currentCodeChecksum:currentSource.codeChecksum,currentMatchesRaw:currentSource.codeChecksum===source.codeChecksum,changedFiles:Object.keys(source.files).filter(file=>currentSource.files[file]!==source.files[file]).sort()},
     artifactChecksums:{frozenAnalysis:sha(frozen),reviewPacket:sha(reviewPacket),bilingualAudit:sha(audit),semanticReviews:sha(semanticReviews),humanLabels:sha(humanLabels),creatorValidation:sha(creator)},

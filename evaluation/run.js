@@ -18,6 +18,9 @@ const readFixture=name=>readFile(join(root,'v1',name),'utf8').then(JSON.parse);
 const artifactDirectory=join(root,'v3');
 const readArtifact=name=>readFile(join(artifactDirectory,name),'utf8').then(JSON.parse);
 const manifest=await readFixture('manifest.json');validateManifest(manifest);
+// Contract 3.0.0 owns the v3 artifact paths. Keep its captured evidence immutable
+// until the runner can write a distinct artifact set for the revised contract.
+if(MODEL_CONTRACT_VERSION!=='3.0.0')throw Error('Evaluation artifact paths are reserved for contract 3.0.0; use a versioned runner output before evaluating the revised contract.');
 const subscription=process.argv.includes('--codex');
 if(subscription&&process.argv.includes('--live'))throw Error('Choose only one live provider');
 const live=subscription||process.argv.includes('--live');

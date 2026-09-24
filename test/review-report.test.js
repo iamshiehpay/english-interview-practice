@@ -80,6 +80,17 @@ test('saved Codex run retains automatic PASS while approved label mismatches blo
   assert.equal(reviewed.labelGate.approved,20);
   assert.equal(reviewed.labelGate.comparedOutputs,60);
   assert.equal(reviewed.labelGate.comparisonFailures.length,8);
+  assert.deepEqual(reviewed.labelGate.comparisonFailures.map(({caseId,repeat,error})=>[caseId,repeat,error]),[
+    ['ai-experience-depth',1,'englishExpression rating outside approved range'],
+    ['ai-experience-depth',3,'englishExpression rating outside approved range'],
+    ['backend-behavioral',1,'englishExpression rating outside approved range'],
+    ['backend-behavioral',2,'englishExpression rating outside approved range'],
+    ['backend-behavioral',3,'englishExpression rating outside approved range'],
+    ['embedded-technical-communication',1,'englishExpression rating outside approved range'],
+    ['embedded-technical-communication',2,'englishExpression rating outside approved range'],
+    ['embedded-technical-communication',3,'englishExpression rating outside approved range']
+  ]);
+  assert.ok(reviewed.sourceEvidence.changedFiles.includes('src/model-contracts.js'));
   assert.equal(reviewed.labelGate.status,'FAIL');
   assert.equal(reviewed.releaseStatus,'BLOCKED');
 });

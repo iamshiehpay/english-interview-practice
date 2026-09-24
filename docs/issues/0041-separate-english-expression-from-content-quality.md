@@ -1,5 +1,5 @@
 ---
-status: needs-triage
+status: completed
 ---
 
 # Investigate English-expression penalties for grammatical but unsupported answers
@@ -28,3 +28,5 @@ The twenty approvals and verbatim evidence are structurally valid. Required/forb
 ## Comments
 
 2026-09-24: Filed from independent `review0031` label approval during 0036. Eight comparison failures are model-quality evidence; the new offline gate detecting them is working as designed. No model source was changed and no additional inference was requested.
+
+2026-09-24: Compared all eight saved reasons with the fixed AI-approved ranges and documented the dimension boundary in [the 0041 handoff](../verification/0041-expression-rubric-handoff.md). Feedback contract 3.1.0 now tells the model to score clear English independently of task fit and unsupported content. Regression coverage preserves the exact eight historical failures and offline review of contract 3.0.0. Implementation complete; release remains BLOCKED pending separately authorized fresh model evidence and independent review. No saved model output or approved label changed.

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {validateManifest,checkAnalysis,checkFrozenAnalysis,checkFeedback,stability,labelStatus,compareLabelExpectations,evaluationGateSummary,creatorStatus,dimensions} from '../evaluation/checks.js';
 import {FakeLanguageModel} from '../src/providers.js';
+import {MODEL_CONTRACT_VERSION} from '../src/model-contracts.js';
 const manifest=JSON.parse(await readFile(new URL('../evaluation/v1/manifest.json',import.meta.url)));
 test('evaluation fixtures cover required matrix and reject missing/duplicate cases',()=>{
   validateManifest(manifest);
@@ -78,8 +79,8 @@ test('approved human labels bind to exact inputs and transcript evidence; stale 
   labels.labels[0].inputChecksum=packet[0].inputChecksum;labels.labels[0].evidenceQuotes=['invented evidence'];assert.equal(labelStatus(packet,labels).pass,false);
 });
 function approvedV2Labels(){
-  const packet=Array.from({length:20},(_,i)=>({caseId:`case-${i}`,inputChecksum:`checksum-${i}`,contractVersion:'3.0.0',transcript:'I would test the failure path.'}));
-  const labels={schemaVersion:2,contractVersion:'3.0.0',labelProvenance:{mode:'persona-drafted-ai-approved',drafter:'Rater persona',approver:'Independent AI reviewer'},labels:packet.map(p=>({caseId:p.caseId,inputChecksum:p.inputChecksum,status:'approved',reviewerType:'ai',reviewer:'Independent AI reviewer',reviewedAt:'2026-09-24T00:00:00Z',rationale:'Reasoned hypothetical support.',ranges:Object.fromEntries(dimensions.map(d=>[d,[2,3]])),evidenceQuotes:['test the failure path'],requiredFindings:[],forbiddenFindings:[],bilingualSemanticConsistency:'approved'}))};
+  const packet=Array.from({length:20},(_,i)=>({caseId:`case-${i}`,inputChecksum:`checksum-${i}`,contractVersion:MODEL_CONTRACT_VERSION,transcript:'I would test the failure path.'}));
+  const labels={schemaVersion:2,contractVersion:MODEL_CONTRACT_VERSION,labelProvenance:{mode:'persona-drafted-ai-approved',drafter:'Rater persona',approver:'Independent AI reviewer'},labels:packet.map(p=>({caseId:p.caseId,inputChecksum:p.inputChecksum,status:'approved',reviewerType:'ai',reviewer:'Independent AI reviewer',reviewedAt:'2026-09-24T00:00:00Z',rationale:'Reasoned hypothetical support.',ranges:Object.fromEntries(dimensions.map(d=>[d,[2,3]])),evidenceQuotes:['test the failure path'],requiredFindings:[],forbiddenFindings:[],bilingualSemanticConsistency:'approved'}))};
   return {packet,labels};
 }
 test('twenty explicitly AI-reviewed v2 labels pass with AI provenance',()=>{
@@ -130,6 +131,19 @@ test('approved label ranges and literal findings are compared across all three s
   compared=compareLabelExpectations(results,[label]);
   assert.equal(compared.failures.length,3);
   assert.match(compared.failures[0].error,/Forbidden finding present/);
+});
+test('approved rubric separates fluent unsupported content from unclear mixed-language expression',async()=>{
+  const artifact=JSON.parse(await readFile(new URL('../evaluation/v3/human-labels.json',import.meta.url)));
+  const fluent=artifact.labels.find(label=>label.caseId==='backend-behavioral');
+  const mixed=artifact.labels.find(label=>label.caseId==='ai-role-fit');
+  assert.deepEqual([fluent.ranges.relevance,fluent.ranges.support,fluent.ranges.englishExpression],[[1,1],[1,1],[3,4]]);
+  assert.deepEqual(mixed.ranges.englishExpression,[2,3]);
+  const feedback=(relevance,support,englishExpression)=>({ratings:{relevance:{level:relevance,reason:'clear'},support:{level:support,reason:'clear'},structure:{level:1,reason:'clear'},englishExpression:{level:englishExpression,reason:'clear'}},strength:{text:'clear'},priorityImprovement:{text:'clear'}});
+  const expectation=label=>({...label,requiredFindings:[],forbiddenFindings:[]});
+  assert.equal(compareLabelExpectations([{caseId:fluent.caseId,repeat:1,feedback:feedback(1,1,3)}],[expectation(fluent)]).failures.length,0);
+  assert.match(compareLabelExpectations([{caseId:fluent.caseId,repeat:1,feedback:feedback(1,1,2)}],[expectation(fluent)]).failures[0].error,/englishExpression/);
+  const unclear=feedback(3,2,2);unclear.ratings.structure.level=2;
+  assert.equal(compareLabelExpectations([{caseId:mixed.caseId,repeat:1,feedback:unclear}],[expectation(mixed)]).failures.length,0);
 });
 test('runner gate summary keeps raw automatic success separate from approved label failures',()=>{
   const {packet,labels:artifact}=approvedV2Labels(),labels=labelStatus(packet,artifact);

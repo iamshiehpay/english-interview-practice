@@ -13,7 +13,7 @@ const zh=/\p{Script=Han}/u;
 
 test('new Question Sets and Feedback Reports use the shared bilingual contract',async t=>{
   const {api}=await harness(t);const {analysis,record}=await setup(api);
-  assert.equal(MODEL_CONTRACT_VERSION,'3.0.0');
+  assert.equal(MODEL_CONTRACT_VERSION,'3.1.0');
   for(const question of analysis.questions){
     assert.ok(question.text.trim());assert.match(question.meaningZh,zh);
     assert.ok(question.rationale.trim());assert.match(question.rationaleZh,zh);

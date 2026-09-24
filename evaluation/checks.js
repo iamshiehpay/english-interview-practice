@@ -4,8 +4,8 @@ import {MODEL_CONTRACT_VERSION} from '../src/model-contracts.js';
 export const dimensions=['relevance','support','structure','englishExpression'];
 export const categories=['role-fit','experience-depth','behavioral','technical-communication'];
 const keys=(v,n)=>assert.deepEqual(Object.keys(v).sort(),[...n].sort());
-export function inputChecksum(job,c,question){return createHash('sha256').update(JSON.stringify({contractVersion:MODEL_CONTRACT_VERSION,job:job.text,category:c.category,transcript:c.transcript,question})).digest('hex');}
-export function outputChecksum(caseId,repeat,question,feedback){return createHash('sha256').update(JSON.stringify({contractVersion:MODEL_CONTRACT_VERSION,caseId,repeat,question,feedback})).digest('hex');}
+export function inputChecksum(job,c,question,contractVersion=MODEL_CONTRACT_VERSION){return createHash('sha256').update(JSON.stringify({contractVersion,job:job.text,category:c.category,transcript:c.transcript,question})).digest('hex');}
+export function outputChecksum(caseId,repeat,question,feedback,contractVersion=MODEL_CONTRACT_VERSION){return createHash('sha256').update(JSON.stringify({contractVersion,caseId,repeat,question,feedback})).digest('hex');}
 const han=/\p{Script=Han}/u;
 export function checkBilingualConsistency(question,feedback){
   const pairs=[['question meaning',question?.text,question?.meaningZh],['question rationale',question?.rationale,question?.rationaleZh],...dimensions.map(d=>[`${d} reason`,feedback?.ratings?.[d]?.reason,feedback?.ratings?.[d]?.reasonZh]),['strength',feedback?.strength?.text,feedback?.strength?.textZh],['priority improvement',feedback?.priorityImprovement?.text,feedback?.priorityImprovement?.textZh]];
@@ -49,11 +49,11 @@ export function stability(results){
   for(const id of ids){const runs=results.filter(r=>r.caseId===id);assert.equal(runs.length,3);assert.deepEqual(runs.map(r=>r.repeat).sort(),[1,2,3]);for(const d of dimensions){const levels=runs.map(r=>r.feedback.ratings[d].level);if(Math.max(...levels)-Math.min(...levels)<=1)stable++;}}
   return {stable,total,ratio:total?stable/total:0,pass:total===80&&stable/total>=0.9};
 }
-export function labelStatus(packet,labels){
+export function labelStatus(packet,labels,contractVersion=MODEL_CONTRACT_VERSION){
   const errors=[];const approved=[];
   const current=packet.some(item=>item.contractVersion);
   if(labels.schemaVersion!==(current?2:1))errors.push('Unsupported label schema');
-  if(current&&labels.contractVersion!==MODEL_CONTRACT_VERSION)errors.push('Stale model contract version');
+  if(current&&labels.contractVersion!==contractVersion)errors.push('Stale model contract version');
   const entries=Array.isArray(labels.labels)?labels.labels:[];
   if(!Array.isArray(labels.labels))errors.push('Label entries must be an array');
   const typed=entries.some(label=>Object.hasOwn(label,'reviewerType'));
@@ -98,9 +98,9 @@ export function evaluationGateSummary({failures,results,repeated,semanticReview,
   if(!live)blockers.push('Live-model semantic quality and rating stability not evaluated; fixed fake ratings are not quality evidence');
   return {automatedPass,labelGate,blockers,releaseStatus:blockers.length?'BLOCKED':creator.validationMode==='ai-persona'?'AI-validated':'PASS'};
 }
-export function semanticReviewStatus(audits,artifact){
+export function semanticReviewStatus(audits,artifact,contractVersion=MODEL_CONTRACT_VERSION){
   const errors=[];const reviewed=[];
-  if(artifact.schemaVersion!==2||artifact.contractVersion!==MODEL_CONTRACT_VERSION)errors.push('Unsupported or stale semantic review schema');
+  if(artifact.schemaVersion!==2||artifact.contractVersion!==contractVersion)errors.push('Unsupported or stale semantic review schema');
   if(artifact.reviewerType!=='ai'||!artifact.reviewer?.trim()||!Number.isFinite(Date.parse(artifact.reviewedAt)))errors.push('Independent AI reviewer identity and review time are required');
   for(const item of audits){const matches=(artifact.reviews||[]).filter(review=>review.caseId===item.caseId&&review.repeat===item.repeat);const review=matches[0];try{
     assert.equal(matches.length,1);assert.equal(review.outputChecksum,item.outputChecksum);assert.ok(['consistent','inconsistent'].includes(review.verdict));assert.ok(review.rationale?.trim());assert.ok(Array.isArray(review.contradictoryPairs));
