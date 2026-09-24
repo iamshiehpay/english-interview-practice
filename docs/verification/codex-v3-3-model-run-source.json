@@ -1,0 +1,33 @@
+{
+  "codeChecksum": "4fb4310e9abb2f596708aaebc7ce31981172903f34f1fe8c37160c4a905f8708",
+  "files": {
+    "evaluation/run.js": "d10cbce4055447610ff73ee5c9783de8b42a4e6ce2d01c2ae26a3307817b6cab",
+    "evaluation/checks.js": "34a3cd9e41239c42429bbf21eb21c7e3effbf907e6bf5c315d262584d7afa3c4",
+    "evaluation/checkpoints.js": "729b920e50674b7a58d2465a132e81b358fd8d4c2d618c75f0e6c485945ce614",
+    "evaluation/job-grounded-analysis.js": "e1ae6b3dccbeda9343d0e0b480bb57478e786b2af0796e1608e4a5fd97491ef1",
+    "src/common-questions.js": "ea4d8afd9c697c738c308958f6bf074d8bbbb839d63353756591a2add7e70e6d",
+    "src/server.js": "08fc412e9ff5b13eaea0b663102a06e748c17af99bcb29106ae8ba88e6192269",
+    "src/operations.js": "0167aad1e46cd67e459d241ca6f05a0b22df0461f7152a17c6493d11ccedc134",
+    "src/store.js": "f56d775b1f6d5696af4f572297ae68def5a6c20b4166126529c593895c05fe5a",
+    "src/domain.js": "da14ab080620381fb83e4451efbcbafe974ab03b3c70691ab368afcbfa2ed86a",
+    "src/providers.js": "d803a9132f44c4467aaf3711d7927adc913d4c2866ebec8291f42db361967a7d",
+    "src/cloud.js": "10b01a56d0d7386d4cfa36bab213ea34ce5f70d72c837f0c714b608226011499",
+    "src/codex-language.js": "0d21dd03935c2b038ad7a22cc9542965b16fbd9aa1f238684dafb3dce2fe396d",
+    "src/codex-profile.js": "f5a7cf356f2904b15b2d4f5f23d46c6a4f32a488ebcd53eb306a62d61761ffe3",
+    "src/codex-rpc.js": "de1cade90cbf00fdf2a7069acbd4337bf2aa2b1eb0121bcacf4aa32b4ec2435a",
+    "src/codex-audit.js": "79c5f4ad49376b8feba7082493f903ff607bd2ca937bc4058950a9a40c2f9386",
+    "src/codex-sandbox.js": "61b3735ba43390d526ee79165c2574a6e71065b597fd6d0ea0c15dcff2737abb",
+    "src/codex-runtime.js": "48e1c83f15cd68fdbf4a6cd69c30aa34ae45df7f5bf109d148b07c185083ee32",
+    "src/model-contracts.js": "63f8c3cacc6bcb9953601d970db1e7a0824e59f8be7da9fb5fa9a45aede665e1",
+    "src/model-schemas.js": "491244c1916f4e4696ab5e237a01b45f9c10326f8fc40f4308bca93e016dcd70",
+    "src/resume.js": "9843f1d4ef442f34a23064962af01ce5792e39443cf6f0b5996d31cd61144fff",
+    "src/progress.js": "209ad5a02236fe0949f5ad0a508db53cf4221aaaf6fb9e6b615f5e1dd56bfe45",
+    "src/evidence.js": "17ed831996e3f0ea534cfaf7e1f727807efacabfcc3ff92f6561e36c6eb10722",
+    "src/jobs.js": "a15449acf87f8c990e4008c603725880f304cf15acccca86d06f3da18ec385c0",
+    "src/speech.js": "ccd59db8cb7e8ceabf00a6f86ef187da54a7fdce0f1be24b4db13214c6eba4ad",
+    "src/recordings.js": "f482aab0a2a5f215877ad779fe7a2756af174a1bab4566ba5fb444717a3a3f5f",
+    "src/mock-sessions.js": "dd972b82f5f8f01ed5fed9b244e78fd16c69b99768259c5123993e7337a604a8"
+  },
+  "capturedAt": "2026-09-24T14:58:42.886Z",
+  "note": "Captured immediately before the single authorized Codex v3-3 evaluation run."
+}

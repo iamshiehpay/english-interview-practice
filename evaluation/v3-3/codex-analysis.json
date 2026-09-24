@@ -1,0 +1,332 @@
+{
+  "schemaVersion": 2,
+  "contractVersion": "3.3.0",
+  "model": "gpt-5.6-luna",
+  "effort": "xhigh",
+  "serviceTier": "priority",
+  "jdChecksum": "3f6dfe10f42c2e2542dec7b171528e409c40da289c6d7bd18af3e44141ba754a",
+  "entries": [
+    [
+      "Evaluate retrieval quality for a Mandarin support assistant.\nBuild Python inference services in Taipei.\nDiscuss model limitations with product colleagues.\nExplain latency and accuracy trade-offs.",
+      {
+        "capabilities": [
+          {
+            "id": "cap-1",
+            "description": "Evaluate retrieval quality for a Mandarin support assistant.",
+            "evidence": "Evaluate retrieval quality for a Mandarin support assistant.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap-2",
+            "description": "Build Python inference services in Taipei.",
+            "evidence": "Build Python inference services in Taipei.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap-3",
+            "description": "Discuss model limitations with product colleagues.",
+            "evidence": "Discuss model limitations with product colleagues.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap-4",
+            "description": "Explain latency and accuracy trade-offs.",
+            "evidence": "Explain latency and accuracy trade-offs.",
+            "kind": "fact"
+          }
+        ],
+        "questions": [
+          {
+            "id": "q-1",
+            "text": "What motivates you to work on retrieval quality for a Mandarin support assistant?",
+            "meaningZh": "是什麼激勵你從事中文支援助理的檢索品質工作？",
+            "rationale": "This probes your motivation for the role’s stated retrieval-quality focus.",
+            "rationaleZh": "這是在探查你對該職位所強調之檢索品質重點的動機。",
+            "category": "role-fit",
+            "capabilityIds": [
+              "cap-1"
+            ],
+            "evidence": "Evaluate retrieval quality for a Mandarin support assistant."
+          },
+          {
+            "id": "q-2",
+            "text": "How would you decide whether building Python inference services in Taipei aligns with your interests and working preferences?",
+            "meaningZh": "你會如何判斷在台北建置 Python 推論服務是否符合你的興趣與工作偏好？",
+            "rationale": "This checks alignment with the role’s stated technical work and location.",
+            "rationaleZh": "這是在確認你是否認同該職位所描述的技術工作與地點。",
+            "category": "role-fit",
+            "capabilityIds": [
+              "cap-2"
+            ],
+            "evidence": "Build Python inference services in Taipei."
+          },
+          {
+            "id": "q-3",
+            "text": "Describe a retrieval-quality evaluation you have performed, or how would you approach this if you have not encountered it?",
+            "meaningZh": "請描述你曾進行過的檢索品質評估；如果你沒有遇過這種情況，你會如何處理？",
+            "rationale": "This assesses practical depth in evaluating retrieval quality without assuming prior experience.",
+            "rationaleZh": "這是在評估你進行檢索品質評估的實務深度，但不預設你已有相關經驗。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap-1"
+            ],
+            "evidence": "Evaluate retrieval quality for a Mandarin support assistant."
+          },
+          {
+            "id": "q-4",
+            "text": "Walk me through how you would design a Python inference service for a Mandarin support assistant, including the first concrete constraint you would address.",
+            "meaningZh": "請逐步說明你會如何為中文支援助理設計 Python 推論服務，包括你會優先處理的第一個具體限制。",
+            "rationale": "This tests whether you can turn the service requirement into a concrete implementation approach.",
+            "rationaleZh": "這是在測試你是否能將服務需求轉化為具體的實作方法。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap-2"
+            ],
+            "evidence": "Build Python inference services in Taipei."
+          },
+          {
+            "id": "q-5",
+            "text": "Tell me about a time you explained a model limitation to a product colleague, or how would you approach this if you have not encountered it?",
+            "meaningZh": "請告訴我一次你向產品同事說明模型限制的經驗；如果你沒有遇過這種情況，你會如何處理？",
+            "rationale": "This evaluates your ability to communicate model limitations in a product setting without presupposing experience.",
+            "rationaleZh": "這是在評估你在產品情境中溝通模型限制的能力，但不預設你已有相關經驗。",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap-3"
+            ],
+            "evidence": "Discuss model limitations with product colleagues."
+          },
+          {
+            "id": "q-6",
+            "text": "Imagine that product colleagues disagree with your assessment of a model limitation. How would you discuss the issue constructively?",
+            "meaningZh": "假設產品同事不同意你對模型限制的評估，你會如何建設性地討論這個問題？",
+            "rationale": "This probes how you handle disagreement while discussing model limitations with product colleagues.",
+            "rationaleZh": "這是在探查你如何在與產品同事討論模型限制時處理意見分歧。",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap-3"
+            ],
+            "evidence": "Discuss model limitations with product colleagues."
+          },
+          {
+            "id": "q-7",
+            "text": "Tell me about a time you made a latency-versus-accuracy trade-off, or how would you approach this if you have not encountered it?",
+            "meaningZh": "請告訴我一次你在延遲與準確度之間做出取捨的經驗；如果你沒有遇過這種情況，你會如何處理？",
+            "rationale": "This assesses whether you can reason about the central performance trade-off in the role.",
+            "rationaleZh": "這是在評估你是否能推理該職位核心的效能取捨。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap-4"
+            ],
+            "evidence": "Explain latency and accuracy trade-offs."
+          },
+          {
+            "id": "q-8",
+            "text": "If product colleagues ask for higher accuracy without accepting more latency, how would you respond?",
+            "meaningZh": "如果產品同事要求更高的準確度，卻不接受更高的延遲，你會如何回應？",
+            "rationale": "This tests your approach to explaining competing performance goals under a realistic constraint.",
+            "rationaleZh": "這是在測試你如何在現實限制下說明相互競爭的效能目標。",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap-4"
+            ],
+            "evidence": "Explain latency and accuracy trade-offs."
+          },
+          {
+            "id": "q-9",
+            "text": "How would you explain a retrieval-quality result and its implications to product colleagues who are not specialists in machine learning?",
+            "meaningZh": "你會如何向非機器學習專業的產品同事解釋檢索品質結果及其影響？",
+            "rationale": "This probes your ability to make retrieval-quality findings understandable to product colleagues.",
+            "rationaleZh": "這是在探查你是否能讓產品同事理解檢索品質的發現。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap-1"
+            ],
+            "evidence": "Evaluate retrieval quality for a Mandarin support assistant."
+          },
+          {
+            "id": "q-10",
+            "text": "How would you explain a latency and accuracy trade-off to product colleagues using a simple example?",
+            "meaningZh": "你會如何使用簡單的例子向產品同事解釋延遲與準確度之間的取捨？",
+            "rationale": "This evaluates whether you can communicate a technical trade-off clearly to product stakeholders.",
+            "rationaleZh": "這是在評估你是否能向產品利害關係人清楚傳達技術取捨。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap-4"
+            ],
+            "evidence": "Explain latency and accuracy trade-offs."
+          }
+        ]
+      }
+    ],
+    [
+      "Build reliable payment APIs in Taipei.\nUse PostgreSQL transactions and automated tests.\nCollaborate on incident reviews without blame.\nExplain consistency and availability trade-offs.",
+      {
+        "capabilities": [
+          {
+            "id": "cap-api",
+            "description": "Build reliable payment APIs in Taipei.",
+            "evidence": "Build reliable payment APIs in Taipei.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap-database-testing",
+            "description": "Use PostgreSQL transactions and automated tests.",
+            "evidence": "Use PostgreSQL transactions and automated tests.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap-blameless-reviews",
+            "description": "Collaborate on incident reviews without blame.",
+            "evidence": "Collaborate on incident reviews without blame.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap-tradeoffs",
+            "description": "Explain consistency and availability trade-offs.",
+            "evidence": "Explain consistency and availability trade-offs.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap-failure-handling",
+            "description": "Reliability likely includes explicit handling of failure scenarios in payment APIs.",
+            "evidence": "Build reliable payment APIs in Taipei.",
+            "kind": "inference"
+          },
+          {
+            "id": "cap-technical-explanation",
+            "description": "The role likely expects clear explanations of distributed-systems trade-offs.",
+            "evidence": "Explain consistency and availability trade-offs.",
+            "kind": "inference"
+          }
+        ],
+        "questions": [
+          {
+            "id": "q01",
+            "text": "What interests you about building reliable payment APIs in Taipei, and what does reliability mean to you in this domain?",
+            "meaningZh": "是什麼吸引你在臺北打造可靠的支付 API？在這個領域中，可靠性對你而言代表什麼？",
+            "rationale": "Assesses motivation for the payment domain, location, and the candidate’s definition of reliability.",
+            "rationaleZh": "評估候選人對支付領域與工作地點的動機，以及其對可靠性的定義。",
+            "category": "role-fit",
+            "capabilityIds": [
+              "cap-api"
+            ],
+            "evidence": "Build reliable payment APIs in Taipei."
+          },
+          {
+            "id": "q02",
+            "text": "Design a reliable payment API and explain how you would handle retries, duplicate requests, and partial failures.",
+            "meaningZh": "請設計一個可靠的支付 API，並說明你會如何處理重試、重複請求與部分失敗。",
+            "rationale": "Assesses whether the candidate can turn a reliability goal into concrete API failure-handling decisions.",
+            "rationaleZh": "評估候選人是否能將可靠性目標轉化為具體的 API 失敗處理決策。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap-api",
+              "cap-failure-handling"
+            ],
+            "evidence": "Build reliable payment APIs in Taipei."
+          },
+          {
+            "id": "q03",
+            "text": "How would you choose PostgreSQL transaction boundaries to preserve data correctness while avoiding unnecessary locking or latency?",
+            "meaningZh": "你會如何選擇 PostgreSQL 交易邊界，在維持資料正確性的同時避免不必要的鎖定或延遲？",
+            "rationale": "Assesses practical reasoning about transaction boundaries and database trade-offs.",
+            "rationaleZh": "評估候選人對交易邊界與資料庫取捨的實務推理能力。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap-database-testing"
+            ],
+            "evidence": "Use PostgreSQL transactions and automated tests."
+          },
+          {
+            "id": "q04",
+            "text": "For a payment API, which automated tests would you create, and how would you decide the scope of unit, integration, and end-to-end tests?",
+            "meaningZh": "針對支付 API，你會建立哪些自動化測試？你會如何決定單元、整合與端對端測試的範圍？",
+            "rationale": "Assesses test strategy across levels for payment behavior.",
+            "rationaleZh": "評估候選人針對支付行為制定各層級測試策略的能力。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap-database-testing"
+            ],
+            "evidence": "Use PostgreSQL transactions and automated tests."
+          },
+          {
+            "id": "q05",
+            "text": "Describe a project in which you used PostgreSQL transactions and automated tests, or how would you approach this if you have not encountered it?",
+            "meaningZh": "請描述一個你使用 PostgreSQL 交易與自動化測試的專案；如果你沒有遇過這種情況，你會如何處理？",
+            "rationale": "Tests depth of hands-on experience while allowing a hypothetical answer because no experience is assumed.",
+            "rationaleZh": "測試實作經驗的深度，同時因未假設候選人具備相關經驗而允許以假設情境回答。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap-database-testing"
+            ],
+            "evidence": "Use PostgreSQL transactions and automated tests."
+          },
+          {
+            "id": "q06",
+            "text": "Tell me about a time you participated in an incident review without blaming individuals, or how would you approach this if you have not encountered it?",
+            "meaningZh": "請分享一次你在不責怪個人的前提下參與事件檢討的經驗；如果你沒有遇過這種情況，你會如何處理？",
+            "rationale": "Assesses blameless incident-review behavior without assuming prior incident experience.",
+            "rationaleZh": "評估候選人進行無責備事件檢討的行為方式，而不假設其具備過往事件經驗。",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap-blameless-reviews"
+            ],
+            "evidence": "Collaborate on incident reviews without blame."
+          },
+          {
+            "id": "q07",
+            "text": "If someone began blaming a specific colleague during an incident review, how would you respond and move the discussion back toward system improvement?",
+            "meaningZh": "如果有人在事件檢討中開始責怪特定同事，你會如何回應，並將討論帶回系統改進？",
+            "rationale": "Assesses whether the candidate can redirect blame toward systemic learning.",
+            "rationaleZh": "評估候選人是否能將責備轉向系統性學習。",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap-blameless-reviews"
+            ],
+            "evidence": "Collaborate on incident reviews without blame."
+          },
+          {
+            "id": "q08",
+            "text": "Explain the trade-off between consistency and availability to a product manager who is unfamiliar with distributed systems, and give an example of how you would choose.",
+            "meaningZh": "請向不熟悉分散式系統的產品經理解釋一致性與可用性之間的取捨，並舉例說明你會如何選擇。",
+            "rationale": "Assesses clarity when explaining distributed-systems trade-offs to a non-specialist.",
+            "rationaleZh": "評估候選人向非專業人士解釋分散式系統取捨時的清晰度。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap-tradeoffs",
+              "cap-technical-explanation"
+            ],
+            "evidence": "Explain consistency and availability trade-offs."
+          },
+          {
+            "id": "q09",
+            "text": "If a payment request timed out after the database commit, how would you analyze the situation and design the API behavior to prevent duplicate charges?",
+            "meaningZh": "如果支付請求在資料庫提交後逾時，你會如何分析情況，並設計 API 行為以避免重複扣款？",
+            "rationale": "Assesses reasoning about timeout ambiguity, transaction state, and duplicate-payment prevention.",
+            "rationaleZh": "評估候選人對逾時不確定性、交易狀態與防止重複扣款的推理能力。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap-api",
+              "cap-database-testing",
+              "cap-failure-handling"
+            ],
+            "evidence": "Build reliable payment APIs in Taipei."
+          },
+          {
+            "id": "q10",
+            "text": "Describe a time you disagreed with an incident-review conclusion while preserving a blameless process, or how would you approach this if you have not encountered it?",
+            "meaningZh": "請描述一次你不同意事件檢討結論、但仍維持無責備流程的經驗；如果你沒有遇過這種情況，你會如何處理？",
+            "rationale": "Assesses respectful disagreement and collaborative incident-review practices without assuming prior experience.",
+            "rationaleZh": "評估候選人尊重地處理分歧及協作進行事件檢討的方式，而不假設其具備過往經驗。",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap-blameless-reviews"
+            ],
+            "evidence": "Collaborate on incident reviews without blame."
+          }
+        ]
+      }
+    ]
+  ]
+}
