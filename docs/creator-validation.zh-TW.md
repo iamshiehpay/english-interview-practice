@@ -94,7 +94,7 @@
 
 若想自己指定類別而不是用系統推薦的題目，在題目頁按「**查看全部（N）**」，會出現「選一題來練習」頁面，題目依上表四類分組（每組標題就是表格右欄的字），挑一題卡片上寫「尚未作答」的，按卡片上的「**選這一題**」。
 
-貼 JD 時：用編輯器開啟對應的 `.workspace/validation-jds/xx-....txt`，**跳過第一行** `# 標題 — 公司 — 網址 — retrieved 日期` 的 header，只複製第二行以後的正文貼進「貼上完整職缺描述」欄位（macOS 可用 `tail -n +2 檔案路徑 | pbcopy` 直接複製到剪貼簿）。表單下方收合的「調整題目深度」不用展開，裡面的「練習深度」維持預設「依職缺要求」即可。按「**儲存職缺並產生題目**」後，頂列正下方的操作列會出現一列「產生題目 · 進行中」（右邊的「取消操作」不要按）；量測到的基準是一行 JD、Fast 模式約 43 秒，這五份是完整職缺全文，預期會更久（2026-09-24 以 JD 02 全文實測約 2 分 45 秒），請耐心等、不要重新整理或重複點擊。若第一次產出的題目沒通過檢查，系統會自動再請模型產生一次，所以偶爾可能要等到 5–6 分鐘；產生題目的等待上限是 6 分鐘（一般操作仍是 3 分鐘）。
+貼 JD 時：職缺名稱（頂列、練習紀錄的職缺卡片）取自貼上內容的**第一行**，所以第一行要是乾淨的「職稱 — 公司」；只貼正文的話，名稱會變成「[Job Overview]」「We Are」這類正文開頭。每個 `.workspace/validation-jds/xx-....txt` 的第一行是 `# 標題 — 公司 — 網址 — retrieved 日期` 的 header：**把第一行改成只剩「標題 — 公司」**（刪掉開頭的 `# `，以及後面的 ` — 網址 — retrieved 日期`），再連同第二行以後的正文整份貼進「貼上完整職缺描述」欄位。例如 JD 01 的第一行要保留成 `Senior LLM Engineer_FedGPT — Taiwan AI Labs_雅婷智慧股份有限公司`。macOS 可用 `sed -E '1s/^# //; 1s/ — https?:.*$//' 檔案路徑 | pbcopy` 直接把改好第一行的內容複製到剪貼簿（不會改動檔案本身）。如果名稱還是不對（例如之前已經只貼正文存過），到左側「**練習紀錄**」找到那張職缺卡片，按卡片右側的「**⋯**」（更多動作）→「**重新命名**」，輸入職稱後按「**儲存名稱**」。表單下方收合的「調整題目深度」不用展開，裡面的「練習深度」維持預設「依職缺要求」即可。按「**儲存職缺並產生題目**」後，頂列正下方的操作列會出現一列「產生題目 · 進行中」（右邊的「取消操作」不要按）；量測到的基準是一行 JD、Fast 模式約 43 秒，這五份是完整職缺全文，預期會更久（2026-09-24 以 JD 02 全文實測約 2 分 45 秒），請耐心等、不要重新整理或重複點擊。若第一次產出的題目沒通過檢查，系統會自動再請模型產生一次，所以偶爾可能要等到 5–6 分鐘；產生題目的等待上限是 6 分鐘（一般操作仍是 3 分鐘）。
 
 ---
 
@@ -104,7 +104,7 @@
 - JD 提到「Build AI solutions using techniques such as RAG, prompt engineering, tool/function calling, agents, and structured outputs」：回想一次你真的做過、最貼近這些技術的專案，是哪一個？
 - JD 提到「Ability to independently explore ambiguous problems, experiment quickly, and turn ideas into working solutions」：想一次你自己摸索、快速試錯做出成果的經驗。
 
-- [ ] 貼 `.workspace/validation-jds/02-liudu-tech-ai-engineer-virtual-insurance.txt`（去掉第一行）產生題目。
+- [ ] 貼 `.workspace/validation-jds/02-liudu-tech-ai-engineer-virtual-insurance.txt`（第一行改成「標題 — 公司」）產生題目。
 - [ ] 若推薦題不是 role-fit（「職務動機與適配」），按「查看全部（N）」在該分類底下選一題，按「選這一題」。
 - [ ] 按「**開始回答**」。
 - [ ] 在「你的回答」欄位用**文字**親自作答，按「**送出並取得回饋**」。
@@ -122,7 +122,7 @@
 - JD 提到「Experience designing evaluation strategies or frameworks for LLM or NLP systems」：你有沒有自己設計過評測方式或指標，哪怕規模很小？
 - 如果兩者都真的沒做過：如果現在要你從零開始做 fine-tuning，你會先查什麼、第一步會做什麼？
 
-- [ ] 貼 `.workspace/validation-jds/01-taiwan-ai-labs-senior-llm-engineer.txt`（去掉第一行）產生題目。
+- [ ] 貼 `.workspace/validation-jds/01-taiwan-ai-labs-senior-llm-engineer.txt`（第一行改成「標題 — 公司」）產生題目。
 - [ ] 在「查看全部」頁「技術說明」分類底下選一題你**確實沒做過**的能力（例如 fine-tuning／RL／大規模評測，若 JD 有寫這類 stretch 要求），按「選這一題」→「開始回答」。
 - [ ] 在回答區塊展開「不知道怎麼回答？」，可以先按「**沒有相關經驗的回答框架**」看系統給的中性框架提示（這只是輔助，不算正式作答，不會被存成回答）。
 - [ ] 用**語音**親自作答：在「用語音回答」區塊按「**開始錄音**」，誠實地說「我沒有做過 X，但如果要做，我會…」並給一個具體的假設方案（不要編造沒做過的經驗當成做過）；最多錄 3 分鐘，快到上限畫面會提示倒數。
@@ -138,7 +138,7 @@
 - JD 提到「balancing speed with quality」：想一次你在時間壓力下真的要在速度與品質之間取捨的情況。
 - JD 提到「Strong debugging and root-cause analysis skills in multi-component systems」：想一次你真的追查過跨元件、不好抓的 bug 的經驗。
 
-- [ ] 貼 `.workspace/validation-jds/03-synopsys-verdi-assistant-llm-mcp-agent.txt`（去掉第一行）產生題目。這份 JD 內文有明講是英文面試，之後回饋內容理論上不會另外幫你加中文面試的假設。
+- [ ] 貼 `.workspace/validation-jds/03-synopsys-verdi-assistant-llm-mcp-agent.txt`（第一行改成「標題 — 公司」）產生題目。這份 JD 內文有明講是英文面試，之後回饋內容理論上不會另外幫你加中文面試的假設。
 - [ ] 在「查看全部」頁「行為與情境判斷」分類底下選一題，按「選這一題」→「開始回答」。
 - [ ] 用**文字**親自作答，按「送出並取得回饋」。
 - [ ] 回饋出現後，對照 JD 原文，檢查回饋（含「下次練習重點」與各面向的中文理由 `reasonZh`）有沒有要求 JD 裡根本沒寫的東西（例如 JD 沒提到的證照、工具、年資），若有，記下具體句子到觀察紀錄。
@@ -170,7 +170,7 @@
 - 若選 JD 04（Vpin）：JD 提到「Hands-on RAG experience: vector search, hybrid retrieval, or GraphRAG」：回想你做過的 RAG 或檢索相關專案，你負責哪一段？
 - 通用：先想清楚等一下「下次練習重點」要寫哪一個具體技能，不要寫空泛的「加強英文」。
 
-- [ ] 任選 `.workspace/validation-jds/05-ubitus-junior-ai-engineer.txt` 或 `.workspace/validation-jds/04-vpin-ai-engineer-knowledge-graph-rag.txt`（去掉第一行）貼上、產生題目。
+- [ ] 任選 `.workspace/validation-jds/05-ubitus-junior-ai-engineer.txt` 或 `.workspace/validation-jds/04-vpin-ai-engineer-knowledge-graph-rag.txt`（第一行改成「標題 — 公司」）貼上、產生題目。
 - [ ] 任選一類題目作答（文字），送出並取得回饋。
 - [ ] 回饋出現後，右側回饋窗格（手機是「回饋」分頁）下方的「完成這次練習」區塊有「**下次練習重點（可以修改）**」文字框，裡面預先帶入系統建議的重點文字。**動手修改成你自己真的想寫的一句話**（這個文字框的內容送出後就是這次練習存下來的 Focus Point）。
 - [ ] 按回饋窗格底部的「**結束並保存**」。
