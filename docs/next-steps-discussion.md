@@ -1,6 +1,6 @@
 # 下一批規劃：104、自我介紹、中文模式與 MVP 驗收門檻
 
-日期：2026-09-24。狀態：已確認方向，尚未產生 PRD／issue；下一步在新 session 以 `/to-prd` → `/to-issues` 展開。
+日期：2026-09-24。狀態：已確認方向；PRD 見 [`prd-v1-readiness.md`](./prd-v1-readiness.md)，issue 為 `docs/issues/0029`–`0036`（2026-09-24）；每張 issue 在新 session 以 `/implement` 實作。
 
 ## 起點
 
@@ -56,8 +56,12 @@
 - 前端檔案由 4310 即時提供；改 `src/server.js` 的靜態檔白名單後需重啟 server 才生效。
 - Commit 規則：Conventional Commits、首字大寫、無句點、無 AI trailer；`git commit` 單獨一個指令。
 
-## 待討論問題
+## 已決定的待討論問題（2026-09-24，PRD session）
 
-- 自我介紹固定題的英文措辭與中文題意、是否每份職缺都顯示、是否計入 8–12 題的數量。
-- `/find-104-jobs` 的 JD 檔存放路徑（沿用 `.workspace/validation-jds/` 或另開 `.workspace/jds/`）與一次匯入幾筆。
-- ADR 0020 中「AI persona 練習」的定義與最低要求（例如必須涵蓋 Experience Gap 與失敗恢復）。
+原列的三個待討論問題已由使用者逐題確認，另新增「常見行為題」一項：
+
+- **自我介紹固定題**：英文 `Tell me about yourself.`；中文題意「請用一到兩分鐘介紹自己：你的背景、和這個職位相關的經驗，以及為什麼想應徵。」每份已有題組的職缺都顯示（含舊職缺；在顯示題組時插入，不寫入題組、不遷移），固定置頂並標示為固定題；不計入模型的 8–12 題；三題短模擬面試固定以它為第一題。
+- **常見行為題（新增）**：與自我介紹合為「常見題」機制，同樣由 app 固定、不改模型 contract、不重跑評估。放經典 5 題（衝突、失敗與反思、期限壓力、主動承擔、快速學習新技術），各附中文題意與 STAR 作答提示；在依 JD 題目之後獨立成「常見行為題」區塊、預設收合；不計入 8–12 題；三題短模擬面試不抽，行為類仍用依 JD 題目。缺乏相關經驗時沿用既有提示與假設性作答，絕不捏造經驗（ADR 0018）。
+- **`/find-104-jobs`**：JD 存 `.workspace/jds/`（不動 `.workspace/validation-jds/` 的五份驗收 JD）；第一行「職稱 — 公司」、第二行來源網址與擷取日期；列出約 10 筆候選由使用者挑選，預設一次最多匯入 3 筆、明說可到 5 筆；以 104 job id／網址比對 `.workspace/jds/` 既有檔案，重複者跳過並告知。
+- **ADR 0020 的 AI persona 練習**：定義為 AI 代理操作真實本機 app 的畫面、使用真實語言模型 provider（非 fake）、扮演背景事先寫成文件且不捏造經驗的 persona，跑完一個完整 Practice Loop，留下真實 recordId 並連到 `docs/verification/` 的紀錄；ledger 標 `synthetic: true` 並寫 `persona` 與 `evidence`。最低要求沿用現有四條（≥2 份職缺、≥2 類別、≥1 Experience Gap、≥1 刻意失敗並恢復），以五次合計計算，persona 練習可滿足後兩條；本人真實練習至少 1 次，不限類別。四次 persona 練習沿用 2026-09-23 walkthrough 的第 2–5 次；其暫存 workspace 已於 2026-09-24 備份到 `.workspace/persona-qa-2026-09-23/`（gitignored）。
+- **順序修正（切 issue 時發現）**：人工標註以 review packet 的 `inputChecksum` 對應，而它包含模型產生的題目；v3 尚無凍結的 Codex 分析，現有 v3 packet 來自離線 fake 執行。因此改為**先跑 Codex 評估（凍結題目、產生新 packet）與 AI 語意審查（issue 0035），再對新 packet 做 20 題人工標註（issue 0036）**，最後以不呼叫模型的 `node evaluation/review-report.js` 離線複檢；上方「建議順序」表的第 5、6 項以此為準。
