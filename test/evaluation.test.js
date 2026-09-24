@@ -62,11 +62,14 @@ test('AI persona coverage failures identify the missing rule',()=>{
     [ledger=>{ledger.loops[1].inducedFailure.recovered=false;},'induced failure with recovery']
   ]){const ledger=personaLedger();change(ledger);const result=creatorStatus(ledger);assert.equal(result.pass,false);assert.ok(result.errors.some(message=>message.includes(error)),JSON.stringify(result));}
 });
-test('v3 ledger reports only the pending fifth persona loop and AI attestation',async()=>{
+test('v3 ledger has five completed persona loops and independent AI attestation',async()=>{
   const ledger=JSON.parse(await readFile(new URL('../evaluation/v3/creator-validation.json',import.meta.url)));
-  assert.equal(ledger.validationMode,'ai-persona');assert.equal(ledger.loops.length,4);
-  assert.equal(ledger.creator,null);assert.equal(ledger.attestedBy,null);assert.equal(ledger.attestedAt,null);
-  assert.deepEqual(creatorStatus(ledger).errors,['AI attestation pending: attestedBy and valid attestedAt required','Pending fifth persona loop (4/5 completed)']);
+  assert.equal(ledger.validationMode,'ai-persona');assert.equal(ledger.loops.length,5);
+  assert.equal(ledger.creator,null);
+  assert.equal(ledger.attestedBy,'Codex AI independent verifier (/root/attest0034)');
+  assert.ok(Number.isFinite(Date.parse(ledger.attestedAt)));
+  assert.equal(ledger.loops[4].evidence,'docs/verification/persona-common-questions-2026-09-24.md');
+  assert.deepEqual(creatorStatus(ledger),{pass:true,count:5,validationMode:'ai-persona',errors:[]});
 });
 test('approved human labels bind to exact inputs and transcript evidence; stale approval fails',()=>{
   const packet=Array.from({length:20},(_,i)=>({caseId:String(i),inputChecksum:'checksum-'+i,transcript:'I would test the failure path.'}));

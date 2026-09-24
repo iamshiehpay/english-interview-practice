@@ -3,8 +3,8 @@
   "contractVersion": "3.0.0",
   "validationMode": "ai-persona",
   "creator": null,
-  "attestedBy": null,
-  "attestedAt": null,
+  "attestedBy": "Codex AI independent verifier (/root/attest0034)",
+  "attestedAt": "2026-09-24T06:57:10Z",
   "loops": [
     {
       "recordId": "dc225a7c-ac45-4aa8-b6c0-18761a50607a",
@@ -55,6 +55,19 @@
       "inputMode": "text",
       "persona": "林小安",
       "evidence": "docs/verification/persona-walkthrough-2026-09-23.md",
+      "experienceGap": false,
+      "inducedFailure": null
+    },
+    {
+      "recordId": "88e911ee-047a-4d19-98cc-05a904118e0f",
+      "snapshotId": "5efe3008-7a80-4e41-9fc2-35289c2985e3",
+      "category": "role-fit",
+      "completedAt": "2026-09-24T06:52:18.884Z",
+      "completed": true,
+      "synthetic": true,
+      "inputMode": "text",
+      "persona": "林小安",
+      "evidence": "docs/verification/persona-common-questions-2026-09-24.md",
       "experienceGap": false,
       "inducedFailure": null
     }
