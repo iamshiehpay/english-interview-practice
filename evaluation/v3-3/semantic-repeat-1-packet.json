@@ -1,0 +1,949 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "3.3.0",
+  "sourceAudit": "evaluation/v3-3/codex-bilingual-audit.json",
+  "sourceAuditChecksum": "a4b58a8a98fd734bf5a1b151f73b1343380f17d73c58147bf110428555de4108",
+  "repeat": 1,
+  "cases": [
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 1,
+      "outputChecksum": "4c1bff7e3da57811247ed3aa81062e25708f0d92311ba149998a6b9625a83d62",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "What motivates you to work on retrieval quality for a Mandarin support assistant?",
+          "zh": "是什麼激勵你從事中文支援助理的檢索品質工作？"
+        },
+        {
+          "name": "question rationale",
+          "en": "This probes your motivation for the role’s stated retrieval-quality focus.",
+          "zh": "這是在探查你對該職位所強調之檢索品質重點的動機。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "Directly explains motivation through users’ need for reliable answers and connects it to Mandarin retrieval.",
+          "zh": "直接以使用者需要可靠答案說明動機，並將其連結到中文檢索。"
+        },
+        {
+          "name": "support reason",
+          "en": "Provides a concrete diagnostic action, though it does not fully explain how that action serves the stated motivation.",
+          "zh": "提供了具體的診斷行動，但未充分說明該行動如何服務於前述動機。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Uses a clear causal link followed by a logical first step.",
+          "zh": "先以清楚的因果關係說明動機，再提出合乎邏輯的第一步。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The meaning is clear overall, but the brief untranslated Mandarin phrase interrupts otherwise natural English.",
+          "zh": "整體意思清楚，但這段未翻譯的中文短語打斷了原本自然的英文表達。"
+        },
+        {
+          "name": "strength",
+          "en": "It connects the role to a concrete diagnostic starting point: inspecting failures in Mandarin queries.",
+          "zh": "它將職位連結到一個具體的診斷起點：檢查中文查詢中的失敗案例。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Make the motivation more specific by explaining how inspecting Mandarin retrieval failures would help provide reliable support answers, and state the reason fully in English.",
+          "zh": "透過說明檢查中文檢索失敗如何有助於提供可靠的支援答案，讓動機更具體，並以完整英文表達原因。"
+        }
+      ]
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "96e2a5f7087c2919941fe263e5f61349ef194b66217a0721e3d83f0d2e894e6f",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Describe a retrieval-quality evaluation you have performed, or how would you approach this if you have not encountered it?",
+          "zh": "請描述你曾進行過的檢索品質評估；如果你沒有遇過這種情況，你會如何處理？"
+        },
+        {
+          "name": "question rationale",
+          "en": "This assesses practical depth in evaluating retrieval quality without assuming prior experience.",
+          "zh": "這是在評估你進行檢索品質評估的實務深度，但不預設你已有相關經驗。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "It does not describe a retrieval-quality evaluation or an approach for one; it discusses unrelated leadership and profit claims.",
+          "zh": "這沒有描述檢索品質評估或相關處理方法，而是在談無關的領導與獲利主張。"
+        },
+        {
+          "name": "support reason",
+          "en": "It provides no retrieval-related method, evidence, metric, diagnostic action, or trade-off.",
+          "zh": "這沒有提供任何與檢索相關的方法、證據、指標、診斷行動或取捨分析。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The statements have no discernible progression toward the question and shift to an unrelated instruction.",
+          "zh": "這些陳述沒有朝問題發展的可辨識脈絡，並轉向無關的指示。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The wording is clear and intelligible, with no meaningful language barrier.",
+          "zh": "措辭清楚且容易理解，沒有造成實質理解障礙的語言問題。"
+        },
+        {
+          "name": "strength",
+          "en": "The wording is concise and intelligible, so each sentence can be understood easily.",
+          "zh": "措辭簡潔且容易理解，因此每個句子的意思都能被清楚掌握。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Answer the retrieval-quality question directly with an evaluation approach and supporting evidence; the current response remains off-topic.",
+          "zh": "請直接回答檢索品質問題，提出評估方法與支持性證據；目前的回答仍然離題。"
+        }
+      ]
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 1,
+      "outputChecksum": "8e760a0245349dac4a58cf40e6f8cfe4c88a88f7aa984b08e7eff32ebdbdd1ff",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Tell me about a time you explained a model limitation to a product colleague, or how would you approach this if you have not encountered it?",
+          "zh": "請告訴我一次你向產品同事說明模型限制的經驗；如果你沒有遇過這種情況，你會如何處理？"
+        },
+        {
+          "name": "question rationale",
+          "en": "This evaluates your ability to communicate model limitations in a product setting without presupposing experience.",
+          "zh": "這是在評估你在產品情境中溝通模型限制的能力，但不預設你已有相關經驗。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "This is related to testing, but it does not address a model limitation, product colleague, or hypothetical approach.",
+          "zh": "這與測試相關，但沒有回答模型限制、產品同事或假設性處理方式。"
+        },
+        {
+          "name": "support reason",
+          "en": "It gives a concrete collaborative diagnostic step, but does not explain the limitation, evidence, or product trade-off.",
+          "zh": "它提出了具體的協作診斷步驟，但沒有說明限制、證據或產品取捨。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The answer has a clear progression from disagreement to identifying failures and reviewing them together, with limited development.",
+          "zh": "回答從分歧進展到找出失敗案例並一起檢查，脈絡清楚，但發展有限。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The wording is clear and intelligible; the hesitations are normal spoken fillers and do not create a meaning barrier.",
+          "zh": "措辭清楚易懂；停頓是正常的口語填充詞，沒有造成理解障礙。"
+        },
+        {
+          "name": "strength",
+          "en": "You proposed a collaborative check of the failed cases.",
+          "zh": "你提出了一起檢查失敗案例的協作做法。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "State the model limitation explicitly and explain how the failed cases would affect the product decision; if this is hypothetical, frame that process clearly.",
+          "zh": "請明確說出模型限制，並解釋失敗案例會如何影響產品決策；如果這是假設情境，請清楚說明這個處理流程。"
+        }
+      ]
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "34776eeaa9209ed9135e78b4ad93049148fccfa7766d9bb2ac1037e7f9ff126f",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "How would you explain a retrieval-quality result and its implications to product colleagues who are not specialists in machine learning?",
+          "zh": "你會如何向非機器學習專業的產品同事解釋檢索品質結果及其影響？"
+        },
+        {
+          "name": "question rationale",
+          "en": "This probes your ability to make retrieval-quality findings understandable to product colleagues.",
+          "zh": "這是在探查你是否能讓產品同事理解檢索品質的發現。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "It discusses evaluating retrieval configurations, but not how to explain a result or its implications to product colleagues.",
+          "zh": "這段回答討論如何評估檢索設定，但沒有說明如何向產品同事解釋結果及其影響。"
+        },
+        {
+          "name": "support reason",
+          "en": "It gives concrete evaluation steps, but does not connect them to a defensible explanation of the result's product impact.",
+          "zh": "它提供了具體的評估步驟，但沒有將這些步驟連結到對結果產品影響的充分解釋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The answer has a clear progression from experience context to evaluation steps and configuration choice, though it does not develop the communication task.",
+          "zh": "回答從經驗背景進展到評估步驟及設定選擇，脈絡清楚，但沒有展開溝通這項任務。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The wording is clear, natural, and fully intelligible spoken English.",
+          "zh": "措辭清楚、自然，口語英文完全易於理解。"
+        },
+        {
+          "name": "strength",
+          "en": "It names concrete retrieval checks rather than offering only a vague statement.",
+          "zh": "它提出了具體的檢索檢查方式，而不只是給出含糊的說法。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Answer the communication task directly by explaining what the quality result means in practical product terms and tailoring the explanation to non-specialists; the current response still focuses on evaluation steps and configuration choice.",
+          "zh": "應直接回答溝通任務，說明品質結果在產品實務上代表什麼，並針對非專業人士調整解釋方式；目前的回答仍聚焦於評估步驟及設定選擇。"
+        }
+      ]
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 1,
+      "outputChecksum": "2d8b1f021396ba5be3246c96eb51499c72b551be1e52754295255cd31452c2fd",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "What interests you about building reliable payment APIs in Taipei, and what does reliability mean to you in this domain?",
+          "zh": "是什麼吸引你在臺北打造可靠的支付 API？在這個領域中，可靠性對你而言代表什麼？"
+        },
+        {
+          "name": "question rationale",
+          "en": "Assesses motivation for the payment domain, location, and the candidate’s definition of reliability.",
+          "zh": "評估候選人對支付領域與工作地點的動機，以及其對可靠性的定義。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "The response does not address payment APIs, Taipei, motivation, or reliability.",
+          "zh": "回答沒有涉及支付 API、臺北、動機或可靠性。"
+        },
+        {
+          "name": "support reason",
+          "en": "It provides no question-related reasoning, evidence, or trade-off.",
+          "zh": "回答沒有提供與問題相關的理由、證據或取捨。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The two sentences form a clear claim-and-support progression, although it is unrelated to the question.",
+          "zh": "兩個句子形成清楚的主張與支持關係，但與問題無關。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The wording is clear, grammatical, and natural.",
+          "zh": "措辭清楚、文法正確且自然。"
+        },
+        {
+          "name": "strength",
+          "en": "The response is concise and clearly expressed.",
+          "zh": "回答簡潔且表達清楚。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Answer the motivation for building reliable payment APIs in Taipei, then define reliability with a concrete consequence or example.",
+          "zh": "請先回答在臺北打造可靠支付 API 的動機，再用具體影響或例子定義可靠性。"
+        }
+      ]
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "5e6c5927249f2a734f6077b252bcf686af2e41da6dfcbaec7c1c4dd01c4d75d4",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Describe a project in which you used PostgreSQL transactions and automated tests, or how would you approach this if you have not encountered it?",
+          "zh": "請描述一個你使用 PostgreSQL 交易與自動化測試的專案；如果你沒有遇過這種情況，你會如何處理？"
+        },
+        {
+          "name": "question rationale",
+          "en": "Tests depth of hands-on experience while allowing a hypothetical answer because no experience is assumed.",
+          "zh": "測試實作經驗的深度，同時因未假設候選人具備相關經驗而允許以假設情境回答。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "It directly describes a relevant project and transaction testing, but does not explicitly cover PostgreSQL or automated testing in detail.",
+          "zh": "它直接描述了相關專案與交易測試，但未明確且詳細涵蓋 PostgreSQL 或自動化測試。"
+        },
+        {
+          "name": "support reason",
+          "en": "It gives a concrete finding and corrective action, but does not explain the transaction behavior, test assertions, or why the fix works.",
+          "zh": "它提供了具體發現與修正措施，但未說明交易行為、測試斷言或該修正為何有效。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The answer has a clear causal progression from test, to finding, to fix, followed by a limitation.",
+          "zh": "回答從測試到發現問題，再到修正措施，最後補充限制，因果進展清楚。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The wording is concise and fully intelligible; “production scale evidence” is slightly unusual but does not create a meaningful language barrier.",
+          "zh": "措辭簡潔且完全易懂；「production scale evidence」略不自然，但未造成實質語言障礙。"
+        },
+        {
+          "name": "strength",
+          "en": "It gives a concrete diagnostic loop: a transaction test exposed a duplicate request, leading to an idempotency check.",
+          "zh": "它提供了具體的診斷迴圈：交易測試揭露重複請求，進而加入冪等性檢查。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Make the example more specific by explaining the PostgreSQL transaction behavior, the automated test assertions, and how the idempotency check resolved the duplicate request.",
+          "zh": "讓例子更具體：說明 PostgreSQL 的交易行為、自動化測試的斷言，以及冪等性檢查如何解決重複請求。"
+        }
+      ]
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 1,
+      "outputChecksum": "796e0b7367f033a122a3b0fd881d0e96fa1572490a5192473fe24f67be97e500",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Tell me about a time you participated in an incident review without blaming individuals, or how would you approach this if you have not encountered it?",
+          "zh": "請分享一次你在不責怪個人的前提下參與事件檢討的經驗；如果你沒有遇過這種情況，你會如何處理？"
+        },
+        {
+          "name": "question rationale",
+          "en": "Assesses blameless incident-review behavior without assuming prior incident experience.",
+          "zh": "評估候選人進行無責備事件檢討的行為方式，而不假設其具備過往事件經驗。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "The response does not address participating in or approaching a blameless incident review.",
+          "zh": "回答沒有提及如何參與事件檢討，或如何以不責怪個人的方式處理事件檢討。"
+        },
+        {
+          "name": "support reason",
+          "en": "It provides no question-related reasoning, example, or approach.",
+          "zh": "回答沒有提供與問題相關的理由、例子或處理方式。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The two statements are unrelated to the question and do not form a discernible answer structure.",
+          "zh": "這兩句話彼此無關，也沒有形成可辨識的回答結構。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The English is clear and intelligible, with no meaningful language barrier.",
+          "zh": "英文表達清楚易懂，沒有造成理解障礙的語言問題。"
+        },
+        {
+          "name": "strength",
+          "en": "The response is concise and understandable in English.",
+          "zh": "回答簡潔，且英文表達易於理解。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Directly answer the incident-review question by describing a blameless approach or a relevant experience, rather than making unrelated claims.",
+          "zh": "請直接回答事件檢討問題，描述不責怪個人的處理方式或相關經驗，不要提出無關的主張。"
+        }
+      ]
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "e52942b91f5d2d4398395556de7375d9882cc61d18265261aa64ef0f13bc6875",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Design a reliable payment API and explain how you would handle retries, duplicate requests, and partial failures.",
+          "zh": "請設計一個可靠的支付 API，並說明你會如何處理重試、重複請求與部分失敗。"
+        },
+        {
+          "name": "question rationale",
+          "en": "Assesses whether the candidate can turn a reliability goal into concrete API failure-handling decisions.",
+          "zh": "評估候選人是否能將可靠性目標轉化為具體的 API 失敗處理決策。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "It addresses retries and duplicate charging with concrete mechanisms, but does not fully explain partial-failure handling or the API design.",
+          "zh": "它以具體機制處理重試與重複扣款，但未完整說明部分失敗的處理方式或 API 設計。"
+        },
+        {
+          "name": "support reason",
+          "en": "It gives a clear consequence for the retry key, but provides little explanation of transaction boundaries, recovery, or trade-offs.",
+          "zh": "它清楚說明重試金鑰的作用，但對交易邊界、復原方式或取捨的解釋很少。"
+        },
+        {
+          "name": "structure reason",
+          "en": "It presents two related decisions in a clear sequence, though it stops before connecting them to a complete partial-failure flow.",
+          "zh": "它以清楚順序提出兩個相關決策，但尚未將兩者連結成完整的部分失敗處理流程。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The meaning remains clear, but the self-correction is a noticeable spoken-delivery issue and the wording is slightly imprecise.",
+          "zh": "意思仍然清楚，但自我修正是明顯的口語表達問題，且措辭略顯不精確。"
+        },
+        {
+          "name": "strength",
+          "en": "It identifies two concrete reliability mechanisms: a transaction for the balance changes and a key to prevent duplicate charging.",
+          "zh": "它指出兩個具體的可靠性機制：用交易處理餘額變更，以及用金鑰避免重複扣款。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain the partial-failure path and API behavior, including what happens when one balance change fails, how clients retry, and what duplicate requests receive.",
+          "zh": "請說明部分失敗的處理流程與 API 行為，包括其中一個餘額變更失敗時會發生什麼、客戶端如何重試，以及重複請求會收到什麼結果。"
+        }
+      ]
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 1,
+      "outputChecksum": "38f1502db91b74513da523aab5db38ae3c4599a51516490d26e3bf0eb14a2c8c",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "What interests you about analyzing product experiments in Hsinchu, and how would you get oriented to the product context?",
+          "zh": "你對在新竹分析產品實驗的哪一部分感興趣？你會如何熟悉產品脈絡？"
+        },
+        {
+          "name": "question rationale",
+          "en": "This assesses motivation and fit for the stated product-experiment context and location.",
+          "zh": "這可評估你對題述產品實驗情境與地點的動機及契合度。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "It explains interest in experiments but does not address Hsinchu or provide a concrete orientation approach.",
+          "zh": "它說明了對實驗的興趣，但沒有提及新竹，也沒有提供具體的熟悉產品脈絡方法。"
+        },
+        {
+          "name": "support reason",
+          "en": "It gives a relevant reason: experiment results do not necessarily establish causality, though the reasoning is brief.",
+          "zh": "它提供了相關理由：實驗結果不一定能證明因果關係，但論述較簡短。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The answer has an understandable progression from interest in experiments to learning about product measurement, with limited development.",
+          "zh": "回答從對實驗的興趣進展到了解產品衡量方式，脈絡易懂，但發展有限。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The main meaning is clear, but the brief untranslated Chinese phrase interrupts otherwise understandable English.",
+          "zh": "主要意思清楚，但這段未翻譯的中文片語打斷了原本可理解的英文表達。"
+        },
+        {
+          "name": "strength",
+          "en": "You give a concise, relevant reason for your interest in experiments by highlighting that results do not necessarily establish causality.",
+          "zh": "你透過指出實驗結果不一定能證明因果關係，簡潔且相關地說明了你對實驗的興趣。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain a concrete way you would get oriented to the product context, rather than only saying you want to learn how teams decide what to measure.",
+          "zh": "請說明你會如何具體熟悉產品脈絡，而不只是表示你想了解團隊如何決定衡量什麼。"
+        }
+      ]
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "52c31fce12aeb0b8fc7bd7bff538d722a57216b91b2c61402490047675c841a6",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "What assumptions would you explain when presenting an experiment result, and how would you relate them to its confidence interval?",
+          "zh": "在呈現實驗結果時，你會解釋哪些假設？你會如何說明這些假設與信賴區間的關係？"
+        },
+        {
+          "name": "question rationale",
+          "en": "This probes depth of understanding about experiment assumptions and confidence intervals.",
+          "zh": "這可深入了解你對實驗假設與信賴區間的理解程度。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "It directly addresses experiment setup and uncertainty, but it does not identify the assumptions in enough detail or connect them to a confidence interval.",
+          "zh": "它直接涉及實驗設計與不確定性，但沒有充分指出要說明的假設，也沒有將它們與信賴區間連結。"
+        },
+        {
+          "name": "support reason",
+          "en": "The proposed metric definition and assignment-balance check are concrete, question-related actions, but the answer gives no reasoning about how those assumptions affect the interval.",
+          "zh": "定義主要指標與檢查分派平衡是具體且相關的行動，但回答沒有說明這些假設如何影響信賴區間。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The answer has a clear sequence from metric definition to balance checking to uncertainty discussion before a recommendation, though the links are not developed.",
+          "zh": "回答從定義指標、檢查分派平衡，到在提出建議前討論不確定性，順序清楚，但各步驟之間的連結尚未充分展開。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The wording is concise, grammatical, and natural, with no meaningful barrier to understanding.",
+          "zh": "措辭簡潔、文法正確且自然，沒有造成理解障礙的語言問題。"
+        },
+        {
+          "name": "strength",
+          "en": "You give a concise, logical sequence: define the metric, check assignment balance, and discuss uncertainty before recommending a change.",
+          "zh": "你提供了簡潔且合乎邏輯的順序：先定義指標、檢查分派平衡，再在建議變更前討論不確定性。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Name the assumptions explicitly and explain how each affects the confidence interval; the current answer only says to describe uncertainty and does not make that connection.",
+          "zh": "明確說出各項假設，並解釋每項假設如何影響信賴區間；目前的回答只提到要描述不確定性，沒有建立這項連結。"
+        }
+      ]
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 1,
+      "outputChecksum": "cf47667fd8ce05753549b381245edeebdf1b2d9c4c1dbfdba5cbe65beabe0238",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Tell me about a time you communicated uncertain analytical results to a product manager, or explain how you would approach this if you have not encountered it.",
+          "zh": "請分享一次你向產品經理傳達不確定分析結果的經驗；如果你尚未遇過這種情況，請說明你會如何處理。"
+        },
+        {
+          "name": "question rationale",
+          "en": "This assesses behavioral evidence of communicating uncertainty, without presuming that you have done so before.",
+          "zh": "這可評估你傳達不確定性的行為表現，但不預設你過去一定做過這件事。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "This gives a related approach to investigating uncertainty but does not explain how you would communicate the results to a product manager.",
+          "zh": "這提供了調查不確定性的方法，但沒有說明你會如何向產品經理傳達結果。"
+        },
+        {
+          "name": "support reason",
+          "en": "It provides concrete diagnostic actions, though it does not explain the communication rationale or expected outcome.",
+          "zh": "它提供了具體的診斷行動，但沒有說明溝通的理由或預期結果。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The answer presents a clear, logical sequence of investigative steps.",
+          "zh": "這個回答以清楚且合乎邏輯的順序呈現調查步驟。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The sentence is clear, grammatical, and natural spoken English.",
+          "zh": "這個句子清楚、文法正確，且符合自然的口語英文。"
+        },
+        {
+          "name": "strength",
+          "en": "You propose a clear diagnostic process: examine conflicting data, compare assumptions, and use a reproducible query.",
+          "zh": "你提出了清楚的診斷流程：檢視衝突的資料、比較假設，並使用可重現的查詢。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Connect this investigation to the requested communication: explain how you would summarize the uncertainty, assumptions, and next steps for the product manager.",
+          "zh": "請將這項調查連結到題目要求的溝通：說明你會如何向產品經理摘要不確定性、假設與後續步驟。"
+        }
+      ]
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "05afa3837bf3406d5035dd67fa6b52f7ab2d40e7d43a1d9bf1337bae286adc79",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "How would you combine SQL and Python to investigate a dataset with missing data? Please walk through your workflow and decision points.",
+          "zh": "你會如何結合 SQL 與 Python 來調查含有缺失資料的資料集？請逐步說明你的工作流程與決策點。"
+        },
+        {
+          "name": "question rationale",
+          "en": "This tests whether you can design a concrete SQL-and-Python workflow for investigating missing data.",
+          "zh": "這可測試你是否能設計具體的 SQL 與 Python 工作流程來調查缺失資料。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "The response does not address using SQL and Python, missing data, or a workflow.",
+          "zh": "回答沒有涉及使用 SQL 與 Python、缺失資料或工作流程。"
+        },
+        {
+          "name": "support reason",
+          "en": "It provides no question-related reasoning, evidence, or decision points.",
+          "zh": "回答沒有提供與問題相關的推理、證據或決策點。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The two statements do not form an organized workflow or progression.",
+          "zh": "這兩個陳述沒有形成有組織的工作流程或進展。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The sentence is clear, grammatical, and natural; its off-topic content is assessed under relevance instead.",
+          "zh": "句子清楚、文法正確且自然；內容離題的問題應在相關性維度評估。"
+        },
+        {
+          "name": "strength",
+          "en": "The response is concise and linguistically clear.",
+          "zh": "回答簡潔，語言表達清楚。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Replace the unrelated statement with a step-by-step SQL-and-Python workflow for investigating missing data and making decisions.",
+          "zh": "請以逐步的 SQL 與 Python 工作流程取代無關陳述，用來調查缺失資料並作出決策。"
+        }
+      ]
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 1,
+      "outputChecksum": "d58884fd14e19d0b7ad5bc62de8eaf73ed57c162d3cbb12ffbf8cb7fc5f23c0a",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "What interests you about building embedded sensor software in Hsinchu, and how would you contribute in this role?",
+          "zh": "是什麼讓你對在新竹開發嵌入式感測器軟體感興趣？你會如何在這個職位中做出貢獻？"
+        },
+        {
+          "name": "question rationale",
+          "en": "This assesses motivation and alignment with the embedded sensor software role.",
+          "zh": "這能評估你的動機，以及你與嵌入式感測器軟體職位的契合度。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "It gives a motivation and a possible contribution, but does not directly address Hsinchu or explain the embedded-sensor fit.",
+          "zh": "你提出了動機和可能的貢獻，但沒有直接回應新竹，也沒有說明你與嵌入式感測器工作的契合度。"
+        },
+        {
+          "name": "support reason",
+          "en": "It names a concrete way scripting could contribute, but provides no example, outcome, or explanation of why it fits sensor software.",
+          "zh": "你指出腳本經驗能以可重現測試的方式做出具體貢獻，但沒有提供例子、成果，或說明這為何適合感測器軟體。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The answer moves from motivation to contribution and then qualifies it with a learning need, creating a clear but brief progression.",
+          "zh": "回答從動機進展到貢獻，再以學習需求作限定，形成清楚但簡短的脈絡。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The wording is clear and natural overall, and the intended meaning is immediately understandable.",
+          "zh": "整體措辭清楚且自然，想表達的意思能立即理解。"
+        },
+        {
+          "name": "strength",
+          "en": "You connect your scripting experience to reproducible testing, giving the interviewer a concrete potential contribution.",
+          "zh": "你將腳本經驗連結到可重現測試，讓面試官看到一項具體的潛在貢獻。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Make the answer more role-specific by connecting your motivation and testing contribution to embedded sensor software in Hsinchu, then briefly explain how you would build embedded-debugging skills.",
+          "zh": "讓回答更貼合職位：將你的動機和測試貢獻連結到在新竹開發嵌入式感測器軟體，並簡要說明你會如何培養嵌入式除錯技能。"
+        }
+      ]
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "dd69fc0a8d947faa085021678ada27ade2680324cc78e81cade6557cb726aa34",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Describe a C-firmware or serial-communication debugging problem you have solved, or how would you approach one if you have not encountered it?",
+          "zh": "請描述一個你曾解決的 C 韌體或串列通訊除錯問題；如果你尚未遇過這類問題，你會如何處理？"
+        },
+        {
+          "name": "question rationale",
+          "en": "This probes practical debugging depth while allowing a hypothetical answer when direct experience is unavailable.",
+          "zh": "這能探查實務除錯深度；如果缺乏直接經驗，也允許你以假設情境回答。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "It gives a concrete debugging approach, but does not clearly identify the C or serial context or the final resolution.",
+          "zh": "它提供了具體的除錯方法，但沒有清楚指出 C 或串列通訊情境，也沒有說明最後如何解決。"
+        },
+        {
+          "name": "support reason",
+          "en": "The wire check and byte inspection are specific diagnostic actions, though their findings and implications are missing.",
+          "zh": "檢查線路和查看位元組是具體的診斷行動，但缺少檢查結果及其意義。"
+        },
+        {
+          "name": "structure reason",
+          "en": "It follows an understandable symptom-to-diagnostic-step progression, with the outcome and timing details left incomplete.",
+          "zh": "它依照「症狀到診斷步驟」的順序表達，容易理解，但結果和時序細節尚未完整交代。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The meaning is clear, but fillers and repetition make the spoken delivery less polished.",
+          "zh": "意思清楚，但語助詞和重複使口語表達較不精煉。"
+        },
+        {
+          "name": "strength",
+          "en": "The answer identifies a concrete symptom and names useful initial diagnostic steps.",
+          "zh": "這個回答指出了具體症狀，並說明了有用的初步診斷步驟。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain what the printed bytes showed, how timing was verified or corrected, and what result followed; the current answer stops before a diagnosis or outcome.",
+          "zh": "請說明列印出的位元組顯示了什麼、如何驗證或修正時序，以及後續結果；目前的回答在診斷或結果之前就停止了。"
+        }
+      ]
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 1,
+      "outputChecksum": "aaf1040d205b6e16dfed899b5aeb25a8a92d6c0615b4ec7cee15f718e34d8f11",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "If hardware and software engineers disagree about the cause of a sensor failure, how would you build alignment and decide the next experiment?",
+          "zh": "如果硬體與軟體工程師對感測器故障原因有不同看法，你會如何建立共識並決定下一個實驗？"
+        },
+        {
+          "name": "question rationale",
+          "en": "This examines collaborative reasoning and evidence-based coordination during an investigation.",
+          "zh": "這能檢視你在調查過程中進行協作推理與依據證據協調的能力。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "It gives a concrete alignment step, but does not explain how to choose the next experiment.",
+          "zh": "它提出了具體的對齊步驟，但沒有說明如何選擇下一個實驗。"
+        },
+        {
+          "name": "support reason",
+          "en": "It names specific evidence to compare, but does not provide hypotheses, predictions, or decision criteria.",
+          "zh": "它指出要比較的具體證據，但沒有提出假設、預測或決策標準。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The answer has a clear sequence from checking measurement method to comparing evidence, though it stops before the experiment decision.",
+          "zh": "答案從確認量測方式到比較證據，具備清楚順序，但在決定實驗前就停止了。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The English sentence is clear, but the opening diagnostic step is left untranslated for an English-speaking interviewer.",
+          "zh": "英文句子清楚，但開頭的診斷步驟未翻譯，英語面試官可能無法理解。"
+        },
+        {
+          "name": "strength",
+          "en": "You propose a collaborative, evidence-first step: compare the hardware trace and firmware log before assigning a cause.",
+          "zh": "你提出了協作且以證據為先的步驟：在判定原因前比較硬體追蹤資料與韌體記錄。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Make the next experiment explicit by stating what each hypothesis predicts, which measurement would distinguish them, and how the result would determine the follow-up.",
+          "zh": "請明確說明下一個實驗：指出每個假設的預測、哪項量測能區分它們，以及結果如何決定後續行動。"
+        }
+      ]
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "7be405c94801667ef979c1daadd5f47901da6a0bed673d6e110a2561d32860c9",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "How would you explain a timing constraint to a non-specialist using a concrete sensor example?",
+          "zh": "你會如何用具體的感測器例子，向非專業人士解釋時序限制？"
+        },
+        {
+          "name": "question rationale",
+          "en": "This tests whether you can translate timing concepts into clear, concrete language.",
+          "zh": "這能測試你是否能將時序概念轉化為清楚且具體的語言。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "It does not explain a timing constraint or use a concrete sensor example.",
+          "zh": "回答沒有解釋時序限制，也沒有使用具體的感測器例子。"
+        },
+        {
+          "name": "support reason",
+          "en": "It provides no timing-related reasoning, example, or explanation.",
+          "zh": "回答沒有提供任何與時序相關的推理、例子或解釋。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The two statements are unrelated to each other and to the requested explanation, so there is no discernible progression.",
+          "zh": "兩個陳述彼此無關，也與要求的解釋無關，因此沒有可辨識的發展脈絡。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The sentences are grammatically clear and readily understandable; the content problems are assessed in other dimensions.",
+          "zh": "句子文法清楚且容易理解；內容方面的問題已在其他面向評估。"
+        },
+        {
+          "name": "strength",
+          "en": "The response is concise and grammatically understandable.",
+          "zh": "回答簡潔且文法上容易理解。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Directly answer the requested question by explaining a timing constraint through a concrete sensor example; the current response is still off topic.",
+          "zh": "應直接使用具體的感測器例子解釋時序限制；目前的回答仍然離題。"
+        }
+      ]
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 1,
+      "outputChecksum": "d209a161ff5d24406698655215b707d058480b23a2aa4daef1ca4249be2484c4",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "What interests you about building accessible web interfaces in Taipei, and how would you define a successful outcome for users?",
+          "zh": "是什麼讓你對在臺北打造無障礙網頁介面感興趣？你會如何定義對使用者而言成功的成果？"
+        },
+        {
+          "name": "question rationale",
+          "en": "This assesses motivation for the role and whether the candidate centers accessible user outcomes.",
+          "zh": "這能評估對該職位的動機，以及候選人是否以使用者可及的成果為中心。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "It does not address interest in accessible interfaces, Taipei, or successful user outcomes.",
+          "zh": "這沒有回答對無障礙介面、臺北或使用者成功成果的興趣。"
+        },
+        {
+          "name": "support reason",
+          "en": "It provides no meaningful, question-related reasoning or evidence.",
+          "zh": "這沒有提供有意義且與問題相關的理由或證據。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The answer has a clear claim followed by a simple reason, despite being off topic.",
+          "zh": "答案先提出明確主張，再給出簡單理由，儘管內容偏離問題。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The sentence is clear, grammatical, and easy to understand.",
+          "zh": "這個句子清楚、合乎文法且容易理解。"
+        },
+        {
+          "name": "strength",
+          "en": "The response is concise and clearly states a reason for the job preference.",
+          "zh": "這個回答簡潔明確地說明了偏好這份工作的理由。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Answer both parts directly by explaining your interest in accessible interfaces in Taipei and defining a user-centered successful outcome; the current response does not address either part.",
+          "zh": "請直接回答兩個部分：說明你對在臺北打造無障礙介面的興趣，並定義以使用者為中心的成功成果；目前的回答沒有涵蓋任何一部分。"
+        }
+      ]
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "c7919f0b8a90d6dd39715d64654c109ee667ac8340a97ca9491d1229a07113fa",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Describe an accessible web interface you have built, including the user needs you considered; if you have not built one, how would you approach building one?",
+          "zh": "請描述你曾經打造的無障礙網頁介面，包括你考量的使用者需求；如果你尚未打造過，會如何著手打造？"
+        },
+        {
+          "name": "question rationale",
+          "en": "This tests depth of accessible-interface experience without assuming the candidate has prior experience.",
+          "zh": "這能測試無障礙介面經驗的深度，但不預設候選人一定有先前經驗。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "It directly answers how to approach building an accessible interface, but it does not explicitly describe the user needs behind these choices.",
+          "zh": "它直接回答了如何著手打造無障礙介面，但沒有明確說明這些做法背後考量的使用者需求。"
+        },
+        {
+          "name": "support reason",
+          "en": "It provides concrete accessibility checks and a testing action, though it does not explain the reasoning or expected consequences.",
+          "zh": "它提供了具體的無障礙檢查與測試行動，但沒有說明背後的理由或預期影響。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The answer presents a clear, coherent sequence of steps.",
+          "zh": "答案以清楚且連貫的步驟順序呈現。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The wording is clear, natural, and fully intelligible.",
+          "zh": "措辭清楚、自然，且完全容易理解。"
+        },
+        {
+          "name": "strength",
+          "en": "It gives a concise, practical sequence: keyboard navigation, focus-order inspection, and user testing.",
+          "zh": "它提供了簡潔且實際的步驟順序：鍵盤導覽、焦點順序檢查，以及使用者測試。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Name the specific user needs behind each step and explain how test findings would change the interface; this priority is still present because the answer lists actions without connecting them to user needs or outcomes.",
+          "zh": "請說明每個步驟背後的具體使用者需求，並解釋測試結果會如何改變介面；這項優先改進仍然存在，因為答案列出了行動，卻沒有將其連結到使用者需求或結果。"
+        }
+      ]
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 1,
+      "outputChecksum": "753d41f3aae988ecce05c762e7a174b44539199204fbf35bce747c21e13a15c0",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Tell me about a time you collaborated with a designer on usability feedback and changed an interface as a result, or how would you approach this if you have not encountered it?",
+          "zh": "請分享一次你與設計師合作處理可用性回饋並因此修改介面的經驗；如果你尚未遇過這種情況，你會如何處理？"
+        },
+        {
+          "name": "question rationale",
+          "en": "This evaluates collaboration, receptiveness to usability feedback, and the ability to turn feedback into interface changes.",
+          "zh": "這能評估合作能力、接受可用性回饋的態度，以及將回饋轉化為介面修改的能力。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "You give a direct usability-testing approach, but you do not explain how you would collaborate with the designer or how testing would lead to an interface change, so coverage is incomplete.",
+          "zh": "你提出了直接的可用性測試做法，但沒有說明如何與設計師合作，也沒有說明測試後如何修改介面，因此涵蓋不完整。"
+        },
+        {
+          "name": "support reason",
+          "en": "The plan names two concrete actions—identify the difficult task and compare two layouts using the same task—but gives no decision rule or resulting change.",
+          "zh": "這個計畫提出兩個具體行動——找出困難的任務，並用相同任務比較兩種版面——但沒有說明判斷依據或最終修改。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The response presents a clear progression from identifying the usability problem to comparing alternative layouts.",
+          "zh": "這段回答從找出可用性問題到比較替代版面，呈現了清楚的進展順序。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The meaning remains clear, but the hesitation, self-correction, and slightly awkward spoken phrasing reduce naturalness.",
+          "zh": "整體意思仍然清楚，但停頓、自我修正，以及略顯不自然的口語措辭降低了流暢自然度。"
+        },
+        {
+          "name": "strength",
+          "en": "You give a concrete usability-testing approach: identify the difficult task and compare two layouts using the same task.",
+          "zh": "你提出了具體的可用性測試方法：找出困難的任務，並用相同任務比較兩種版面。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Add the missing collaboration and change step: explain how you would work with the designer and how the test result would determine the interface revision.",
+          "zh": "補上缺少的合作與修改步驟：說明你會如何與設計師合作，以及測試結果會如何決定介面修改。"
+        }
+      ]
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "c6601de57b8a25551550b356a2272c93f1b0f6755e4e6f2e080a33472a2f4b93",
+      "pairs": [
+        {
+          "name": "question meaning",
+          "en": "Suppose a JavaScript-driven interface feels slow in the browser. How would you use browser performance tools to locate the bottleneck and decide what to optimize first?",
+          "zh": "假設由 JavaScript 驅動的介面在瀏覽器中感覺緩慢，你會如何使用瀏覽器效能工具找出瓶頸，並決定先優化什麼？"
+        },
+        {
+          "name": "question rationale",
+          "en": "This probes practical use of JavaScript and browser performance tools, including prioritization.",
+          "zh": "這能探查 JavaScript 與瀏覽器效能工具的實際使用能力，包括優先順序判斷。"
+        },
+        {
+          "name": "relevance reason",
+          "en": "It gives a direct prioritization principle—measure the slow interaction before optimizing—but does not explain which browser tools to use or how to locate the bottleneck.",
+          "zh": "它直接提出先測量慢的互動再優化的排序原則，但沒有說明要使用哪些瀏覽器工具或如何定位瓶頸。"
+        },
+        {
+          "name": "support reason",
+          "en": "It provides a defensible optimization trade-off involving responsiveness and accessibility, though it does not support the measurement step with concrete signals.",
+          "zh": "它提出了涉及回應速度與無障礙性的合理優化取捨，但沒有用具體指標支持測量步驟。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The answer progresses from measuring before optimizing to a clear deferral-versus-accessibility constraint, but the connection to bottleneck diagnosis is only lightly developed.",
+          "zh": "答案從先測量再優化，進展到明確的延後工作與無障礙性取捨，但與瓶頸診斷的連結仍發展不足。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The wording is clear, natural, and easy to understand, with no meaningful language barrier.",
+          "zh": "措辭清楚、自然且容易理解，沒有造成實質影響的語言障礙。"
+        },
+        {
+          "name": "strength",
+          "en": "It shows sound prioritization and recognizes the accessibility trade-off of deferring work.",
+          "zh": "它展現了合理的優先排序，並注意到延後工作可能帶來的無障礙取捨。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Make the measurement step concrete by naming the browser performance tools and signals you would use to find the bottleneck and choose the first optimization.",
+          "zh": "讓測量步驟更具體：說明你會使用哪些瀏覽器效能工具與指標來找出瓶頸，並據此選擇第一個優化項目。"
+        }
+      ]
+    }
+  ]
+}
