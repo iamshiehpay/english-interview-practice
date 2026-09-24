@@ -1,5 +1,5 @@
 ---
-status: ready-for-agent
+status: needs-info
 ---
 
 # Fifth AI persona Practice Loop on the Common Questions, and AI attestation of the ledger
@@ -64,3 +64,9 @@ npm run evaluate
 - [Issue 0033](./0033-adr-0020-revised-creator-gate.md)
 
 ## Comments
+
+### 2026-09-24 — Blocked dependency; no live loop performed
+
+- 0031 and 0032 completed, but required predecessor [0033](./0033-adr-0020-revised-creator-gate.md) is `needs-info` after three independent verification/review rounds and debugger confirmation. Its immutable backup does not preserve all provenance required by the literal acceptance criterion.
+- The handoff requires every listed blocker to be completed before an issue starts. Accordingly no 0034 persona run, subscription calls, ledger fifth entry or AI attestation was performed. All acceptance items remain unchecked; this is a dependency disposition, not a claim that a practice attempt failed.
+- Resume only after 0033 is resolved with authentic evidence or explicitly authorized evidence-source clarification. Keep `creator`, `attestedBy`, and `attestedAt` null meanwhile; no approval is attributed to the user.
