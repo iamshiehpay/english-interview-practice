@@ -78,7 +78,7 @@
   - 每次合併 `main` 仍自動部署，image 以 git SHA 為 tag。
   - 里程碑由使用者手動打 semver tag；CI 將同一個已測試 image 加上版本 tag（不重建），並自動建立 GitHub Release，內容由 Conventional Commits 產生（feat／fix 分類）。
   - 不另維護 `CHANGELOG.md`，GitHub Release 即 changelog。
-  - 版本意義綁定 MVP：首次上線打 `v0.9.0`（功能齊但 issue 0008 驗證未過）；創作者 5 次真實練習完成、評估解除 BLOCKED 後打 `v1.0.0`。
+  - 版本意義綁定 MVP：首次上線打 `v0.9.0`（功能齊但 issue 0008 驗證未過）；創作者驗收（依 ADR 0020 調整後的規則：1 次真實＋4 次 AI persona，見 `next-steps-discussion.md`）完成、評估解除 BLOCKED 後打 `v1.0.0`。
 - **完成的定義**（達成即打 `v0.9.0`）。使用者於 2026-09-23 確認。每項都要有可查的證據：
   1. README 最上方有 Demo 網址與 CI badge。
   2. README 內有 Mermaid 架構圖（GitHub Actions → Artifact Registry → Cloud Run，含監控）。
