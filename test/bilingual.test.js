@@ -60,7 +60,7 @@ test('legacy single-language persisted records remain readable without model re-
   const {server}=await createApplication({directory,languageModel:provider});await new Promise(r=>server.listen(0,'127.0.0.1',r));t.after(()=>new Promise(r=>server.close(r)));
   const api=async(path,data)=>{const response=await fetch(`http://127.0.0.1:${server.address().port}/api${path}`,{method:data===undefined?'GET':'POST',headers:{'Content-Type':'application/json'},body:data===undefined?undefined:JSON.stringify(data)});return {status:response.status,data:await response.json()};};
   assert.deepEqual((await api('/records/r')).data.attempts[0].feedback,feedback);
-  assert.deepEqual((await api('/snapshots/s/analysis')).data.questions[1],questions[0]);
+  assert.deepEqual((await api('/snapshots/s/analysis')).data.questions.find(question=>question.id===questions[0].id),questions[0]);
   assert.equal((await api('/snapshots/s/analysis',{})).status,200);assert.equal(calls,0);
 });
 

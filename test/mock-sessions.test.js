@@ -48,6 +48,19 @@ test('a session draws three questions from three categories and freezes the resu
   assert.match(refused.data.error, /題目|Question Set/i);
 });
 
+test('repeated short mocks draw only the introduction from Common Questions',async t=>{
+  const {api}=await harness(t);
+  const {snapshot}=await setup(api);
+  for(let i=0;i<6;i++){
+    const response=await api('/mock-sessions',{snapshotId:snapshot.id});
+    assert.equal(response.status,200);
+    const session=response.data;
+    assert.equal(session.entries[0].question.id,'self-introduction');
+    assert.ok(session.entries.slice(1).every(entry=>entry.question.source!=='common'));
+    assert.equal((await api(`/mock-sessions/${session.id}`,undefined,'DELETE')).status,200);
+  }
+});
+
 test('a session prefers unpractised questions and refuses a Question Set with too few categories', async t => {
   const narrow = new FakeLanguageModel();
   const original = narrow.analyze.bind(narrow);

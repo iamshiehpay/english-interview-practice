@@ -49,9 +49,9 @@ test('cloud adapter sends minimal DTO and never stores or returns credentials/pr
 });
 test('successful addition receipt replays without adding another batch',async t=>{
  const {api,base}=await harness(t);const {snapshot}=await setup(api);const path=`/snapshots/${snapshot.id}/questions`;
- const first=await keyed(base,path,{},'addition-request-1');assert.equal(first.data.questions.length,13);
- const replay=await keyed(base,path,{},'addition-request-1');assert.equal(replay.data.questions.length,13);
- assert.equal((await api(`/snapshots/${snapshot.id}/analysis`)).data.questions.length,13);
+ const first=await keyed(base,path,{},'addition-request-1');assert.equal(first.data.questions.length,18);
+ const replay=await keyed(base,path,{},'addition-request-1');assert.equal(replay.data.questions.length,18);
+ assert.equal((await api(`/snapshots/${snapshot.id}/analysis`)).data.questions.length,18);
 });
 test('deleting record cancels pending feedback and prevents late report recreation',async t=>{
  const p=new FakeLanguageModel();let resolve;const original=p.feedback.bind(p);p.feedback=args=>new Promise(r=>{resolve=()=>original(args).then(r);});

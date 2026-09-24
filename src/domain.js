@@ -99,7 +99,11 @@ export function requireUnambiguousQuestionSet(analysis, status = 409) {
 }
 export function questionSetView(analysis, records, snapshotId) {
   requireUnambiguousQuestionSet(analysis);
-  const questions = [...commonQuestions, ...analysis.questions];
+  const questions = [
+    ...commonQuestions.filter(question => question.group === 'self-introduction'),
+    ...analysis.questions,
+    ...commonQuestions.filter(question => question.group === 'behavioral')
+  ];
   const history = Object.fromEntries(questions.map(q => [q.id, records.filter(r => r.snapshotId === snapshotId && r.question.id === q.id).map(r => ({recordId: r.id, status: r.status}))]));
   const categoryCount = category => analysis.questions.filter(q => q.category === category).reduce((n, q) => n + history[q.id].length, 0);
   const ranked = [...analysis.questions].sort((a, b) => categoryCount(a.category) - categoryCount(b.category) || history[a.id].length - history[b.id].length);

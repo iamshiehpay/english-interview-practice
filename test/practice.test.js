@@ -84,7 +84,7 @@ test('complete text loop, immutable snapshot, evidence comparison and real proce
   assert.equal((await api('/health')).data.status,'ok');
   const {snapshot,analysis,record}=await setup(api);
   assert.equal(snapshot.sourceType,'pasted-jd');assert.ok(Date.parse(snapshot.capturedAt));
-  assert.equal(analysis.capabilities.length,2);assert.equal(analysis.questions.length,9);
+  assert.equal(analysis.capabilities.length,2);assert.equal(analysis.questions.length,14);
   assert.equal((await api(`/snapshots/${snapshot.id}`,{text:'changed'},'PUT')).status,404);
   assert.deepEqual((await api(`/snapshots/${snapshot.id}`)).data,snapshot);
   assert.equal((await api(`/records/${record.id}/reference`)).status,409);

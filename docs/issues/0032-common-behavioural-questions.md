@@ -1,5 +1,5 @@
 ---
-status: ready-for-agent
+status: completed
 ---
 
 # Five common behavioural questions in a collapsed 「常見行為題」 block
@@ -42,12 +42,12 @@ framing; nothing may invent experience (ADR 0018).
 
 ## Acceptance criteria
 
-- [ ] The served Question Set contains the five items after the job-grounded questions, each with text, gloss, STAR-hint rationale, category `behavioral`, empty capability list and group `behavioral`.
-- [ ] An Answer Attempt on one of them receives feedback through the fake provider.
-- [ ] Short mock sessions never include them, across repeated session creation.
-- [ ] The UI shows the collapsed 「常見行為題」 block after the job-grounded questions and the separated counts; browser smoke asserts the block and that it starts collapsed.
-- [ ] The self-introduction stays pinned at the top and remains role-fit.
-- [ ] `npm test` and `npm run test:browser` pass.
+- [x] The served Question Set contains the five items after the job-grounded questions, each with text, gloss, STAR-hint rationale, category `behavioral`, empty capability list and group `behavioral`.
+- [x] An Answer Attempt on one of them receives feedback through the fake provider.
+- [x] Short mock sessions never include them, across repeated session creation.
+- [x] The UI shows the collapsed 「常見行為題」 block after the job-grounded questions and the separated counts; browser smoke asserts the block and that it starts collapsed.
+- [x] The self-introduction stays pinned at the top and remains role-fit.
+- [x] `npm test` and `npm run test:browser` pass.
 
 ## Files likely touched
 
@@ -68,3 +68,11 @@ npm run test:browser
 - [Issue 0031](./0031-common-questions-self-introduction.md)
 
 ## Comments
+
+### 2026-09-24 — AI implementation and two independent rounds
+
+- `frontend-developer` implemented the five bilingual behavioral Common Questions and collapsed UI; `test-automator` independently verified all criteria; `reviewer` returned Standards PASS and Spec PASS, including English/Traditional Chinese semantic review and STAR hints.
+- Round 1 found that served ordering disagreed with UI ordering and sent “換一題” from self-introduction straight to a behavioral item. Round 2 serves intro → stored job-grounded questions → five behavioral items. Tests assert initial/expanded ordering and both next-question boundaries. Stored model questions remain unchanged and only job-grounded questions enter evaluation.
+- Independent `node --check public/app.js`, `npm test` (215/215), `npm run test:browser`, and offline `npm run evaluate` passed: 60/60 cases, zero failures, 80/80 stability, no external model calls. Tests confirm six repeated mocks select only intro plus grounded questions.
+- Independent agent-browser at 360 px on own port/temp workspace: default collapsed block last, open/select/return behavior, separate 6/8 counts, fixed intro, no overflow (345 <= 360 px); a behavioral record retained feedback on initial and revised answers and a feedback-bearing follow-up. Owned browser/server closed, incidental screenshots restored; no 4310 access.
+- No additional out-of-scope defect found. AI/provider validation still depends on separate 0034–0036 gates; this issue's verification uses the fake provider.

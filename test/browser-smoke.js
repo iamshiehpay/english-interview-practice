@@ -61,9 +61,26 @@ try {
  const fixed=el('#question-list > .common-group .question-card');
  if(!fixed||fixed.dataset.questionId!=='self-introduction'||fixed.querySelector('.english')?.textContent!=='Tell me about yourself.'||!fixed.textContent.includes('固定題'))throw Error('Self-introduction is not pinned and labelled above job questions');
  if(el('#question-list .category-group:not(.common-group) .question-card[data-question-id="self-introduction"]'))throw Error('Fixed question was mixed into a job-grounded category');
- if(!el('.list-summary').textContent.includes('常見題 1｜職缺題目 8')||document.querySelectorAll('#question-list .category-group:not(.common-group) .question-card').length!==8)throw Error('Common and job-grounded question counts are not separated');
- click(fixed.querySelector('button'));await wait(()=>el('#recommended-question'),'fixed question');
+ const behavioral=el('#question-list > .common-behavioral-group');
+ if(!behavioral||behavioral.open||behavioral!==el('#question-list').lastElementChild||behavioral.querySelectorAll('.question-card').length!==5||!behavioral.querySelector('summary').textContent.includes('常見行為題'))throw Error('Common behavioral questions are not collapsed after job questions');
+ if(!el('.list-summary').textContent.includes('常見題 6｜職缺題目 8')||document.querySelectorAll('#question-list .category-group:not(.common-group) .question-card').length!==8)throw Error('Common and job-grounded question counts are not separated');
+ click(behavioral.querySelector('summary'));
+ if(!behavioral.open||[...behavioral.querySelectorAll('.question-card')].some(card=>!card.textContent.includes('常見題')))throw Error('Common behavioral rows are not labelled as common');
+ click(behavioral.querySelector('.question-card button'));await wait(()=>el('#recommended-question .question-text')?.textContent.includes('disagreed with a teammate'),'common behavioral detail');
+ if(!el('#recommended-question').textContent.includes('常見題')||!el('#recommended-question details').textContent.includes('說一次你和隊友意見不同'))throw Error('Common behavioral detail has no source label or gloss');
+ click('#view-all-questions');await wait(()=>el('#question-list'),'question list after behavioral detail');
+ if(el('#question-list > .common-behavioral-group').open)throw Error('Common behavioral block did not start collapsed on return');
+ const snapshotId=Object.keys((await ws()).snapshots)[0];
+ const served=await fetch('/api/snapshots/'+snapshotId+'/analysis').then(response=>response.json());
+ const lastGrounded=served.questions.filter(question=>question.source!=='common').at(-1);
+ const firstBehavioral=served.questions.find(question=>question.group==='behavioral');
+ click(el('#question-list [data-question-id="'+lastGrounded.id+'"] button'));await wait(()=>el('#recommended-question .question-text')?.textContent===lastGrounded.text,'last job question');
+ click('#next-question');await wait(()=>el('#recommended-question .question-text')?.textContent===firstBehavioral.text,'last job question advances to common behavioral block');
+ click('#view-all-questions');await wait(()=>el('#question-list'),'question list after boundary');
+ click(el('#question-list > .common-group .question-card button'));await wait(()=>el('#recommended-question'),'fixed question');
  if(!el('#recommended-question').textContent.includes('固定題')||!el('#recommended-question details').textContent.includes('請用一到兩分鐘介紹自己'))throw Error('Fixed question detail has no source label or gloss');
+ click('#next-question');await wait(()=>el('#recommended-question .question-text')?.textContent===served.questions[1].text,'self-introduction advances to first job question');
+ if(el('#recommended-question').textContent.includes('常見題'))throw Error('Next question after self-introduction was not job-grounded');
  click('#view-all-questions');await wait(()=>el('#question-list'),'return to question list');click(btn('回到推薦題'));await wait(()=>el('#recommended-question'),'recommended question');
  if(document.body.innerText.includes('查看出題依據'))throw Error('Redundant evidence shown');
  const data=await ws();if(!Object.values(data.snapshots)[0].resume)throw Error('Resume not selected');
@@ -482,7 +499,7 @@ try {
  if(!fixed.classList.contains('q-answered')||!fixed.textContent.includes('已作答 1 次')||!el('.list-summary').textContent.includes('已作答 1 題'))throw Error('Completed fixed-question practice is missing from progress');
  if([...document.querySelectorAll('#question-list .category-group:not(.common-group) .group-head .meta')].some(n=>n.textContent.includes('已作答 1 題')))throw Error('Fixed-question completion was counted as job-grounded practice');
  click(btn('另外新增四題'));await wait(()=>el('.list-summary')?.textContent.includes('職缺題目 12'),'expanded job question count');
- if(!el('.list-summary').textContent.includes('常見題 1')||document.querySelectorAll('#question-list .common-group .question-card').length!==1)throw Error('Expansion duplicated or counted the fixed question as job-grounded');
+ if(!el('.list-summary').textContent.includes('常見題 6')||document.querySelectorAll('#question-list .common-group .question-card').length!==6)throw Error('Expansion duplicated or counted common questions as job-grounded');
  `);
  console.log('Browser smoke PASS: fixed self-introduction pinned and labelled, separated question counts, completion and expansion, mock opening; resume default/opt-out, read-aloud (no autoplay, replay, speed, no overlap), three-minute recording with a visible clock, transcript replace/append handoff, retained Answer Recordings with playback and deletion, a full three-question Short Mock Session (no coaching during, skip, summary quoting the learner, per-question feedback on demand), draft failure/reload recovery, feedback retry, key-sentence corrections (normal/retry/no-change/evidence-safe), Focus-Point same-job practice, job-centred Records navigation, optional revision, separate AI assistance, one-answer completion, the dark mock room scoped to its view (listening mode, record control, theme-color reverting), 我的進步 from the rail, truncated job titles and mobile layout.');
 }finally{await browser('close').catch(()=>{});if(server)await new Promise(r=>server.close(r));await rm(directory,{recursive:true,force:true});}

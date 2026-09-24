@@ -31,7 +31,7 @@ test('adding questions to a set shares the generation budget',async t=>{
   const {api}=await harness(t,provider,BUDGETS);const {snapshot}=await setup(api);
   provider.additionalQuestions=async args=>{calls++;await delay(110);const value=await additional(args);if(calls===1)value.questions.at(-1).meaningZh='English only';return value;};
   const response=await api(`/snapshots/${snapshot.id}/questions`,{});
-  assert.equal(response.status,200);assert.equal(calls,2);assert.equal(response.data.questions.length,13);
+  assert.equal(response.status,200);assert.equal(calls,2);assert.equal(response.data.questions.length,18);
   assert.equal((await operation(api,'questions')).validationRetries,1);
 });
 

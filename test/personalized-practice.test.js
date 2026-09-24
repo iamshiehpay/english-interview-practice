@@ -10,7 +10,7 @@ test('selected resume is frozen per JD; opt-out and replacement do not change ex
   const {api}=await harness(t,model);
   await api('/resume',{name:'one.txt',text:'Built a Python task manager.'});
   const {snapshot,analysis}=await setup(api);
-  assert.equal(snapshot.resume.name,'one.txt');assert.match(analysis.questions[2].text,/Python task manager/);
+  assert.equal(snapshot.resume.name,'one.txt');assert.ok(analysis.questions.filter(question=>question.source!=='common').some(question=>/Python task manager/.test(question.text)));
   await api('/resume',{name:'two.txt',text:'Designed hardware.'});
   assert.equal((await api(`/snapshots/${snapshot.id}`)).data.resume.name,'one.txt');
   const only=(await api('/snapshots',{text:'Build Kubernetes platforms.',useResume:false,difficulty:'deeper'})).data;
