@@ -12,32 +12,37 @@ import {createApplication} from '../src/server.js';
 import {FakeLanguageModel} from '../src/providers.js';
 import {MODEL_CONTRACT_VERSION} from '../src/model-contracts.js';
 import {jobGroundedAnalysis} from './job-grounded-analysis.js';
-import {checkpointIdentity,readCheckpoint,writeCheckpoint,writeJsonAtomic,oncePerKey} from './checkpoints.js';
+import {checkpointIdentity,readCheckpoint,writeCheckpoint,readAttemptLedger,writeAttemptLedger,reserveModelAttempt,writeJsonAtomic,oncePerKey} from './checkpoints.js';
 import {validateManifest,checkAnalysis,checkFeedback,checkBilingualConsistency,automaticBilingualAuditPass,stability,checkFrozenAnalysis,inputChecksum,outputChecksum,labelStatus,compareLabelExpectations,evaluationGateSummary,semanticReviewStatus,creatorStatus,dimensions} from './checks.js';
 const root=dirname(fileURLToPath(import.meta.url));
 const readFixture=name=>readFile(join(root,'v1',name),'utf8').then(JSON.parse);
 const optionValue=name=>{const index=process.argv.indexOf(name);if(index<0)return null;const value=process.argv[index+1];if(!value||value.startsWith('--'))throw Error(`${name} requires a path`);return resolve(value);};
+const requestLimitOption=process.argv.indexOf('--max-total-model-requests');
+const maxTotalModelRequests=requestLimitOption<0?65:Number(process.argv[requestLimitOption+1]);
+if(!Number.isSafeInteger(maxTotalModelRequests)||maxTotalModelRequests<1||maxTotalModelRequests>999999)throw Error('--max-total-model-requests requires an integer from 1 to 999999');
+if(maxTotalModelRequests>65&&!process.argv.includes('--accept-extra-model-usage'))throw Error('More than 65 model requests requires separate approval and --accept-extra-model-usage');
 const outputRoot=optionValue('--output-root');
 const artifactRoot=outputRoot||root;
 const portfolioRoot=outputRoot?join(outputRoot,'portfolio'):join(root,'..','docs','portfolio');
-const artifactVersion='v3-1';
+const artifactVersion='v3-2';
 const artifactDirectory=join(artifactRoot,artifactVersion);
 const readArtifact=async(name,fallback)=>{try{return JSON.parse(await readFile(join(artifactDirectory,name),'utf8'));}catch(error){if(error.code==='ENOENT')return fallback;throw error;}};
 const manifest=await readFixture('manifest.json');validateManifest(manifest);
-if(MODEL_CONTRACT_VERSION!=='3.1.0')throw Error('Select a new artifact version for the changed model contract before evaluating.');
+if(MODEL_CONTRACT_VERSION!=='3.2.0')throw Error('Select a new artifact version for the changed model contract before evaluating.');
 const subscription=process.argv.includes('--codex');
 if(subscription&&process.argv.includes('--live'))throw Error('Choose only one live provider');
 const live=subscription||process.argv.includes('--live');
-if(subscription&&!process.argv.includes('--accept-subscription-usage'))throw Error('Codex evaluation requires --accept-subscription-usage: up to65 requests count toward your plan limits.');
-if(live&&!subscription&&!process.argv.includes('--accept-provider-cost'))throw Error('Live evaluation requires --accept-provider-cost: up to 65 paid model requests using synthetic inputs.');
+if(subscription&&!process.argv.includes('--accept-subscription-usage'))throw Error(`Codex evaluation requires --accept-subscription-usage: up to ${maxTotalModelRequests} requests count toward your plan limits.`);
+if(live&&!subscription&&!process.argv.includes('--accept-provider-cost'))throw Error(`Live evaluation requires --accept-provider-cost: up to ${maxTotalModelRequests} paid model requests using synthetic inputs.`);
 const cloud=subscription?new CodexLanguageModel({profile:process.env.COACH_CODEX_HOME,binary:process.env.COACH_CODEX_BIN||'codex',model:process.env.COACH_CODEX_MODEL||CODEX_DEFAULT_MODEL,effort:process.env.COACH_CODEX_EFFORT||CODEX_DEFAULT_EFFORT,serviceTier:process.env.COACH_CODEX_SERVICE_TIER??CODEX_DEFAULT_SERVICE_TIER}):live?new OpenAILanguageModel({apiKey:process.env.OPENAI_API_KEY,model:process.env.COACH_MODEL||'gpt-4.1-mini'}):null;
 const cliVersion=subscription?await promisify(execFile)(cloud.binary,['--version'],{timeout:5000,maxBuffer:10000}).then(({stdout})=>{const match=stdout.trim().match(/^codex-cli (\S+)$/);if(!match)throw Error(`Unrecognised Codex CLI version output: ${stdout.trim()}`);return match[1];},error=>{throw Error(`Codex CLI version check failed: ${error.message}`);}):null;
 const frozenSettings=live?{model:cloud.model,effort:cloud.effort??null,serviceTier:cloud.serviceTier??null}:null;
-const modeName=subscription?'codex-v3-1':live?'live-v3-1':'v3-1';
+const modeName=subscription?'codex-v3-2':live?'live-v3-2':'v3-2';
 const evaluationConfiguration=live?{...(subscription?{cliVersion,effort:cloud.effort,serviceTier:cloud.serviceTier,ephemeral:true}:{temperature:0,maxCompletionTokens:5000}),analysisPolicy:'one live generation per JD, frozen across three feedback repeats',operationTimeoutMs:subscription?180000:30000}:null;
 const codeHash=createHash('sha256');for(const file of ['run.js','checks.js','checkpoints.js','job-grounded-analysis.js','../src/common-questions.js','../src/server.js','../src/operations.js','../src/store.js','../src/domain.js','../src/providers.js','../src/cloud.js','../src/codex-language.js','../src/codex-profile.js','../src/codex-rpc.js','../src/codex-audit.js','../src/codex-sandbox.js','../src/codex-runtime.js','../src/model-contracts.js','../src/model-schemas.js','../src/resume.js','../src/progress.js','../src/evidence.js','../src/jobs.js','../src/speech.js','../src/recordings.js','../src/mock-sessions.js'])codeHash.update(await readFile(join(root,file)));
 const codeChecksum=codeHash.digest('hex');
 const results=[],failures=[],analyses=new Map();let providerCalls=0,analysisCalls=0,workspaces=0;
+let attempts,attemptLedgerFile,identity;
 const analysisFile=join(artifactDirectory,`${subscription?'codex':'live'}-analysis.json`);
 const jdChecksum=createHash('sha256').update(JSON.stringify(manifest.jobs)).digest('hex');
 if(live&&!process.argv.includes('--refresh-analysis')){
@@ -46,6 +51,7 @@ if(live&&!process.argv.includes('--refresh-analysis')){
   }catch(error){if(error.code!=='ENOENT')throw error;}
 }
 const analyzeOnce=oncePerKey(async(text,args)=>{
+  await reserveModelAttempt(attemptLedgerFile,{identity,attempts,kind:'analysis',limit:maxTotalModelRequests});
   analysisCalls++;
   const generated=await cloud.analyze(args);
   checkAnalysis(generated,manifest.jobs.find(j=>j.text===text));
@@ -56,14 +62,21 @@ const analyzeOnce=oncePerKey(async(text,args)=>{
 });
 if(!live){const fake=new FakeLanguageModel();for(const job of manifest.jobs){const analysis=await fake.analyze({snapshot:job});checkAnalysis(analysis,job);analyses.set(job.text,analysis);}}
 const checkpointFile=optionValue('--checkpoint')||join(artifactRoot,'checkpoints',`${modeName}.json`);
-const identity=checkpointIdentity({manifest,contractVersion:MODEL_CONTRACT_VERSION,codeChecksum,mode:modeName,model:live?cloud.model:null,configuration:evaluationConfiguration});
+attemptLedgerFile=`${checkpointFile}.attempts.json`;
+identity=checkpointIdentity({manifest,contractVersion:MODEL_CONTRACT_VERSION,codeChecksum,mode:modeName,model:live?cloud.model:null,configuration:evaluationConfiguration});
 const resume=process.argv.includes('--resume');
 if(resume&&process.argv.includes('--refresh-analysis'))throw Error('Cannot refresh frozen analysis while resuming a checkpoint');
-if(resume)results.push(...await readCheckpoint(checkpointFile,{identity,manifest,analyses}));
+if(resume){
+  results.push(...await readCheckpoint(checkpointFile,{identity,manifest,analyses}));
+  attempts=await readAttemptLedger(attemptLedgerFile,{identity});
+  if(live)assert.ok(attempts.filter(kind=>kind==='feedback').length>=results.length,'Attempt ledger has fewer feedback calls than saved results');
+}
 else{
-  try{await readFile(checkpointFile);throw Error(`Checkpoint already exists: ${checkpointFile}; use --resume or a new --checkpoint path`);}catch(error){if(error.code!=='ENOENT')throw error;}
+  for(const path of [checkpointFile,attemptLedgerFile])try{await readFile(path);throw Error(`Evaluation state already exists: ${path}; use --resume or a new --checkpoint path`);}catch(error){if(error.code!=='ENOENT')throw error;}
   await mkdir(dirname(checkpointFile),{recursive:true});
   await writeCheckpoint(checkpointFile,{identity,entries:[]});
+  attempts=[];
+  await writeAttemptLedger(attemptLedgerFile,{identity,attempts});
 }
 const reusedResults=results.length;
 const completed=new Set(results.map(({caseId,repeat})=>`${caseId}:${repeat}`));
@@ -79,7 +92,7 @@ for(let repeat=1;repeat<=3;repeat++){
       if(!analyses.has(args.snapshot.text))await analyzeOnce(args.snapshot.text,args);
       return structuredClone(analyses.get(args.snapshot.text));
     };}
-    provider.feedback=async args=>{assert.deepEqual(args.approvedEvidence,[]);assert.ok(providerCalls<60,'Evaluation feedback call budget exhausted');providerCalls++;return feedback(args);};
+    provider.feedback=async args=>{assert.deepEqual(args.approvedEvidence,[]);assert.ok(providerCalls<60,'Evaluation feedback call budget exhausted');if(live)await reserveModelAttempt(attemptLedgerFile,{identity,attempts,kind:'feedback',limit:maxTotalModelRequests});providerCalls++;return feedback(args);};
     ({server}=await createApplication({directory,languageModel:provider,operationTimeoutMs:subscription?180000:30000,validationRetryLimit:0}));
     await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(0,'127.0.0.1',resolve);});
     const api=async(path,data,expected=200)=>{
@@ -110,6 +123,7 @@ for(let repeat=1;repeat<=3;repeat++){
     }
   }finally{if(server?.listening)await new Promise(resolve=>server.close(resolve));await rm(directory,{recursive:true,force:true});}
 }
+attempts=await readAttemptLedger(attemptLedgerFile,{identity});
 results.sort((a,b)=>a.repeat-b.repeat||manifest.cases.findIndex(c=>c.id===a.caseId)-manifest.cases.findIndex(c=>c.id===b.caseId));
 const packet=manifest.cases.flatMap(c=>{const result=results.find(item=>item.caseId===c.id&&item.repeat===1);if(!result)return [];const job=manifest.jobs.find(item=>item.id===c.jobId);return [{caseId:c.id,inputChecksum:result.inputChecksum,contractVersion:MODEL_CONTRACT_VERSION,job:job.text,question:result.question,transcript:c.transcript,tags:c.tags,proposedExpectation:c.proposedExpectation,bilingualAudit:result.bilingualAudit,humanLabelTemplate:{caseId:c.id,inputChecksum:result.inputChecksum,status:'pending',reviewer:null,reviewedAt:null,ranges:Object.fromEntries(dimensions.map(d=>[d,null])),rationale:null,evidenceQuotes:[],requiredFindings:[],forbiddenFindings:[],bilingualSemanticConsistency:'pending'}}];});
 let repeated={pass:false,stable:0,total:80,ratio:0};
@@ -118,10 +132,10 @@ const labelArtifact=await readArtifact('human-labels.json',{schemaVersion:2,cont
 const comparedLabels=compareLabelExpectations(results,labels.approved),labelComparisons=comparedLabels.comparisons;
 const automaticAuditPass=automaticBilingualAuditPass(semanticAudits,manifest);
 const gates=evaluationGateSummary({failures,results,repeated,semanticReview,labels,comparedLabels,creator,live}),blockers=gates.blockers,labelGate={...gates.labelGate,provenanceMode:labelArtifact.labelProvenance?.mode||null};
-const summary={suiteVersion:manifest.suiteVersion,runnerVersion:'3.1.0',contractVersion:MODEL_CONTRACT_VERSION,generatedAt:new Date().toISOString(),runtime:process.version,codeChecksum,provider:live?cloud.name:'Deterministic demonstration provider',model:live?cloud.model:null,configuration:evaluationConfiguration,mode:live?'live model on synthetic inputs':'synthetic pipeline regression; no external requests',jobs:5,cases:20,repeats:3,providerCalls,analysisCalls,reusedResults,newResults:results.length-reusedResults,collectedResults:results.length,workspaces,checkpointFile,automatedPass:gates.automatedPass,stability:repeated,bilingualSemanticReview:{pass:semanticReview.pass,status:semanticReview.pass?'independent-ai-reviewed':'pending-or-failed',automaticPairChecks:automaticAuditPass,errors:semanticReview.errors},labelGate,humanLabels:labelGate,creator,modelJudge:{status:'not used',results:[]},releaseStatus:gates.releaseStatus,blockers,failures,labelComparisons,results};
+const summary={suiteVersion:manifest.suiteVersion,runnerVersion:'3.2.0',contractVersion:MODEL_CONTRACT_VERSION,generatedAt:new Date().toISOString(),runtime:process.version,codeChecksum,provider:live?cloud.name:'Deterministic demonstration provider',model:live?cloud.model:null,configuration:evaluationConfiguration,mode:live?'live model on synthetic inputs':'synthetic pipeline regression; no external requests',jobs:5,cases:20,repeats:3,providerCalls,analysisCalls,cumulativeModelRequests:attempts.length,maxTotalModelRequests,attemptLedgerFile,reusedResults,newResults:results.length-reusedResults,collectedResults:results.length,workspaces,checkpointFile,automatedPass:gates.automatedPass,stability:repeated,bilingualSemanticReview:{pass:semanticReview.pass,status:semanticReview.pass?'independent-ai-reviewed':'pending-or-failed',automaticPairChecks:automaticAuditPass,errors:semanticReview.errors},labelGate,humanLabels:labelGate,creator,modelJudge:{status:'not used',results:[]},releaseStatus:gates.releaseStatus,blockers,failures,labelComparisons,results};
 await mkdir(join(artifactRoot,'results'),{recursive:true});
   await mkdir(artifactDirectory,{recursive:true});await writeFile(join(artifactRoot,'results',`${modeName}.json`),JSON.stringify(summary,null,2)+'\n');const packetName=live?`${subscription?'codex':'live'}-review-packet.json`:'review-packet.json';await writeFile(join(artifactDirectory,packetName),JSON.stringify(packet,null,2)+'\n');await writeFile(join(artifactDirectory,live?`${subscription?'codex':'live'}-bilingual-audit.json`:'bilingual-audit.json'),JSON.stringify({schemaVersion:2,contractVersion:MODEL_CONTRACT_VERSION,status:'pending-independent-ai-review',automaticPass:automaticAuditPass,cases:semanticAudits.map(({caseId,repeat,outputChecksum,bilingualAudit})=>({caseId,repeat,outputChecksum,...bilingualAudit}))},null,2)+'\n');
-  const md=`# Evaluation summary\n\nGenerated: ${summary.generatedAt}. Fixture suite ${manifest.suiteVersion}; runner ${summary.runnerVersion}; model contract ${MODEL_CONTRACT_VERSION}; ${process.version}.\n\n**MVP release: ${summary.releaseStatus}.**\n\n- Automatic constraints: ${summary.automatedPass?'PASS':'FAIL'} (${results.length}/60 case runs).\n- Five synthetic JDs; twenty synthetic transcripts; all four categories (five cases each).\n- New feedback invocations: ${providerCalls}; newly collected results: ${summary.newResults}; reused saved results: ${reusedResults}; total independent case/repeat evidence: ${results.length}. Workspaces opened: ${workspaces}.\n- Stability: ${repeated.stable}/${repeated.total} dimensions within one level (${(repeated.ratio*100).toFixed(1)}%; minimum90%). **${live?'Live model: '+cloud.name+'; review approved label expectations.':'Fixed fake provider only; not substantive model quality.'}**\n- Bilingual automatic pair checks: ${summary.bilingualSemanticReview.automaticPairChecks?'PASS':'FAIL'}; semantic consistency: ${summary.bilingualSemanticReview.status}.\n- ${labels.mode==='ai'?'AI-reviewed labels':labels.mode==='human'?'Human-reviewed labels':labels.mode==='mixed'?'Mixed AI/human-reviewed labels':'Evaluation labels'}: ${labelGate.pass?'PASS':labels.approved.length?'FAIL':'PENDING'}. ${creator.validationMode==='ai-persona'?'AI persona':'Creator'} validation: ${creator.pass?'PASS':'PENDING'} (${creator.count} loops). Model judge: not used.\n\n## Release blockers\n\n${blockers.map(b=>'- '+b).join('\n')}\n\n## Case coverage\n\n| Case | Tags | Passed runs |\n|---|---|---|\n${manifest.cases.map(c=>`| ${c.id} | ${c.tags.join(', ')} | ${results.filter(r=>r.caseId===c.id).length}/3 |`).join('\n')}\n\nEvery successful case checks the bilingual schema, exact JD citations, question links, one shared exact quote per bilingual finding, prohibited generated phrases in both languages, unverified-evidence exclusion, automatic bilingual pair checks, and reference gating. Automatic pair checks establish presence and script separation, not semantic equivalence; each paired English/Chinese artifact requires independent semantic review. All inputs are AI-authored synthetic fixtures; no creator records are included. Full per-case output and failures: [machine report](../../evaluation/results/${modeName}.json). Evaluation review packet: [version3.1](../../evaluation/${artifactVersion}/${packetName}).\n\nFailures: ${failures.length?JSON.stringify(failures):'none in this deterministic run'}.\n`;
+  const md=`# Evaluation summary\n\nGenerated: ${summary.generatedAt}. Fixture suite ${manifest.suiteVersion}; runner ${summary.runnerVersion}; model contract ${MODEL_CONTRACT_VERSION}; ${process.version}.\n\n**MVP release: ${summary.releaseStatus}.**\n\n- Automatic constraints: ${summary.automatedPass?'PASS':'FAIL'} (${results.length}/60 case runs).\n- Five synthetic JDs; twenty synthetic transcripts; all four categories (five cases each).\n- New feedback invocations: ${providerCalls}; cumulative model requests including interrupted or rejected attempts: ${attempts.length}/${maxTotalModelRequests}; newly collected results: ${summary.newResults}; reused saved results: ${reusedResults}; total independent case/repeat evidence: ${results.length}. Workspaces opened: ${workspaces}.\n- Stability: ${repeated.stable}/${repeated.total} dimensions within one level (${(repeated.ratio*100).toFixed(1)}%; minimum90%). **${live?'Live model: '+cloud.name+'; review approved label expectations.':'Fixed fake provider only; not substantive model quality.'}**\n- Bilingual automatic pair checks: ${summary.bilingualSemanticReview.automaticPairChecks?'PASS':'FAIL'}; semantic consistency: ${summary.bilingualSemanticReview.status}.\n- ${labels.mode==='ai'?'AI-reviewed labels':labels.mode==='human'?'Human-reviewed labels':labels.mode==='mixed'?'Mixed AI/human-reviewed labels':'Evaluation labels'}: ${labelGate.pass?'PASS':labels.approved.length?'FAIL':'PENDING'}. ${creator.validationMode==='ai-persona'?'AI persona':'Creator'} validation: ${creator.pass?'PASS':'PENDING'} (${creator.count} loops). Model judge: not used.\n\n## Release blockers\n\n${blockers.map(b=>'- '+b).join('\n')}\n\n## Case coverage\n\n| Case | Tags | Passed runs |\n|---|---|---|\n${manifest.cases.map(c=>`| ${c.id} | ${c.tags.join(', ')} | ${results.filter(r=>r.caseId===c.id).length}/3 |`).join('\n')}\n\nEvery successful case checks the bilingual schema, exact JD citations, question links, one shared exact quote per bilingual finding, prohibited generated phrases in both languages, unverified-evidence exclusion, automatic bilingual pair checks, and reference gating. Automatic pair checks establish presence and script separation, not semantic equivalence; each paired English/Chinese artifact requires independent semantic review. All inputs are AI-authored synthetic fixtures; no creator records are included. Full per-case output and failures: [machine report](../../evaluation/results/${modeName}.json). Evaluation review packet: [version3.2](../../evaluation/${artifactVersion}/${packetName}).\n\nFailures: ${failures.length?JSON.stringify(failures):'none in this deterministic run'}.\n`;
   await mkdir(portfolioRoot,{recursive:true});await writeFile(join(portfolioRoot,`${modeName}-evaluation-summary.md`),md);
 console.log(JSON.stringify({automatedPass:summary.automatedPass,stability:repeated,releaseStatus:summary.releaseStatus,blockers},null,2));
 if(!summary.automatedPass||!repeated.pass||(process.argv.includes('--release')&&blockers.length))process.exitCode=1;

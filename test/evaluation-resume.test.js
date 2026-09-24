@@ -8,8 +8,8 @@ import {fileURLToPath} from 'node:url';
 import {setTimeout as delay} from 'node:timers/promises';
 
 const project=join(dirname(fileURLToPath(import.meta.url)),'..');
-const checkpoint=root=>join(root,'checkpoints','v3-1.json');
-const report=root=>join(root,'results','v3-1.json');
+const checkpoint=root=>join(root,'checkpoints','v3-2.json');
+const report=root=>join(root,'results','v3-2.json');
 const start=(root,args=[])=>{
   const child=spawn(process.execPath,['evaluation/run.js','--output-root',root,...args],{cwd:project,env:{...process.env,NODE_TEST_CONTEXT:'1'}});
   let output='';child.stdout.on('data',chunk=>output+=chunk);child.stderr.on('data',chunk=>output+=chunk);
@@ -39,6 +39,7 @@ test('an interrupted fake evaluation resumes only missing repeats and complete r
     assert.equal(evidence.reusedResults,reused);
     assert.equal(evidence.newResults,60-reused);
     assert.equal(evidence.providerCalls,60-reused);
+    assert.equal(evidence.cumulativeModelRequests,0);
     assert.equal(evidence.collectedResults,60);
     assert.equal(new Set(evidence.results.map(item=>`${item.caseId}:${item.repeat}`)).size,60);
     assert.equal(evidence.stability.pass,true);
@@ -46,6 +47,7 @@ test('an interrupted fake evaluation resumes only missing repeats and complete r
     assert.equal(replayed.code,0,replayed.output);
     const replay=JSON.parse(await readFile(report(root),'utf8'));
     assert.equal(replay.providerCalls,0);
+    assert.equal(replay.cumulativeModelRequests,0);
     assert.equal(replay.reusedResults,60);
     assert.equal(replay.newResults,0);
     assert.equal(replay.workspaces,0);
@@ -57,5 +59,15 @@ test('an interrupted fake evaluation resumes only missing repeats and complete r
     const rejected=await start(root,['--resume']).done;
     assert.notEqual(rejected.code,0);
     assert.match(rejected.output,/Tampered checkpoint entry/);
+  }finally{await rm(root,{recursive:true,force:true});}
+});
+
+test('higher model-request cap requires a separate acknowledgement before any evaluation state is written',async()=>{
+  const root=await mkdtemp(join(tmpdir(),'coach-evaluation-budget-'));
+  try{
+    const rejected=await start(root,['--max-total-model-requests','66']).done;
+    assert.notEqual(rejected.code,0);
+    assert.match(rejected.output,/separate approval and --accept-extra-model-usage/);
+    await assert.rejects(readFile(checkpoint(root),'utf8'),{code:'ENOENT'});
   }finally{await rm(root,{recursive:true,force:true});}
 });

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {createHash, randomUUID} from 'node:crypto';
-import {mkdir, open, readFile, rename, unlink} from 'node:fs/promises';
+import {mkdir, open, readFile, readdir, rename, unlink} from 'node:fs/promises';
 import {basename, dirname, join} from 'node:path';
 import {checkAnalysis, checkBilingualConsistency, checkFeedback, inputChecksum, outputChecksum} from './checks.js';
 
@@ -79,6 +79,61 @@ export async function writeCheckpoint(path,{identity,entries}){
     return {result,checksum:sha256(result)};
   });
   await writeJsonAtomic(path,{schemaVersion:1,identity,entries:wrapped});
+}
+
+const validAttempts=(attempts,{allowUnfinished=false}={})=>{
+  assert.ok(Array.isArray(attempts),'Model attempts must be an array');
+  for(const kind of attempts)assert.ok(kind==='analysis'||kind==='feedback'||allowUnfinished&&kind==='reserved',`Invalid model attempt: ${kind}`);
+};
+
+const attemptSlots=path=>`${path}.slots`;
+const slotName=index=>String(index).padStart(6,'0');
+
+export async function readAttemptLedger(path,{identity}){
+  const ledger=JSON.parse(await readFile(path,'utf8'));
+  exactKeys(ledger,['schemaVersion','identity']);
+  assert.equal(ledger.schemaVersion,2,'Unsupported attempt ledger schema');
+  assert.deepEqual(ledger.identity,identity,'Stale attempt ledger identity');
+  const slots=await readdir(attemptSlots(path),{withFileTypes:true});
+  const attempts=[];
+  for(const slot of slots.sort((a,b)=>a.name.localeCompare(b.name))){
+    assert.ok(slot.isDirectory()&&/^\d{6}$/.test(slot.name),'Invalid model attempt slot');
+    const index=Number(slot.name);
+    assert.equal(index,attempts.length+1,'Missing model attempt slot');
+    try{
+      const entry=JSON.parse(await readFile(join(attemptSlots(path),slot.name,'attempt.json'),'utf8'));
+      exactKeys(entry,['kind']);validAttempts([entry.kind]);attempts.push(entry.kind);
+    }catch(error){if(error.code==='ENOENT')attempts.push('reserved');else throw error;}
+  }
+  return attempts;
+}
+
+export async function writeAttemptLedger(path,{identity,attempts}){
+  validAttempts(attempts);
+  await writeJsonAtomic(path,{schemaVersion:2,identity});
+  await mkdir(attemptSlots(path));
+  for(const [index,kind] of attempts.entries()){
+    const slot=join(attemptSlots(path),slotName(index+1));
+    await mkdir(slot);
+    await writeJsonAtomic(join(slot,'attempt.json'),{kind});
+  }
+}
+
+export async function reserveModelAttempt(path,{identity,attempts,kind,limit}){
+  validAttempts(attempts,{allowUnfinished:true});
+  assert.ok(kind==='analysis'||kind==='feedback',`Invalid model attempt: ${kind}`);
+  assert.ok(Number.isSafeInteger(limit)&&limit>0,'Invalid model request limit');
+  attempts.splice(0,attempts.length,...await readAttemptLedger(path,{identity}));
+  for(let index=1;index<=limit;index++){
+    const slot=join(attemptSlots(path),slotName(index));
+    try{await mkdir(slot);}catch(error){if(error.code==='EEXIST')continue;throw error;}
+    const directory=await open(attemptSlots(path),'r');
+    try{await directory.sync();}finally{await directory.close();}
+    await writeJsonAtomic(join(slot,'attempt.json'),{kind});
+    attempts.splice(0,attempts.length,...await readAttemptLedger(path,{identity}));
+    return;
+  }
+  throw Error(`Model request budget exhausted (${attempts.length}/${limit})`);
 }
 
 export async function writeJsonAtomic(path,value){

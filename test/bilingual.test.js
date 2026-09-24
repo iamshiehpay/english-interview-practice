@@ -5,15 +5,23 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {createApplication} from '../src/server.js';
 import {FakeLanguageModel} from '../src/providers.js';
-import {MODEL_CONTRACT_VERSION} from '../src/model-contracts.js';
+import {MODEL_CONTRACT_VERSION,feedbackContract} from '../src/model-contracts.js';
 import {checkBilingualConsistency,labelStatus,semanticReviewStatus} from '../evaluation/checks.js';
 import {harness,setup} from './helpers.js';
 
 const zh=/\p{Script=Han}/u;
 
+test('contract 3.2 gives independent level anchors and forbids stitched transcript quotes',()=>{
+  assert.equal(MODEL_CONTRACT_VERSION,'3.2.0');
+  for(const dimension of ['Relevance','Support','Structure','English expression'])assert.match(feedbackContract,new RegExp(`${dimension}: 4`));
+  assert.match(feedbackContract,/one contiguous, byte-for-byte substring/);
+  assert.match(feedbackContract,/Do not join separate phrases, insert ellipses/);
+  assert.match(feedbackContract,/Do not lower English expression because an otherwise clear sentence is irrelevant/);
+});
+
 test('new Question Sets and Feedback Reports use the shared bilingual contract',async t=>{
   const {api}=await harness(t);const {analysis,record}=await setup(api);
-  assert.equal(MODEL_CONTRACT_VERSION,'3.1.0');
+  assert.equal(MODEL_CONTRACT_VERSION,'3.2.0');
   for(const question of analysis.questions){
     assert.ok(question.text.trim());assert.match(question.meaningZh,zh);
     assert.ok(question.rationale.trim());assert.match(question.rationaleZh,zh);

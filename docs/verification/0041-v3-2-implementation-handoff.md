@@ -1,0 +1,9 @@
+# Contract 3.2 implementation handoff
+
+Contract 3.2 defines independent four-level anchors for relevance, support, structure and English expression. It instructs the model to use one contiguous, exact transcript span for every quote. The existing substring validator and every automatic, blind-label, bilingual and creator gate remain strict. No historical model output or review threshold was edited.
+
+The evaluator writes new `v3-2`, `codex-v3-2` and `live-v3-2` artifacts. A checkpoint has a companion identity-bound request ledger and numbered reservation slots. Each live analysis or feedback call reserves a durable slot before invocation; rejected calls and slots unfinished at process death still consume the cumulative default budget of 65. An unfinished slot cannot block resume. Calls above 65 require separate user authorization and explicit `--max-total-model-requests N --accept-extra-model-usage` flags. Fake-provider runs make zero external model requests. A new checkpoint may reuse already validated frozen analyses without treating those earlier calls as new requests.
+
+Targeted checkpoint, resume and bilingual tests cover quote/rubric instructions, interrupted slots, concurrent reservations, cumulative limits and fake-provider reporting. The final full offline suite passed 241/241. Independent Standards and Spec reviewers found three request-ledger/provenance issues and one authorization-flag issue; all were corrected and rechecked. No paid/subscription evaluation was run for 3.2, and no port 4310 or real practice data was used.
+
+The first 3.1 Codex evidence stays frozen: 65 requests, 59/60 valid results and 15 blind-label mismatches among those 59. It cannot establish contract 3.2 model quality or release approval. A fresh 3.2 evaluation would require a separately approved budget and execution plan, followed by new blind labels, independent bilingual semantic review and creator validation. Release remains **BLOCKED**.
