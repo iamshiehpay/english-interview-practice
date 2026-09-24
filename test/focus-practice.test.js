@@ -64,3 +64,15 @@ test('the new practice prefers a different question in the same category (a new 
   assert.notEqual(created.question.id,source.question.id,'presents a fresh scenario question');
   assert.ok(analysis.questions.some(q=>q.id===created.question.id),'question comes from the same Job Snapshot set');
 });
+
+test('a self-introduction Focus Point continues with a job-grounded role-fit question',async t=>{
+  const {api}=await harness(t);const {snapshot}=await setup(api);
+  const intro=(await api('/records',{snapshotId:snapshot.id,questionId:'self-introduction'})).data;
+  const source=await completed(api,intro);
+  const next=(await api('/records/from-focus',{recordId:source.id})).data;
+  const stored=(await api('/workspace')).data.analyses[snapshot.id].questions;
+  assert.equal(next.question.category,'role-fit');
+  assert.notEqual(next.question.id,'self-introduction');
+  assert.ok(stored.some(question=>question.id===next.question.id));
+  assert.equal(next.focusOrigin.questionId,'self-introduction');
+});

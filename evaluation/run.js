@@ -11,6 +11,7 @@ import {OpenAILanguageModel} from '../src/cloud.js';
 import {createApplication} from '../src/server.js';
 import {FakeLanguageModel} from '../src/providers.js';
 import {MODEL_CONTRACT_VERSION} from '../src/model-contracts.js';
+import {jobGroundedAnalysis} from './job-grounded-analysis.js';
 import {validateManifest,checkAnalysis,checkFeedback,checkBilingualConsistency,stability,checkFrozenAnalysis,inputChecksum,outputChecksum,labelStatus,semanticReviewStatus,creatorStatus,dimensions} from './checks.js';
 const root=dirname(fileURLToPath(import.meta.url));
 const readFixture=name=>readFile(join(root,'v1',name),'utf8').then(JSON.parse);
@@ -26,7 +27,7 @@ const cloud=subscription?new CodexLanguageModel({profile:process.env.COACH_CODEX
 const cliVersion=subscription?await promisify(execFile)(cloud.binary,['--version'],{timeout:5000,maxBuffer:10000}).then(({stdout})=>{const match=stdout.trim().match(/^codex-cli (\S+)$/);if(!match)throw Error(`Unrecognised Codex CLI version output: ${stdout.trim()}`);return match[1];},error=>{throw Error(`Codex CLI version check failed: ${error.message}`);}):null;
 const frozenSettings=live?{model:cloud.model,effort:cloud.effort??null,serviceTier:cloud.serviceTier??null}:null;
 const modeName=subscription?'codex-v3':live?'live-v3':'v3';
-const codeHash=createHash('sha256');for(const file of ['run.js','checks.js','../src/server.js','../src/operations.js','../src/store.js','../src/domain.js','../src/providers.js','../src/cloud.js','../src/codex-language.js','../src/codex-profile.js','../src/codex-rpc.js','../src/codex-audit.js','../src/codex-sandbox.js','../src/codex-runtime.js','../src/model-contracts.js','../src/model-schemas.js'])codeHash.update(await readFile(join(root,file)));
+const codeHash=createHash('sha256');for(const file of ['run.js','checks.js','job-grounded-analysis.js','../src/common-questions.js','../src/server.js','../src/operations.js','../src/store.js','../src/domain.js','../src/providers.js','../src/cloud.js','../src/codex-language.js','../src/codex-profile.js','../src/codex-rpc.js','../src/codex-audit.js','../src/codex-sandbox.js','../src/codex-runtime.js','../src/model-contracts.js','../src/model-schemas.js'])codeHash.update(await readFile(join(root,file)));
 const results=[],failures=[],packet=[],analyses=new Map();let providerCalls=0,analysisCalls=0;
 const analysisFile=join(artifactDirectory,`${subscription?'codex':'live'}-analysis.json`);
 const jdChecksum=createHash('sha256').update(JSON.stringify(manifest.jobs)).digest('hex');
@@ -55,7 +56,7 @@ for(let repeat=1;repeat<=3;repeat++){
     };
     for(const job of manifest.jobs){
       let snapshot,analysis;
-      try{snapshot=await api('/snapshots',{text:job.text});analysis=await api(`/snapshots/${snapshot.id}/analysis`,{});checkAnalysis(analysis,job);}
+      try{snapshot=await api('/snapshots',{text:job.text});analysis=jobGroundedAnalysis(await api(`/snapshots/${snapshot.id}/analysis`,{}));checkAnalysis(analysis,job);}
       catch(error){failures.push({repeat,jobId:job.id,check:'analysis grounding/schema',error:error.message});continue;}
       for(const c of manifest.cases.filter(c=>c.jobId===job.id)){
         try{

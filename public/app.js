@@ -464,7 +464,7 @@ async function showQuestion(snapshotId, questionId, suppliedAnalysis) {
   const meaning = question.meaningZh || '這是舊版題目，目前沒有保存中文題意；英文原題完整保留。';
   const previous = incompleteForQuestion(snapshotId, question.id);
   const providerGate = modelReady() ? '' : `<div class="provider-warning"><strong>目前還不能取得模型回饋。</strong><p>請先到設定完成 Codex 登入與驗證；若要先整理想法，文字草稿仍會保存在本機。</p><div id="question-provider-gate"></div></div>`;
-  const content = `<div id="recommended-question" class="question-phase"><div class="q-head"><span class="chip${recommended ? ' chip-accent' : ''}">${recommended ? '建議先練' : '目前選擇'}｜${escape(categories[question.category] || question.category)}</span></div><h1 class="question-text" lang="en">${escape(question.text)}</h1><div id="question-read-aloud"></div><details open><summary>查看中文題意</summary><div class="detail-panel"><p>${escape(meaning)}</p></div></details>${providerGate}<div class="button-row" id="question-actions"></div></div>`;
+  const content = `<div id="recommended-question" class="question-phase"><div class="q-head"><span class="chip${recommended ? ' chip-accent' : ''}">${recommended ? '建議先練' : '目前選擇'}｜${escape(categories[question.category] || question.category)}</span>${question.source === 'common' && question.group === 'self-introduction' ? '<span class="chip">固定題</span>' : ''}</div><h1 class="question-text" lang="en">${escape(question.text)}</h1><div id="question-read-aloud"></div><details open><summary>查看中文題意</summary><div class="detail-panel"><p>${escape(meaning)}</p></div></details>${providerGate}<div class="button-row" id="question-actions"></div></div>`;
   $('#practice').innerHTML = practiceFrame({snapshot, content});
   readAloud($('#question-read-aloud'), {snapshotId, questionId:question.id}, '朗讀題目', questionText($('#recommended-question')));
   const actions = $('#question-actions');
@@ -480,7 +480,7 @@ async function showQuestion(snapshotId, questionId, suppliedAnalysis) {
   } else button(previous ? '繼續回答' : '開始回答', begin, actions);
   const index = analysis.questions.findIndex(item => item.id === question.id);
   button('換一題', () => showQuestion(snapshotId, analysis.questions[(index + 1) % analysis.questions.length].id, analysis), actions, {kind:'secondary', id:'next-question'});
-  button(`查看全部（${analysis.questions.length}）`, () => showQuestionList(snapshotId, analysis), actions, {kind:'ghost', id:'view-all-questions'});
+  button('查看全部題目', () => showQuestionList(snapshotId, analysis), actions, {kind:'ghost', id:'view-all-questions'});
 }
 
 async function showQuestionList(snapshotId, suppliedAnalysis) {
@@ -490,27 +490,32 @@ async function showQuestionList(snapshotId, suppliedAnalysis) {
   const analysis = suppliedAnalysis || await analysisView(snapshotId);
   // One row per question: a state glyph (answered ✓ / draft / not yet) that repeats
   // the row's own text, so the state never depends on colour alone.
+  const commonQuestions = analysis.questions.filter(question => question.source === 'common');
+  const groundedQuestions = analysis.questions.filter(question => question.source !== 'common');
   let practisedTotal = 0;
+  const questionRow = question => {
+    const records = (analysis.history?.[question.id] || []).map(item => workspace.records?.[item.recordId]).filter(Boolean);
+    const answered = records.filter(record => record.attempts?.length > 0).length;
+    const hasDraft = records.some(record => record.attempts?.length === 0 && record.writtenDraft);
+    if (answered) practisedTotal += 1;
+    const progress = answered ? `已作答 ${answered} 次${hasDraft ? ' · 另有未送出草稿' : ''}` : hasDraft ? '有未送出草稿' : '尚未作答';
+    const state = answered ? 'answered' : hasDraft ? 'draft' : 'new';
+    const recommended = question.id === analysis.recommendation.questionId;
+    const fixed = question.source === 'common' && question.group === 'self-introduction';
+    return `<article class="question-card q-${state}${answered || hasDraft ? ' practised' : ''}${recommended ? ' recommended' : ''}" data-question-id="${escape(question.id)}"><span class="q-state" aria-hidden="true">${state === 'answered' ? checkIcon : ''}</span><div class="q-main"><p class="english" lang="en">${escape(question.text)}</p><p class="meta"><span>${progress}</span>${fixed ? '<span class="chip">固定題</span>' : ''}${recommended ? '<span class="chip chip-accent">本次推薦</span>' : ''}</p></div><button type="button" class="secondary">選這一題</button></article>`;
+  };
+  const commonGroup = commonQuestions.length ? `<section class="category-group common-group" aria-labelledby="group-common"><header class="group-head"><h2 id="group-common">常見題</h2><span class="meta">${commonQuestions.length} 題</span></header>${commonQuestions.map(questionRow).join('')}</section>` : '';
   const groups = Object.entries(categories).map(([category,label]) => {
-    const questions = analysis.questions.filter(question => question.category === category);
-    let practised = 0;
-    const rows = questions.map(question => {
-      const records = (analysis.history?.[question.id] || []).map(item => workspace.records?.[item.recordId]).filter(Boolean);
-      const answered = records.filter(record => record.attempts?.length > 0).length;
-      const hasDraft = records.some(record => record.attempts?.length === 0 && record.writtenDraft);
-      if (answered) practised += 1;
-      const progress = answered ? `已作答 ${answered} 次${hasDraft ? ' · 另有未送出草稿' : ''}` : hasDraft ? '有未送出草稿' : '尚未作答';
-      const state = answered ? 'answered' : hasDraft ? 'draft' : 'new';
-      const recommended = question.id === analysis.recommendation.questionId;
-      return `<article class="question-card q-${state}${answered || hasDraft ? ' practised' : ''}${recommended ? ' recommended' : ''}" data-question-id="${escape(question.id)}"><span class="q-state" aria-hidden="true">${state === 'answered' ? checkIcon : ''}</span><div class="q-main"><p class="english" lang="en">${escape(question.text)}</p><p class="meta"><span>${progress}</span>${recommended ? '<span class="chip chip-accent">本次推薦</span>' : ''}</p></div><button type="button" class="secondary">選這一題</button></article>`;
-    }).join('');
-    practisedTotal += practised;
+    const questions = groundedQuestions.filter(question => question.category === category);
+    const before = practisedTotal;
+    const rows = questions.map(questionRow).join('');
+    const practised = practisedTotal - before;
     return `<section class="category-group" aria-labelledby="group-${category}"><header class="group-head"><h2 id="group-${category}">${escape(label)}</h2><span class="meta">${questions.length} 題 · 已作答 ${practised} 題</span></header>${rows || '<p class="meta group-empty">這一類目前沒有題目。</p>'}</section>`;
   }).join('');
-  const content = `<p class="eyebrow">完整題組</p><h1>選一題來練習</h1><p>題目依類型整理；切換題目不會重新呼叫模型。</p><p class="meta list-summary">共 ${analysis.questions.length} 題 · 已作答 ${practisedTotal} 題</p><div class="button-row" id="question-list-actions"></div><div id="question-list" class="question-list">${groups}</div>`;
+  const content = `<p class="eyebrow">完整題組</p><h1>選一題來練習</h1><p>題目依類型整理；切換題目不會重新呼叫模型。</p><p class="meta list-summary">常見題 ${commonQuestions.length}｜職缺題目 ${groundedQuestions.length} · 已作答 ${practisedTotal} 題</p><div class="button-row" id="question-list-actions"></div><div id="question-list" class="question-list">${commonGroup}${groups}</div>`;
   $('#practice').innerHTML = practiceFrame({snapshot, content});
   button('回到推薦題', () => showRecommended(snapshotId), $('#question-list-actions'), {kind:'ghost'});
-  if (analysis.questions.length < 40) button('另外新增四題', async () => {
+  if (groundedQuestions.length < 40) button('另外新增四題', async () => {
     await api(`/snapshots/${snapshotId}/questions`, {});
     await refreshWorkspace();
     await showQuestionList(snapshotId);

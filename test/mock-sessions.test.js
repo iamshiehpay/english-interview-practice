@@ -27,8 +27,14 @@ test('a session draws three questions from three categories and freezes the resu
   const session = (await api('/mock-sessions', {snapshotId: snapshot.id})).data;
   assert.equal(session.status, 'in-progress');
   assert.equal(session.entries.length, 3);
+  assert.equal(session.entries[0].question.id, 'self-introduction');
+  assert.equal(session.entries[0].question.source, 'common');
+  assert.equal(session.entries[0].question.text, 'Tell me about yourself.');
   assert.equal(new Set(session.entries.map(entry => entry.question.category)).size, 3, 'three different Question Categories');
   assert.equal(new Set(session.entries.map(entry => entry.question.id)).size, 3);
+  const stored=(await api('/workspace')).data.analyses[snapshot.id].questions;
+  assert.ok(session.entries.slice(1).every(entry => stored.some(question => question.id === entry.question.id)), 'remaining questions are Job-grounded');
+  assert.ok(session.entries.slice(1).every(entry => entry.question.source !== 'common'));
   assert.equal(session.resume.text, 'Built a Python task manager.');
   assert.equal(session.currentPosition, 1);
   assert.equal(session.currentEntryId, session.entries[0].id);
@@ -52,10 +58,12 @@ test('a session prefers unpractised questions and refuses a Question Set with to
 
   // With a normal Question Set, a question already practised is avoided.
   const {api: plain} = await harness(t);
-  const {snapshot: job, analysis, record} = await setup(plain);
+  const {snapshot: job, analysis} = await setup(plain);
+  const practisedQuestion=analysis.questions.find(question => question.category === 'experience-depth');
+  const record=(await plain('/records',{snapshotId:job.id,questionId:practisedQuestion.id})).data;
   await plain(`/records/${record.id}/attempts`, {transcript: 'I would start by clarifying the requirements.'});
   const session = (await plain('/mock-sessions', {snapshotId: job.id})).data;
-  assert.ok(!session.entries.some(entry => entry.question.id === analysis.questions[0].id) || analysis.questions.filter(q => q.category === analysis.questions[0].category).length === 1,
+  assert.ok(!session.entries.some(entry => entry.question.id === practisedQuestion.id) || analysis.questions.filter(q => q.category === practisedQuestion.category).length === 1,
     'the already-practised question is avoided when its category has an alternative');
 });
 

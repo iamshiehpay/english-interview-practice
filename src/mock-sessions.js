@@ -1,5 +1,6 @@
 import {randomUUID} from 'node:crypto';
-import {requireValue, categories} from './domain.js';
+import {requireValue, requireUnambiguousQuestionSet, categories} from './domain.js';
+import {commonQuestions} from './common-questions.js';
 
 // A Short Mock Session is stored apart from Practice Records on purpose. The Practice
 // Loop's invariants — feedback after every attempt, completion requires a Focus Point,
@@ -17,12 +18,13 @@ export function sessionsFor(data, predicate) {
 export function chooseSessionQuestions(data, snapshotId) {
   const analysis = data.analyses?.[snapshotId];
   requireValue(analysis?.questions?.length, 'Generate a Question Set for this job first', 409);
+  requireUnambiguousQuestionSet(analysis);
   const practised = new Set([
     ...Object.values(data.records || {}).filter(r => r.snapshotId === snapshotId).map(r => r.question.id),
     ...sessionsFor(data, session => session.snapshotId === snapshotId).flatMap(session => session.entries.map(entry => entry.question.id))
   ]);
-  const chosen = [];
-  for (const category of categories) {
+  const chosen = [commonQuestions[0]];
+  for (const category of categories.filter(category => category !== commonQuestions[0].category)) {
     if (chosen.length === SESSION_QUESTIONS) break;
     const inCategory = analysis.questions.filter(question => question.category === category);
     if (!inCategory.length) continue;

@@ -41,7 +41,7 @@ export function recommendWithFocus(view,data,snapshotId) {
   const active=progressView(data).filter(p=>!p.rejected && data.progressDecisions?.[p.id]?.status!=='resolved');
   if(!active.length)return view;
   const score=q=>active.filter(p=>p.evidence.some(e=>(e.snapshotId===snapshotId&&e.capabilityIds.some(id=>q.capabilityIds.includes(id)))||e.category===q.category)).length;
-  const sorted=[...view.questions].sort((a,b)=>score(b)-score(a)||view.history[a.id].length-view.history[b.id].length);
+  const sorted=view.questions.filter(question => question.source !== 'common').sort((a,b)=>score(b)-score(a)||view.history[a.id].length-view.history[b.id].length);
   if(score(sorted[0])>0)view.recommendation={questionId:sorted[0].id,reason:'Practise a capability or category linked to an unresolved Focus Point; choose any other question if you prefer.', reasonZh:'優先練習與尚未解決的練習重點相關的能力或題型；你也可以選擇其他題目。'};
   return view;
 }

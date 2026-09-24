@@ -37,6 +37,16 @@ test('a stored question is read aloud with exactly the stored English text', asy
   assert.equal((await api('/speech', {recordId: record.id, speed: 'sonic'})).status, 400);
 });
 
+test('the fixed self-introduction can be read aloud only after a Question Set exists', async t => {
+  const {calls,provider}=recordingProvider();
+  const {api}=await harness(t,undefined,{speechProvider:provider});
+  const snapshot=(await api('/snapshots',{text:'Build reliable APIs.'})).data;
+  assert.equal((await api('/speech',{snapshotId:snapshot.id,questionId:'self-introduction'})).status,409);
+  await api(`/snapshots/${snapshot.id}/analysis`,{});
+  assert.equal((await api('/speech',{snapshotId:snapshot.id,questionId:'self-introduction'})).status,200);
+  assert.equal(calls.at(-1).text,'Tell me about yourself.');
+});
+
 test('read aloud takes references only, and unknown or Chinese-only references are refused', async t => {
   const {calls, provider} = recordingProvider();
   const {api, store} = await harness(t, undefined, {speechProvider: provider});

@@ -21,7 +21,7 @@ The learner's unfinished written response to a selected question, which can be r
 _Avoid_: Submitted answer, completed practice, speech transcript draft
 
 **Answer Attempt**:
-One learner-submitted spoken or written response to a Job-grounded Interview Question, represented by its transcript for coaching and comparison; generated English assistance is not an Answer Attempt.
+One learner-submitted spoken or written response to a Job-grounded Interview Question or Common Question, represented by its transcript for coaching and comparison; generated English assistance is not an Answer Attempt.
 _Avoid_: Final answer, message, recording
 
 **Practice Record**:
@@ -92,12 +92,16 @@ _Avoid_: Background crawler, unrestricted browsing, auto-application agent
 An interview-practice question justified by evidence in a Job Snapshot, its Job Capability Map, and optionally a Role Research Brief; it is not claimed to be an employer's actual interview question.
 _Avoid_: Real interview question, company interview question
 
+**Common Question**:
+An app-authored interview-practice question served with every existing Question Set, independent of the Job Snapshot and never presented as an employer's actual question or supported by job capability evidence. Its practice history stays under the selected job.
+_Avoid_: Fixed JD question, employer interview question
+
 **Question Category**:
 One of four MVP interview intents: role fit and motivation, experience and project depth, behavioral and situational judgment, or technical communication.
 _Avoid_: Difficulty, topic tag, interview stage
 
 **Question Set**:
-A reviewable collection of Job-grounded Interview Questions generated for one Job Snapshot, with capability coverage and practice history preserved across sessions.
+A reviewable collection of Job-grounded Interview Questions generated for one Job Snapshot, served alongside app-authored Common Questions, with capability coverage and practice history preserved across sessions.
 _Avoid_: Random prompt, live question stream, generic question bank
 
 **Recommended Question（推薦練習題）**:
@@ -143,7 +147,7 @@ At most two necessary sentence-level English corrections offered after a formal 
 _Avoid_: Rewritten answer, English Assistance, invented experience, grammar score
 
 **Short Mock Session（三題短場模擬）**:
-A single-sitting run of three Job-grounded Interview Questions from one Job Snapshot and its frozen resume version, answered without intervening feedback or coaching and assessed once at the end. A question may be skipped, and a skipped question is recorded as skipped rather than assessed. It is not a Practice Loop, never produces a Focus Point, and never alters a Practice Record.
+A single-sitting run of the self-introduction Common Question and two Job-grounded Interview Questions from one Job Snapshot and its frozen resume version, answered without intervening feedback or coaching and assessed once at the end. A question may be skipped, and a skipped question is recorded as skipped rather than assessed. It is not a Practice Loop, never produces a Focus Point, and never alters a Practice Record.
 _Avoid_: Practice Loop, real interview, timed exam
 
 **Session Summary（整場回饋）**:

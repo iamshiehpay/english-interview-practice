@@ -1,3 +1,5 @@
+import {commonQuestions, hasCommonQuestionIdCollision} from './common-questions.js';
+
 export const dimensions = ['relevance', 'support', 'structure', 'englishExpression'];
 export const categories = ['role-fit', 'experience-depth', 'behavioral', 'technical-communication'];
 export class AppError extends Error {
@@ -89,11 +91,19 @@ export const gapGuidance = [
   {frame: 'transferable', guidance: 'Use a true adjacent experience and explain its limits.'},
   {frame: 'honest-learning-plan', guidance: 'State what you have not done and how you would learn or validate it.'}
 ];
+export function requireUnambiguousQuestionSet(analysis, status = 409) {
+  requireValue(!hasCommonQuestionIdCollision(analysis), status === 502
+    ? 'Invalid provider output: question id is a reserved Common Question id'
+    : 'Question Set contains a reserved Common Question id; recapture this job to rebuild its questions', status);
+  return analysis;
+}
 export function questionSetView(analysis, records, snapshotId) {
-  const history = Object.fromEntries(analysis.questions.map(q => [q.id, records.filter(r => r.snapshotId === snapshotId && r.question.id === q.id).map(r => ({recordId: r.id, status: r.status}))]));
+  requireUnambiguousQuestionSet(analysis);
+  const questions = [...commonQuestions, ...analysis.questions];
+  const history = Object.fromEntries(questions.map(q => [q.id, records.filter(r => r.snapshotId === snapshotId && r.question.id === q.id).map(r => ({recordId: r.id, status: r.status}))]));
   const categoryCount = category => analysis.questions.filter(q => q.category === category).reduce((n, q) => n + history[q.id].length, 0);
   const ranked = [...analysis.questions].sort((a, b) => categoryCount(a.category) - categoryCount(b.category) || history[a.id].length - history[b.id].length);
-  return {...analysis, history, recommendation: {questionId: ranked[0].id, reason: 'Broaden category coverage, then practise the least-used question.', reasonZh:'先擴充題型覆蓋，再練習次數最少的題目。'}, gapGuidance,
+  return {...analysis, questions, history, recommendation: {questionId: ranked[0].id, reason: 'Broaden category coverage, then practise the least-used question.', reasonZh:'先擴充題型覆蓋，再練習次數最少的題目。'}, gapGuidance,
     review: {required: true, reason: 'Generated questions and inferences need your review. Exact citations do not prove semantic support or rule out similar questions. Compare each question with its quoted evidence; these are not actual employer questions.'}};
 }
 

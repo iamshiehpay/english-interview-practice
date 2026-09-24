@@ -15,6 +15,6 @@ export async function harness(t, provider = new FakeLanguageModel(), options = {
 export async function setup(api) {
   const snapshot=(await api('/snapshots',{text:'Build reliable Python APIs.\nExplain engineering trade-offs.'})).data;
   const analysis=(await api(`/snapshots/${snapshot.id}/analysis`,{})).data;
-  const record=(await api('/records',{snapshotId:snapshot.id,questionId:analysis.questions[0].id})).data;
+  const record=(await api('/records',{snapshotId:snapshot.id,questionId:analysis.questions.find(question => question.source !== 'common').id})).data;
   return {snapshot,analysis,record};
 }

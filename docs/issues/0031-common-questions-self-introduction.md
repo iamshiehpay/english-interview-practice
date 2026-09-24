@@ -1,5 +1,5 @@
 ---
-status: ready-for-agent
+status: completed
 ---
 
 # Common Questions mechanism: a pinned self-introduction for every job
@@ -56,15 +56,15 @@ that 0032 only adds items and a UI block.
 
 ## Acceptance criteria
 
-- [ ] The served Question Set has the self-introduction first with the exact text, gloss, category, empty capability list and common-question marker.
-- [ ] A Question Set stored before this change serves it without any stored data being rewritten.
-- [ ] No Question Set → no Common Question; "add four more questions" still works and the job-grounded count is unchanged.
-- [ ] An Answer Attempt on `self-introduction` receives feedback through the fake provider; revision and a follow-up work.
-- [ ] A new short mock session starts with the self-introduction and its three questions have distinct categories.
-- [ ] Model-output validation and evaluation-check tests are unchanged and pass.
-- [ ] The UI pins and labels the card and shows separated counts; browser smoke asserts both.
-- [ ] `CONTEXT.md` defines Common Question (with an _Avoid_ line, e.g. "fixed JD question").
-- [ ] `npm test` and `npm run test:browser` pass.
+- [x] The served Question Set has the self-introduction first with the exact text, gloss, category, empty capability list and common-question marker.
+- [x] A Question Set stored before this change serves it without any stored data being rewritten.
+- [x] No Question Set → no Common Question; "add four more questions" still works and the job-grounded count is unchanged.
+- [x] An Answer Attempt on `self-introduction` receives feedback through the fake provider; revision and a follow-up work.
+- [x] A new short mock session starts with the self-introduction and its three questions have distinct categories.
+- [x] Model-output validation and evaluation-check tests are unchanged and pass.
+- [x] The UI pins and labels the card and shows separated counts; browser smoke asserts both.
+- [x] `CONTEXT.md` defines Common Question (with an _Avoid_ line, e.g. "fixed JD question").
+- [x] `npm test` and `npm run test:browser` pass.
 
 ## Files likely touched
 
@@ -87,3 +87,11 @@ npm run test:browser
 None — can start immediately.
 
 ## Comments
+
+### 2026-09-24 — AI implementation and two verification rounds
+
+- `code-mapper` traced the serving/practice boundaries; `backend-developer` and `frontend-developer` implemented separate ownership areas. Independent `test-automator` and `reviewer` passed round 2 (Standards PASS, Spec PASS).
+- `node --check public/app.js`, `npm test` (211/211), `npm run test:browser`, and offline `npm run evaluate` passed. Offline evaluation: 60/60 results, zero failures, 80/80 stable dimensions, fake local provider only. Release remains blocked by separate semantic/label/persona/live-quality gates.
+- Tests cover unchanged stored analysis bytes and legacy sets, no-set behavior, +4 grounded expansion, feedback/revision/follow-up/hints/illustration/read-aloud, failed feedback retry, mock opening and distinct categories, and Focus Point continuation to a grounded role-fit question. Independent own-server agent-browser check at 360 px verified fixed label/gloss, common-first order, separated 1/8 counts, and no overflow (document 345 <= 360 px).
+- Round 1 caught evaluator misuse of the served view and a possible reserved-ID collision. Round 2 projects only job-grounded questions at the evaluator boundary, leaving strict model checks unchanged; new model ID collisions fail atomically with 502. Existing stored collisions fail explicitly with 409 and are not automatically migrated; recreating that job can rebuild its Question Set. No source data was rewritten.
+- All test servers/workspaces/browser sessions were isolated; 4310 was never contacted. Static-file allowlist and model contract are unchanged. Incidental screenshots were restored. No additional out-of-scope issue was identified.

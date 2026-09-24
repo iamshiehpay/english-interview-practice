@@ -8,7 +8,7 @@ import {checkAnalysis,checkFeedback,checkBilingualConsistency,creatorStatus,inpu
 
 const sha=value=>createHash('sha256').update(typeof value==='string'?value:JSON.stringify(value)).digest('hex');
 const same=(actual,expected,message)=>assert.deepEqual(actual,expected,message);
-const codeFiles=['evaluation/run.js','evaluation/checks.js','src/server.js','src/operations.js','src/store.js','src/domain.js','src/providers.js','src/cloud.js','src/codex-language.js','src/codex-profile.js','src/codex-rpc.js','src/codex-audit.js','src/codex-sandbox.js','src/codex-runtime.js','src/model-contracts.js','src/model-schemas.js'];
+const codeFiles=['evaluation/run.js','evaluation/checks.js','evaluation/job-grounded-analysis.js','src/common-questions.js','src/server.js','src/operations.js','src/store.js','src/domain.js','src/providers.js','src/cloud.js','src/codex-language.js','src/codex-profile.js','src/codex-rpc.js','src/codex-audit.js','src/codex-sandbox.js','src/codex-runtime.js','src/model-contracts.js','src/model-schemas.js'];
 const protectedModelFiles=['src/model-contracts.js','src/model-schemas.js','src/domain.js','src/providers.js','src/cloud.js','src/codex-language.js'];
 
 export function reviewArtifacts({raw,frozen,audit,semanticReviews,source,currentSource,manifest,humanLabels,creator}){

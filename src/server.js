@@ -14,7 +14,8 @@ import {RecordingStore, captureRecording, transcribeRecording, recordingsFor} fr
 import {createSession, sessionsFor, sessionView, requireCurrentEntry, sessionFinished} from './mock-sessions.js';
 import {LocalWorkspace} from './store.js';
 import {FakeLanguageModel} from './providers.js';
-import {AppError, requireValue, nonempty, redactSecrets, validateAnalysis, validateFeedback, validateCoaching, validateFollowUp, validateCorrections, validateMockSummary, dimensions, questionSetView} from './domain.js';
+import {questionInSet} from './common-questions.js';
+import {AppError, requireValue, requireUnambiguousQuestionSet, nonempty, redactSecrets, validateAnalysis, validateFeedback, validateCoaching, validateFollowUp, validateCorrections, validateMockSummary, dimensions, questionSetView} from './domain.js';
 
 async function body(req, limit = 1000000) {
   let raw = '';
@@ -86,7 +87,8 @@ export async function createApplication({directory = '.workspace', languageModel
     if (input.snapshotId !== undefined) {
       const analysis = store.data.analyses[input.snapshotId];
       requireValue(analysis, 'Generate a Question Set first', 409);
-      const question = analysis.questions.find(q => q.id === input.questionId);
+      requireUnambiguousQuestionSet(analysis);
+      const question = questionInSet(analysis, input.questionId);
       requireValue(question, 'Not found', 404);
       return question.text;
     }
@@ -241,6 +243,7 @@ export async function createApplication({directory = '.workspace', languageModel
         return deleteOwnedRecordings(ownedByThisJob, d => {for (const r of Object.values(d.records)) if (r.snapshotId===snapshot.id) removeRecord(d,r.id);for (const s of Object.values(d.mockSessions||{})) if (s.snapshotId===snapshot.id) delete d.mockSessions[s.id];delete d.snapshots[snapshot.id];delete d.analyses[snapshot.id];for (const c of Object.values(d.evidenceClaims||{})) c.capabilityLinks=c.capabilityLinks.filter(l=>l.snapshotId!==snapshot.id);cleanDerivedState(d);return {deleted:snapshot.id};});
       }
       const current = store.data.analyses[snapshot.id];
+      if (current) requireUnambiguousQuestionSet(current);
       const view = analysis => ({...recommendWithFocus(questionSetView(analysis, Object.values(store.data.records), snapshot.id), store.data, snapshot.id), evidenceContext: evidenceContext(store.data, snapshot.id, analysis.capabilities.map(c => c.id))});
       if (method === 'GET' && match[2] === '/analysis') {
         requireValue(current, 'Generate a Question Set first', 409);
@@ -253,7 +256,7 @@ export async function createApplication({directory = '.workspace', languageModel
             generated.capabilities = [...current.capabilities, ...generated.capabilities.filter(c => !current.capabilities.some(old => old.id === c.id))];
             generated.questions = [...current.questions, ...generated.questions.filter(q => !current.questions.some(old => old.id === q.id))];
           }
-          return validateAnalysis(generated, snapshot, {legacyQuestions: current?.questions ?? []});
+          return requireUnambiguousQuestionSet(validateAnalysis(generated, snapshot, {legacyQuestions: current?.questions ?? []}), 502);
         });
         // Keep legacy question IDs and evidence so practice history remains linked.
         await commit(d => {
@@ -267,6 +270,7 @@ export async function createApplication({directory = '.workspace', languageModel
         requireValue(current.questions.length < 40, 'Question Set limit reached', 409);
         const analysis = await generate(context, () => languageModel.additionalQuestions({snapshot: {text:snapshot.text,resume:snapshot.resume,difficulty:snapshot.difficulty}, analysis: structuredClone(current), signal: context?.signal}), output => {
           const analysis = validateAnalysis(output, snapshot, {expanded: true, legacyQuestions: current.questions});
+          requireUnambiguousQuestionSet(analysis, 502);
           requireValue(analysis.questions.length > current.questions.length && analysis.questions.length <= 40 && analysis.questions.length <= current.questions.length + 4 && JSON.stringify(analysis.capabilities) === JSON.stringify(current.capabilities) && JSON.stringify(analysis.questions.slice(0, current.questions.length)) === JSON.stringify(current.questions), 'Invalid provider output: additions must preserve existing evidence and questions', 502);
           return analysis;
         });
@@ -421,10 +425,12 @@ export async function createApplication({directory = '.workspace', languageModel
     }
     if (method === 'POST' && path === '/api/records') {
       const snapshot = item('snapshots', input.snapshotId);
-      const question = store.data.analyses[snapshot.id]?.questions.find(q => q.id === input.questionId);
+      const analysis = store.data.analyses[snapshot.id];
+      if (analysis) requireUnambiguousQuestionSet(analysis);
+      const question = questionInSet(analysis, input.questionId);
       requireValue(question, 'Select a generated question');
       const record = {id: randomUUID(), snapshotId: snapshot.id, question: structuredClone(question), attempts: [], followUps: [], status: 'answer', createdAt: new Date().toISOString(), focusPoint: null};
-      return commit(d => {requireValue(d.snapshots[snapshot.id] && d.analyses[snapshot.id]?.questions.some(q=>q.id===question.id),'Job Snapshot changed or was deleted',409);return d.records[record.id]=record;});
+      return commit(d => {requireValue(d.snapshots[snapshot.id] && d.analyses[snapshot.id],'Job Snapshot changed or was deleted',409);requireUnambiguousQuestionSet(d.analyses[snapshot.id]);requireValue(questionInSet(d.analyses[snapshot.id], question.id),'Job Snapshot changed or was deleted',409);return d.records[record.id]=record;});
     }
     if (method === 'POST' && path === '/api/records/from-focus') {
       const source = item('records', input.recordId);
@@ -432,6 +438,7 @@ export async function createApplication({directory = '.workspace', languageModel
       const snapshot = item('snapshots', source.snapshotId);
       const analysis = store.data.analyses[snapshot.id];
       requireValue(analysis?.questions?.length, 'Generate a Question Set first', 409);
+      requireUnambiguousQuestionSet(analysis);
       // Same-JD scenario: prefer an unpractised question in the source category, so
       // the learner works the same focus in a fresh situation without new generation.
       const snapRecords = Object.values(store.data.records).filter(r => r.snapshotId === snapshot.id);

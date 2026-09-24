@@ -57,6 +57,14 @@ try {
  fill('#resume-name','Practice resume');fill('#resume-text','Built a Python task manager with PostgreSQL.');click('#save-resume');await wait(()=>el('#notice').textContent.includes('履歷已儲存'),'resume saved');
  click('nav [data-view="home"]');await wait(()=>el('#use-resume')?.checked,'default resume');
  fill('#jd','Build reliable Python APIs.\\nOperate Kubernetes services.');click('#capture');await wait(()=>el('#recommended-question'),'question');
+ click('#view-all-questions');await wait(()=>el('#question-list'),'question list');
+ const fixed=el('#question-list > .common-group .question-card');
+ if(!fixed||fixed.dataset.questionId!=='self-introduction'||fixed.querySelector('.english')?.textContent!=='Tell me about yourself.'||!fixed.textContent.includes('固定題'))throw Error('Self-introduction is not pinned and labelled above job questions');
+ if(el('#question-list .category-group:not(.common-group) .question-card[data-question-id="self-introduction"]'))throw Error('Fixed question was mixed into a job-grounded category');
+ if(!el('.list-summary').textContent.includes('常見題 1｜職缺題目 8')||document.querySelectorAll('#question-list .category-group:not(.common-group) .question-card').length!==8)throw Error('Common and job-grounded question counts are not separated');
+ click(fixed.querySelector('button'));await wait(()=>el('#recommended-question'),'fixed question');
+ if(!el('#recommended-question').textContent.includes('固定題')||!el('#recommended-question details').textContent.includes('請用一到兩分鐘介紹自己'))throw Error('Fixed question detail has no source label or gloss');
+ click('#view-all-questions');await wait(()=>el('#question-list'),'return to question list');click(btn('回到推薦題'));await wait(()=>el('#recommended-question'),'recommended question');
  if(document.body.innerText.includes('查看出題依據'))throw Error('Redundant evidence shown');
  const data=await ws();if(!Object.values(data.snapshots)[0].resume)throw Error('Resume not selected');
  if(!el('#question-read-aloud .read-aloud-play'))throw Error('Read-aloud control missing on the question screen');
@@ -385,6 +393,7 @@ try {
  const sess=()=>fetch('/api/mock-sessions').then(r=>r.json()).then(list=>list[0]);
  let s=await sess();
  if(s.entries.length!==3)throw Error('Session does not have three questions');
+ if(s.entries[0].question.id!=='self-introduction'||el('#mock-question').textContent!=='Tell me about yourself.')throw Error('Mock session did not open with the fixed self-introduction');
  if(new Set(s.entries.map(e=>e.question.category)).size!==3)throw Error('Session questions do not span three categories');
  fill('#mock-answer','I would restate the problem, then name the assumption I am least sure about.');
  click('#mock-submit');await wait(()=>el('.mock-progress').textContent.includes('第 2 / 3 題'),'advanced to the second question');
@@ -459,5 +468,21 @@ try {
  if((await ws()).recordings[rid])throw Error('Deleting the practice left the recording behind');
  if((await fetch('/api/recordings/'+rid)).status!==404)throw Error('A deleted recording is still playable');
  `);
- console.log('Browser smoke PASS: resume default/opt-out, read-aloud (no autoplay, replay, speed, no overlap), three-minute recording with a visible clock, transcript replace/append handoff, retained Answer Recordings with playback and deletion, a full three-question Short Mock Session (no coaching during, skip, summary quoting the learner, per-question feedback on demand), draft failure/reload recovery, feedback retry, key-sentence corrections (normal/retry/no-change/evidence-safe), Focus-Point same-job practice, job-centred Records navigation, optional revision, separate AI assistance, one-answer completion, the dark mock room scoped to its view (listening mode, record control, theme-color reverting), 我的進步 from the rail, truncated job titles and mobile layout.');
+ await run(`
+ click('nav [data-view="home"]');await wait(()=>el('#jd'),'home for fixed-question completion');
+ fill('#jd','Design reliable APIs and explain their trade-offs.');click('#capture');await wait(()=>el('#recommended-question'),'new job questions');
+ click('#view-all-questions');await wait(()=>el('#question-list'),'new job question list');
+ click('#question-list .common-group .question-card button');await wait(()=>el('#recommended-question .question-text')?.textContent==='Tell me about yourself.','fixed-question detail');
+ click('#question-actions button');await wait(()=>el('#answer'),'fixed-question editor');
+ fill('#answer','I build reliable APIs, and I want to bring that experience to this role.');click('#submit-answer');await wait(()=>el('#complete-practice'),'fixed-question feedback');
+ click('#complete-practice');await wait(()=>el('#practice-complete'),'fixed-question completion');
+ click(btn('再練一題'));await wait(()=>el('#recommended-question'),'next practice after fixed question');
+ click('#view-all-questions');await wait(()=>el('#question-list'),'list after fixed-question completion');
+ const fixed=el('#question-list .common-group .question-card');
+ if(!fixed.classList.contains('q-answered')||!fixed.textContent.includes('已作答 1 次')||!el('.list-summary').textContent.includes('已作答 1 題'))throw Error('Completed fixed-question practice is missing from progress');
+ if([...document.querySelectorAll('#question-list .category-group:not(.common-group) .group-head .meta')].some(n=>n.textContent.includes('已作答 1 題')))throw Error('Fixed-question completion was counted as job-grounded practice');
+ click(btn('另外新增四題'));await wait(()=>el('.list-summary')?.textContent.includes('職缺題目 12'),'expanded job question count');
+ if(!el('.list-summary').textContent.includes('常見題 1')||document.querySelectorAll('#question-list .common-group .question-card').length!==1)throw Error('Expansion duplicated or counted the fixed question as job-grounded');
+ `);
+ console.log('Browser smoke PASS: fixed self-introduction pinned and labelled, separated question counts, completion and expansion, mock opening; resume default/opt-out, read-aloud (no autoplay, replay, speed, no overlap), three-minute recording with a visible clock, transcript replace/append handoff, retained Answer Recordings with playback and deletion, a full three-question Short Mock Session (no coaching during, skip, summary quoting the learner, per-question feedback on demand), draft failure/reload recovery, feedback retry, key-sentence corrections (normal/retry/no-change/evidence-safe), Focus-Point same-job practice, job-centred Records navigation, optional revision, separate AI assistance, one-answer completion, the dark mock room scoped to its view (listening mode, record control, theme-color reverting), 我的進步 from the rail, truncated job titles and mobile layout.');
 }finally{await browser('close').catch(()=>{});if(server)await new Promise(r=>server.close(r));await rm(directory,{recursive:true,force:true});}
