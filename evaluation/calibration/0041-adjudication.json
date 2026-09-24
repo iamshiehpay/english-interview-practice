@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "reviewerType": "ai",
+  "packetSha256": "01c03b840dd416825cad9d57cb186179d0a0d6b638b3c10ad5662e49482484a2",
+  "verification": {
+    "packetHashMatchesBothRaters": true,
+    "allEightCaseIdsPresentOncePerRater": true,
+    "allRatingQuotesAreExactNonemptyTranscriptSubstrings": true
+  },
+  "independentRatings": [
+    {"caseId": "cal-schema-drift", "relevance": 3, "support": 3, "structure": [3, 4], "englishExpression": 4},
+    {"caseId": "cal-cache-worker", "relevance": 2, "support": 2, "structure": 3, "englishExpression": 4},
+    {"caseId": "cal-woodwork", "relevance": 1, "support": 1, "structure": 3, "englishExpression": 4},
+    {"caseId": "cal-alert-claim", "relevance": 2, "support": 1, "structure": 3, "englishExpression": 4},
+    {"caseId": "cal-api-grammar", "relevance": 4, "support": 3, "structure": 4, "englishExpression": 3},
+    {"caseId": "cal-notification-language", "relevance": 4, "support": 3, "structure": 4, "englishExpression": 3},
+    {"caseId": "cal-classifier-tradeoff", "relevance": 4, "support": 4, "structure": 4, "englishExpression": 4},
+    {"caseId": "cal-sensor-fragments", "relevance": 2, "support": 2, "structure": 2, "englishExpression": 2}
+  ],
+  "disagreements": [
+    {
+      "caseId": "cal-schema-drift",
+      "dimension": "structure",
+      "raterALevel": 4,
+      "raterBLevel": 3,
+      "verdict": "true_boundary_ambiguity",
+      "unresolvedRange": [3, 4],
+      "rationale": "Comparing and flagging schema changes before asking the owner to check affected tables is a connected sequence, supporting level 4. The owner check is only briefly linked to the detection step, so level 3's understandable but thin progression also fits. Neither rater used missing dashboard guidance as a structure deduction."
+    },
+    {
+      "caseId": "cal-woodwork",
+      "dimension": "structure",
+      "raterALevel": 4,
+      "raterBLevel": 3,
+      "verdict": "guide_violation",
+      "chosenLevel": 3,
+      "rationale": "The sentence gives one woodworking claim with a simple because-reason. The prospective guide explicitly places that pattern at level 3; topical irrelevance does not lower structure, but the sentence does not develop the idea enough for level 4."
+    },
+    {
+      "caseId": "cal-alert-claim",
+      "dimension": "relevance",
+      "raterALevel": 2,
+      "raterBLevel": 1,
+      "verdict": "guide_violation",
+      "chosenLevel": 2,
+      "rationale": "Creating alerts is a related alerting subtopic even though the transcript gives no validation method or proposed test. The prospective guide assigns related subtopics that do not perform the named task to level 2. The unsupported and implausible outcome belongs under support, not relevance."
+    },
+    {
+      "caseId": "cal-alert-claim",
+      "dimension": "structure",
+      "raterALevel": 2,
+      "raterBLevel": 3,
+      "verdict": "guide_violation",
+      "chosenLevel": 3,
+      "rationale": "The instruction to tell the interviewer 'this is verified' refers back to the preceding claim. That is a discernible, understandable but thin progression. Its credibility and failure to describe validation do not make the line of thought fragmented enough for level 2."
+    }
+  ],
+  "guideRecommendation": "No change is necessary for these cases. Preserve the schema-drift structure 3-4 boundary for independent approval rather than converting it into a rule from one short example.",
+  "calibrationLimitations": "This is offline AI adjudication of eight fresh held-out transcripts, not an independent human approval or a release gate. It does not assess model feedback, historical labels, or contract-3.2 pass rates."
+}

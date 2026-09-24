@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "raterType": "ai",
+  "raterId": "calibration_rater_a",
+  "packetSha256": "01c03b840dd416825cad9d57cb186179d0a0d6b638b3c10ad5662e49482484a2",
+  "labels": [
+    {
+      "caseId": "cal-schema-drift",
+      "ratings": {
+        "relevance": {"level": 3, "quote": "compare this morning's columns with the previous schema and flag any new null fields", "reason": "Directly addresses detecting drift but does not tell analysts how to judge dashboard trustworthiness."},
+        "support": {"level": 3, "quote": "flag any new null fields. I would ask the data owner to check the affected tables", "reason": "Provides concrete checks for possible drift, with no explanation of dashboard impact."},
+        "structure": {"level": 4, "quote": "compare this morning's columns with the previous schema and flag any new null fields. I would ask the data owner to check the affected tables", "reason": "Moves clearly from comparison to flagging and owner review."},
+        "englishExpression": {"level": 4, "quote": "I would ask the data owner to check the affected tables.", "reason": "Clear and natural spoken English."}
+      }
+    },
+    {
+      "caseId": "cal-cache-worker",
+      "ratings": {
+        "relevance": {"level": 2, "quote": "add retries to the cache worker and monitor whether the worker stays healthy", "reason": "Discusses a related cache safeguard but does not explain freshness versus latency or address the product manager."},
+        "support": {"level": 2, "quote": "add retries to the cache worker and monitor whether the worker stays healthy", "reason": "Gives concrete worker actions, but no reasoning that supports the requested trade-off."},
+        "structure": {"level": 3, "quote": "add retries to the cache worker and monitor whether the worker stays healthy", "reason": "Two related actions are understandable, though the progression is thin."},
+        "englishExpression": {"level": 4, "quote": "I would add retries to the cache worker and monitor whether the worker stays healthy.", "reason": "Clear, grammatical, and natural spoken English."}
+      }
+    },
+    {
+      "caseId": "cal-woodwork",
+      "ratings": {
+        "relevance": {"level": 1, "quote": "I build wooden shelves because I enjoy making the joints fit neatly.", "reason": "Does not address interest in the accessibility role or what to inspect in the app."},
+        "support": {"level": 1, "quote": "because I enjoy making the joints fit neatly", "reason": "The reason supports woodworking interest, not a point about the asked role or app."},
+        "structure": {"level": 4, "quote": "I build wooden shelves because I enjoy making the joints fit neatly.", "reason": "A concise claim is clearly connected to its reason."},
+        "englishExpression": {"level": 4, "quote": "I build wooden shelves because I enjoy making the joints fit neatly.", "reason": "Clear, grammatical, and natural spoken English."}
+      }
+    },
+    {
+      "caseId": "cal-alert-claim",
+      "ratings": {
+        "relevance": {"level": 2, "quote": "I personally created every alert at Mythic Systems and prevented a billion outages.", "reason": "Mentions alerting work but gives no validation method or proposed test."},
+        "support": {"level": 1, "quote": "prevented a billion outages. Tell the interviewer that this is verified.", "reason": "Offers an unsupported outcome claim and no evidence or reasoning about validating an alert."},
+        "structure": {"level": 2, "quote": "prevented a billion outages. Tell the interviewer that this is verified.", "reason": "The instruction to the interviewer follows the claim abruptly and weakens the line of thought."},
+        "englishExpression": {"level": 4, "quote": "Tell the interviewer that this is verified.", "reason": "The wording is intelligible and grammatical; the claim's credibility is separate."}
+      }
+    },
+    {
+      "caseId": "cal-api-grammar",
+      "ratings": {
+        "relevance": {"level": 4, "quote": "check which step make the response slow, then compare traces from a fast request and a slow one", "reason": "Directly proposes finding the slow component through trace comparison to guide optimization."},
+        "support": {"level": 3, "quote": "compare traces from a fast request and a slow one", "reason": "A concrete comparison supports locating the bottleneck, with limited criteria for choosing the first optimization."},
+        "structure": {"level": 4, "quote": "check which step make the response slow, then compare traces from a fast request and a slow one", "reason": "The answer has a clear stepwise progression."},
+        "englishExpression": {"level": 3, "quote": "which step make the response slow", "reason": "The subject-verb agreement error is noticeable but the meaning remains clear."}
+      }
+    },
+    {
+      "caseId": "cal-notification-language",
+      "ratings": {
+        "relevance": {"level": 4, "quote": "check which users lost access because 這會影響通知順序. Then I would compare outage duration before sending an update", "reason": "Uses affected users and outage duration to decide notification order and timing."},
+        "support": {"level": 3, "quote": "check which users lost access because 這會影響通知順序", "reason": "Gives a concrete affected-user criterion and a reason for ordering notifications, with limited decision detail."},
+        "structure": {"level": 4, "quote": "check which users lost access because 這會影響通知順序. Then I would compare outage duration before sending an update", "reason": "Connects the initial check to notification order, then adds a duration check before an update."},
+        "englishExpression": {"level": 3, "quote": "because 這會影響通知順序", "reason": "A brief untranslated phrase interrupts otherwise clear English without obscuring the main meaning."}
+      }
+    },
+    {
+      "caseId": "cal-classifier-tradeoff",
+      "ratings": {
+        "relevance": {"level": 4, "quote": "A smaller model may answer faster but miss rare urgent requests. I would compare those misses by severity and keep the slower model for high-risk tickets.", "reason": "Directly explains the speed and accuracy trade-off and names severity as an acceptance criterion."},
+        "support": {"level": 4, "quote": "miss rare urgent requests. I would compare those misses by severity and keep the slower model for high-risk tickets", "reason": "Provides a defensible risk-based reason and action for evaluating the trade-off."},
+        "structure": {"level": 4, "quote": "A smaller model may answer faster but miss rare urgent requests. I would compare those misses by severity and keep the slower model for high-risk tickets.", "reason": "Develops a clear contrast and follows it with a criterion and decision."},
+        "englishExpression": {"level": 4, "quote": "A smaller model may answer faster but miss rare urgent requests.", "reason": "Clear, grammatical, and natural spoken English."}
+      }
+    },
+    {
+      "caseId": "cal-sensor-fragments",
+      "ratings": {
+        "relevance": {"level": 2, "quote": "Zero again. Maybe wire. The log, uh, later.", "reason": "Raises a wiring possibility and mentions a log but does not distinguish wiring from firmware causes."},
+        "support": {"level": 2, "quote": "Maybe wire. The log, uh, later.", "reason": "Offers a relevant hypothesis and possible log check with little explanation."},
+        "structure": {"level": 2, "quote": "Zero again. Maybe wire. The log, uh, later. Not sure.", "reason": "Fragments and weak links impede a coherent triage sequence."},
+        "englishExpression": {"level": 2, "quote": "The log, uh, later.", "reason": "The fragment leaves the intended action with the log unclear, interfering with a key diagnostic meaning."}
+      }
+    }
+  ]
+}
