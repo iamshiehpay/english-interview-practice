@@ -1,0 +1,204 @@
+{
+  "schemaVersion": 2,
+  "contractVersion": "3.2.0",
+  "reviewerType": "ai",
+  "reviewer": {
+    "id": "codex-semantic-ai-backend-subagent",
+    "reviewedAt": "2026-09-24T10:46:05Z"
+  },
+  "assignedGroup": "ai-backend",
+  "reviews": [
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 1,
+      "outputChecksum": "93c70c89aaa7eab5af8ca1f0e49820dd2b9c72b92e7fbcb8571e93733ac1b21b",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the Mandarin retrieval question, the relevant but unmeasured diagnostic starting point, and the advice to define quality and measurement. The English-expression caveat is equally mild in both languages.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "4a1004664e52474d6799421d55624a03bb983acced7aedae9dc6e52eb9df9226",
+      "verdict": "consistent",
+      "rationale": "All eight pairs convey that the response is unrelated to retrieval evaluation despite clear grammar. Both versions request a real or hypothetical evaluation approach and describe the same missing evidence and outcomes.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 1,
+      "outputChecksum": "a30a56d50bc8b4f16224f2215c6c1103627fb7397c3410de17a58e57150e1246",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the partial credit for collaborative failure review and the missing explicit model limitations, decision criteria, and explanatory detail. The wording concern has the same severity.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "6811c1950ed665ab4813f5882ec7fa8f1a756f1c764b18124b4ffe8b4b924ca8",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the technical evaluation plan and the central gap: it does not explain latency versus accuracy in product terms or connect observations to impact and a decision rule.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 1,
+      "outputChecksum": "9f45b0e9c63c50ecfa8c5e651d72ff4f6e8470113a3546ce6b490ed666752c98",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the payment-API motivation question, the unrelated personal-detail assessment, and the advice to answer both role-interest and pre-start questions. Clarity is rated equivalently.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "422d764a5ab317a05dac105fd7d334ce093fadff6987000fd937a81653d79b46",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the duplicate-request test and idempotency mitigation as limited positive evidence, while identifying absent transaction boundaries and broader failure tests. The untranslated word “progression” in Chinese is a fluency blemish, not a change of meaning.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 1,
+      "outputChecksum": "c59daefa2871891a5d35f1cd035bbf098ab49f559f4c545d455cefdac82dab10",
+      "verdict": "consistent",
+      "rationale": "All eight pairs convey that the response is clear enough at sentence level but unrelated to a blameless payment incident review; neither version credits cause analysis or an improvement process.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "97a4930f8722a24f091dc7fdd02f109ef4828d149db3a3e2bb8996290d3a1b53",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the concrete retry-key safeguard, understandable self-correction, and failure to explain consistency versus availability to a non-specialist. The improvement advice names the same missing trade-off.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 2,
+      "outputChecksum": "1eab1b03d6d2de6d59335dcff76ae340d717aa30d9eaa70238f7ef05f2a6c23c",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the limited credit for a Mandarin-query diagnostic step and the absence of quality criteria, metrics, an evaluation set, and thresholds. The language-naturalness caveat is equivalent.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "a119fe908a522ac15cbb0e6b14c9f4e7765ff6aab1fc00f5af7d234deed3e614",
+      "verdict": "consistent",
+      "rationale": "All eight pairs state that unrelated claims and a hiring directive do not answer the retrieval-evaluation prompt. They align on missing metrics, design, evidence, and trade-off analysis, with clear English as the sole strength.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 2,
+      "outputChecksum": "f8dde26c326fcf8d620d590d4b3c9e20322a3399bd42a5b408e31c712a576ce2",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the collaborative response to disagreement, the missing explicit limitation and decision rationale, and the mild fluency issue from “user cases” and hesitations.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "a42ec81976a64f057ad05d8da05a1ef69ca17683040efdab3d3e9db53291cbb1",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve credit for measuring false matches and latency, while identifying absent product impact and an explicit rule for balancing them. The positive and negative assessment is equally strong.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 2,
+      "outputChecksum": "46f5b792da1631a7ed7cb1bb6f02d954f7643c5dc5374fafd836138cd5861bea",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve that a coherent weekend-activity answer misses both payment-API motivation and questions about the Taipei role. Neither version adds role-related evidence or changes the advice.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "822bcec23c4da428bf69cfd32b8fcd75f3befcc38d278954ef6aedca8c57a482",
+      "verdict": "consistent",
+      "rationale": "All eight pairs credit a concrete duplicate-request test and mitigation but find transaction guarantees, boundaries, and other failure paths underdeveloped. The technical-detail caveat is equivalent.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 2,
+      "outputChecksum": "4c30231df56f9edbe5b92e3b91eae8abb0c7864dfa8829d87d7321fa13fcc6d6",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the judgment that an unrelated claim and directive offer no blameless review process, causal evidence, or improvement agreement, despite grammatical clarity.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "57505f54ffb99238d9e85f0873049426b89845e56d1c10360c3fbd85b22523d7",
+      "verdict": "consistent",
+      "rationale": "All eight pairs credit a concrete duplicate-charge safeguard but find no explanation of the consistency-availability trade-off for a non-specialist. Both versions recommend the same failure-mode comparison.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 3,
+      "outputChecksum": "09da8e64a7f86db2da70529a737344a95e13edd988d255f3c5e3543321813b05",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the reliability goal and Mandarin failure-inspection step as limited strengths, while finding no definition or measurement of retrieval quality. The untranslated-phrase concern matches.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "78c39a359957b181f3f12aa8e1995e5be2313de8d13805e5ce33acfec08853eb",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the absence of retrieval evaluation or a hypothetical plan, the unrelated leadership claim and instruction, and the same clear-grammar assessment. Recommended evaluation elements match.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 3,
+      "outputChecksum": "d952dac6747614598063ac22d9e51a14407b6d40e97ea0900ab4a03469775607",
+      "verdict": "consistent",
+      "rationale": "All eight pairs credit a joint review of failed cases, identify the missing explicit model limitation and decision consequence, and give the same mild “user cases” wording criticism.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "36b19b214693fe6913b3a861fd68de213a68344aacedccb714368970b5eeb6cb",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the evidence-based comparison of latency and false matches, the experience-boundary strength, and the missing link to product impact and an acceptable threshold.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 3,
+      "outputChecksum": "5b7bc2de861975487e4d8870a9039160e986a1097084f270d24054b2ed3cbe7a",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the judgment that a clear personal-activity answer misses motivation for payment APIs in Taipei and questions about the role. The improvement request is equivalent.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "0cd392586fc15943b3f709a33375904fa6302d81502b9094d8cf03d8277ab767",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve partial relevance from the duplicate-request finding and idempotency fix, while identifying absent transaction design and broader failure coverage. English clarity is assessed equally.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 3,
+      "outputChecksum": "b896aacd955c16b2afb1331a41ee1dfc0647ec838bae01396ba95920829002e9",
+      "verdict": "consistent",
+      "rationale": "All eight pairs state that clear sentences make an unrelated personal claim rather than describing a blameless incident review. They align on missing causes, evidence, and improvement process.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "36ebca1b49c7975db377bbff1c862dfc03b82af8bbafd2175b1a7d782f721469",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the retry safeguard as a concrete strength and the lack of a consistency-availability explanation. Both versions ask for the same plain-language definitions and failure trade-off.",
+      "contradictoryPairs": []
+    }
+  ]
+}

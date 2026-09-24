@@ -1,0 +1,666 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "3.2.0",
+  "status": "provisional-blind-label-comparison-pending-bilingual-review",
+  "generatedAt": "2026-09-24T10:45:02.813Z",
+  "reportChecksum": "19d44c964823c0e9e1790b58a4a961c431478088f3fecbba7b7e3ba20f71f86a",
+  "blindApproval": "evaluation/v3-2/label-approval.json",
+  "draftLabels": "evaluation/v3-2/label-drafts.json",
+  "counts": {
+    "passed": 25,
+    "failed": 35,
+    "total": 60
+  },
+  "comparisons": [
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 1,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 2,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 3,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 1,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 2,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 3,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 1,
+      "pass": false,
+      "errors": [
+        "support rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 2,
+      "pass": false,
+      "errors": [
+        "structure rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 3,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 1,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 2,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 3,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 1,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 2,
+      "pass": false,
+      "errors": [
+        "structure rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 3,
+      "pass": false,
+      "errors": [
+        "structure rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 1,
+      "pass": false,
+      "errors": [
+        "relevance rating outside approved range",
+        "structure rating outside approved range",
+        "englishExpression rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 2,
+      "pass": false,
+      "errors": [
+        "structure rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 3,
+      "pass": false,
+      "errors": [
+        "relevance rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 1,
+      "pass": false,
+      "errors": [
+        "englishExpression rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 2,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 3,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 1,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 2,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 3,
+      "pass": false,
+      "errors": [
+        "relevance rating outside approved range",
+        "support rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 1,
+      "pass": false,
+      "errors": [
+        "support rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 2,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 3,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 1,
+      "pass": false,
+      "errors": [
+        "support rating outside approved range",
+        "structure rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 2,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 3,
+      "pass": false,
+      "errors": [
+        "support rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 1,
+      "pass": false,
+      "errors": [
+        "support rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 2,
+      "pass": false,
+      "errors": [
+        "relevance rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 3,
+      "pass": false,
+      "errors": [
+        "relevance rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 1,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 2,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 3,
+      "pass": false,
+      "errors": [
+        "structure rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 1,
+      "pass": false,
+      "errors": [
+        "relevance rating outside approved range",
+        "englishExpression rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 2,
+      "pass": false,
+      "errors": [
+        "relevance rating outside approved range",
+        "englishExpression rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 3,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 1,
+      "pass": false,
+      "errors": [
+        "relevance rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 2,
+      "pass": false,
+      "errors": [
+        "relevance rating outside approved range",
+        "structure rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 3,
+      "pass": false,
+      "errors": [
+        "relevance rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 1,
+      "pass": false,
+      "errors": [
+        "structure rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 2,
+      "pass": false,
+      "errors": [
+        "structure rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 3,
+      "pass": false,
+      "errors": [
+        "structure rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 1,
+      "pass": false,
+      "errors": [
+        "structure rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 2,
+      "pass": false,
+      "errors": [
+        "structure rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 3,
+      "pass": false,
+      "errors": [
+        "structure rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 1,
+      "pass": false,
+      "errors": [
+        "structure rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 2,
+      "pass": false,
+      "errors": [
+        "structure rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 3,
+      "pass": false,
+      "errors": [
+        "structure rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 1,
+      "pass": false,
+      "errors": [
+        "support rating outside approved range",
+        "structure rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 2,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 3,
+      "pass": false,
+      "errors": [
+        "relevance rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 1,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 2,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 3,
+      "pass": false,
+      "errors": [
+        "structure rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 1,
+      "pass": false,
+      "errors": [
+        "support rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 2,
+      "pass": false,
+      "errors": [
+        "support rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 3,
+      "pass": true,
+      "errors": []
+    }
+  ],
+  "failures": [
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 1,
+      "check": "evaluation label expectations",
+      "error": "support rating outside approved range"
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 2,
+      "check": "evaluation label expectations",
+      "error": "structure rating outside approved range"
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 2,
+      "check": "evaluation label expectations",
+      "error": "structure rating outside approved range"
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 3,
+      "check": "evaluation label expectations",
+      "error": "structure rating outside approved range"
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 1,
+      "check": "evaluation label expectations",
+      "error": "relevance rating outside approved range; structure rating outside approved range; englishExpression rating outside approved range"
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 2,
+      "check": "evaluation label expectations",
+      "error": "structure rating outside approved range"
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 3,
+      "check": "evaluation label expectations",
+      "error": "relevance rating outside approved range"
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 1,
+      "check": "evaluation label expectations",
+      "error": "englishExpression rating outside approved range"
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 3,
+      "check": "evaluation label expectations",
+      "error": "relevance rating outside approved range; support rating outside approved range"
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 1,
+      "check": "evaluation label expectations",
+      "error": "support rating outside approved range"
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 1,
+      "check": "evaluation label expectations",
+      "error": "support rating outside approved range; structure rating outside approved range"
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 3,
+      "check": "evaluation label expectations",
+      "error": "support rating outside approved range"
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 1,
+      "check": "evaluation label expectations",
+      "error": "support rating outside approved range"
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 2,
+      "check": "evaluation label expectations",
+      "error": "relevance rating outside approved range"
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 3,
+      "check": "evaluation label expectations",
+      "error": "relevance rating outside approved range"
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 3,
+      "check": "evaluation label expectations",
+      "error": "structure rating outside approved range"
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 1,
+      "check": "evaluation label expectations",
+      "error": "relevance rating outside approved range; englishExpression rating outside approved range"
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 2,
+      "check": "evaluation label expectations",
+      "error": "relevance rating outside approved range; englishExpression rating outside approved range"
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 1,
+      "check": "evaluation label expectations",
+      "error": "relevance rating outside approved range"
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 2,
+      "check": "evaluation label expectations",
+      "error": "relevance rating outside approved range; structure rating outside approved range"
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 3,
+      "check": "evaluation label expectations",
+      "error": "relevance rating outside approved range"
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 1,
+      "check": "evaluation label expectations",
+      "error": "structure rating outside approved range"
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 2,
+      "check": "evaluation label expectations",
+      "error": "structure rating outside approved range"
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 3,
+      "check": "evaluation label expectations",
+      "error": "structure rating outside approved range"
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 1,
+      "check": "evaluation label expectations",
+      "error": "structure rating outside approved range"
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 2,
+      "check": "evaluation label expectations",
+      "error": "structure rating outside approved range"
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 3,
+      "check": "evaluation label expectations",
+      "error": "structure rating outside approved range"
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 1,
+      "check": "evaluation label expectations",
+      "error": "structure rating outside approved range"
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 2,
+      "check": "evaluation label expectations",
+      "error": "structure rating outside approved range"
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 3,
+      "check": "evaluation label expectations",
+      "error": "structure rating outside approved range"
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 1,
+      "check": "evaluation label expectations",
+      "error": "support rating outside approved range; structure rating outside approved range"
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 3,
+      "check": "evaluation label expectations",
+      "error": "relevance rating outside approved range"
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 3,
+      "check": "evaluation label expectations",
+      "error": "structure rating outside approved range"
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 1,
+      "check": "evaluation label expectations",
+      "error": "support rating outside approved range"
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 2,
+      "check": "evaluation label expectations",
+      "error": "support rating outside approved range"
+    }
+  ]
+}

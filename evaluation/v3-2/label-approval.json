@@ -1,0 +1,175 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "3.2.0",
+  "status": "draft_labels_approved_pending_bilingual_review",
+  "reviewer": {
+    "identity": "Codex AI (/root/v32_blind_approver)",
+    "type": "ai",
+    "reviewedAt": "2026-09-24T10:35:53Z",
+    "independentOfDraftRaters": true
+  },
+  "scope": {
+    "mode": "blind_pre_output_draft_review",
+    "caseCount": 20,
+    "sourcesReviewed": [
+      "evaluation/v3-2/label-blind-packet.json",
+      "evaluation/v3-2/label-draft-part-a.json",
+      "evaluation/v3-2/label-draft-part-b.json",
+      "src/model-contracts.js (feedbackContract)",
+      "docs/verification/0036-rater-persona.md",
+      "evaluation/checks.js (label rules)"
+    ],
+    "excluded": "No 3.2 model feedback, run logs, result or checkpoint files, provisional comparisons, historical saved model outputs, codex-review-packet, or codex-bilingual-audit were viewed. No provider or paid model tools were called.",
+    "checksumAlgorithm": "SHA-256 over UTF-8 canonical JSON with sorted keys, no ASCII escaping, and compact separators for each draft label."
+  },
+  "summary": {
+    "approved": 20,
+    "changesRequested": 0,
+    "rangeAndEvidenceAssessment": "All 20 dimension ranges have case-specific transcript support; every evidence quote is a contiguous exact transcript substring and every input checksum matches the packet.",
+    "literalFindingAssessment": "The two required literals name central technical ideas. The seven forbidden literals address concrete unsupported claims or experience reversals; remaining risks are governed by the contract and case rationale. Literal matching cannot prove semantic correctness.",
+    "contentExpressionSeparation": "Fluent irrelevant or unsupported responses retain high English-expression ranges. Brief untranslated Chinese clauses affect expression while their underlying ideas still count toward content dimensions.",
+    "pending": "Independent bilingual semantic review of actual feedback and runtime comparison remain pending."
+  },
+  "cases": [
+    {
+      "caseId": "ai-role-fit",
+      "verdict": "approved",
+      "reason": "Partial retrieval-quality response with no definition or measurement criterion; brief Chinese reason limits English polish while the English plan remains understandable.",
+      "inputChecksum": "85d49713e17be0c6d38ccc92d2384a8c52c6531060f9638514e2e3182b77c5b6",
+      "draftLabelChecksum": "982522e802c0b28b4c36049c7fc2f5d4f2a12101528f3aed21fcba81cb4811ce"
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "verdict": "approved",
+      "reason": "No retrieval-evaluation answer or support; unverified employer and profit claims plus a requirement instruction are not evidence, while the English is fluent.",
+      "inputChecksum": "af2cfdb81c84fa7e26214933c61f48c07233e5db77e8b0957e7f9348b6a9c4b1",
+      "draftLabelChecksum": "894d4bbc82289a1c30cf98a9fe8f52e3e917c33defb38cf8fe6a1993d7ef4d56"
+    },
+    {
+      "caseId": "ai-behavioral",
+      "verdict": "approved",
+      "reason": "Concrete collaborative test follow-up, but no explicit model limitation or product-facing explanation; hesitations do not erase the relevant idea.",
+      "inputChecksum": "459ae9a27e7ce3df8801caa126d184562034e05a0714ed6d7dc83f7d1ec2cdf9",
+      "draftLabelChecksum": "feb46d91a65967f736a026eb67428bfcbe5881094df407450e0dcfc9896b459d"
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "verdict": "approved",
+      "reason": "Specific hypothetical comparison and latency check, but no audience-facing accuracy trade-off; the admitted deployment gap is preserved.",
+      "inputChecksum": "0a495b5f636052d7c324ce8802695b550785ae1b125832e5c1605a66fc15f390",
+      "draftLabelChecksum": "dd65bf7b20e45ff92902e0b277c30f252cafc98e5a9c154ccfa4c7fb877ac69e"
+    },
+    {
+      "caseId": "backend-role-fit",
+      "verdict": "approved",
+      "reason": "Bread hobby does not answer payment-role motivation or clarification, while its two-sentence organization and English remain clear.",
+      "inputChecksum": "5bbd2a8a40632f0d8a158f1cff7347926ed871094844ad96040df2b8ac22b7d9",
+      "draftLabelChecksum": "24e819f47af8792ac9bf19daba3728e67a24dc4a65f3f4871e3a0560fd8136a3"
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "verdict": "approved",
+      "reason": "Personal-project duplicate-request test and idempotency response give a concrete example; transaction mechanics and broader failures remain absent.",
+      "inputChecksum": "0ff56d867f01c21b1a69b75d65fa97acfcf9c86a1003ff83864510ce8d2c8700",
+      "draftLabelChecksum": "0e6d9598ae86533953435a08f2b367e991ce1ded30243f8758051cac209c77a9"
+    },
+    {
+      "caseId": "backend-behavioral",
+      "verdict": "approved",
+      "reason": "Ownership and savings claims do not address a blameless incident review; neither claim is verified or relevant support.",
+      "inputChecksum": "f2c3ef80b4e87f2c0f3ea596e708ce1e7e4fff2da44d76403809d995a0fc7588",
+      "draftLabelChecksum": "49634af1a817e3c8535779f60a4bcd677a1f07befa04a8a278f553ccf7cd5ae0"
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "verdict": "approved",
+      "reason": "Transaction and retry safeguards are understandable but do not explain consistency versus availability to a non-specialist; self-correction is minor.",
+      "inputChecksum": "c3954c8efaba97ff20098c62a248cae96118c9bbd88f8931755a7e3ab6f73413",
+      "draftLabelChecksum": "aa9f065fe4e4c78bb4f027017eb97743556ba51493bf871e2ccf08c5d6e6d81f"
+    },
+    {
+      "caseId": "data-role-fit",
+      "verdict": "approved",
+      "reason": "Experiment interest and a brief untranslated causal caveat are on topic, but no analysis-through-communication sequence is given.",
+      "inputChecksum": "2fe1e1eff2d1d392bc74cc50ca8f720174e3a78ef09b7de089ed082aa431aa10",
+      "draftLabelChecksum": "486843368dbc07b085e81bb940805306261c5f7b735cfbf52d0953a7eeed4dee"
+    },
+    {
+      "caseId": "data-experience-depth",
+      "verdict": "approved",
+      "reason": "Hypothetical experiment planning is coherent but largely misses SQL/Python investigation of missing data; the production gap itself is not penalized.",
+      "inputChecksum": "1bb03647537d8e388228fef1034c59f9ce1e385acf39ab71ed29b6bc71bfcc2d",
+      "draftLabelChecksum": "665a3208c4fc155d1b521df9a603d3adf8e04ced3d035d662db7a92b0c142b40"
+    },
+    {
+      "caseId": "data-behavioral",
+      "verdict": "approved",
+      "reason": "Reasoned internal data comparison does not yet explain uncertainty to a product manager; progression and English are clear.",
+      "inputChecksum": "c2ecca2a4106c62bf917a8c8519330a67a1bf0249806ee5fafda6dd0d250e598",
+      "draftLabelChecksum": "a5f9ddc473127a23532e6ee1d0605aedb1e00293acc9bc6e28a02d4b7060e28a"
+    },
+    {
+      "caseId": "data-technical-communication",
+      "verdict": "approved",
+      "reason": "Clouds and postcards are unrelated to missing-data diagnosis; fluent English is scored independently of relevance.",
+      "inputChecksum": "611f5828f0b38cd659b3c946c7380ec69029ce034b055269380a4dc31e83483b",
+      "draftLabelChecksum": "d02dd7dc102688420e13c6bcac37bf2d8314ddcfa1530dc891b68302f1ea576f"
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "verdict": "approved",
+      "reason": "Motivation and transferable scripting are concrete, but the requested first product question is absent; embedded-debugging uncertainty is preserved.",
+      "inputChecksum": "d151235d8bac9a8a34ff2a496753b7edf8953f31a6edc12a0621b9e693a8290e",
+      "draftLabelChecksum": "a83c2275b1311810fc52cd33c011758d9e41560560d9fa72d804cc87c534919f"
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "verdict": "approved",
+      "reason": "Sensor symptom, wire check, and byte printing provide a plausible debugging sequence but no observation establishing a cause; disfluency is mild.",
+      "inputChecksum": "bb4634fc803be09cc9deb25c3d42490f6f87b3f1d9ff99e3d8b12076a72b4b2e",
+      "draftLabelChecksum": "d64dcf4c8f4a79e3f2ea631bd5b416670c783ff8fda6b1e44316dbd6348041aa"
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "verdict": "approved",
+      "reason": "Hypothetical hardware/firmware evidence comparison is relevant, but alignment of people is thin; untranslated opening action supports expression uncertainty.",
+      "inputChecksum": "85031e4d60aa039c7fb713329c18a40ce64ea43ca3b8ccfee08a53532d2f20fb",
+      "draftLabelChecksum": "b1f7fe83bcbe22bd5e7caf72736a0574f0b6596fdc04b9a6ebb2723285794642"
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "verdict": "approved",
+      "reason": "Chip and certification statements do not investigate serial failures; the unsupported instruction is rejected while fluent wording is assessed separately.",
+      "inputChecksum": "2329eda3d92e1997e102eb4c818effc041ce3daf3bb5656e93b8a9b6abdbe97e",
+      "draftLabelChecksum": "082bff41aff070b4ca4ed792d83e50e426946e1962a0ec2540615fbde831a41f"
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "verdict": "approved",
+      "reason": "Coffee and office preference do not address accessible-interface motivation or implementation; English and sentence flow remain clear.",
+      "inputChecksum": "c50ff9f2f84d21caeb04eae0a00475660e5fc63088ad3bba8fd1bf7dd13870c7",
+      "draftLabelChecksum": "55b976de38743c8cb74bf538f421efa44c65fb72a9f19fa6d55dde99c617305b"
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "verdict": "approved",
+      "reason": "Keyboard, focus, and user-test steps support an accessibility plan but omit JavaScript implementation; the stated shipment gap is preserved.",
+      "inputChecksum": "4923aecd952e0ef5c74c0f6294d9790531f8c96024edce8b4093da099947849b",
+      "draftLabelChecksum": "dd59589fb7a6598280368167c8f0dd99da18808a25696d5a8c18b65910a33192"
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "verdict": "approved",
+      "reason": "Task clarification and controlled layout comparison are concrete, but designer participation is not explicit; restart is a minor expression issue.",
+      "inputChecksum": "2e0ff3db038fc8f310d784ef402c6a997f58546674a58f1fed19c125c7fb3b81",
+      "draftLabelChecksum": "0bd32f763ee1b7b0b86718e360ee85e7c709d1253a30fc8e6c1813c55f08258f"
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "verdict": "approved",
+      "reason": "Measurement and deferred-work guardrails give a defensible accessibility/performance trade-off, with stakeholder framing and decision criteria still thin.",
+      "inputChecksum": "7aecc4427c449e66e5e10550e2002bd7f7cdb1a5b4632be6a47a65ff98956f2e",
+      "draftLabelChecksum": "333bdf7654ac1476c8404fda75eb474222ce56ae1a5a68caaf871d14532fac15"
+    }
+  ]
+}

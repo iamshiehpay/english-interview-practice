@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 2,
+  "contractVersion": "3.2.0",
+  "reviewerType": "ai",
+  "reviewer": "Codex subagent (frontend semantic reviewer)",
+  "reviewedAt": "2026-09-24T10:46:25Z",
+  "assignedGroup": "frontend",
+  "reviews": [
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 1,
+      "outputChecksum": "a5e9170f63d18074c72966966224cd10edfd1691d0db99a936fcea80437d1628",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the accessibility and Taipei question, its no-prior-experience premise, the same gaps in relevance and support, the positive structure and English feedback, and the same two-part improvement advice.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "3af4c15c614d4f0e8cdb8a6e18adde8a2ce0bcc45d881503ff3245849d28d91b",
+      "verdict": "consistent",
+      "rationale": "All eight pairs retain the JavaScript-project or hypothetical-task alternative, the accessibility-only relevance gap, limited JavaScript rationale, clear testing sequence, and advice to tie checks to implementation and performance validation.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 1,
+      "outputChecksum": "bbc868741115159bb07f126a4cc440190d9e49763c4342d54b51c4d057956ef5",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the real-or-hypothetical designer collaboration question, the missing collaboration and decision rationale, the slight wording issue, the concrete testing strength, and the collaboration advice.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "5930ebc1523a6b8000bae5618a12018bb001315f0a58d32a3005113ff7da258f",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the accessibility-rendering trade-off, missing non-specialist explanation and full framework, measurement-first strength, accessibility safeguards, and requested criteria and validation.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 2,
+      "outputChecksum": "42a40b401855ee9bbce1a83072455aebbb6f64bf8a4ba9af2ecf4fb73cae4625",
+      "verdict": "consistent",
+      "rationale": "All eight pairs convey the same motivation and implementation question, role-fit rationale, missing topic coverage and evidence, clear causal structure, spoken-English assessment, strength, and specific improvement.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "5215edfeb06a3c4d5d6368dbe7580d7218157d48571464daf283ff0195f5b21f",
+      "verdict": "consistent",
+      "rationale": "All eight pairs agree that the answer offers sequential accessibility checks but lacks JavaScript interface detail, decision-guiding findings, and implementation links; strengths and improvement steps match.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 2,
+      "outputChecksum": "bc67e362d25c477a4c5a97598a8b99578ed5a1dab10e0f869f5e91195c0451e8",
+      "verdict": "consistent",
+      "rationale": "All eight pairs agree that the answer proposes usability testing without explicit designer collaboration or a feedback-based decision; the brief structure, wording issue, strength, and next step align.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "99379ee85f1b7bb4484789541e9fbef0810073c17d08304d7c01f7c30cce303f",
+      "verdict": "consistent",
+      "rationale": "All eight pairs align on the performance and accessibility trade-off, partial decision principle, missing stakeholder explanation and full framework, clear expression, and need for explicit decision criteria.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 3,
+      "outputChecksum": "5fd3ccc90939fd78c82a27d73d7104582ac26bb272cdf5dec7ffd057c6906e72",
+      "verdict": "consistent",
+      "rationale": "All eight pairs retain the accessible-interface and Taipei scope, the absence of role-specific support, the clear because-based explanation, and the advice to connect motivation with implementation choices.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "e415fb249874443dfe0c01d51d536fecef3c4067f4a7c5255ab6401a12b17ea6",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the hypothetical JavaScript question, the concrete validation strengths and implementation gaps, and the qualified improvement assessment, including the quoted admission about an accessibility project.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 3,
+      "outputChecksum": "9438f0b4962823fad5384a420ae02e9fd23f65ae81a1b7ab4f3f7187859025bf",
+      "verdict": "consistent",
+      "rationale": "All eight pairs convey the same hypothetical testing approach, absence of designer communication and measurement detail, clear sequence despite self-correction, and advice to share findings and choose a layout.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "0dba6e7ed13c4ba6eb2c653585f38616eb03f2d7270db729abca7065f180b3f7",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the measurement-first rationale, responsiveness benefit, keyboard and screen-reader safeguards, missing plain-language framework, and example decision thresholds.",
+      "contradictoryPairs": []
+    }
+  ]
+}

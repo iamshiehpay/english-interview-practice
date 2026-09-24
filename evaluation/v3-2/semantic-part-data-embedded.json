@@ -1,0 +1,202 @@
+{
+  "schemaVersion": 2,
+  "contractVersion": "3.2.0",
+  "reviewerType": "ai",
+  "reviewer": "Codex GPT-6 independent semantic reviewer",
+  "reviewedAt": "2026-09-24T10:46:11Z",
+  "assignedGroup": "data- and embedded- cases",
+  "reviews": [
+    {
+      "caseId": "data-role-fit",
+      "repeat": 1,
+      "outputChecksum": "81693d5d7fee893a17a73713ad580d89f454249bc8416814fc2b96d1a9bcfa40",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions ask for a product-experiment analysis from decision question to communication and assess the answer as aware of causality but lacking the requested framework; the strength and stepwise priority remain the same.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "4ac8abd5ba78c7c03166b87e094e8e99caeba70b4764255a1a986e6637576d9e",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions permit actual or hypothetical SQL/Python missing-data investigation, identify the answer as instead describing experiment evaluation, and ask for experience level plus concrete missing-data steps.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 1,
+      "outputChecksum": "4637815b4d3b16c61c9cf9947f5a3800cbf0b2433104d41f5949d06a8359198e",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions ask about explaining uncertainty to a product manager, credit a clear evidence-checking sequence, and identify the missing stakeholder conversation and its implications as the priority.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "b11e752b8bfaef96aedc38c7ede3da69da5ff70edfdfc9c513cfbc2ae8eab0c9",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions request SQL/Python diagnosis and a results-usability decision, find no relevant diagnostics or criteria in the answer, and recommend those same elements.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 1,
+      "outputChecksum": "0bd61a28886844bbcd07baed0d06cbda94b81f71b5c1606d6c6996ac6dc9e048",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions ask about motivation for Hsinchu embedded sensor work and the first product area to learn, credit scripting for reproducible tests, and request a direct answer to both parts.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "66f5f72202155d1a6a6d8e2ba761a13af569a3d40f441c06bdea2dead56ff27b",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions ask for an evidence-based C firmware debugging account or hypothetical approach, credit the symptom and checks, and require observed results and causal interpretation.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 1,
+      "outputChecksum": "c0ce85e95497f89ec6904dff3d56c9f830b19d5fe43a8cbfb14becc62b15b1e4",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions assess alignment around conflicting hardware/software evidence, credit checking measurements before assigning cause, and ask how disagreement would be resolved.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "f4c2e253ff2e77d465bbb8555387cea9b420a982600f6761e53b95ae5a4454f4",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions ask for serial-failure reproduction and isolation, find the response unrelated despite understandable English, and request a diagnostic process covering firmware, configuration, and the physical link.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 2,
+      "outputChecksum": "0fb6840cd675d9f9772688123758b996a27c329a74842ef12f9238e53197ce50",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions credit caution about causality while finding no complete experiment-analysis plan or result communication; both request decision question, measures, analysis, and communication.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "47798775cf8f8b3e299919b866769314400799bb368c51a3f8f72b9d3960e33b",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions distinguish the answer’s orderly experiment-evaluation steps from the requested SQL/Python missing-data investigation and call for diagnostic checks of the gap.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 2,
+      "outputChecksum": "6df486e23c5c85857cb113d9825ded71e8554ae35e45964c187db86ecb2bfa24",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions credit investigation of conflicting evidence with a colleague but say the product-manager conversation is missing; both request known facts, uncertainty, and a next step.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "c0c071690f8a9f5b97162bb13791c067113b48c056e040acd7479822f3fc90e0",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions find the answer clear in English but unrelated to missing-value diagnosis or usability judgment and request SQL/Python checks and decision criteria.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 2,
+      "outputChecksum": "971efdf54b37f70573dce8331521d4a0c0251e493fdc785151ad0707dea664cd",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions credit the debugging motivation and scripting/reproducible-testing connection, while identifying the absent Hsinchu-specific connection and first product focus.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "c8df4693cc2c0d597f89fe5c60d908d4ed1fdca637f2d777acfabe8354f0a475",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions recognize initial firmware-debugging checks without observed results or a diagnosis, note hesitant repeated wording, and request a hypothesis-to-conclusion chain.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 2,
+      "outputChecksum": "1ee3c948930667bb7ea9d79d956b303259eb98930d6d9fe5db1fb2c8b0e37313",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions credit measurement and evidence comparison, note that the opening phrase remains untranslated, and request explicit handling of disagreement and a shared next test.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "de8157c744c0d7cdc68315c12f6513c50f30487624cbb11ef509b266de1413db",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions find concise, intelligible but unrelated claims, request serial troubleshooting from reproduction through cause isolation, and say no previous attempt permits progress comparison.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 3,
+      "outputChecksum": "7497cefd94aa3398b6663c63d4bb0f2c91c2342ec7c8b3d2df712c9415e9bb9e",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions credit a valid causality concern but say the answer lacks an end-to-end experiment-analysis process; both request decision measures, design, analysis, and communication.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "ba0d7da60157afd969c3d452bf1b6a43506a2c925b7b708dd9dd5f87b59668a7",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions credit an orderly analytical sequence while identifying the missing SQL/Python data-gap approach, and both note that no previous attempt was available for comparison.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 3,
+      "outputChecksum": "b42e87ad50befaea89afa9d4ac73c1c41f674bd7a8e24758e7ab0f09d2201f45",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions credit evidence checking but identify the absent product-manager conversation; both request stating uncertainty, implications, and options or next steps.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "80a9ff9416e2e599818910f2f0d6efc2a50ba4d1aa9f1f361df6e13513a213b8",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions treat the English as clear while finding no SQL/Python missing-data investigation or usability criteria and ask for those specific technical steps.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 3,
+      "outputChecksum": "c965e524bffe803c18333277a0e4b5eb0fcad536a92bb0ae7ae463f0ef801e71",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions credit scripting and reproducible testing, identify an unaddressed first product-learning area, and request one specific area with a reason.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "9c7920c83ab4f20f4bfdd23ea79d63f4d831fed2fa147925f37fc1c808072933",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions credit a sensor symptom and two checks but find no evidence-to-cause link, and request byte observations, hypothesis testing, and a conclusion.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 3,
+      "outputChecksum": "df2afec77cb1b35ded752a021895f473fce4d193262c29ae1ac48339445db44d",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions credit an evidence-first sequence, note the untranslated opening may hide a step from an English-only listener, and request a shared resolution of conflicting evidence.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "8cf5c12c7419e5a7136480bf6a68c7a6177c5dacf5a0f3c47fffe5a826385f5b",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions find a clear but irrelevant response and request reproduction, evidence capture, and isolation among firmware, configuration, and physical-link causes.",
+      "contradictoryPairs": []
+    }
+  ]
+}

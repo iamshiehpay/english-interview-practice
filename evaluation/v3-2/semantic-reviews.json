@@ -1,0 +1,494 @@
+{
+  "schemaVersion": 2,
+  "contractVersion": "3.2.0",
+  "reviewerType": "ai",
+  "reviewer": "Three independent Codex AI semantic reviewers (ai/backend, data/embedded, frontend)",
+  "reviewedAt": "2026-09-24T10:47:22.905Z",
+  "sources": [
+    "evaluation/v3-2/semantic-part-ai-backend.json",
+    "evaluation/v3-2/semantic-part-data-embedded.json",
+    "evaluation/v3-2/semantic-part-frontend.json"
+  ],
+  "reviews": [
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 1,
+      "outputChecksum": "93c70c89aaa7eab5af8ca1f0e49820dd2b9c72b92e7fbcb8571e93733ac1b21b",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the Mandarin retrieval question, the relevant but unmeasured diagnostic starting point, and the advice to define quality and measurement. The English-expression caveat is equally mild in both languages.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "4a1004664e52474d6799421d55624a03bb983acced7aedae9dc6e52eb9df9226",
+      "verdict": "consistent",
+      "rationale": "All eight pairs convey that the response is unrelated to retrieval evaluation despite clear grammar. Both versions request a real or hypothetical evaluation approach and describe the same missing evidence and outcomes.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 1,
+      "outputChecksum": "a30a56d50bc8b4f16224f2215c6c1103627fb7397c3410de17a58e57150e1246",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the partial credit for collaborative failure review and the missing explicit model limitations, decision criteria, and explanatory detail. The wording concern has the same severity.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "6811c1950ed665ab4813f5882ec7fa8f1a756f1c764b18124b4ffe8b4b924ca8",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the technical evaluation plan and the central gap: it does not explain latency versus accuracy in product terms or connect observations to impact and a decision rule.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 1,
+      "outputChecksum": "9f45b0e9c63c50ecfa8c5e651d72ff4f6e8470113a3546ce6b490ed666752c98",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the payment-API motivation question, the unrelated personal-detail assessment, and the advice to answer both role-interest and pre-start questions. Clarity is rated equivalently.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "422d764a5ab317a05dac105fd7d334ce093fadff6987000fd937a81653d79b46",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the duplicate-request test and idempotency mitigation as limited positive evidence, while identifying absent transaction boundaries and broader failure tests. The untranslated word “progression” in Chinese is a fluency blemish, not a change of meaning.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 1,
+      "outputChecksum": "c59daefa2871891a5d35f1cd035bbf098ab49f559f4c545d455cefdac82dab10",
+      "verdict": "consistent",
+      "rationale": "All eight pairs convey that the response is clear enough at sentence level but unrelated to a blameless payment incident review; neither version credits cause analysis or an improvement process.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "97a4930f8722a24f091dc7fdd02f109ef4828d149db3a3e2bb8996290d3a1b53",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the concrete retry-key safeguard, understandable self-correction, and failure to explain consistency versus availability to a non-specialist. The improvement advice names the same missing trade-off.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 2,
+      "outputChecksum": "1eab1b03d6d2de6d59335dcff76ae340d717aa30d9eaa70238f7ef05f2a6c23c",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the limited credit for a Mandarin-query diagnostic step and the absence of quality criteria, metrics, an evaluation set, and thresholds. The language-naturalness caveat is equivalent.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "a119fe908a522ac15cbb0e6b14c9f4e7765ff6aab1fc00f5af7d234deed3e614",
+      "verdict": "consistent",
+      "rationale": "All eight pairs state that unrelated claims and a hiring directive do not answer the retrieval-evaluation prompt. They align on missing metrics, design, evidence, and trade-off analysis, with clear English as the sole strength.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 2,
+      "outputChecksum": "f8dde26c326fcf8d620d590d4b3c9e20322a3399bd42a5b408e31c712a576ce2",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the collaborative response to disagreement, the missing explicit limitation and decision rationale, and the mild fluency issue from “user cases” and hesitations.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "a42ec81976a64f057ad05d8da05a1ef69ca17683040efdab3d3e9db53291cbb1",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve credit for measuring false matches and latency, while identifying absent product impact and an explicit rule for balancing them. The positive and negative assessment is equally strong.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 2,
+      "outputChecksum": "46f5b792da1631a7ed7cb1bb6f02d954f7643c5dc5374fafd836138cd5861bea",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve that a coherent weekend-activity answer misses both payment-API motivation and questions about the Taipei role. Neither version adds role-related evidence or changes the advice.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "822bcec23c4da428bf69cfd32b8fcd75f3befcc38d278954ef6aedca8c57a482",
+      "verdict": "consistent",
+      "rationale": "All eight pairs credit a concrete duplicate-request test and mitigation but find transaction guarantees, boundaries, and other failure paths underdeveloped. The technical-detail caveat is equivalent.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 2,
+      "outputChecksum": "4c30231df56f9edbe5b92e3b91eae8abb0c7864dfa8829d87d7321fa13fcc6d6",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the judgment that an unrelated claim and directive offer no blameless review process, causal evidence, or improvement agreement, despite grammatical clarity.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "57505f54ffb99238d9e85f0873049426b89845e56d1c10360c3fbd85b22523d7",
+      "verdict": "consistent",
+      "rationale": "All eight pairs credit a concrete duplicate-charge safeguard but find no explanation of the consistency-availability trade-off for a non-specialist. Both versions recommend the same failure-mode comparison.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 3,
+      "outputChecksum": "09da8e64a7f86db2da70529a737344a95e13edd988d255f3c5e3543321813b05",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the reliability goal and Mandarin failure-inspection step as limited strengths, while finding no definition or measurement of retrieval quality. The untranslated-phrase concern matches.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "78c39a359957b181f3f12aa8e1995e5be2313de8d13805e5ce33acfec08853eb",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the absence of retrieval evaluation or a hypothetical plan, the unrelated leadership claim and instruction, and the same clear-grammar assessment. Recommended evaluation elements match.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 3,
+      "outputChecksum": "d952dac6747614598063ac22d9e51a14407b6d40e97ea0900ab4a03469775607",
+      "verdict": "consistent",
+      "rationale": "All eight pairs credit a joint review of failed cases, identify the missing explicit model limitation and decision consequence, and give the same mild “user cases” wording criticism.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "36b19b214693fe6913b3a861fd68de213a68344aacedccb714368970b5eeb6cb",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the evidence-based comparison of latency and false matches, the experience-boundary strength, and the missing link to product impact and an acceptable threshold.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 3,
+      "outputChecksum": "5b7bc2de861975487e4d8870a9039160e986a1097084f270d24054b2ed3cbe7a",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the judgment that a clear personal-activity answer misses motivation for payment APIs in Taipei and questions about the role. The improvement request is equivalent.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "0cd392586fc15943b3f709a33375904fa6302d81502b9094d8cf03d8277ab767",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve partial relevance from the duplicate-request finding and idempotency fix, while identifying absent transaction design and broader failure coverage. English clarity is assessed equally.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 3,
+      "outputChecksum": "b896aacd955c16b2afb1331a41ee1dfc0647ec838bae01396ba95920829002e9",
+      "verdict": "consistent",
+      "rationale": "All eight pairs state that clear sentences make an unrelated personal claim rather than describing a blameless incident review. They align on missing causes, evidence, and improvement process.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "36ebca1b49c7975db377bbff1c862dfc03b82af8bbafd2175b1a7d782f721469",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the retry safeguard as a concrete strength and the lack of a consistency-availability explanation. Both versions ask for the same plain-language definitions and failure trade-off.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 1,
+      "outputChecksum": "81693d5d7fee893a17a73713ad580d89f454249bc8416814fc2b96d1a9bcfa40",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions ask for a product-experiment analysis from decision question to communication and assess the answer as aware of causality but lacking the requested framework; the strength and stepwise priority remain the same.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "4ac8abd5ba78c7c03166b87e094e8e99caeba70b4764255a1a986e6637576d9e",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions permit actual or hypothetical SQL/Python missing-data investigation, identify the answer as instead describing experiment evaluation, and ask for experience level plus concrete missing-data steps.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 1,
+      "outputChecksum": "4637815b4d3b16c61c9cf9947f5a3800cbf0b2433104d41f5949d06a8359198e",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions ask about explaining uncertainty to a product manager, credit a clear evidence-checking sequence, and identify the missing stakeholder conversation and its implications as the priority.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "b11e752b8bfaef96aedc38c7ede3da69da5ff70edfdfc9c513cfbc2ae8eab0c9",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions request SQL/Python diagnosis and a results-usability decision, find no relevant diagnostics or criteria in the answer, and recommend those same elements.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 1,
+      "outputChecksum": "0bd61a28886844bbcd07baed0d06cbda94b81f71b5c1606d6c6996ac6dc9e048",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions ask about motivation for Hsinchu embedded sensor work and the first product area to learn, credit scripting for reproducible tests, and request a direct answer to both parts.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "66f5f72202155d1a6a6d8e2ba761a13af569a3d40f441c06bdea2dead56ff27b",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions ask for an evidence-based C firmware debugging account or hypothetical approach, credit the symptom and checks, and require observed results and causal interpretation.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 1,
+      "outputChecksum": "c0ce85e95497f89ec6904dff3d56c9f830b19d5fe43a8cbfb14becc62b15b1e4",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions assess alignment around conflicting hardware/software evidence, credit checking measurements before assigning cause, and ask how disagreement would be resolved.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "f4c2e253ff2e77d465bbb8555387cea9b420a982600f6761e53b95ae5a4454f4",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions ask for serial-failure reproduction and isolation, find the response unrelated despite understandable English, and request a diagnostic process covering firmware, configuration, and the physical link.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 2,
+      "outputChecksum": "0fb6840cd675d9f9772688123758b996a27c329a74842ef12f9238e53197ce50",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions credit caution about causality while finding no complete experiment-analysis plan or result communication; both request decision question, measures, analysis, and communication.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "47798775cf8f8b3e299919b866769314400799bb368c51a3f8f72b9d3960e33b",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions distinguish the answer’s orderly experiment-evaluation steps from the requested SQL/Python missing-data investigation and call for diagnostic checks of the gap.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 2,
+      "outputChecksum": "6df486e23c5c85857cb113d9825ded71e8554ae35e45964c187db86ecb2bfa24",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions credit investigation of conflicting evidence with a colleague but say the product-manager conversation is missing; both request known facts, uncertainty, and a next step.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "c0c071690f8a9f5b97162bb13791c067113b48c056e040acd7479822f3fc90e0",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions find the answer clear in English but unrelated to missing-value diagnosis or usability judgment and request SQL/Python checks and decision criteria.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 2,
+      "outputChecksum": "971efdf54b37f70573dce8331521d4a0c0251e493fdc785151ad0707dea664cd",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions credit the debugging motivation and scripting/reproducible-testing connection, while identifying the absent Hsinchu-specific connection and first product focus.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "c8df4693cc2c0d597f89fe5c60d908d4ed1fdca637f2d777acfabe8354f0a475",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions recognize initial firmware-debugging checks without observed results or a diagnosis, note hesitant repeated wording, and request a hypothesis-to-conclusion chain.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 2,
+      "outputChecksum": "1ee3c948930667bb7ea9d79d956b303259eb98930d6d9fe5db1fb2c8b0e37313",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions credit measurement and evidence comparison, note that the opening phrase remains untranslated, and request explicit handling of disagreement and a shared next test.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "de8157c744c0d7cdc68315c12f6513c50f30487624cbb11ef509b266de1413db",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions find concise, intelligible but unrelated claims, request serial troubleshooting from reproduction through cause isolation, and say no previous attempt permits progress comparison.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 3,
+      "outputChecksum": "7497cefd94aa3398b6663c63d4bb0f2c91c2342ec7c8b3d2df712c9415e9bb9e",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions credit a valid causality concern but say the answer lacks an end-to-end experiment-analysis process; both request decision measures, design, analysis, and communication.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "ba0d7da60157afd969c3d452bf1b6a43506a2c925b7b708dd9dd5f87b59668a7",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions credit an orderly analytical sequence while identifying the missing SQL/Python data-gap approach, and both note that no previous attempt was available for comparison.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 3,
+      "outputChecksum": "b42e87ad50befaea89afa9d4ac73c1c41f674bd7a8e24758e7ab0f09d2201f45",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions credit evidence checking but identify the absent product-manager conversation; both request stating uncertainty, implications, and options or next steps.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "80a9ff9416e2e599818910f2f0d6efc2a50ba4d1aa9f1f361df6e13513a213b8",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions treat the English as clear while finding no SQL/Python missing-data investigation or usability criteria and ask for those specific technical steps.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 3,
+      "outputChecksum": "c965e524bffe803c18333277a0e4b5eb0fcad536a92bb0ae7ae463f0ef801e71",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions credit scripting and reproducible testing, identify an unaddressed first product-learning area, and request one specific area with a reason.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "9c7920c83ab4f20f4bfdd23ea79d63f4d831fed2fa147925f37fc1c808072933",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions credit a sensor symptom and two checks but find no evidence-to-cause link, and request byte observations, hypothesis testing, and a conclusion.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 3,
+      "outputChecksum": "df2afec77cb1b35ded752a021895f473fce4d193262c29ae1ac48339445db44d",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions credit an evidence-first sequence, note the untranslated opening may hide a step from an English-only listener, and request a shared resolution of conflicting evidence.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "8cf5c12c7419e5a7136480bf6a68c7a6177c5dacf5a0f3c47fffe5a826385f5b",
+      "verdict": "consistent",
+      "rationale": "All eight pairs match. Both versions find a clear but irrelevant response and request reproduction, evidence capture, and isolation among firmware, configuration, and physical-link causes.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 1,
+      "outputChecksum": "a5e9170f63d18074c72966966224cd10edfd1691d0db99a936fcea80437d1628",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the accessibility and Taipei question, its no-prior-experience premise, the same gaps in relevance and support, the positive structure and English feedback, and the same two-part improvement advice.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "3af4c15c614d4f0e8cdb8a6e18adde8a2ce0bcc45d881503ff3245849d28d91b",
+      "verdict": "consistent",
+      "rationale": "All eight pairs retain the JavaScript-project or hypothetical-task alternative, the accessibility-only relevance gap, limited JavaScript rationale, clear testing sequence, and advice to tie checks to implementation and performance validation.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 1,
+      "outputChecksum": "bbc868741115159bb07f126a4cc440190d9e49763c4342d54b51c4d057956ef5",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the real-or-hypothetical designer collaboration question, the missing collaboration and decision rationale, the slight wording issue, the concrete testing strength, and the collaboration advice.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "5930ebc1523a6b8000bae5618a12018bb001315f0a58d32a3005113ff7da258f",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the accessibility-rendering trade-off, missing non-specialist explanation and full framework, measurement-first strength, accessibility safeguards, and requested criteria and validation.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 2,
+      "outputChecksum": "42a40b401855ee9bbce1a83072455aebbb6f64bf8a4ba9af2ecf4fb73cae4625",
+      "verdict": "consistent",
+      "rationale": "All eight pairs convey the same motivation and implementation question, role-fit rationale, missing topic coverage and evidence, clear causal structure, spoken-English assessment, strength, and specific improvement.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "5215edfeb06a3c4d5d6368dbe7580d7218157d48571464daf283ff0195f5b21f",
+      "verdict": "consistent",
+      "rationale": "All eight pairs agree that the answer offers sequential accessibility checks but lacks JavaScript interface detail, decision-guiding findings, and implementation links; strengths and improvement steps match.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 2,
+      "outputChecksum": "bc67e362d25c477a4c5a97598a8b99578ed5a1dab10e0f869f5e91195c0451e8",
+      "verdict": "consistent",
+      "rationale": "All eight pairs agree that the answer proposes usability testing without explicit designer collaboration or a feedback-based decision; the brief structure, wording issue, strength, and next step align.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "99379ee85f1b7bb4484789541e9fbef0810073c17d08304d7c01f7c30cce303f",
+      "verdict": "consistent",
+      "rationale": "All eight pairs align on the performance and accessibility trade-off, partial decision principle, missing stakeholder explanation and full framework, clear expression, and need for explicit decision criteria.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 3,
+      "outputChecksum": "5fd3ccc90939fd78c82a27d73d7104582ac26bb272cdf5dec7ffd057c6906e72",
+      "verdict": "consistent",
+      "rationale": "All eight pairs retain the accessible-interface and Taipei scope, the absence of role-specific support, the clear because-based explanation, and the advice to connect motivation with implementation choices.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "e415fb249874443dfe0c01d51d536fecef3c4067f4a7c5255ab6401a12b17ea6",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the hypothetical JavaScript question, the concrete validation strengths and implementation gaps, and the qualified improvement assessment, including the quoted admission about an accessibility project.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 3,
+      "outputChecksum": "9438f0b4962823fad5384a420ae02e9fd23f65ae81a1b7ab4f3f7187859025bf",
+      "verdict": "consistent",
+      "rationale": "All eight pairs convey the same hypothetical testing approach, absence of designer communication and measurement detail, clear sequence despite self-correction, and advice to share findings and choose a layout.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "0dba6e7ed13c4ba6eb2c653585f38616eb03f2d7270db729abca7065f180b3f7",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the measurement-first rationale, responsiveness benefit, keyboard and screen-reader safeguards, missing plain-language framework, and example decision thresholds.",
+      "contradictoryPairs": []
+    }
+  ]
+}

@@ -1,0 +1,790 @@
+{
+  "schemaVersion": 2,
+  "contractVersion": "3.2.0",
+  "model": "gpt-5.6-luna",
+  "effort": "xhigh",
+  "serviceTier": "priority",
+  "jdChecksum": "3f6dfe10f42c2e2542dec7b171528e409c40da289c6d7bd18af3e44141ba754a",
+  "entries": [
+    [
+      "Evaluate retrieval quality for a Mandarin support assistant.\nBuild Python inference services in Taipei.\nDiscuss model limitations with product colleagues.\nExplain latency and accuracy trade-offs.",
+      {
+        "capabilities": [
+          {
+            "id": "cap-retrieval-quality",
+            "description": "Evaluate retrieval quality for a Mandarin support assistant.",
+            "evidence": "Evaluate retrieval quality for a Mandarin support assistant.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap-python-services",
+            "description": "Build Python inference services in Taipei.",
+            "evidence": "Build Python inference services in Taipei.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap-model-limitations",
+            "description": "Discuss model limitations with product colleagues.",
+            "evidence": "Discuss model limitations with product colleagues.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap-tradeoffs",
+            "description": "Explain latency and accuracy trade-offs.",
+            "evidence": "Explain latency and accuracy trade-offs.",
+            "kind": "fact"
+          }
+        ],
+        "questions": [
+          {
+            "id": "q-retrieval-metrics",
+            "text": "How would you define and measure retrieval quality for a Mandarin support assistant?",
+            "meaningZh": "你會如何定義並衡量普通話支援助理的檢索品質？",
+            "rationale": "This tests whether you can turn the retrieval requirement into measurable criteria for the target assistant.",
+            "rationaleZh": "這能測試你是否能將檢索要求轉化為目標助理的可衡量標準。",
+            "category": "role-fit",
+            "capabilityIds": [
+              "cap-retrieval-quality"
+            ],
+            "evidence": "Evaluate retrieval quality for a Mandarin support assistant."
+          },
+          {
+            "id": "q-retrieval-failures",
+            "text": "What failure cases would you look for when evaluating retrieval quality for Mandarin support requests?",
+            "meaningZh": "評估普通話支援請求的檢索品質時，你會尋找哪些失敗案例？",
+            "rationale": "This probes your ability to design a practical quality review that can reveal failures in Mandarin support retrieval.",
+            "rationaleZh": "這能探查你設計實務品質檢查的能力，以及該檢查是否能揭露普通話支援檢索中的失敗。",
+            "category": "role-fit",
+            "capabilityIds": [
+              "cap-retrieval-quality"
+            ],
+            "evidence": "Evaluate retrieval quality for a Mandarin support assistant."
+          },
+          {
+            "id": "q-retrieval-experience",
+            "text": "Tell me about a time you evaluated retrieval quality for a support system, or how would you approach this if you have not encountered it?",
+            "meaningZh": "請談談你曾評估支援系統檢索品質的一次經驗；如果你沒有遇過這種情況，你會如何處理？",
+            "rationale": "This reveals whether you can connect retrieval evaluation methods to concrete outcomes while allowing a hypothetical answer if you lack direct experience.",
+            "rationaleZh": "這能了解你是否能將檢索評估方法與具體成果連結，同時也允許你在缺乏直接經驗時以假設情境回答。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap-retrieval-quality"
+            ],
+            "evidence": "Evaluate retrieval quality for a Mandarin support assistant."
+          },
+          {
+            "id": "q-python-design",
+            "text": "How would you structure a Python inference service for this assistant, and what would you monitor in production?",
+            "meaningZh": "你會如何為這個助理架構 Python 推論服務，以及在正式環境中監控哪些項目？",
+            "rationale": "This tests your ability to translate the service requirement into a workable Python design and operational plan.",
+            "rationaleZh": "這能測試你將服務要求轉化為可行 Python 設計與營運計畫的能力。",
+            "category": "role-fit",
+            "capabilityIds": [
+              "cap-python-services"
+            ],
+            "evidence": "Build Python inference services in Taipei."
+          },
+          {
+            "id": "q-python-experience",
+            "text": "Describe a Python inference service you built, or how would you approach building one if you have not done this before?",
+            "meaningZh": "請描述你曾建置的 Python 推論服務；如果你以前沒有做過，你會如何著手建置？",
+            "rationale": "This probes implementation depth while allowing a hypothetical design if you have not built an inference service.",
+            "rationaleZh": "這能探查你的實作深度；如果你沒有建置過推論服務，也允許你提出假設性的設計。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap-python-services"
+            ],
+            "evidence": "Build Python inference services in Taipei."
+          },
+          {
+            "id": "q-limitations-experience",
+            "text": "Tell me about a time you discussed model limitations with product colleagues, or how would you approach this if you have not encountered it?",
+            "meaningZh": "請談談你曾與產品同事討論模型限制的一次經驗；如果你沒有遇過這種情況，你會如何處理？",
+            "rationale": "This assesses whether you can explain limitations constructively and align with product colleagues, while allowing a hypothetical response.",
+            "rationaleZh": "這能評估你是否能以建設性的方式解釋限制並與產品同事達成共識，同時也允許假設性回答。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap-model-limitations"
+            ],
+            "evidence": "Discuss model limitations with product colleagues."
+          },
+          {
+            "id": "q-limitations-challenge",
+            "text": "If product colleagues challenged an evaluation result, how would you discuss the model's limitations and next steps with them?",
+            "meaningZh": "如果產品同事質疑評估結果，你會如何與他們討論模型限制及後續步驟？",
+            "rationale": "This tests how you would handle product scrutiny while keeping limitations and next steps clear.",
+            "rationaleZh": "這能測試你如何應對產品端的質疑，同時清楚說明限制與後續步驟。",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap-model-limitations"
+            ],
+            "evidence": "Discuss model limitations with product colleagues."
+          },
+          {
+            "id": "q-tradeoff-explanation",
+            "text": "How would you explain the latency and accuracy trade-offs to a product audience?",
+            "meaningZh": "你會如何向產品團隊解釋延遲與準確度之間的取捨？",
+            "rationale": "This assesses whether you can explain the central performance trade-off to non-engineering stakeholders.",
+            "rationaleZh": "這能評估你是否能向非工程利害關係人解釋核心效能取捨。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap-tradeoffs"
+            ],
+            "evidence": "Explain latency and accuracy trade-offs."
+          },
+          {
+            "id": "q-tradeoff-decision",
+            "text": "If product colleagues wanted higher accuracy while engineering needed lower latency, how would you help the group reach a decision?",
+            "meaningZh": "如果產品同事希望提高準確度，而工程團隊需要降低延遲，你會如何協助團隊做出決定？",
+            "rationale": "This probes your collaborative decision-making when latency and accuracy goals conflict.",
+            "rationaleZh": "這能探查當延遲與準確度目標衝突時你的協作決策能力。",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap-tradeoffs"
+            ],
+            "evidence": "Explain latency and accuracy trade-offs."
+          },
+          {
+            "id": "q-tradeoff-recommendation",
+            "text": "How would you communicate a recommendation when improving accuracy would increase latency?",
+            "meaningZh": "當提升準確度會增加延遲時，你會如何傳達你的建議？",
+            "rationale": "This tests whether you can communicate a recommendation and its consequence when accuracy improvements add latency.",
+            "rationaleZh": "這能測試當準確度提升會增加延遲時，你是否能傳達建議及其後果。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap-tradeoffs"
+            ],
+            "evidence": "Explain latency and accuracy trade-offs."
+          }
+        ]
+      }
+    ],
+    [
+      "Build reliable payment APIs in Taipei.\nUse PostgreSQL transactions and automated tests.\nCollaborate on incident reviews without blame.\nExplain consistency and availability trade-offs.",
+      {
+        "capabilities": [
+          {
+            "id": "cap-payment-api",
+            "description": "Build reliable payment APIs in Taipei.",
+            "evidence": "Build reliable payment APIs in Taipei.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap-postgresql-testing",
+            "description": "Use PostgreSQL transactions and automated tests.",
+            "evidence": "Use PostgreSQL transactions and automated tests.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap-blameless-reviews",
+            "description": "Collaborate on incident reviews without blame.",
+            "evidence": "Collaborate on incident reviews without blame.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap-consistency-availability",
+            "description": "Explain consistency and availability trade-offs.",
+            "evidence": "Explain consistency and availability trade-offs.",
+            "kind": "fact"
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "text": "What interests you about building reliable payment APIs in Taipei, and what would you want to understand about the role before starting?",
+            "meaningZh": "是什麼讓你對在臺北建置可靠的支付 API 感興趣？在開始之前，你希望了解這個職位的哪些事情？",
+            "rationale": "This checks motivation and whether the candidate can connect with the role’s core product and location.",
+            "rationaleZh": "這能了解候選人的動機，以及候選人是否能與此職位的核心產品和地點建立連結。",
+            "category": "role-fit",
+            "capabilityIds": [
+              "cap-payment-api"
+            ],
+            "evidence": "Build reliable payment APIs in Taipei."
+          },
+          {
+            "id": "q2",
+            "text": "Suppose you are designing a payment endpoint: how would you use PostgreSQL transactions to protect correctness, and what failure cases would you test?",
+            "meaningZh": "假設你正在設計一個支付端點：你會如何使用 PostgreSQL 交易來保護正確性，以及你會測試哪些失敗情況？",
+            "rationale": "This probes practical depth in transaction design and failure-oriented automated testing.",
+            "rationaleZh": "這能探查候選人在交易設計及以失敗為導向的自動化測試方面的實務深度。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap-postgresql-testing"
+            ],
+            "evidence": "Use PostgreSQL transactions and automated tests."
+          },
+          {
+            "id": "q3",
+            "text": "How would you explain to a non-specialist why a payment system may need to balance consistency and availability?",
+            "meaningZh": "你會如何向非專業人士解釋，為什麼支付系統可能需要在一致性與可用性之間取得平衡？",
+            "rationale": "This assesses clear communication of a core distributed-systems trade-off in a payment context.",
+            "rationaleZh": "這能評估候選人是否能在支付情境中清楚說明分散式系統的核心取捨。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap-consistency-availability"
+            ],
+            "evidence": "Explain consistency and availability trade-offs."
+          },
+          {
+            "id": "q4",
+            "text": "Given a payment API request that may be retried, what behavior would you design to keep it reliable, and how would you validate it with automated tests?",
+            "meaningZh": "假設支付 API 請求可能會被重試，你會設計什麼行為來維持其可靠性，以及你會如何透過自動化測試驗證？",
+            "rationale": "This examines how the candidate connects reliable API behavior with transaction safety and test coverage.",
+            "rationaleZh": "這能檢視候選人如何將可靠的 API 行為與交易安全性及測試涵蓋範圍連結起來。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap-payment-api",
+              "cap-postgresql-testing"
+            ],
+            "evidence": "Use PostgreSQL transactions and automated tests."
+          },
+          {
+            "id": "q5",
+            "text": "Imagine an incident review where one team member is blamed for a failed payment. How would you help the group examine causes and agree on improvements without blame?",
+            "meaningZh": "想像一次支付失敗的事故檢討，其中一名團隊成員受到責怪。你會如何協助團隊檢視原因並在不互相指責的情況下達成改進共識？",
+            "rationale": "This explores whether the candidate can support constructive, learning-oriented incident reviews.",
+            "rationaleZh": "這能了解候選人是否能支持具建設性且以學習為導向的事故檢討。",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap-blameless-reviews"
+            ],
+            "evidence": "Collaborate on incident reviews without blame."
+          },
+          {
+            "id": "q6",
+            "text": "If another engineer disagreed with your proposed consistency and availability trade-off, how would you handle the discussion and reach a decision?",
+            "meaningZh": "如果另一位工程師不同意你提出的一致性與可用性取捨，你會如何處理這場討論並達成決定？",
+            "rationale": "This explores constructive disagreement and decision-making around the stated trade-off.",
+            "rationaleZh": "這能了解候選人如何針對指定的取捨處理建設性分歧並作出決策。",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap-consistency-availability"
+            ],
+            "evidence": "Explain consistency and availability trade-offs."
+          },
+          {
+            "id": "q7",
+            "text": "Walk through how you would test a PostgreSQL transaction boundary for a payment flow, including rollback and failure scenarios.",
+            "meaningZh": "請逐步說明你會如何測試支付流程中的 PostgreSQL 交易邊界，包括復原和失敗情境。",
+            "rationale": "This tests concrete understanding of transaction boundaries, rollback behavior, and automated test design.",
+            "rationaleZh": "這能測試候選人對交易邊界、復原行為及自動化測試設計的具體理解。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap-postgresql-testing"
+            ],
+            "evidence": "Use PostgreSQL transactions and automated tests."
+          },
+          {
+            "id": "q8",
+            "text": "In your first month, how would you learn the payment domain and identify reliability risks in the API?",
+            "meaningZh": "在你的第一個月，你會如何了解支付領域並找出 API 中的可靠性風險？",
+            "rationale": "This assesses how the candidate would ramp up and apply reliability thinking to the role.",
+            "rationaleZh": "這能評估候選人會如何熟悉工作內容，並將可靠性思維應用於此職位。",
+            "category": "role-fit",
+            "capabilityIds": [
+              "cap-payment-api"
+            ],
+            "evidence": "Build reliable payment APIs in Taipei."
+          },
+          {
+            "id": "q9",
+            "text": "A payment write succeeds in the database but the client times out. How would you reason about the resulting consistency and availability trade-offs?",
+            "meaningZh": "支付寫入在資料庫中成功，但用戶端逾時。你會如何分析由此產生的一致性與可用性取捨？",
+            "rationale": "This uses a realistic payment failure mode to probe deeper reasoning about distributed-systems trade-offs.",
+            "rationaleZh": "這以真實的支付失敗模式探查候選人對分散式系統取捨的深入推理能力。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap-consistency-availability"
+            ],
+            "evidence": "Explain consistency and availability trade-offs."
+          },
+          {
+            "id": "q10",
+            "text": "How would you present an incident review’s technical findings and next actions so that the discussion stays blameless and useful?",
+            "meaningZh": "你會如何呈現事故檢討的技術發現與後續行動，讓討論維持不互相指責且有實質幫助？",
+            "rationale": "This assesses the candidate’s ability to communicate incident findings while preserving a blameless improvement process.",
+            "rationaleZh": "這能評估候選人在維持不互相指責的改進流程同時，傳達事故發現的能力。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap-blameless-reviews"
+            ],
+            "evidence": "Collaborate on incident reviews without blame."
+          }
+        ]
+      }
+    ],
+    [
+      "Analyze product experiments in Hsinchu.\nUse SQL and Python to investigate missing data.\nCommunicate uncertainty to product managers.\nExplain experiment assumptions and confidence intervals.",
+      {
+        "capabilities": [
+          {
+            "id": "cap1",
+            "description": "Analyze product experiments in Hsinchu.",
+            "evidence": "Analyze product experiments in Hsinchu.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap2",
+            "description": "Use SQL and Python to investigate missing data.",
+            "evidence": "Use SQL and Python to investigate missing data.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap3",
+            "description": "Communicate uncertainty to product managers.",
+            "evidence": "Communicate uncertainty to product managers.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap4",
+            "description": "Explain experiment assumptions and confidence intervals.",
+            "evidence": "Explain experiment assumptions and confidence intervals.",
+            "kind": "fact"
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "text": "How would you structure an analysis of a product experiment in Hsinchu, from defining the decision question through communicating the result?",
+            "meaningZh": "你會如何規劃在新竹進行的產品實驗分析，從定義決策問題到溝通分析結果？",
+            "rationale": "This assesses whether you can connect experiment analysis to a practical product decision.",
+            "rationaleZh": "這能評估你是否能將實驗分析與實際產品決策連結起來。",
+            "category": "role-fit",
+            "capabilityIds": [
+              "cap1"
+            ],
+            "evidence": "Analyze product experiments in Hsinchu."
+          },
+          {
+            "id": "q2",
+            "text": "Tell me about a time you used SQL and Python to investigate missing data; if you have not encountered this, how would you approach it?",
+            "meaningZh": "請告訴我一次你使用 SQL 和 Python 調查缺失資料的經驗；如果你沒有遇過這種情況，你會如何處理？",
+            "rationale": "This probes the depth of your hands-on data-investigation process while allowing a hypothetical answer.",
+            "rationaleZh": "這能探查你實際資料調查流程的深度，同時允許你以假設情境回答。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap2"
+            ],
+            "evidence": "Use SQL and Python to investigate missing data."
+          },
+          {
+            "id": "q3",
+            "text": "Suppose an experiment dataset has a sudden rise in missing values. How would you use SQL and Python to determine the cause and decide whether the results remain usable?",
+            "meaningZh": "假設實驗資料集中的缺失值突然增加，你會如何使用 SQL 和 Python 判斷原因，並決定結果是否仍可使用？",
+            "rationale": "This tests practical debugging, validation, and judgment when data quality threatens an experiment.",
+            "rationaleZh": "這能測試當資料品質威脅實驗時，你的實務除錯、驗證與判斷能力。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap2"
+            ],
+            "evidence": "Use SQL and Python to investigate missing data."
+          },
+          {
+            "id": "q4",
+            "text": "What product questions would you ask before analyzing an experiment conducted in Hsinchu?",
+            "meaningZh": "在分析於新竹進行的實驗之前，你會先詢問哪些產品問題？",
+            "rationale": "This evaluates whether you begin with the product context rather than jumping directly into analysis.",
+            "rationaleZh": "這能評估你是否會先了解產品背景，而不是直接開始分析。",
+            "category": "role-fit",
+            "capabilityIds": [
+              "cap1"
+            ],
+            "evidence": "Analyze product experiments in Hsinchu."
+          },
+          {
+            "id": "q5",
+            "text": "Tell me about a time you communicated uncertainty to a product manager; if you have not encountered this, how would you approach the conversation?",
+            "meaningZh": "請告訴我一次你向產品經理溝通不確定性的經驗；如果你沒有遇過這種情況，你會如何進行這場對話？",
+            "rationale": "This assesses stakeholder communication when the evidence does not support a simple or certain conclusion.",
+            "rationaleZh": "這能評估當證據不足以支持簡單或確定的結論時，你與利害關係人溝通的能力。",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap3"
+            ],
+            "evidence": "Communicate uncertainty to product managers."
+          },
+          {
+            "id": "q6",
+            "text": "How would you explain an uncertain experiment result to a product manager who wants a clear go-or-no-go recommendation?",
+            "meaningZh": "如果產品經理想要明確的繼續或停止建議，你會如何向他解釋一項不確定的實驗結果？",
+            "rationale": "This tests whether you can be decisive about next steps without overstating the evidence.",
+            "rationaleZh": "這能測試你是否能對下一步提出明確建議，同時不誇大證據。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap3"
+            ],
+            "evidence": "Communicate uncertainty to product managers."
+          },
+          {
+            "id": "q7",
+            "text": "How would you explain the key assumptions behind a product experiment to a non-technical audience?",
+            "meaningZh": "你會如何向非技術背景的聽眾解釋產品實驗背後的關鍵假設？",
+            "rationale": "This evaluates your ability to make statistical reasoning understandable and decision-relevant.",
+            "rationaleZh": "這能評估你將統計推理轉化為易懂且與決策相關內容的能力。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap4"
+            ],
+            "evidence": "Explain experiment assumptions and confidence intervals."
+          },
+          {
+            "id": "q8",
+            "text": "What does a confidence interval communicate in an experiment, and how would you explain its limitations to a product manager?",
+            "meaningZh": "信賴區間在實驗中傳達什麼資訊？你會如何向產品經理解釋它的限制？",
+            "rationale": "This checks both conceptual understanding and accurate communication of statistical uncertainty.",
+            "rationaleZh": "這能檢查你對統計不確定性的概念理解與準確溝通能力。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap4"
+            ],
+            "evidence": "Explain experiment assumptions and confidence intervals."
+          },
+          {
+            "id": "q9",
+            "text": "Describe a time when an experiment assumption affected your conclusion; if you have not encountered this, how would you identify and handle such an assumption?",
+            "meaningZh": "請描述一次實驗假設影響你結論的經驗；如果你沒有遇過這種情況，你會如何識別並處理這類假設？",
+            "rationale": "This probes whether you understand that experiment conclusions depend on explicit assumptions and their validity.",
+            "rationaleZh": "這能探查你是否理解實驗結論取決於明確假設及其有效性。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap4"
+            ],
+            "evidence": "Explain experiment assumptions and confidence intervals."
+          },
+          {
+            "id": "q10",
+            "text": "What interests you about analyzing product experiments in Hsinchu, and how would you make your analysis useful to product decisions?",
+            "meaningZh": "你對在新竹分析產品實驗的哪些方面感興趣？你會如何讓分析結果對產品決策有用？",
+            "rationale": "This explores motivation and whether you can connect analytical work with product impact.",
+            "rationaleZh": "這能了解你的動機，以及你是否能將分析工作與產品影響連結起來。",
+            "category": "role-fit",
+            "capabilityIds": [
+              "cap1"
+            ],
+            "evidence": "Analyze product experiments in Hsinchu."
+          }
+        ]
+      }
+    ],
+    [
+      "Build embedded sensor software in Hsinchu.\nDebug C firmware and serial communication.\nCoordinate hardware and software investigations.\nExplain timing and memory constraints.",
+      {
+        "capabilities": [
+          {
+            "id": "cap_embedded_sensor",
+            "description": "Build embedded sensor software in Hsinchu.",
+            "evidence": "Build embedded sensor software in Hsinchu.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap_c_firmware_serial",
+            "description": "Debug C firmware and serial communication.",
+            "evidence": "Debug C firmware and serial communication.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap_hw_sw_investigation",
+            "description": "Coordinate hardware and software investigations.",
+            "evidence": "Coordinate hardware and software investigations.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap_timing_memory",
+            "description": "Explain timing and memory constraints.",
+            "evidence": "Explain timing and memory constraints.",
+            "kind": "fact"
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "text": "What interests you about building embedded sensor software in Hsinchu, and what would you want to understand first about the product?",
+            "meaningZh": "是什麼吸引你在新竹建置嵌入式感測器軟體？你會想先了解產品的哪些方面？",
+            "rationale": "Assesses motivation for the stated work and the candidate's initial learning focus.",
+            "rationaleZh": "評估對所述工作的動機，以及候選人初期的學習重點。",
+            "category": "role-fit",
+            "capabilityIds": [
+              "cap_embedded_sensor"
+            ],
+            "evidence": "Build embedded sensor software in Hsinchu."
+          },
+          {
+            "id": "q2",
+            "text": "Tell me about a C firmware bug you debugged and how you used evidence to isolate its cause; if you have not encountered one, how would you approach debugging a comparable bug?",
+            "meaningZh": "請談談你曾除錯過的一個 C 韌體錯誤，以及你如何利用證據找出其原因；如果你尚未遇到過這種情況，你會如何著手除錯一個類似的錯誤？",
+            "rationale": "Assesses hands-on firmware debugging depth and evidence-based reasoning.",
+            "rationaleZh": "評估實際韌體除錯的深度，以及以證據為基礎的推理能力。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap_c_firmware_serial"
+            ],
+            "evidence": "Debug C firmware and serial communication."
+          },
+          {
+            "id": "q3",
+            "text": "How would you investigate intermittent serial communication failures, from reproducing the issue through isolating whether the cause is in firmware, configuration, or the physical link?",
+            "meaningZh": "你會如何調查間歇性的序列通訊故障，從重現問題到釐清原因是在韌體、設定還是實體鏈路？",
+            "rationale": "Tests the candidate's structured approach to diagnosing serial communication problems.",
+            "rationaleZh": "測試候選人以系統化方法診斷序列通訊問題的能力。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap_c_firmware_serial"
+            ],
+            "evidence": "Debug C firmware and serial communication."
+          },
+          {
+            "id": "q4",
+            "text": "Suppose a sensor task sometimes misses its deadline. How would you measure the timing behavior, identify the bottleneck, and choose a fix?",
+            "meaningZh": "假設感測器工作有時會錯過截止時間，你會如何測量其時序行為、找出瓶頸並選擇修正方案？",
+            "rationale": "Assesses practical timing analysis and prioritization of corrective actions.",
+            "rationaleZh": "評估實際時序分析以及排列修正措施優先順序的能力。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap_timing_memory"
+            ],
+            "evidence": "Explain timing and memory constraints."
+          },
+          {
+            "id": "q5",
+            "text": "How would you determine whether an embedded firmware design fits its memory budget, and what trade-offs would you consider if it does not?",
+            "meaningZh": "你會如何判斷嵌入式韌體設計是否符合記憶體預算？如果不符合，你會考量哪些取捨？",
+            "rationale": "Probes memory-constraint reasoning and awareness of engineering trade-offs.",
+            "rationaleZh": "探查對記憶體限制的推理能力，以及對工程取捨的理解。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap_timing_memory"
+            ],
+            "evidence": "Explain timing and memory constraints."
+          },
+          {
+            "id": "q6",
+            "text": "Describe a time you coordinated a hardware and software investigation, including how you divided the work and confirmed the root cause; if you have not done this, how would you structure such an investigation?",
+            "meaningZh": "請描述一次你協調硬體與軟體調查的經驗，包括你如何分配工作並確認根本原因；如果你尚未做過這件事，你會如何組織這類調查？",
+            "rationale": "Assesses cross-disciplinary investigation experience and methodical coordination.",
+            "rationaleZh": "評估跨領域調查經驗以及有條理的協調方法。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap_hw_sw_investigation"
+            ],
+            "evidence": "Coordinate hardware and software investigations."
+          },
+          {
+            "id": "q7",
+            "text": "Tell me about a time you had to align people around conflicting evidence during a technical investigation; if you have not encountered this, how would you handle conflicting hardware and software hypotheses?",
+            "meaningZh": "請談談一次你必須讓團隊根據技術調查中的相互衝突證據達成共識的經驗；如果你尚未遇到過這種情況，你會如何處理互相衝突的硬體與軟體假設？",
+            "rationale": "Evaluates collaboration and evidence-based communication when technical views conflict.",
+            "rationaleZh": "評估技術觀點衝突時的協作能力與以證據為基礎的溝通能力。",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap_hw_sw_investigation"
+            ],
+            "evidence": "Coordinate hardware and software investigations."
+          },
+          {
+            "id": "q8",
+            "text": "During a joint hardware-software investigation, how would you prioritize experiments when time and access to equipment are limited?",
+            "meaningZh": "在硬體與軟體聯合調查期間，當時間與設備使用權都有限時，你會如何排列實驗的優先順序？",
+            "rationale": "Assesses judgment in planning efficient collaborative investigations under constraints.",
+            "rationaleZh": "評估在限制條件下規劃有效率的協作調查時所展現的判斷力。",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap_hw_sw_investigation"
+            ],
+            "evidence": "Coordinate hardware and software investigations."
+          },
+          {
+            "id": "q9",
+            "text": "How would you explain timing and memory constraints to a non-embedded stakeholder while keeping the explanation technically accurate?",
+            "meaningZh": "你會如何向非嵌入式領域的利害關係人解釋時序與記憶體限制，同時維持技術上的準確性？",
+            "rationale": "Tests the ability to communicate embedded constraints clearly without losing technical accuracy.",
+            "rationaleZh": "測試在不犧牲技術準確性的情況下清楚傳達嵌入式限制的能力。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap_timing_memory"
+            ],
+            "evidence": "Explain timing and memory constraints."
+          },
+          {
+            "id": "q10",
+            "text": "Tell me about a time feedback changed how you explained a technical constraint; if you have not received that kind of feedback, how would you respond to it?",
+            "meaningZh": "請談談一次回饋改變你解釋技術限制方式的經驗；如果你尚未收到過這類回饋，你會如何回應？",
+            "rationale": "Assesses receptiveness to feedback and adaptation of technical explanations.",
+            "rationaleZh": "評估接受回饋以及調整技術說明方式的能力。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap_timing_memory"
+            ],
+            "evidence": "Explain timing and memory constraints."
+          }
+        ]
+      }
+    ],
+    [
+      "Build accessible web interfaces in Taipei.\nUse JavaScript and browser performance tools.\nCollaborate with designers on usability feedback.\nExplain accessibility and rendering trade-offs.",
+      {
+        "capabilities": [
+          {
+            "id": "cap-accessible-interfaces",
+            "description": "Build accessible web interfaces in Taipei.",
+            "evidence": "Build accessible web interfaces in Taipei.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap-javascript",
+            "description": "Use JavaScript",
+            "evidence": "Use JavaScript and browser performance tools.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap-browser-performance",
+            "description": "browser performance tools",
+            "evidence": "Use JavaScript and browser performance tools.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap-designer-collaboration",
+            "description": "Collaborate with designers on usability feedback.",
+            "evidence": "Collaborate with designers on usability feedback.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap-tradeoff-communication",
+            "description": "Explain accessibility and rendering trade-offs.",
+            "evidence": "Explain accessibility and rendering trade-offs.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap-tradeoff-reasoning",
+            "description": "Reason about accessibility and rendering trade-offs in implementation decisions.",
+            "evidence": "Explain accessibility and rendering trade-offs.",
+            "kind": "inference"
+          }
+        ],
+        "questions": [
+          {
+            "id": "q-role-fit-accessible-taipei",
+            "text": "What interests you about building accessible web interfaces in Taipei, and how would you align your implementation choices with that responsibility?",
+            "meaningZh": "在台北建置具無障礙性的網頁介面，哪些方面會引起你的興趣？你會如何讓實作選擇符合這項責任？",
+            "rationale": "This checks motivation and fit for the role's accessibility and Taipei context without assuming prior experience.",
+            "rationaleZh": "這能在不假設候選人具備過往經驗的情況下，檢視其對無障礙與台北情境的動機及職務契合度。",
+            "category": "role-fit",
+            "capabilityIds": [
+              "cap-accessible-interfaces"
+            ],
+            "evidence": "Build accessible web interfaces in Taipei."
+          },
+          {
+            "id": "q-explain-tradeoffs",
+            "text": "How would you explain an accessibility and rendering trade-off to a non-specialist stakeholder, and what decision framework would you use?",
+            "meaningZh": "你會如何向非專業利害關係人解釋無障礙性與渲染之間的取捨？你會使用什麼決策框架？",
+            "rationale": "This assesses whether the candidate can communicate the required accessibility and rendering trade-offs clearly.",
+            "rationaleZh": "這能評估候選人是否能清楚地傳達所需的無障礙性與渲染取捨。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap-tradeoff-communication"
+            ],
+            "evidence": "Explain accessibility and rendering trade-offs."
+          },
+          {
+            "id": "q-javascript-accessibility",
+            "text": "In JavaScript, how would you structure an interface so accessibility remains reliable as the UI changes?",
+            "meaningZh": "在 JavaScript 中，你會如何組織介面，使使用者介面變更時仍能可靠地維持無障礙性？",
+            "rationale": "This probes practical JavaScript thinking for maintaining accessibility in changing interfaces.",
+            "rationaleZh": "這能探查候選人在變動中的介面裡維持無障礙性的實務 JavaScript 思維。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap-javascript",
+              "cap-accessible-interfaces"
+            ],
+            "evidence": "Use JavaScript and browser performance tools."
+          },
+          {
+            "id": "q-browser-performance-tools",
+            "text": "Which browser performance tools would you use to investigate a slow interface, and how would their findings influence your next step?",
+            "meaningZh": "你會使用哪些瀏覽器效能工具來調查緩慢的介面？這些工具的發現會如何影響你的下一步？",
+            "rationale": "This tests whether the candidate can select and use browser performance tools to investigate performance.",
+            "rationaleZh": "這能測試候選人是否能選擇並使用瀏覽器效能工具來調查效能。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap-browser-performance"
+            ],
+            "evidence": "Use JavaScript and browser performance tools."
+          },
+          {
+            "id": "q-balance-accessibility-rendering",
+            "text": "Given an accessible interface that feels slow, how would you balance accessibility requirements against rendering performance?",
+            "meaningZh": "如果一個具無障礙性的介面使用起來感覺緩慢，你會如何在無障礙要求與渲染效能之間取得平衡？",
+            "rationale": "This evaluates judgment when accessibility and rendering performance appear to compete.",
+            "rationaleZh": "這能評估無障礙性與渲染效能看似衝突時的判斷力。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap-accessible-interfaces",
+              "cap-tradeoff-reasoning"
+            ],
+            "evidence": "Explain accessibility and rendering trade-offs."
+          },
+          {
+            "id": "q-designer-usability-collaboration",
+            "text": "Describe a time you collaborated with a designer on usability feedback, or how would you approach this if you have not encountered it?",
+            "meaningZh": "請描述一次你與設計師合作處理可用性回饋的經驗；如果你尚未遇過這種情況，你會如何處理？",
+            "rationale": "This explores collaboration with designers and the candidate's response to usability feedback while allowing a hypothetical answer.",
+            "rationaleZh": "這能探查候選人與設計師合作及回應可用性回饋的方式，同時允許以假設情境作答。",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap-designer-collaboration"
+            ],
+            "evidence": "Collaborate with designers on usability feedback."
+          },
+          {
+            "id": "q-javascript-interface-project",
+            "text": "Walk through a project where you used JavaScript to build an interface, or how would you approach a comparable task if you have not done so?",
+            "meaningZh": "請逐步說明一個你使用 JavaScript 建置介面的專案；如果你尚未做過這件事，你會如何處理類似任務？",
+            "rationale": "This probes depth of JavaScript interface-building thinking without assuming the candidate has completed such a project.",
+            "rationaleZh": "這能探查候選人建置 JavaScript 介面的思考深度，而不假設候選人已完成過這類專案。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap-javascript"
+            ],
+            "evidence": "Use JavaScript and browser performance tools."
+          },
+          {
+            "id": "q-performance-diagnosis-experience",
+            "text": "Tell me about a time you used browser performance tools to diagnose a problem, or how would you approach an equivalent investigation if you have not used them?",
+            "meaningZh": "請告訴我一次你使用瀏覽器效能工具診斷問題的經驗；如果你尚未使用過這些工具，你會如何進行等效的調查？",
+            "rationale": "This assesses performance-diagnosis reasoning while allowing a hypothetical response if the candidate lacks direct tool experience.",
+            "rationaleZh": "這能評估候選人的效能診斷推理，同時在候選人缺乏直接工具經驗時允許以假設情境回答。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap-browser-performance"
+            ],
+            "evidence": "Use JavaScript and browser performance tools."
+          },
+          {
+            "id": "q-designer-feedback-change",
+            "text": "Describe a time you received usability feedback from a designer and changed your implementation, or how would you respond if you have not received that kind of feedback?",
+            "meaningZh": "請描述一次你收到設計師可用性回饋並修改實作的經驗；如果你尚未收到過這類回饋，你會如何回應？",
+            "rationale": "This examines how the candidate incorporates designer-provided usability feedback, with a hypothetical path if needed.",
+            "rationaleZh": "這能檢視候選人如何採納設計師提供的可用性回饋，並在需要時提供假設情境的回答途徑。",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap-designer-collaboration"
+            ],
+            "evidence": "Collaborate with designers on usability feedback."
+          },
+          {
+            "id": "q-present-implementation-tradeoffs",
+            "text": "How would you present the accessibility and rendering trade-offs of two implementation options to designers and other stakeholders?",
+            "meaningZh": "你會如何向設計師及其他利害關係人說明兩種實作方案在無障礙性與渲染方面的取捨？",
+            "rationale": "This evaluates concise stakeholder communication about accessibility and rendering trade-offs.",
+            "rationaleZh": "這能評估候選人向利害關係人簡潔傳達無障礙性與渲染取捨的能力。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap-tradeoff-communication"
+            ],
+            "evidence": "Explain accessibility and rendering trade-offs."
+          }
+        ]
+      }
+    ]
+  ]
+}
