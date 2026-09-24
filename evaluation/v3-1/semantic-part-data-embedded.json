@@ -1,0 +1,193 @@
+{
+  "schemaVersion": 2,
+  "contractVersion": "3.1.0",
+  "reviewerType": "ai",
+  "reviewer": "independent AI semantic reviewer data/embedded",
+  "reviewedAt": "2026-09-24T09:05:08.648188Z",
+  "reviews": [
+    {
+      "caseId": "data-role-fit",
+      "repeat": 1,
+      "outputChecksum": "782415cc17a3e123ab7240866178572ec810fe1deca86041082041b9d031960f",
+      "verdict": "consistent",
+      "rationale": "All eight translations preserve the two-part Hsinchu/product-decision question, the positive curiosity and causality observations, and the limited relevance and support. The Chinese priority asks for the same location and decision links without changing the partial-answer judgment.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "1c39868b85b9f049ef0833f42eab61de6eae7e73ff126ba872b8f2dc6755fcb1",
+      "verdict": "consistent",
+      "rationale": "Across all eight pairs, both languages ask for a SQL/Python missing-data investigation and judge the generic, orderly answer insufficient. Both preserve the absence of checks and examples, the positive English-expression assessment, and the recommendation to quantify, inspect, and validate missingness.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 1,
+      "outputChecksum": "36c573f28fb89f93c50fccf77441eff1c774d21f5c09f6e2b9392e96fe98c269",
+      "verdict": "consistent",
+      "rationale": "Both versions permit a hypothetical answer and distinguish useful validation steps from the missing explanation of uncertainty to a product manager. Structure, English quality, strength, and the proposed communication of uncertainty, impact, and next step carry the same judgment across all eight pairs.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "492e46cd54b99a8cda1ef8bea28dd93e53b76848a598900643644d3dbb29d04a",
+      "verdict": "consistent",
+      "rationale": "The eight pairs agree on the need to explain assumptions and confidence intervals to a non-statistical product manager. Both judge the answer irrelevant and unsupported while recognizing grammatical English, then request a simple, decision-focused explanation of the two concepts.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 1,
+      "outputChecksum": "78f977a1e1ab78c2914e96978bfaab6bf4c540ca2a651a140a7df397ce00c923",
+      "verdict": "consistent",
+      "rationale": "All eight pairs retain the Hsinchu embedded-sensor motivation and pre-start requirements question. Both credit technical motivation and self-awareness, note the omitted location and requirements, qualify the English phrasing similarly, and ask for the same two missing components.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "10b5a1ae6b8276e389cdd35807dc873d7b0dec1dc21473706134db53f6b92205",
+      "verdict": "consistent",
+      "rationale": "The question and rationale retain sensor-only C-firmware debugging without assuming past experience. Both credit wiring and byte checks but find isolation, hypotheses, and fix verification undeveloped; the qualified language critique and stepwise improvement match.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 1,
+      "outputChecksum": "82d420611c9474ca273b18098dee3cb072cc785fad4b3a5c8ecf7379d5d04a4f",
+      "verdict": "consistent",
+      "rationale": "Both languages ask about coordinating a hardware/software disagreement. All rating reasons and strength credit measurement and trace/log comparison but note missing follow-through; both describe the untranslated opening and request ownership, a next test, and a decision point.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "92de636ce1e4f8679550bcf681374e68968bd275d8ff45ee81c68dbfd7198b11",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the timing/memory explanation task and assess the answer as unrelated, unsupported, and disorganized. Both temper the language critique to understandable but awkward percentage wording and ask for a concrete example covering deadlines, storage, and stakeholder impact.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 2,
+      "outputChecksum": "e3ae508b938a4273cfbf12b79792d56b4abdf294c39ef551010024675b164511",
+      "verdict": "consistent",
+      "rationale": "The eight pairs agree that the answer shows interest in experiments and causality but omits Hsinchu and a product-decision application. The untranslated phrase is described with the same qualified comprehension risk; the improvement remains a request for both missing links.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "5350e3f0d3fedd9a236a7ef7f72370b921f7451acd15c2ed8b602ae2372d7fc5",
+      "verdict": "consistent",
+      "rationale": "All pairs retain the missing-data and SQL/Python target. The Chinese reasons match the English distinction between a basic orderly sequence and an absent task-specific workflow, and the priority preserves the same finding, segmentation, diagnosis, and validation advice.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 2,
+      "outputChecksum": "ea68adde3207c79dc9557995364ccb0f766c37b35a99179ab86a09101eecaf43",
+      "verdict": "consistent",
+      "rationale": "All eight pairs preserve the hypothetical stakeholder-communication task and the assessment that investigation steps are logical but direct product-manager communication is absent. The missing assumptions and decision impact, positive process strength, and improvement advice align.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "28dd48d7bb8b53d655a71cb9962f089c6b91a543b1602a75f74c33a44a117ff6",
+      "verdict": "consistent",
+      "rationale": "The question, rationale, and all four rating reasons retain the same statistical-communication target and the same absence of a relevant explanation. Both versions credit clear grammar and ask for simple definitions tied to an experiment and decision.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 2,
+      "outputChecksum": "ddde740243b3ba9812982cb81e78b0a8f984cc1d08aa0f4be41f13743b25e40a",
+      "verdict": "consistent",
+      "rationale": "The translations agree that debugging motivation, a testing skill, and a learning gap are present, while Hsinchu and concrete requirements are absent. The four ratings, strength, and priority preserve the same scope and certainty.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "a9c6d3d841f401d2130381f2885155ca621041afc1911eef397b7de078b06f31",
+      "verdict": "consistent",
+      "rationale": "All eight pairs maintain the same fault-isolation, hypothesis-testing, and verification requirements. Both describe initial sensor checks but missing diagnostic evidence and a complete sequence, and recommend targeted, repeatable tests to verify a fix.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 2,
+      "outputChecksum": "3ebfef6397bd10905e9dcff203b3e548fa40ff95d2c6f53d9626d1d5c6deeb6d",
+      "verdict": "consistent",
+      "rationale": "The eight pairs match on evidence-based coordination as a useful start, with unresolved disagreement and no next-step ownership or timing. Both qualify the untranslated opening and slightly awkward English similarly, then request a test, owner, checkpoint, and use of results.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "3d718a933eeb6581fc8d47530123847bf160f9d55b81ba4bf03ed90ac0388e70",
+      "verdict": "consistent",
+      "rationale": "The pairs agree that the response does not explain timing or memory and lacks an example, while its sentences remain understandable. Both request one everyday example of a timing deadline and memory limit; the positive language judgment does not mask the relevance failure.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 3,
+      "outputChecksum": "4294ac7519dc43e5d5b201365f28fa4efe8d621b0c3eb62b811c32bcc0245286",
+      "verdict": "consistent",
+      "rationale": "The question and rationale retain the role, location, and product-impact scope. Rating reasons and strength agree on thoughtful measurement interest but missing decision and location links; both versions cautiously describe the language-switch impact and give the same next step.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "120793dfceb3b32b4348e35112e70bbfe668d013b9aa0c1ef40380a892472be7",
+      "verdict": "consistent",
+      "rationale": "The eight translations agree that the answer is clear and simply ordered yet does not investigate missing data with SQL or Python. Both versions request a reproducible workflow that measures, compares, and interprets missingness before action; no assessment or certainty reverses.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 3,
+      "outputChecksum": "e9671f694025f7be843ffb8bd9b839bffb7f049ed794f56bc49fa1c91106cf89",
+      "verdict": "consistent",
+      "rationale": "The translations retain the question's experience-or-hypothetical choice and the same distinction between concrete verification and insufficient stakeholder communication. Both describe a clear but underdeveloped sequence and request the current uncertainty, impact, and decision or next step.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "2d48a29a9877494538d87bbad90212456e7b7005d7fd0ac46f2f76fa10b6d5ee",
+      "verdict": "consistent",
+      "rationale": "Both languages assess the two unrelated statements as irrelevant and unsupported while crediting grammatical, understandable English. The priority improvement preserves the same request for assumptions, confidence intervals, an example, and decision implications.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "b38d9202071744de99693232b919120f43b3eaef933dbbf4dd7474420b3144e0",
+      "verdict": "consistent",
+      "rationale": "The translations agree on the zero reading and initial connection/byte checks, the missing hypotheses and verification evidence, and the limited polish of the spoken answer. The proposed reproduce-isolate-compare-test-repeat sequence preserves the English advice.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 3,
+      "outputChecksum": "c8251adfd4807370c31e9f84f6497bbff690fa928155ad3ac2c11e68ba7e676e",
+      "verdict": "consistent",
+      "rationale": "Both versions give partial credit for evidence comparison and a clear first-then sequence, while identifying missing management after disagreement. They match on the Chinese-language barrier and ask for a next test, owner, and timing when evidence remains disputed.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "d7761d592e55292266b0f0d919129cc32763ca9232a99cab553d21ce61c09332",
+      "verdict": "consistent",
+      "rationale": "Both versions identify disconnected, irrelevant statements with no explanation of timing or memory constraints, while crediting sentence-level clarity. The priority preserves a concrete non-embedded example, finite memory, a deadline, and plain-language impact.",
+      "contradictoryPairs": []
+    }
+  ]
+}

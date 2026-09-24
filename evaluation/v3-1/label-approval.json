@@ -1,0 +1,139 @@
+{
+  "schemaVersion": "1.0.0",
+  "contractVersion": "3.1.0",
+  "status": "draft_labels_approved_pending_bilingual_review",
+  "reviewerType": "ai",
+  "reviewer": "Codex AI independent label approver (/root/label_approver31)",
+  "reviewedAt": "2026-09-24T09:07:43Z",
+  "scope": "Blind review of the 20 contract-3.1 label drafts against the frozen packet, rater persona, expression rubric, and approved v3 ranges. No model outputs were reviewed.",
+  "binding": {
+    "caseCount": 20,
+    "allCaseIdsUniqueAndPresent": true,
+    "allDraftInputChecksumsMatchBlindPacket": true,
+    "allEvidenceQuotesExactTranscriptSubstrings": true,
+    "allDraftsPendingBeforeReview": true
+  },
+  "caseReviews": [
+    {
+      "caseId": "ai-role-fit",
+      "verdict": "approved",
+      "reason": "The Mandarin clause states a user-reliability motive and the answer prioritizes failures in Mandarin queries. The draft credits that limited relevance while withholding support for an absent metric or sampling plan; the untranslated clause reasonably limits English expression without erasing the idea.",
+      "inputChecksum": "d161bbd785a1687d9203e1d42f502a622e02db703778eb09b2ddb668c5d45d28"
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "verdict": "approved",
+      "reason": "The answer supplies none of the requested evaluation data, metrics, error analysis, or ambiguity handling. ImaginaryCorp, profit, and Kubernetes claims are unverified and do not become job requirements. Its grammatical sentences justify the separate 3–4 English-expression range despite low content scores.",
+      "inputChecksum": "335cb0c45bb01848e39e6dbbd6f8509dcadd815630543c9afb8252eee6f6cdf1"
+    },
+    {
+      "caseId": "ai-behavioral",
+      "verdict": "approved",
+      "reason": "The new question explicitly asks for a model limitation and how it was made understandable to product colleagues, or a hypothetical approach to that task. Asking which user cases failed and checking together is constructive but supplies neither the limitation nor its explanation. That added specificity justifies lowering relevance and support from v3's 2–3 to 1–2; the fillers affect expression only mildly.",
+      "inputChecksum": "b0351f1aacf725ce30786f29bf30a2d1fd8ae042c5e1a550f7dbd64815a62baa"
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "verdict": "approved",
+      "reason": "A labelled query set, false-match inspection, and latency measurement directly answer the new question's measurement clause. They justify raising support from v3's 1–2 to 2–3, while the absence of a speed-versus-accuracy decision for a product colleague keeps relevance bounded. The stated deployment gap is not treated as a failure.",
+      "inputChecksum": "aa7d4ff95293b2f085f6b8171996f32aba28e8921eb6bb52eb0d233b1ff8f1a3"
+    },
+    {
+      "caseId": "backend-role-fit",
+      "verdict": "approved",
+      "reason": "Bread baking does not address payment API idempotency, failures, or observability, so relevance and support are 1. The two readable English sentences warrant a high expression range independent of their unrelated content; no payment experience is inferred.",
+      "inputChecksum": "6017a95a8e5e66060234eca9e67bf74f593c0be457ff6f42869a5d273a7e0834"
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "verdict": "approved",
+      "reason": "The personal-project test, duplicate request, and idempotency check provide a bounded transaction example. Missing boundaries, rollback, assertions, and PostgreSQL-specific detail justify partial relevance and support. The draft preserves the explicit absence of production-scale evidence and credits the clear problem-action sequence.",
+      "inputChecksum": "3f6bcb08ba66d611393c1055822ced1a1fd4ea750fb88274b873fc998f78e8ed"
+    },
+    {
+      "caseId": "backend-behavioral",
+      "verdict": "approved",
+      "reason": "Neither an incident review nor a blameless hypothetical approach appears. The global-network and savings assertions are unsupported learner claims, not verified evidence. Low relevance, support, and structure coexist with readable English, as the draft records.",
+      "inputChecksum": "f6df53bfc95457ac5b624874ade33545725159f36c81e6e3da63bf84f007778f"
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "verdict": "approved",
+      "reason": "A transaction for two balance changes and a retry key are payment safeguards, but the new question asks the learner to explain a consistency-versus-availability choice to a partner. The answer never addresses availability or frames a choice, justifying relevance 1–2 instead of v3's 3–4. The self-repair modestly affects expression without negating the technical content.",
+      "inputChecksum": "e710d88d85bfd76325f5c793c7e3cbc95f146a40021591c95075f1ac0d21204e"
+    },
+    {
+      "caseId": "data-role-fit",
+      "verdict": "approved",
+      "reason": "The learner shows interest in experiments, notes a causal-inference concern in Chinese, and wants to learn product measurement choices. No concrete analysis-to-decision link or experience is supplied. The mixed-language clause warrants a limited expression range without reducing the relevance of the idea to zero.",
+      "inputChecksum": "44652c3fd171665d6a095191a5a9a6a283fbbf0be66168b39b4cd6876a19e8a5"
+    },
+    {
+      "caseId": "data-experience-depth",
+      "verdict": "approved",
+      "reason": "Metric choice, assignment balance, and uncertainty form an orderly experiment-planning answer, but the question asks specifically for SQL and Python investigation of missing data. The draft correctly gives low relevance and support for that mismatch while retaining good structure and clear English; the truthful production gap is not penalized.",
+      "inputChecksum": "f1e7d09fc209153ef90ab62ef1c624c71fa61cc3ed2779a193420a3f60f5ef44"
+    },
+    {
+      "caseId": "data-behavioral",
+      "verdict": "approved",
+      "reason": "The hypothetical steps of checking conflicting data, assumptions, and a reproducible query support a useful investigation. They do not describe communicating uncertainty to a product manager, so relevance and support remain partial. The draft does not invent a past meeting and credits the orderly, fluent response.",
+      "inputChecksum": "ade59e934a94dc35e50e492b43ae45af03b08d57e794171401f6ac3aedab2a18"
+    },
+    {
+      "caseId": "data-technical-communication",
+      "verdict": "approved",
+      "reason": "Clouds and postcards give no explanation of experiment assumptions or confidence intervals and have no answer structure. The sentence is intelligible and grammatical, so English expression 3–4 is correctly independent of the 1-point content dimensions.",
+      "inputChecksum": "c7190ae3ac47bf4964a538f5e3edc3048e09866d8ecb0c7a8877bc4af0f47a65"
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "verdict": "approved",
+      "reason": "Interest in diagnosing small systems and transferable scripting fit the role, and the learner honestly names an embedded-debugging gap. The new question also asks which requirements to understand before starting; none is named. This specific omission justifies lowering relevance from v3's 3–4 to 2–3 while retaining support, structure, and expression credit.",
+      "inputChecksum": "a1f5024ba81a2013252f543cc5bc7adef57fd122adb3431253cb4d4342e11219"
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "verdict": "approved",
+      "reason": "A zero sensor reading, wire check, and printed bytes are useful initial observations. The learner does not narrow firmware causes, test a hypothesis, verify a fix, or remember timing. The draft preserves that uncertainty and gives partial relevance with limited support and structure; hesitations modestly lower expression.",
+      "inputChecksum": "2f1b30e1e1413c1114cc0e538921aa57ce8eed587f345eff332f5e36e056ef9e"
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "verdict": "approved",
+      "reason": "The Chinese opening proposes verifying the measurement method, followed by comparing a hardware trace and firmware log with a colleague before assigning blame. This answers much of the hypothetical coordination question but leaves a resolution step unstated. Mixed language limits English expression separately from the relevant reasoning.",
+      "inputChecksum": "777a47b45287c3024ceb26753603d888a8ac0d74ef4fda9c1096fca840ffdbd9"
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "verdict": "approved",
+      "reason": "The invented chip, impossible power claim, and Kubernetes command explain neither timing nor memory constraints to a stakeholder and must not be promoted to facts or job requirements. Readable sentences still support English expression 3–4 while content dimensions remain low.",
+      "inputChecksum": "bd5e81a66baf026e81c76131cb7b9f271961e573a80461bdd6d779b69b28cc9d"
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "verdict": "approved",
+      "reason": "Coffee and office appearance show only generic interest in a job, with no accessible-interface motive or user-experience priority. The draft's low content and structure ranges reflect that omission, while clear grammar supports English expression 3–4.",
+      "inputChecksum": "61d9ff5a5906234168e4373cd8396b29ba165c420bfe3f817a05a59fc3faa294"
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "verdict": "approved",
+      "reason": "The revised question expressly permits a hypothetical accessible-interface approach when no project was shipped. Keyboard navigation, focus order, and user testing now address that question, justifying the increase from v3's 1–2 relevance to 3–4 and support to 2–3. The draft still notes the missing specific interface, assistive-technology check, and success criterion without treating the honest experience gap as failure.",
+      "inputChecksum": "e7c7434c005754ffab125684676d851546945b5ba4113d19c992f89788a6f1a8"
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "verdict": "approved",
+      "reason": "Identifying the difficult task and comparing layouts on that same task are concrete uses of usability feedback. The hypothetical answer omits designer participation and a decision rule, so support remains partial. The speech repair mildly affects expression but the plan remains coherent; no resolved disagreement is inferred.",
+      "inputChecksum": "9e0013dfcd7981b5f8e2fbd68cb2449b3b99aced49495757c3acfb801c4b957b"
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "verdict": "approved",
+      "reason": "Measuring a slow interaction, deferring work, and protecting focus and screen-reader announcements address the rendering-accessibility trade-off. The answer lacks a designer-friendly example and user-facing decision criterion, supporting partial content scores with clear structure and English.",
+      "inputChecksum": "121f90f73dc53e82158cd309709a3f56507acc8390f1793351f505e4ae5e4401"
+    }
+  ],
+  "summary": "All 20 blind label drafts are approved on transcript and question evidence. The three lowered relevance/support expectations—ai-behavioral, backend-technical-communication, and embedded-role-fit—are justified by explicit requirements in their new questions, not by model output. The raised expectations in ai-technical-communication and frontend-experience-depth also follow the new question wording. This approval covers draft labels only; bilingual outputs and release status require separate review."
+}

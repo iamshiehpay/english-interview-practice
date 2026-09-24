@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 2,
+  "contractVersion": "3.1.0",
+  "reviewerType": "ai",
+  "reviewer": "independent AI semantic reviewer frontend",
+  "reviewedAt": "2026-09-24T09:07:23.705784Z",
+  "reviews": [
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 1,
+      "outputChecksum": "3c7a46345e937214afc853f83d2d50936978c871fb17b0724452c35cb983a76f",
+      "verdict": "consistent",
+      "rationale": "Both questions ask why accessible interfaces in Taipei appeal to the candidate and which UX priorities matter; the Chinese rationale retains motivation, location, and accessibility alignment. Both rating sets say the answer misses both parts and offers no role-relevant support, while treating the sentence as basically structured and grammatical. Strength credits only brevity and grammatical clarity, and both priority statements request the same motivation and UX priorities.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "82259f699c1796bbdfc1f34ac8f020d6a4d9ac85a25305fa4f142e9ab884eebe",
+      "verdict": "consistent",
+      "rationale": "The question and rationale preserve the JavaScript accessibility experience prompt and its no-experience alternative without assuming prior work. Both relevance reasons credit a fallback approach; both support reasons identify missing implementation, assistive-technology behavior, validation, and trade-offs. Structure and English-expression reasons agree on an ordered, clear answer with limited development. Strength names the same keyboard, focus, and user-testing sequence, and priority asks for the same concrete technical details and reasons for the checks.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 1,
+      "outputChecksum": "79c45549c087ba330bc1b9062e2b28f33da98a2e532746ec233aa3d78301be73",
+      "verdict": "consistent",
+      "rationale": "Both questions offer a past designer collaboration example or a hypothetical plan, and both rationales avoid requiring prior experience. Relevance and support in each language credit a usable two-step comparison while noting missing designer collaboration, measures, and design decisions. Structure and English-expression pairs retain the self-correction, partial flow, and awkward layout wording. Strength and priority preserve the same testable comparison and request to align with the designer, collect feedback, and revise or select a layout.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "c9c4f57db78b250940574471efd6d0e6f49635d23722632dcb241f7305adb123",
+      "verdict": "consistent",
+      "rationale": "Both questions ask for an accessibility/rendering trade-off explained to a designer, and both rationales test clear technical communication. The paired reasons agree that the response connects performance to accessibility, starts with measurement, lacks a concrete rendering example and criteria, and remains clear and natural. Strength preserves the rendering optimization and essential accessibility constraint; priority requests the same concrete example, decision criteria, and distinction between deferrable work and accessibility behavior.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 2,
+      "outputChecksum": "8a97df33d1572827c836b9ceb847783f643ad8d4afbad4fe157496a5691254cf",
+      "verdict": "consistent",
+      "rationale": "The question and rationale preserve the Taipei accessibility motivation and UX-priority assessment. Both relevance and support reasons find neither requested answer nor relevant evidence; both structure reasons call the sentence coherent but unorganized around the two parts. English-expression and strength pairs credit concise grammatical clarity to the same degree. Priority in each language asks for the attraction to this work and justified UX priorities.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "392fcd72b3f41ed851cf7bb5e2610410ca78ec8477e1644cab202af08b96224c",
+      "verdict": "consistent",
+      "rationale": "The question and rationale preserve the JavaScript accessibility experience prompt and hypothetical fallback. Both relevance reasons credit the fallback plan despite limited experience; both support reasons note missing assistive-technology, implementation, and validation detail. Structure and expression assessments agree that the steps are logical, brief, and clear. Strength credits that concise plan, and both priority statements request semantic HTML, screen-reader checks, interaction validation, and acknowledge that no prior attempt is available for comparison.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 2,
+      "outputChecksum": "6282d241d73497f18b22f7a9b0c15a331a8fa02b52f8ed1ab7fda16fd8bd1c49",
+      "verdict": "consistent",
+      "rationale": "Both questions and rationales ask about designer collaboration using usability feedback with a hypothetical option. Relevance and support credit the testing approach while noting that collaboration and feedback-driven decisions are unexplained. Structure and expression reasons retain the clear task-to-layout sequence, slight opening self-correction, and more natural wording suggestion. Strength and priority agree on the concrete testing start and ask for sharing findings, deciding changes, and retesting with the designer.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "741f088b1c404c5b689ab23f62448fd43ce3f4c23879d09527281619962af877",
+      "verdict": "consistent",
+      "rationale": "Both questions ask for the accessibility/rendering trade-off addressed to a designer, and both rationales assess communication to that partner. Relevance says the core trade-off is covered but audience framing is missing; support says measurement and technical content need an example, metric, and decision rule. Structure, English-expression, and strength keep the same logical, clear explanation linking deferred work, responsiveness, keyboard use, and screen readers. Both priority statements request a visual-speed example and a way to judge the accessibility cost.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 3,
+      "outputChecksum": "b715f680e6a4c4c8230ebdac4137cc36be46917dab588792e552688755baaa3b",
+      "verdict": "consistent",
+      "rationale": "Both questions ask about attraction to Taipei accessible-interface work and UX priorities; both rationales preserve motivation and fit. The relevance and support translations agree that neither part receives role-relevant evidence or criteria. Structure and English-expression distinguish a clear, grammatical sentence from a complete answer in both languages. Strength retains the personal preference with a reason, while priority requests the same motivation, UX priorities, and supporting reasoning.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "74cd95d72ab2fb2b106e881fa3caa2e87b284e80411dfac5dc091b0853effa01",
+      "verdict": "consistent",
+      "rationale": "The question and rationale preserve the JavaScript accessibility experience prompt with its no-experience option. Both relevance reasons credit keyboard and focus planning but say JavaScript and assistive technology are not explicit; support and structure agree on a sensible but underdeveloped sequence. English-expression and strength preserve clear speech and candid acknowledgment of limited shipped experience. Priority in both languages asks for semantic interaction, screen-reader testing, and keyboard verification, and keeps the partial-answer judgment.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 3,
+      "outputChecksum": "7ef553527a60441dc525b8d160627e4fbc33e34a10e75da8a054850cc5960a38",
+      "verdict": "consistent",
+      "rationale": "Both questions and rationales preserve the designer/usability-feedback task with a hypothetical fallback. Relevance and support credit a concrete test but find collaboration and interpretation or iteration underexplained. Structure and expression assess the same hesitant restart and brief but understandable answer. Strength names the same difficult-task, two-layout comparison; priority asks for alignment with the designer, joint feedback review, and layout choice or iteration.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "55851f5e6286ce355e26a940b1e1953d2003c261610f4b793b2ddb81a8949410",
+      "verdict": "consistent",
+      "rationale": "Both questions and rationales preserve a designer-facing accessibility/rendering trade-off. Relevance and support agree that responsiveness and accessibility are addressed but audience framing, comparison, and practical impact are missing. Structure and expression preserve the same logical, brief, technically clear assessment. Strength protects keyboard focus and screen-reader announcements in both languages, while priority requests the same explicit visual-speed and accessibility explanation for the designer.",
+      "contradictoryPairs": []
+    }
+  ]
+}

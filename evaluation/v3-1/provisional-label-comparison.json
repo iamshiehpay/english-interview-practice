@@ -1,0 +1,502 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "3.1.0",
+  "status": "provisional-blind-approved-draft-comparison",
+  "coverage": {
+    "savedResults": 59,
+    "expectedResults": 60,
+    "compared": 59,
+    "passing": 44,
+    "failing": 15
+  },
+  "sha256": {
+    "draft": "cf37a48ae4133d6f1dc88ede2cc352efe8501eb297000681775eeb8674baa0e6",
+    "approval": "3d86446d5cbf0cda815b1ef89c29864dc519c46b6830b600ab58a210022648f0",
+    "report": "bb3bcc3b800002c152a885d647a1b1cef77a3a7b99bc0de7df1df25fb9a2b1bf"
+  },
+  "comparisons": [
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 1,
+      "pass": false,
+      "errors": [
+        "relevance rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 2,
+      "pass": false,
+      "errors": [
+        "relevance rating outside approved range",
+        "structure rating outside approved range",
+        "Required finding missing"
+      ]
+    },
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 3,
+      "pass": false,
+      "errors": [
+        "relevance rating outside approved range",
+        "structure rating outside approved range",
+        "englishExpression rating outside approved range",
+        "Required finding missing"
+      ]
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 1,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 2,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 3,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 1,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 2,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 3,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 1,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 2,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 3,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 1,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 2,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 3,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 1,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 2,
+      "pass": false,
+      "errors": [
+        "support rating outside approved range",
+        "structure rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 3,
+      "pass": false,
+      "errors": [
+        "structure rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 1,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 2,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 3,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 1,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 2,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 3,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 1,
+      "pass": false,
+      "errors": [
+        "support rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 2,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 3,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 1,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 2,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 3,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 1,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 2,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 3,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 1,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 2,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 3,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 1,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 2,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 1,
+      "pass": false,
+      "errors": [
+        "Required finding missing"
+      ]
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 2,
+      "pass": false,
+      "errors": [
+        "Required finding missing"
+      ]
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 3,
+      "pass": false,
+      "errors": [
+        "relevance rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 1,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 2,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 3,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 1,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 2,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 3,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 1,
+      "pass": false,
+      "errors": [
+        "structure rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 2,
+      "pass": false,
+      "errors": [
+        "structure rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 3,
+      "pass": false,
+      "errors": [
+        "structure rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 1,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 2,
+      "pass": false,
+      "errors": [
+        "Required finding missing"
+      ]
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 3,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 1,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 2,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 3,
+      "pass": false,
+      "errors": [
+        "structure rating outside approved range"
+      ]
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 1,
+      "pass": false,
+      "errors": [
+        "relevance rating outside approved range",
+        "Required finding missing"
+      ]
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 2,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 3,
+      "pass": true,
+      "errors": []
+    }
+  ],
+  "failures": [
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 1,
+      "check": "evaluation label expectations",
+      "error": "relevance rating outside approved range"
+    },
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 2,
+      "check": "evaluation label expectations",
+      "error": "relevance rating outside approved range; structure rating outside approved range; Required finding missing"
+    },
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 3,
+      "check": "evaluation label expectations",
+      "error": "relevance rating outside approved range; structure rating outside approved range; englishExpression rating outside approved range; Required finding missing"
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 2,
+      "check": "evaluation label expectations",
+      "error": "support rating outside approved range; structure rating outside approved range"
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 3,
+      "check": "evaluation label expectations",
+      "error": "structure rating outside approved range"
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 1,
+      "check": "evaluation label expectations",
+      "error": "support rating outside approved range"
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 1,
+      "check": "evaluation label expectations",
+      "error": "Required finding missing"
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 2,
+      "check": "evaluation label expectations",
+      "error": "Required finding missing"
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 3,
+      "check": "evaluation label expectations",
+      "error": "relevance rating outside approved range"
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 1,
+      "check": "evaluation label expectations",
+      "error": "structure rating outside approved range"
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 2,
+      "check": "evaluation label expectations",
+      "error": "structure rating outside approved range"
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 3,
+      "check": "evaluation label expectations",
+      "error": "structure rating outside approved range"
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 2,
+      "check": "evaluation label expectations",
+      "error": "Required finding missing"
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 3,
+      "check": "evaluation label expectations",
+      "error": "structure rating outside approved range"
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 1,
+      "check": "evaluation label expectations",
+      "error": "relevance rating outside approved range; Required finding missing"
+    }
+  ]
+}

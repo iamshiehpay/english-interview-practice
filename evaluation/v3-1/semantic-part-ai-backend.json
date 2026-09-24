@@ -1,0 +1,201 @@
+{
+  "schemaVersion": 2,
+  "contractVersion": "3.1.0",
+  "reviewerType": "ai",
+  "reviewer": "independent AI semantic reviewer ai/backend",
+  "reviewedAt": "2026-09-24T09:05:10.959803Z",
+  "reviews": [
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 1,
+      "outputChecksum": "e9776ae3e3d27c0f8fb105d8b589ffea4c6e88da837f67f260cf415323f2c3b2",
+      "verdict": "consistent",
+      "rationale": "Both questions ask for motivation and the first retrieval-quality priority. The rationale tests an initial plan; both relevance and strength credit reliable answers and inspecting Mandarin-query failures. Both support and priority advice seek more specific failure signals or criteria. Structure and English-expression reasons preserve the same clarity assessment and note the Chinese code-switch where raised. The English-expression pair specifically characterizes the untranslated phrase as awkward, and the Chinese conveys that same criticism.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "67dcb4da4b77fbc1cdda19561d6efb3351b6cea3071702f2cbeccfb5a1e1e44c",
+      "verdict": "consistent",
+      "rationale": "Both questions request retrieval evaluation data, metrics, error analysis, and handling ambiguous intent; the rationale in each language asks for a measurable plan. The relevance, support, and structure reasons all judge the unrelated answer as lacking that plan while the English-expression reason and strength credit grammatical clarity. Both priority texts redirect the candidate to the four missing evaluation components. Both sides describe the answer as unrelated but grammatically clear.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 1,
+      "outputChecksum": "b6bae98bb495e7f81f2e1df1cf9d6332f25cb81370c3335d33d9230e71c3fc14",
+      "verdict": "consistent",
+      "rationale": "Both questions ask for an actual or hypothetical discussion of a model limitation with product colleagues; the rationales test clear communication to those colleagues. Both feedback versions credit the collaborative failed-case review while finding no identified limitation, explanation, or outcome. The structure and English-expression reasons keep the same limited-sequence and awkward “user cases” assessment. Both priorities ask for the missing limitation, plain explanation, and result. Both versions note filler words as well as the unnatural “user cases” phrase.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "cfcb8848e51f936dad8ba9c1f07cc7a98c49370070afc295b224c1b5edbab23d",
+      "verdict": "consistent",
+      "rationale": "Both questions ask for a product-facing latency versus accuracy decision, and both rationales test translating that trade-off into measures. Both feedback versions credit the labelled-query, false-match, and latency checks, while finding no explicit decision rule or product framing. Structure and English-expression assessments agree. Both priorities call for defined measures or targets and an explanation of how to choose between configurations. Both priorities explicitly say measurement is only partial and product decision framing is absent.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 1,
+      "outputChecksum": "7b1531b2a5532c5156a7edd2eca1dfe1fb6da0698100f0a32172b824a943a38e",
+      "verdict": "consistent",
+      "rationale": "Both questions request a reliable payment API covering idempotency, failure handling, and observability, with an option for candidates lacking direct experience; the rationales preserve that fairness. Both relevance, support, and structure reasons find the personal-interest response unrelated, while English expression and strength credit clear grammar. Both priorities ask for the missing API design topics and fallback approach. Both versions identify the missing fallback scenario.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "4bb38c2c7ec520018d64e3a8ce440091df6c64d3ba1efd8e5f2df2ae52502ac1",
+      "verdict": "consistent",
+      "rationale": "Both questions request a PostgreSQL transaction walkthrough with boundaries, rollback, and automated tests; both rationales assess practical design and testing without presuming experience. Both feedback versions credit the personal-project transaction test and idempotency response but find the boundary, rollback, and test assertions missing. Structure and English-expression judgments match, including the slightly unnatural “production scale evidence” where noted. Both priorities request the same omitted mechanics. Both versions distinguish a test mention from actual rollback verification.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 1,
+      "outputChecksum": "4aee1bb490c0d83c6d0136708b3b525dddc7ecb4ad6f47a376d65996e414d981",
+      "verdict": "consistent",
+      "rationale": "Both questions request an actual or hypothetical blameless incident review; both rationales assess collaboration and learning without requiring prior experience. Both feedback versions judge the unsupported claim or demand irrelevant and unsupported, while crediting only brief, understandable English. Their structure and expression judgments agree, including the awkward “single-handedly owned” wording where raised. Both priorities redirect to a concrete blameless example or approach. Both versions characterize the response as shifting to an unsupported demand.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "f85430b64e0bade9a3641285f3aab2b687e5c028f7a92a66d3e14446e10931a3",
+      "verdict": "consistent",
+      "rationale": "Both questions ask for a payment example explaining consistency versus availability to a product or operations partner; the rationales preserve the non-specialist audience. Both feedback versions credit transaction and retry safeguards but find no actual trade-off, failure assumptions, or product impact. Structure and expression reasons agree about the incomplete explanation and minor self-correction. Both priorities ask to explain the failure-time choice and its impact. Both priorities contrast delaying or rejecting a payment for correctness with accepting one during an outage.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 2,
+      "outputChecksum": "4b4644d2f2727ca8d1fb2639daa738915ba554d5cf36e79d501c13a3c8431acf",
+      "verdict": "consistent",
+      "rationale": "Both questions ask for motivation and the first retrieval-quality priority. The rationale tests an initial plan; both relevance and strength credit reliable answers and inspecting Mandarin-query failures. Both support and priority advice seek more specific failure signals or criteria. Structure and English-expression reasons preserve the same clarity assessment and note the Chinese code-switch where raised. The accessibility concern for an English-speaking interviewer is retained in Chinese.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "0483976374279e522e1d83883d3d8f256bda110fc04cf3c3681835c3297bd699",
+      "verdict": "consistent",
+      "rationale": "Both questions request retrieval evaluation data, metrics, error analysis, and handling ambiguous intent; the rationale in each language asks for a measurable plan. The relevance, support, and structure reasons all judge the unrelated answer as lacking that plan while the English-expression reason and strength credit grammatical clarity. Both priority texts redirect the candidate to the four missing evaluation components. Both sides additionally identify a shift from an unrelated claim to an unrelated instruction.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 2,
+      "outputChecksum": "1c9f2eb1df32dae721707a2a35ef64c4ba03283b0a1c9e22ab538d40e9148d5f",
+      "verdict": "consistent",
+      "rationale": "Both questions ask for an actual or hypothetical discussion of a model limitation with product colleagues; the rationales test clear communication to those colleagues. Both feedback versions credit the collaborative failed-case review while finding no identified limitation, explanation, or outcome. The structure and English-expression reasons keep the same limited-sequence and awkward “user cases” assessment. Both priorities ask for the missing limitation, plain explanation, and result. Both versions identify a basic disagreement-to-action sequence and the missing product discussion.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "144a4dee6c8a649f9df8fc98840844103b2250dcab868a6cbd3e3dfa808cbeea",
+      "verdict": "consistent",
+      "rationale": "Both questions ask for a product-facing latency versus accuracy decision, and both rationales test translating that trade-off into measures. Both feedback versions credit the labelled-query, false-match, and latency checks, while finding no explicit decision rule or product framing. Structure and English-expression assessments agree. Both priorities call for defined measures or targets and an explanation of how to choose between configurations. Both priorities also preserve the note that no prior attempt was supplied for comparison.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 2,
+      "outputChecksum": "1d1d562d73ac0e0e7d5c6785b46f8239e2c0ebad6352d65e3a3db1903eb9950d",
+      "verdict": "consistent",
+      "rationale": "Both questions request a reliable payment API covering idempotency, failure handling, and observability, with an option for candidates lacking direct experience; the rationales preserve that fairness. Both relevance, support, and structure reasons find the personal-interest response unrelated, while English expression and strength credit clear grammar. Both priorities ask for the missing API design topics and fallback approach. Both priorities preserve the alternative of explaining an approach without prior payment-API experience.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "68973486bd58a6b59b83896804c05a639ecb45a84f3dffc0b1593df02be66f67",
+      "verdict": "consistent",
+      "rationale": "Both questions request a PostgreSQL transaction walkthrough with boundaries, rollback, and automated tests; both rationales assess practical design and testing without presuming experience. Both feedback versions credit the personal-project transaction test and idempotency response but find the boundary, rollback, and test assertions missing. Structure and English-expression judgments match, including the slightly unnatural “production scale evidence” where noted. Both priorities request the same omitted mechanics. Both versions call for test assertions and explain that the response only mentions a duplicate request and fix.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 2,
+      "outputChecksum": "d707d2d5abb2f76b8729d7fb432d80d72fb537863be2e3b929b0ffcab6a27294",
+      "verdict": "consistent",
+      "rationale": "Both questions request an actual or hypothetical blameless incident review; both rationales assess collaboration and learning without requiring prior experience. Both feedback versions judge the unsupported claim or demand irrelevant and unsupported, while crediting only brief, understandable English. Their structure and expression judgments agree, including the awkward “single-handedly owned” wording where raised. Both priorities redirect to a concrete blameless example or approach. Both versions distinguish English clarity from the answer’s lack of relevance.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "00bc9200972d7f20d6d64f3c1e9ee765fa14489993e9b098d3de8eb48e0b254f",
+      "verdict": "consistent",
+      "rationale": "Both questions ask for a payment example explaining consistency versus availability to a product or operations partner; the rationales preserve the non-specialist audience. Both feedback versions credit transaction and retry safeguards but find no actual trade-off, failure assumptions, or product impact. Structure and expression reasons agree about the incomplete explanation and minor self-correction. Both priorities ask to explain the failure-time choice and its impact. Both priorities preserve accepting or queuing a payment as the availability-side option.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 3,
+      "outputChecksum": "f04fb55b7233af6393550723ecb37494c87dd37206becbc17a1df6daed0ac03e",
+      "verdict": "consistent",
+      "rationale": "Both questions ask for motivation and the first retrieval-quality priority. The rationale tests an initial plan; both relevance and strength credit reliable answers and inspecting Mandarin-query failures. Both support and priority advice seek more specific failure signals or criteria. Structure and English-expression reasons preserve the same clarity assessment and note the Chinese code-switch where raised. Both versions make the narrower claim that the short Chinese phrase does not obscure meaning.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "a1b0ebc2428b68d11a23f270c39975041ae70b3ec003910977a4713ec53cad62",
+      "verdict": "consistent",
+      "rationale": "Both questions request retrieval evaluation data, metrics, error analysis, and handling ambiguous intent; the rationale in each language asks for a measurable plan. The relevance, support, and structure reasons all judge the unrelated answer as lacking that plan while the English-expression reason and strength credit grammatical clarity. Both priority texts redirect the candidate to the four missing evaluation components. Both sides contrast unrelated statements with a structured evaluation plan.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 3,
+      "outputChecksum": "08e3f28429eb28d8e934b199f88b44750d8a0b431f5e7220bfa458de6a5dc964",
+      "verdict": "consistent",
+      "rationale": "Both questions ask for an actual or hypothetical discussion of a model limitation with product colleagues; the rationales test clear communication to those colleagues. Both feedback versions credit the collaborative failed-case review while finding no identified limitation, explanation, or outcome. The structure and English-expression reasons keep the same limited-sequence and awkward “user cases” assessment. Both priorities ask for the missing limitation, plain explanation, and result. Both versions ask the candidate to clarify whether the example is real or hypothetical.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "a870fdcf2bf1fe32d48f582b45e64d2daad003969642f32ad9f430a53a5dcf09",
+      "verdict": "consistent",
+      "rationale": "Both questions ask for a product-facing latency versus accuracy decision, and both rationales test translating that trade-off into measures. Both feedback versions credit the labelled-query, false-match, and latency checks, while finding no explicit decision rule or product framing. Structure and English-expression assessments agree. Both priorities call for defined measures or targets and an explanation of how to choose between configurations. Both priorities condition the choice on user task and acceptable thresholds.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 3,
+      "outputChecksum": "ea280ae3cc98b63938b705a0c31ca6fe6f7205a51fb4e5f99bfe5f2b0ec78c54",
+      "verdict": "consistent",
+      "rationale": "Both questions request a reliable payment API covering idempotency, failure handling, and observability, with an option for candidates lacking direct experience; the rationales preserve that fairness. Both relevance, support, and structure reasons find the personal-interest response unrelated, while English expression and strength credit clear grammar. Both priorities ask for the missing API design topics and fallback approach. Both versions describe the answer as a different personal-interest topic.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "d7db804b1f337552526bca6764efa4e99c06ab8c3c13dbdf465c536a2e6a8be9",
+      "verdict": "consistent",
+      "rationale": "Both questions request a PostgreSQL transaction walkthrough with boundaries, rollback, and automated tests; both rationales assess practical design and testing without presuming experience. Both feedback versions credit the personal-project transaction test and idempotency response but find the boundary, rollback, and test assertions missing. Structure and English-expression judgments match, including the slightly unnatural “production scale evidence” where noted. Both priorities request the same omitted mechanics. Both versions credit a concrete finding while requesting transaction and rollback mechanics.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 3,
+      "outputChecksum": "d5b9a4dddfb8ba217d0a8ab4682472a5638bf4818fdec2a81e3fb1cbdf228824",
+      "verdict": "consistent",
+      "rationale": "Both questions request an actual or hypothetical blameless incident review; both rationales assess collaboration and learning without requiring prior experience. Both feedback versions judge the unsupported claim or demand irrelevant and unsupported, while crediting only brief, understandable English. Their structure and expression judgments agree, including the awkward “single-handedly owned” wording where raised. Both priorities redirect to a concrete blameless example or approach. Both priorities name facts, contributing factors, actions, and learning instead of blame.",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "3215af23d1a4a36e394fe5c683c7b368c2cd4e06bc8c6ca89cdd854f16e8cbbc",
+      "verdict": "consistent",
+      "rationale": "Both questions ask for a payment example explaining consistency versus availability to a product or operations partner; the rationales preserve the non-specialist audience. Both feedback versions credit transaction and retry safeguards but find no actual trade-off, failure assumptions, or product impact. Structure and expression reasons agree about the incomplete explanation and minor self-correction. Both priorities ask to explain the failure-time choice and its impact. Both priorities ask for the actual trade-off before discussion of the retry key.",
+      "contradictoryPairs": []
+    }
+  ]
+}
