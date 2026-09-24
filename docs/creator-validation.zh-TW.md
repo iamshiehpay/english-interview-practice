@@ -1,8 +1,20 @@
-# 創作者真實使用驗收 Runbook
+# v1.0.0 AI persona 驗收與後續創作者真實使用 Runbook
 
-這份文件是唯一需要照著做的清單。所有按鈕文字、頁籤名稱都已對照 `public/index.html`、`public/app.js`、`public/voice.js` 的實際中文字串核對過，照上面寫的文字找就對了，不用自己判斷。
+**2026-09-24 決議：[ADR 0020](adr/0020-validate-v1-with-ai-persona-loops.md) 將 v1.0.0 定為 AI-validated 版本。**本節是目前的發版門檻；下方第 1–4 節保留給 v1.0.0 之後的真人創作者驗收，不能拿來聲稱這次版本已由真人驗證。真人使用、真實語音及人工標註都不是 v1.0.0 已完成的證據。
 
-## 0. 目的與規則
+### v1.0.0 AI persona 模式
+
+AI agent 先寫好 persona 背景，再以該背景操作真實本機 App 的 UI，以真實語言模型 provider（不可用 fake provider）完成一次單題 Practice Loop；不能為了回答而虛構 persona 原本沒有的經驗。每次要留下已完成的真實 Practice Record ID，並連到 `docs/verification/` 中的逐步驗證文件。五次合計涵蓋至少兩個 Job Snapshot、兩個 Question Category、一次 Experience Gap，以及一次刻意觸發的失敗與成功復原。語音若用 fake provider 或改用文字，須照實記錄，不能稱作真實語音驗證。
+
+`evaluation/v3/creator-validation.json` 使用 `validationMode: "ai-persona"`；每筆填入真實 `recordId`、`snapshotId`、`category`、`completedAt`、`inputMode`，並設 `completed: true`、`synthetic: true`、非空 `persona`、`docs/verification/` 的 `evidence` 路徑。AI 驗證者逐筆核對記錄與文件後，才填自己的 `attestedBy` 和有效的 `attestedAt`；`creator` 必須保持 `null`，不得替創作者簽名。五次記錄、AI 驗證者簽署及四項覆蓋條件全部完成時，這一道 gate 才能 PASS。二十個標註另由 persona 起草、獨立 AI 逐筆核准，明確標成 AI-reviewed；發版狀態須寫 **AI-validated**。
+
+2026-09-23 的[林小安 walkthrough](verification/persona-walkthrough-2026-09-23.md)第 2–5 次是前四筆。備份 workspace 的記錄顯示四筆都已完成且都以文字作答；第 2 次有 Experience Gap，第 4 次有取消後重試。第五筆 Common Question 練習與 AI attestation 由 issue 0034 補上。在此之前，檢查應回報「pending fifth persona loop」及「AI attestation pending」；覆蓋條件已由這四筆滿足。
+
+### v1.0.0 之後的真人模式
+
+以下原有真人流程可供後續使用；ledger 改用 `validationMode: "creator"` 時，仍須五次本人非合成練習、四項覆蓋條件、`creator` 與 `attestedAt`，與舊規則相同。真人記錄不得標為 AI persona，AI persona 記錄也不得冒充真人記錄。這些步驟不是本次發版的前置條件。
+
+## 0. 後續真人模式的目的與規則
 
 - [ ] 這五次練習必須是**你本人**親自貼職缺、親自打字或親自開口回答；不能用 AI（包含 Claude／ChatGPT／Codex）幫你生成答案再貼進去。這是要驗證產品在真人使用下是否成立，不是要再測一次模型。
 - [ ] 不要把私人資料（履歷全文、身分資訊、公司內部職缺全文如果有保密疑慮）貼到**公開**文件裡。這份 runbook、`evaluation/v3/creator-validation.json` 會進 git／可能公開；後者只會存 `recordId`、`snapshotId`、題目類別、時間戳、`inputMode`、是否有 Experience Gap／induced failure 這些**識別碼與分類**，不存任何回答內容或職缺全文。
@@ -215,7 +227,7 @@
 - 是否有任何回饋內容讓我不放心拿去給真的面試準備使用：
 ```
 
-## 5. 取得 ID 並填寫 ledger
+## 5. 後續真人模式：取得 ID 並填寫 ledger
 
 ### 5.1 從本機 API 取出五次記錄的 ID
 
@@ -244,24 +256,26 @@ for (const r of Object.values(w.records || {})) {
 
 ### 5.2 填寫 `evaluation/v3/creator-validation.json`
 
-目前檔案內容是空殼：
+下例是後續真人模式的 ledger 起始形狀，**不是目前 v1.0.0 的檔案內容**；目前檔案已記入四筆 AI persona 記錄，不能覆蓋或改寫成真人記錄：
 
 ```json
 {
   "schemaVersion": 2,
   "contractVersion": "3.0.0",
+  "validationMode": "creator",
   "creator": null,
   "attestedAt": null,
   "loops": []
 }
 ```
 
-依上一步印出的資料，把 `loops` 填成五筆（範例形狀如下，`category` 必須是 `role-fit`／`experience-depth`／`behavioral`／`technical-communication` 其中之一，`inputMode` 必須是 `"text"` 或 `"voice"`）：
+後續執行真人模式時，另以本人記錄填五筆（範例形狀如下，`category` 必須是 `role-fit`／`experience-depth`／`behavioral`／`technical-communication` 其中之一，`inputMode` 必須是 `"text"` 或 `"voice"`）：
 
 ```json
 {
   "schemaVersion": 2,
   "contractVersion": "3.0.0",
+  "validationMode": "creator",
   "creator": null,
   "attestedAt": null,
   "loops": [
@@ -339,11 +353,11 @@ for (const r of Object.values(w.records || {})) {
 npm run evaluate -- --release
 ```
 
-**預期輸出**：這次跑完，`creator` 這一關會 PASS（因為 ledger 已經有 5 筆、涵蓋 ≥2 個 snapshotId、≥2 個類別、至少一個 experienceGap、至少一個 inducedFailure，且 `creator`／`attestedAt` 都已填），但整體 `releaseStatus` 仍會是 `BLOCKED`，因為人工標註（human labels）跟獨立雙語語意審查（semantic review）這兩關本來就還沒做，屬於預期中會擋住的部分，不代表創作者驗收本身有問題。`blockers` 陣列裡不應該再出現「Creator five-loop real-use validation pending」。
+**預期輸出**：真人模式的五筆記錄、四項覆蓋、`creator` 與 `attestedAt` 都齊全時，`creator.pass` 為 `true` 且 `creator.validationMode` 為 `"creator"`。這是 v1.0.0 之後的真人驗證，不會改變既有 v1.0.0 AI persona 記錄的性質。普通 `npm run evaluate` 是無模型呼叫的回歸檢查；有其他發版阻擋項時，`--release` 仍會回傳非零。
 
-## 6. 完成後告訴 Claude 什麼
+## 6. 後續真人模式完成後回報
 
-五次都做完、`evaluation/v3/creator-validation.json` 也填完（含 `creator`／`attestedAt`）之後，回來跟 Claude 說「完成」，或直接貼 `.workspace/validation-notes.md` 的整體結論段落。接下來 Claude 會接手：跑 Codex 訂閱評估（`npm run evaluate -- --codex --accept-subscription-usage`）、安排 AI 語意審查（`v3` 的雙語一致性）、準備人工標註（human labels）所需的 review packet，這些都是創作者驗收以外的另外兩道關卡。
+若 v1.0.0 之後完成五次本人練習，請另行記錄真人驗證結果與標註。不要用真人姓名替 AI persona ledger 補簽，也不要因真人流程尚未進行就延後 AI-validated v1.0.0。
 
 ## 7. 疑難排解
 

@@ -1,6 +1,6 @@
 # Evaluation summary
 
-Generated: 2026-09-21T08:01:58.985Z. Fixture suite 1.0.0; runner 3.0.0; model contract 3.0.0; v23.11.0.
+Generated: 2026-09-24T04:32:35.141Z. Fixture suite 1.0.0; runner 3.0.0; model contract 3.0.0; v23.11.0.
 
 **MVP release: BLOCKED.**
 
@@ -9,13 +9,14 @@ Generated: 2026-09-21T08:01:58.985Z. Fixture suite 1.0.0; runner 3.0.0; model co
 - Independent feedback invocations: 60; three fresh workspaces; no receipt replay.
 - Stability: 80/80 dimensions within one level (100.0%; minimum90%). **Fixed fake provider only; not substantive model quality.**
 - Bilingual automatic pair checks: PASS; semantic consistency: pending-or-failed.
-- Human labels: PENDING. Creator validation: PENDING. Model judge: not used.
+- Human labels: PENDING. AI persona validation: PENDING (4 loops). Model judge: not used.
 
 ## Release blockers
 
 - Independent bilingual semantic review pending, stale or inconsistent
 - Human-labelled expectations pending or stale
-- Creator five-loop real-use validation pending
+- AI attestation pending: attestedBy and valid attestedAt required
+- Pending fifth persona loop (4/5 completed)
 - Live-model semantic quality and rating stability not evaluated; fixed fake ratings are not quality evidence
 
 ## Case coverage

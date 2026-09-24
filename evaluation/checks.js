@@ -73,5 +73,28 @@ export function semanticReviewStatus(audits,artifact){
   return {pass:errors.length===0&&audits.length===60,reviewed,errors};
 }
 export function creatorStatus(ledger){
-  const loops=ledger.loops||[];return {pass:!!ledger.creator?.trim()&&Number.isFinite(Date.parse(ledger.attestedAt))&&loops.length>=5&&new Set(loops.map(l=>l.recordId)).size===loops.length&&loops.every(l=>l.recordId&&l.snapshotId&&categories.includes(l.category)&&Number.isFinite(Date.parse(l.completedAt))&&l.completed===true&&l.synthetic===false&&['text','voice'].includes(l.inputMode))&&new Set(loops.map(l=>l.snapshotId)).size>=2&&new Set(loops.map(l=>l.category)).size>=2&&loops.some(l=>l.experienceGap===true)&&loops.some(l=>l.inducedFailure?.type&&l.inducedFailure?.recovered===true),count:loops.length};
+  const loops=ledger.loops||[],validationMode=ledger.validationMode??'creator';
+  if(validationMode==='creator'){
+    const pass=!!ledger.creator?.trim()&&Number.isFinite(Date.parse(ledger.attestedAt))&&loops.length>=5&&new Set(loops.map(l=>l.recordId)).size===loops.length&&loops.every(l=>l.recordId&&l.snapshotId&&categories.includes(l.category)&&Number.isFinite(Date.parse(l.completedAt))&&l.completed===true&&l.synthetic===false&&['text','voice'].includes(l.inputMode))&&new Set(loops.map(l=>l.snapshotId)).size>=2&&new Set(loops.map(l=>l.category)).size>=2&&loops.some(l=>l.experienceGap===true)&&loops.some(l=>l.inducedFailure?.type&&l.inducedFailure?.recovered===true);
+    return {pass,count:loops.length,validationMode,errors:pass?[]:['Creator five-loop real-use validation pending']};
+  }
+  if(validationMode!=='ai-persona')return {pass:false,count:loops.length,validationMode,errors:['Unsupported validation mode']};
+
+  const errors=[];
+  if(ledger.creator!==null)errors.push('AI persona mode requires creator must be null');
+  if(typeof ledger.attestedBy!=='string'||!ledger.attestedBy.trim()||!Number.isFinite(Date.parse(ledger.attestedAt)))errors.push('AI attestation pending: attestedBy and valid attestedAt required');
+  if(loops.length<5)errors.push(`Pending fifth persona loop (${loops.length}/5 completed)`);
+  if(new Set(loops.map(l=>l.recordId)).size!==loops.length)errors.push('Persona loops require unique record ids');
+  const evidencePath=path=>typeof path==='string'&&path.startsWith('docs/verification/')&&path.length>'docs/verification/'.length&&!path.includes('\\')&&path.split('/').every(segment=>segment.trim()&&segment!=='.'&&segment!=='..');
+  for(const [index,loop] of loops.entries()){
+    if(typeof loop.recordId!=='string'||!loop.recordId.trim()||typeof loop.snapshotId!=='string'||!loop.snapshotId.trim()||!categories.includes(loop.category)||!Number.isFinite(Date.parse(loop.completedAt))||loop.completed!==true||!['text','voice'].includes(loop.inputMode))errors.push(`Persona loop ${index+1}: valid completed record required`);
+    if(loop.synthetic!==true)errors.push(`Persona loop ${index+1}: synthetic must be true`);
+    if(typeof loop.persona!=='string'||!loop.persona.trim())errors.push(`Persona loop ${index+1}: persona required`);
+    if(!evidencePath(loop.evidence))errors.push(`Persona loop ${index+1}: evidence must be under docs/verification/`);
+  }
+  if(new Set(loops.map(l=>l.snapshotId)).size<2)errors.push('Coverage requires two Job Snapshots');
+  if(new Set(loops.map(l=>l.category)).size<2)errors.push('Coverage requires two Question Categories');
+  if(!loops.some(l=>l.experienceGap===true))errors.push('Coverage requires an Experience Gap');
+  if(!loops.some(l=>typeof l.inducedFailure?.type==='string'&&l.inducedFailure.type.trim()&&l.inducedFailure.recovered===true))errors.push('Coverage requires an induced failure with recovery');
+  return {pass:errors.length===0,count:loops.length,validationMode,errors};
 }

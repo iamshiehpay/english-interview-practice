@@ -1,5 +1,5 @@
 ---
-status: ready-for-agent
+status: needs-info
 ---
 
 # ADR 0020: an AI-validated v1.0.0 — persona creator gate and persona loops in the ledger
@@ -66,11 +66,11 @@ to `.workspace/persona-qa-2026-09-23/` (gitignored; 4 snapshots, 5 records).
 
 ## Acceptance criteria
 
-- [ ] ADR 0020 exists and states the AI-validated rule, the persona-loop definition, AI-reviewed labels, the coverage rules, the ADR 0014 amendment, the rationale, the risk and the post-v1.0.0 human work.
-- [ ] Tests: `"creator"` mode behaves exactly as before (its existing tests still pass); `"ai-persona"` with five valid persona loops and AI attestation passes; a non-null `creator`, a missing `attestedBy`/`attestedAt`, a persona loop missing `persona` or `evidence` (or evidence outside `docs/verification/`), fewer than five loops, or any unmet coverage rule fails.
+- [x] ADR 0020 exists and states the AI-validated rule, the persona-loop definition, AI-reviewed labels, the coverage rules, the ADR 0014 amendment, the rationale, the risk and the post-v1.0.0 human work.
+- [x] Tests: `"creator"` mode behaves exactly as before (its existing tests still pass); `"ai-persona"` with five valid persona loops and AI attestation passes; a non-null `creator`, a missing `attestedBy`/`attestedAt`, a persona loop missing `persona` or `evidence` (or evidence outside `docs/verification/`), fewer than five loops, or any unmet coverage rule fails.
 - [ ] The ledger holds exactly the four persona loops in `"ai-persona"` mode, every field verified against `.workspace/persona-qa-2026-09-23/workspace.json`, and the check reports only the pending fifth loop and attestation.
-- [ ] `MVP-ACCEPTANCE.md`, the runbook and the walkthrough note agree with ADR 0020.
-- [ ] `npm test` passes; the offline evaluation (`npm run evaluate`) still runs without model calls.
+- [x] `MVP-ACCEPTANCE.md`, the runbook and the walkthrough note agree with ADR 0020.
+- [x] `npm test` passes; the offline evaluation (`npm run evaluate`) still runs without model calls.
 
 ## Files likely touched
 
@@ -91,3 +91,12 @@ npm run evaluate
 None — can start immediately.
 
 ## Comments
+
+### 2026-09-24 — Needs information after three failed independent rounds
+
+- `backend-developer` implemented ADR 0020, creator/AI-persona gate and tests, the requested four-loop ledger, and aligned documentation. `test-automator` independently verified criteria 1, 2, 4, 5; `reviewer` returned Standards PASS. Criterion 3 remained FAIL in all three rounds. `debugger` investigated after round 2; the same developer confirmed no honest repair from the authorized source before round 3.
+- Verified native record IDs, snapshot IDs, categories, completion status/times and input modes against the read-only backup. It contains 17 operations and 17 receipts, all succeeded. Run 4 retains only successful feedback attempt 2. Retry overwrites the same operation ID, so attempt 2 cannot distinguish a prior cancellation from another failure. That persistence behavior predates the walkthrough.
+- Cancellation is corroborated by the original screenshot/walkthrough, but not preserved in `workspace.json`; persona identity and synthetic/evidence metadata are also external provenance. [The field-by-field audit](../verification/0033-ledger-provenance.md) records exact source hashes and distinctions. The requested ledger remains present with creator/attestedBy/attestedAt null; its missing proof is not represented as acceptance.
+- Required to unblock the literal criterion: authentic contemporaneous backed-up cancellation/persona provenance evidence, or explicit authorization to change the permitted evidence sources. No acceptance wording was weakened, no history was fabricated, and the backup was not changed. No one signed or approved in the user's name.
+- Independent round-2 `npm test`: 211/211; offline `npm run evaluate`: 60/60 case runs, 80/80 stability, no external model calls. Round 3 rechecked the immutable-source failure and unchanged code without redundant suite runs. The creator check reports exactly fifth persona loop and AI attestation pending. An intervening 0031 evaluation-boundary regression was repaired and independently verified under 0031.
+- Status is `needs-info`, not completed. Dependent 0034 cannot start while this required blocker remains unresolved.

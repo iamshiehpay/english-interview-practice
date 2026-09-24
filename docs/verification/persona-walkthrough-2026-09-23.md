@@ -73,3 +73,7 @@ Runbook 練習 2 說這個框架提示「只是輔助，不算正式作答」，
 - `loop4-cancelled.png`：取消取得回饋後的畫面狀態。
 - `loop5-progress-page-after-reload.png`：用 DOM workaround 進入「我的進步」頁，確認內容正確但無導覽入口。
 - `loop5-history-after-server-restart.png`：伺服器重啟後練習紀錄仍存在。
+
+## 2026-09-24 補註：ADR 0020 改變發版驗收地位
+
+原文寫作當時，這份探索性 QA 不計入創作者本人驗收；上述原始描述保持不變。[ADR 0020](../adr/0020-validate-v1-with-ai-persona-loops.md) 後來把 v1.0.0 定為 **AI-validated** 版本，因此第 2–5 次現在可計入 `ai-persona` 模式的前四次 Practice Loop。它們仍是 AI 操作、文字作答、fake speech 的 persona 記錄，從未變成創作者本人或真實語音的驗證。四筆記錄 ID 與完成時間已從備份 workspace 逐項核對並寫入 `evaluation/v3/creator-validation.json`；第五次 Common Question 練習與獨立 AI attestation 尚待補上。

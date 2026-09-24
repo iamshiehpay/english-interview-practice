@@ -2,9 +2,9 @@
   "suiteVersion": "1.0.0",
   "runnerVersion": "3.0.0",
   "contractVersion": "3.0.0",
-  "generatedAt": "2026-09-21T08:01:58.985Z",
+  "generatedAt": "2026-09-24T04:32:35.141Z",
   "runtime": "v23.11.0",
-  "codeChecksum": "06fb4507e385524e958ae2c3dee60ff3242f7cc0af564061484e704dd3851b7b",
+  "codeChecksum": "1101396bbb1212659dd3d1b72dda7fe0712aeecac3d0d77ef32e8b792d3c8e31",
   "provider": "Deterministic demonstration provider",
   "model": null,
   "configuration": null,
@@ -116,7 +116,12 @@
   },
   "creator": {
     "pass": false,
-    "count": 0
+    "count": 4,
+    "validationMode": "ai-persona",
+    "errors": [
+      "AI attestation pending: attestedBy and valid attestedAt required",
+      "Pending fifth persona loop (4/5 completed)"
+    ]
   },
   "modelJudge": {
     "status": "not used",
@@ -126,7 +131,8 @@
   "blockers": [
     "Independent bilingual semantic review pending, stale or inconsistent",
     "Human-labelled expectations pending or stale",
-    "Creator five-loop real-use validation pending",
+    "AI attestation pending: attestedBy and valid attestedAt required",
+    "Pending fifth persona loop (4/5 completed)",
     "Live-model semantic quality and rating stability not evaluated; fixed fake ratings are not quality evidence"
   ],
   "failures": [],

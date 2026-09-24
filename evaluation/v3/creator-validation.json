@@ -1,7 +1,62 @@
 {
   "schemaVersion": 2,
   "contractVersion": "3.0.0",
+  "validationMode": "ai-persona",
   "creator": null,
+  "attestedBy": null,
   "attestedAt": null,
-  "loops": []
+  "loops": [
+    {
+      "recordId": "dc225a7c-ac45-4aa8-b6c0-18761a50607a",
+      "snapshotId": "1adc38dc-d275-4168-a9f2-a749bef5e628",
+      "category": "technical-communication",
+      "completedAt": "2026-09-23T08:58:06.794Z",
+      "completed": true,
+      "synthetic": true,
+      "inputMode": "text",
+      "persona": "林小安",
+      "evidence": "docs/verification/persona-walkthrough-2026-09-23.md",
+      "experienceGap": true,
+      "inducedFailure": null
+    },
+    {
+      "recordId": "0d250144-2df3-49d8-8ed5-21d388388d20",
+      "snapshotId": "7dd3fee0-b476-46bb-a188-23650e829b42",
+      "category": "behavioral",
+      "completedAt": "2026-09-23T09:02:03.685Z",
+      "completed": true,
+      "synthetic": true,
+      "inputMode": "text",
+      "persona": "林小安",
+      "evidence": "docs/verification/persona-walkthrough-2026-09-23.md",
+      "experienceGap": false,
+      "inducedFailure": null
+    },
+    {
+      "recordId": "09adb280-0b52-4779-b0ed-45ef7cb88209",
+      "snapshotId": "7dd3fee0-b476-46bb-a188-23650e829b42",
+      "category": "experience-depth",
+      "completedAt": "2026-09-23T09:04:40.566Z",
+      "completed": true,
+      "synthetic": true,
+      "inputMode": "text",
+      "persona": "林小安",
+      "evidence": "docs/verification/persona-walkthrough-2026-09-23.md",
+      "experienceGap": false,
+      "inducedFailure": {"type": "cancelled feedback operation while pending, then retried to success", "recovered": true}
+    },
+    {
+      "recordId": "952ddb5a-ce65-44d5-b8eb-66bb5ddd53e5",
+      "snapshotId": "648b4e1a-ea4f-4c63-bdb8-207a9f3272ef",
+      "category": "role-fit",
+      "completedAt": "2026-09-23T09:08:05.489Z",
+      "completed": true,
+      "synthetic": true,
+      "inputMode": "text",
+      "persona": "林小安",
+      "evidence": "docs/verification/persona-walkthrough-2026-09-23.md",
+      "experienceGap": false,
+      "inducedFailure": null
+    }
+  ]
 }
