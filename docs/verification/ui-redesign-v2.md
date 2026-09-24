@@ -1,8 +1,8 @@
 # Workbench UI redesign verification — issues 0022–0028
 
-Date: 2026-09-24. Implemented and automatically verified by agents; visual and
-hands-on acceptance by the creator is still pending, so every issue in this
-round is `awaiting-human-validation`. This supersedes the screen evidence in
+Date: 2026-09-24. Implemented and automatically verified by agents.
+**Accepted by the owner on 2026-09-24** ("0022–0028 看起來可以"); every issue in
+this round is now `completed`. This supersedes the screen evidence in
 [`ui-redesign.md`](./ui-redesign.md) (2026-09-18, the pre-redesign layout),
 which is kept as history. PRD: [`prd-ui-redesign.md`](../prd-ui-redesign.md);
 direction: [`ui-direction-discussion.md`](../ui-direction-discussion.md).
@@ -96,7 +96,6 @@ generation took about 2 min 45 s. One typed role-fit answer (156 words, with
 
 ## Known limits
 
-- Not accepted by the creator yet; visual acceptance of 0022–0028 is pending.
 - The mock-room waveform with a real microphone is unverified (headless audio
   reports level 0), as is real read-aloud playback.
 - Only Chromium (agent-browser) was used; Safari and Firefox are untested,

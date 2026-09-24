@@ -1,6 +1,6 @@
 # 下一批規劃：UI 視覺方向改版
 
-日期：2026-09-23。狀態：**已實作，待創作者驗收**（2026-09-24）。方向與 mockup 已確認（`design/mockups/workbench-annotated-feedback/`）；PRD 見 [`prd-ui-redesign.md`](./prd-ui-redesign.md)，issue 0022–0028 已全部實作並自動驗證，狀態皆為 awaiting-human-validation；驗證紀錄與截圖見 [`verification/ui-redesign-v2.md`](./verification/ui-redesign-v2.md)。
+日期：2026-09-23。狀態：**已實作，擁有者已於 2026-09-24 驗收通過**（「0022–0028 看起來可以」）。方向與 mockup 已確認（`design/mockups/workbench-annotated-feedback/`）；PRD 見 [`prd-ui-redesign.md`](./prd-ui-redesign.md)，issue 0022–0028 已全部實作並自動驗證，狀態皆為 completed；驗證紀錄與截圖見 [`verification/ui-redesign-v2.md`](./verification/ui-redesign-v2.md)。
 
 **2026-09-23 更新（取代下方「順序」第 1 點）**：使用者決定改版現在就做，排在創作者 5 次驗收練習之前，不等驗收完成；「驗收期間不改 UI」不再適用。理由：方向與 token 已確認，沒有理由讓創作者用即將淘汰的介面驗收。
 
