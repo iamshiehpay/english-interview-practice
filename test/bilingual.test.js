@@ -11,17 +11,23 @@ import {harness,setup} from './helpers.js';
 
 const zh=/\p{Script=Han}/u;
 
-test('contract 3.2 gives independent level anchors and forbids stitched transcript quotes',()=>{
-  assert.equal(MODEL_CONTRACT_VERSION,'3.2.0');
+test('contract 3.3 distinguishes partial answers, support, organization and language',()=>{
+  assert.equal(MODEL_CONTRACT_VERSION,'3.3.0');
   for(const dimension of ['Relevance','Support','Structure','English expression'])assert.match(feedbackContract,new RegExp(`${dimension}: 4`));
   assert.match(feedbackContract,/one contiguous, byte-for-byte substring/);
   assert.match(feedbackContract,/Do not join separate phrases, insert ellipses/);
   assert.match(feedbackContract,/Do not lower English expression because an otherwise clear sentence is irrelevant/);
+  assert.match(feedbackContract,/one central part of a compound question/);
+  assert.match(feedbackContract,/related subtopic or safeguard/);
+  assert.match(feedbackContract,/specific diagnostic action or example/);
+  assert.match(feedbackContract,/one claim with a simple reason/);
+  assert.match(feedbackContract,/even when the answer is off topic/);
+  assert.match(feedbackContract,/stylistic preference alone/);
 });
 
 test('new Question Sets and Feedback Reports use the shared bilingual contract',async t=>{
   const {api}=await harness(t);const {analysis,record}=await setup(api);
-  assert.equal(MODEL_CONTRACT_VERSION,'3.2.0');
+  assert.equal(MODEL_CONTRACT_VERSION,'3.3.0');
   for(const question of analysis.questions){
     assert.ok(question.text.trim());assert.match(question.meaningZh,zh);
     assert.ok(question.rationale.trim());assert.match(question.rationaleZh,zh);
