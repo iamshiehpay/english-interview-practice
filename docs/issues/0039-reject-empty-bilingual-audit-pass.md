@@ -1,5 +1,5 @@
 ---
-status: needs-triage
+status: completed
 ---
 
 # Do not report an empty bilingual audit as automatically passing
@@ -15,3 +15,5 @@ Require complete expected case/repeat coverage before an audit can report automa
 ## Comments
 
 2026-09-24: Filed by coordinating AI after independent review. No runner change was made during 0035 to avoid altering the captured one-shot source or broadening scope.
+
+2026-09-24: Automatic bilingual audit success now requires all sixty expected case/repeat keys exactly once and every pair check passing. Tests cover empty, partial, duplicate, complete and failed audits. The frozen failed-run audit remains untouched; see [0039 handoff](../verification/0039-audit-handoff.md). Implementation complete; no new model evaluation or release approval occurred.

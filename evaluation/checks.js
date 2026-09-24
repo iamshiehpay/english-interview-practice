@@ -13,6 +13,18 @@ export function checkBilingualConsistency(question,feedback){
   for(const [name,en,zh] of pairs){if(typeof en!=='string'||!en.trim()||typeof zh!=='string'||!zh.trim()||!han.test(zh))errors.push(`${name}: missing English or Traditional Chinese counterpart`);else if(en.normalize('NFKC').trim()===zh.normalize('NFKC').trim())errors.push(`${name}: untranslated duplicate`);}
   return {pass:errors.length===0,automaticChecks:['both counterparts are nonempty','Chinese counterpart contains Han script','counterparts are not identical'],semanticReviewRequired:true,semanticStatus:'pending-human-review',pairs:pairs.map(([name,en,zh])=>({name,en,zh})),errors};
 }
+export function automaticBilingualAuditPass(audits,manifest){
+  if(!Array.isArray(audits)||!Array.isArray(manifest?.cases))return false;
+  const expected=new Set(manifest.cases.flatMap(c=>[1,2,3].map(repeat=>`${c.id}:${repeat}`)));
+  if(expected.size===0||audits.length!==expected.size)return false;
+  const seen=new Set();
+  for(const item of audits){
+    const key=`${item.caseId}:${item.repeat}`;
+    if(!expected.has(key)||seen.has(key)||item.bilingualAudit?.pass!==true)return false;
+    seen.add(key);
+  }
+  return seen.size===expected.size;
+}
 export function validateManifest(m){
   assert.equal(m.suiteVersion,'1.0.0');assert.equal(m.jobs.length,5);assert.equal(m.cases.length,20);
   assert.equal(new Set(m.jobs.map(j=>j.id)).size,5);assert.equal(new Set(m.cases.map(c=>c.id)).size,20);

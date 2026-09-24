@@ -1,7 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {validateManifest,checkAnalysis,checkFrozenAnalysis,checkFeedback,stability,labelStatus,compareLabelExpectations,evaluationGateSummary,creatorStatus,dimensions} from '../evaluation/checks.js';
+import {validateManifest,checkAnalysis,checkFrozenAnalysis,checkFeedback,automaticBilingualAuditPass,stability,labelStatus,compareLabelExpectations,evaluationGateSummary,creatorStatus,dimensions} from '../evaluation/checks.js';
 import {FakeLanguageModel} from '../src/providers.js';
 import {MODEL_CONTRACT_VERSION} from '../src/model-contracts.js';
 const manifest=JSON.parse(await readFile(new URL('../evaluation/v1/manifest.json',import.meta.url)));
@@ -20,6 +20,19 @@ test('stability is measured across all 80 dimensions with exact 90 percent bound
   assert.equal(stability(results).stable,72);assert.equal(stability(results).pass,true);
   results[8].feedback.ratings.relevance.level=4;assert.equal(stability(results).pass,false);
   assert.throws(()=>stability(results.slice(1)));
+});
+test('automatic bilingual audit passes only exact complete case/repeat coverage',()=>{
+  const complete=manifest.cases.flatMap(c=>[1,2,3].map(repeat=>({caseId:c.id,repeat,bilingualAudit:{pass:true}})));
+  assert.equal(automaticBilingualAuditPass([],manifest),false);
+  assert.equal(automaticBilingualAuditPass(complete.slice(0,-1),manifest),false);
+  assert.equal(automaticBilingualAuditPass([...complete.slice(0,-1),complete[0]],manifest),false);
+  const wrongCase=structuredClone(complete);wrongCase[0].caseId='unknown';
+  assert.equal(automaticBilingualAuditPass(wrongCase,manifest),false);
+  const wrongRepeat=structuredClone(complete);wrongRepeat[0].repeat=4;
+  assert.equal(automaticBilingualAuditPass(wrongRepeat,manifest),false);
+  assert.equal(automaticBilingualAuditPass(complete,manifest),true);
+  const failed=structuredClone(complete);failed[0].bilingualAudit.pass=false;
+  assert.equal(automaticBilingualAuditPass(failed,manifest),false);
 });
 test('machine fixtures never satisfy human review or creator gates by default',()=>{
   assert.equal(labelStatus(Array.from({length:20},(_,i)=>({caseId:String(i)})),{schemaVersion:1,labels:[]}).pass,false);

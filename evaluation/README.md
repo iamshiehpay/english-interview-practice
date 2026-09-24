@@ -12,6 +12,8 @@ These unkeyed checksums detect corruption and edits that do not recompute the ch
 
 Reports distinguish fresh feedback invocations (`providerCalls`), newly collected results, reused saved results and total collected evidence. Saved reads do not count as fresh calls. The three-repeat stability gate still requires three distinct case/repeat results for every case and at least 90% stable dimensions. A fake run is pipeline evidence only; fresh live output and independent semantic/label review remain required for release.
 
+The standalone bilingual audit reports `automaticPass: true` only when all sixty expected case/repeat entries appear exactly once and each automatic bilingual pair check passes. Empty, partial and duplicate coverage report false, even when their existing entries pass.
+
 ## Historical contract 2 workflow
 
 The earlier contract 2 run produced `results/v2.json`, `v2/review-packet.json`, `v2/bilingual-audit.json`, and `docs/portfolio/evaluation-v2-summary.md`. Existing v1 reports and frozen analyses remain historical English-only evidence.

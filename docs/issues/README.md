@@ -42,7 +42,7 @@ Local issue tracker for the Adaptive English Interview Coach. All issues below w
 | [0036 — AI-reviewed labels, offline release recheck, summary update](./0036-ai-reviewed-labels-and-release-recheck.md) | completed | 0035 (0034 for the final release status) |
 | [0037 — Direct links to individual Job Snapshots](./0037-job-snapshot-deep-links.md) | needs-triage | None |
 | [0038 — Select a reviewed Codex CLI for evaluation](./0038-review-codex-cli-01561-compatibility.md) | completed | None |
-| [0039 — Reject empty bilingual audit pass](./0039-reject-empty-bilingual-audit-pass.md) | needs-triage | None |
+| [0039 — Reject empty bilingual audit pass](./0039-reject-empty-bilingual-audit-pass.md) | completed | None |
 | [0040 — Resumable evaluation checkpoints](./0040-resumable-evaluation-checkpoints.md) | completed | None |
 | [0041 — Separate English expression from content quality](./0041-separate-english-expression-from-content-quality.md) | needs-triage | None |
 
