@@ -1,7 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {validateManifest,checkAnalysis,checkFrozenAnalysis,checkFeedback,stability,labelStatus,creatorStatus,dimensions} from '../evaluation/checks.js';
+import {validateManifest,checkAnalysis,checkFrozenAnalysis,checkFeedback,stability,labelStatus,compareLabelExpectations,evaluationGateSummary,creatorStatus,dimensions} from '../evaluation/checks.js';
 import {FakeLanguageModel} from '../src/providers.js';
 const manifest=JSON.parse(await readFile(new URL('../evaluation/v1/manifest.json',import.meta.url)));
 test('evaluation fixtures cover required matrix and reject missing/duplicate cases',()=>{
@@ -76,6 +76,77 @@ test('approved human labels bind to exact inputs and transcript evidence; stale 
   const labels={schemaVersion:1,labels:packet.map(p=>({caseId:p.caseId,inputChecksum:p.inputChecksum,status:'approved',reviewer:'Human',reviewedAt:'2026-09-18T00:00:00Z',rationale:'Reasoned hypothetical support.',ranges:Object.fromEntries(dimensions.map(d=>[d,[2,3]])),evidenceQuotes:['test the failure path'],requiredFindings:[],forbiddenFindings:[]}))};
   assert.equal(labelStatus(packet,labels).pass,true);labels.labels[0].inputChecksum='old';assert.equal(labelStatus(packet,labels).pass,false);
   labels.labels[0].inputChecksum=packet[0].inputChecksum;labels.labels[0].evidenceQuotes=['invented evidence'];assert.equal(labelStatus(packet,labels).pass,false);
+});
+function approvedV2Labels(){
+  const packet=Array.from({length:20},(_,i)=>({caseId:`case-${i}`,inputChecksum:`checksum-${i}`,contractVersion:'3.0.0',transcript:'I would test the failure path.'}));
+  const labels={schemaVersion:2,contractVersion:'3.0.0',labelProvenance:{mode:'persona-drafted-ai-approved',drafter:'Rater persona',approver:'Independent AI reviewer'},labels:packet.map(p=>({caseId:p.caseId,inputChecksum:p.inputChecksum,status:'approved',reviewerType:'ai',reviewer:'Independent AI reviewer',reviewedAt:'2026-09-24T00:00:00Z',rationale:'Reasoned hypothetical support.',ranges:Object.fromEntries(dimensions.map(d=>[d,[2,3]])),evidenceQuotes:['test the failure path'],requiredFindings:[],forbiddenFindings:[],bilingualSemanticConsistency:'approved'}))};
+  return {packet,labels};
+}
+test('twenty explicitly AI-reviewed v2 labels pass with AI provenance',()=>{
+  const {packet,labels}=approvedV2Labels();
+  const result=labelStatus(packet,labels);
+  assert.equal(result.pass,true);
+  assert.equal(result.mode,'ai');
+  assert.equal(result.approved.length,20);
+});
+test('AI provenance rejects untyped and invalid reviewer types; fully typed mixed labels report mixed mode',()=>{
+  const {packet,labels}=approvedV2Labels();
+  delete labels.labels[0].reviewerType;
+  assert.equal(labelStatus(packet,labels).pass,false,'a declared AI approval cannot be untyped');
+  labels.labels[0].reviewerType='agent';
+  assert.equal(labelStatus(packet,labels).pass,false,'unknown reviewer types cannot be approved');
+  labels.labels[0].reviewerType='human';
+  assert.equal(labelStatus(packet,labels).pass,false,'persona-drafted AI provenance cannot contain human approval');
+  delete labels.labelProvenance;
+  assert.equal(labelStatus(packet,labels).mode,'mixed');
+  assert.equal(labelStatus(packet,labels).pass,true,'a fully typed mixed artifact remains attributable');
+  delete labels.labels[1].reviewerType;
+  assert.equal(labelStatus(packet,labels).pass,false,'typed mixed artifacts reject legacy untyped entries');
+});
+test('legacy untyped v2 approvals remain human when contract and bilingual approval match',()=>{
+  const {packet,labels}=approvedV2Labels();
+  delete labels.labelProvenance;
+  for(const label of labels.labels)delete label.reviewerType;
+  const result=labelStatus(packet,labels);
+  assert.equal(result.pass,true);
+  assert.equal(result.mode,'human');
+});
+test('approved label ranges and literal findings are compared across all three saved repeats',()=>{
+  const label={caseId:'case-1',ranges:Object.fromEntries(dimensions.map(d=>[d,[2,2]])),requiredFindings:['reasoned support'],forbiddenFindings:['invented metric']};
+  const feedback=()=>({ratings:Object.fromEntries(dimensions.map(d=>[d,{level:2,reason:'reasoned support',reasonZh:'有根據的支持'}])),strength:{text:'Relevant example',textZh:'相關例子'},priorityImprovement:{text:'Add a trade-off',textZh:'補充取捨'}});
+  const results=[1,2,3].map(repeat=>({caseId:'case-1',repeat,feedback:feedback()}));
+  assert.deepEqual(compareLabelExpectations(results,[label]).comparisons.map(item=>item.repeat),[1,2,3]);
+  assert.equal(compareLabelExpectations(results,[label]).failures.length,0);
+  results[2].feedback.ratings.support.level=3;
+  let compared=compareLabelExpectations(results,[label]);
+  assert.deepEqual(compared.failures.map(item=>item.repeat),[3]);
+  assert.match(compared.failures[0].error,/support.*range/);
+  results[2].feedback.ratings.support.level=2;
+  label.requiredFindings=['missing literal'];
+  compared=compareLabelExpectations(results,[label]);
+  assert.equal(compared.failures.length,3);
+  assert.match(compared.failures[0].error,/Required finding missing/);
+  label.requiredFindings=[];label.forbiddenFindings=['Relevant example'];
+  compared=compareLabelExpectations(results,[label]);
+  assert.equal(compared.failures.length,3);
+  assert.match(compared.failures[0].error,/Forbidden finding present/);
+});
+test('runner gate summary keeps raw automatic success separate from approved label failures',()=>{
+  const {packet,labels:artifact}=approvedV2Labels(),labels=labelStatus(packet,artifact);
+  const feedback=()=>({ratings:Object.fromEntries(dimensions.map(d=>[d,{level:2,reason:'reasoned support',reasonZh:'有根據的支持'}])),strength:{text:'Relevant example',textZh:'相關例子'},priorityImprovement:{text:'Add a trade-off',textZh:'補充取捨'}});
+  const results=packet.flatMap(item=>[1,2,3].map(repeat=>({caseId:item.caseId,repeat,feedback:feedback()})));
+  results[0].feedback.ratings.englishExpression.level=1;
+  const comparedLabels=compareLabelExpectations(results,labels.approved);
+  const common={results,repeated:{pass:true},semanticReview:{pass:true},labels,comparedLabels,creator:{pass:true,validationMode:'ai-persona',errors:[]},live:true};
+  const gates=evaluationGateSummary({...common,failures:[]});
+  assert.equal(gates.automatedPass,true);
+  assert.equal(gates.labelGate.pass,false);
+  assert.deepEqual(gates.labelGate.comparisonFailures.map(failure=>failure.repeat),[1]);
+  assert.deepEqual(gates.blockers,['Evaluation labels pending, stale or outside approved expectations']);
+  assert.equal(gates.releaseStatus,'BLOCKED');
+  const automaticFailure=evaluationGateSummary({...common,failures:[{check:'feedback schema',error:'invalid output'}]});
+  assert.equal(automaticFailure.automatedPass,false);
+  assert.ok(automaticFailure.blockers.includes('Critical automatic constraints failed'));
 });
 test('frozen analysis is reused only when contract, model, effort, service tier and JDs all match',()=>{
   const expected={contractVersion:'3.0.0',model:'gpt-5.6-luna',effort:'xhigh',serviceTier:'priority',jdChecksum:'abc'},frozen={schemaVersion:2,...expected,entries:[]};

@@ -39,10 +39,11 @@ Local issue tracker for the Adaptive English Interview Coach. All issues below w
 | [0033 — ADR 0020: revised creator gate and persona loops in the ledger](./0033-adr-0020-revised-creator-gate.md) | completed | None |
 | [0034 — Fifth AI persona loop on Common Questions and AI attestation](./0034-fifth-persona-loop-and-ai-attestation.md) | completed | 0031, 0032, 0033 |
 | [0035 — Codex evaluation run (v3) and AI semantic review](./0035-codex-evaluation-and-semantic-review.md) | completed | None |
-| [0036 — AI-reviewed labels, offline release recheck, summary update](./0036-ai-reviewed-labels-and-release-recheck.md) | needs-info | 0035 (0034 for the final release status) |
+| [0036 — AI-reviewed labels, offline release recheck, summary update](./0036-ai-reviewed-labels-and-release-recheck.md) | completed | 0035 (0034 for the final release status) |
 | [0037 — Direct links to individual Job Snapshots](./0037-job-snapshot-deep-links.md) | needs-triage | None |
 | [0038 — Select a reviewed Codex CLI for evaluation](./0038-review-codex-cli-01561-compatibility.md) | completed | None |
 | [0039 — Reject empty bilingual audit pass](./0039-reject-empty-bilingual-audit-pass.md) | needs-triage | None |
+| [0041 — Separate English expression from content quality](./0041-separate-english-expression-from-content-quality.md) | needs-triage | None |
 
 Implementation should proceed in dependency order. Start each issue in a fresh session with the PRD and only the selected issue as the implementation brief.
 

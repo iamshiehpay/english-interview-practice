@@ -1,5 +1,13 @@
 # Evaluation summary
 
+## Current v1.0.0 evidence gate
+
+The separately saved [Codex v3 run](../../evaluation/results/codex-v3.json) passed automatic constraints (60/60 outputs) and three-repeat rating stability (80/80). Its independent AI bilingual semantic review passed 60/60 outputs. The five-loop AI persona ledger is independently attested. All twenty case labels are persona-drafted and independently AI-approved, but comparisons with the sixty saved outputs passed only **52/60**. Eight outputs received an English-expression rating of 2 outside the approved [3, 4] range: `ai-experience-depth` repeats 1 and 3, `backend-behavioral` repeats 1–3, and `embedded-technical-communication` repeats 1–3. The label gate is **FAIL**, so the release is **BLOCKED**, not AI-validated. The eight rating mismatches are tracked as scoring-quality issue 0041; automatic constraints remain PASS. This is not human validation; real creator use, real speech and human-reviewed labels remain post-v1.0.0 work under ADR 0020. The deterministic fake-provider report below is historical regression evidence, not the live Codex quality result.
+
+The [offline reviewed report](../../evaluation/results/codex-v3-reviewed.json) records automatic revalidation **PASS**, bilingual semantic gate **PASS**, AI label gate **FAIL**, AI persona gate **PASS**, and release **BLOCKED**. It reports `evaluation/checks.js` and `evaluation/run.js` as workflow source changes after the captured model run; the protected model-contract sources still match the capture. The raw automatic result remains PASS because label comparisons are a separate release gate.
+
+## Historical fake-provider regression snapshot
+
 Generated: 2026-09-24T06:58:14.250Z. Fixture suite 1.0.0; runner 3.0.0; model contract 3.0.0; v23.11.0.
 
 **MVP release: BLOCKED.**

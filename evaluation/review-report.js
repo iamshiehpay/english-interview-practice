@@ -4,7 +4,7 @@ import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import {dirname,join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {MODEL_CONTRACT_VERSION} from '../src/model-contracts.js';
-import {checkAnalysis,checkFeedback,checkBilingualConsistency,creatorStatus,dimensions,inputChecksum,labelStatus,outputChecksum,semanticReviewStatus,stability,validateManifest} from './checks.js';
+import {checkAnalysis,checkFeedback,checkBilingualConsistency,compareLabelExpectations,creatorStatus,dimensions,inputChecksum,labelStatus,outputChecksum,semanticReviewStatus,stability,validateManifest} from './checks.js';
 
 const sha=value=>createHash('sha256').update(typeof value==='string'?value:JSON.stringify(value)).digest('hex');
 const same=(actual,expected,message)=>assert.deepEqual(actual,expected,message);
@@ -69,10 +69,12 @@ export function reviewArtifacts({raw,frozen,audit,reviewPacket,semanticReviews,s
   const bilingualStatus=semantic.pass?'PASS':hasInconsistency?'FAIL':'PENDING';
   const packet=manifest.cases.map(c=>{const result=raw.results.find(item=>item.caseId===c.id&&item.repeat===1),job=manifest.jobs.find(item=>item.id===c.jobId);return {caseId:c.id,inputChecksum:result.inputChecksum,contractVersion:MODEL_CONTRACT_VERSION,job:job.text,question:result.question,transcript:c.transcript,tags:c.tags,proposedExpectation:c.proposedExpectation,bilingualAudit:result.bilingualAudit,humanLabelTemplate:{caseId:c.id,inputChecksum:result.inputChecksum,status:'pending',reviewer:null,reviewedAt:null,ranges:Object.fromEntries(dimensions.map(d=>[d,null])),rationale:null,evidenceQuotes:[],requiredFindings:[],forbiddenFindings:[],bilingualSemanticConsistency:'pending'}};});
   same(reviewPacket,packet,'Saved Codex review packet differs from the raw report and fixtures');
-  const labels=labelStatus(packet,humanLabels),creatorGate=creatorStatus(creator);
+  const labels=labelStatus(packet,humanLabels),comparedLabels=compareLabelExpectations(raw.results,labels.approved),creatorGate=creatorStatus(creator);
+  const labelPass=labels.pass&&comparedLabels.failures.length===0;
+  const labelGate={pass:labelPass,status:labelPass?'PASS':humanLabels.labels?.length?'FAIL':'PENDING',mode:labels.mode,provenanceMode:humanLabels.labelProvenance?.mode||null,approved:labels.approved.length,comparedOutputs:comparedLabels.comparisons.length,errors:labels.errors,comparisonFailures:comparedLabels.failures};
   const blockers=[];
   if(bilingualStatus!=='PASS')blockers.push('Independent bilingual semantic review pending, stale or inconsistent');
-  if(!labels.pass)blockers.push('Evaluation labels pending or stale');
+  if(!labelPass)blockers.push('Evaluation labels pending, stale or outside approved expectations');
   blockers.push(...creatorGate.errors);
   return {
     reviewVersion:'1.0.0',contractVersion:MODEL_CONTRACT_VERSION,generatedAt:new Date().toISOString(),
@@ -81,7 +83,7 @@ export function reviewArtifacts({raw,frozen,audit,reviewPacket,semanticReviews,s
     artifactChecksums:{frozenAnalysis:sha(frozen),reviewPacket:sha(reviewPacket),bilingualAudit:sha(audit),semanticReviews:sha(semanticReviews),humanLabels:sha(humanLabels),creatorValidation:sha(creator)},
     automaticRevalidation:{pass:true,cases:20,repeats:3,outputs:60,stability:repeated},
     bilingualGate:{status:bilingualStatus,pass:semantic.pass,reviewedOutputs:semantic.reviewed.length,reviewer:semanticReviews.reviewer||null,reviewedAt:semanticReviews.reviewedAt||null,errors:semantic.errors},
-    humanLabels:{pass:labels.pass,status:labels.pass?'PASS':'PENDING',approved:labels.approved.length,errors:labels.errors},
+    labelGate,humanLabels:labelGate,
     creator:{pass:creatorGate.pass,status:creatorGate.pass?'PASS':'PENDING',count:creatorGate.count,validationMode:creatorGate.validationMode},
     releaseStatus:blockers.length?'BLOCKED':creatorGate.validationMode==='ai-persona'?'AI-validated':'PASS',blockers
   };
@@ -114,7 +116,7 @@ export async function createReviewedReport({root=dirname(fileURLToPath(import.me
 if(process.argv[1]&&fileURLToPath(import.meta.url)===process.argv[1]){
   try{
     if(process.argv.includes('--capture-source')){const {source,output}=await captureModelRunSource();console.log(JSON.stringify({output,codeChecksum:source.codeChecksum},null,2));}
-    else{const {reviewed,output}=await createReviewedReport();console.log(JSON.stringify({output,bilingualGate:reviewed.bilingualGate.status,humanLabels:reviewed.humanLabels.status,creator:reviewed.creator.status,releaseStatus:reviewed.releaseStatus},null,2));if(reviewed.bilingualGate.status!=='PASS')process.exitCode=1;}
+    else{const {reviewed,output}=await createReviewedReport();console.log(JSON.stringify({output,bilingualGate:reviewed.bilingualGate.status,labelGate:reviewed.labelGate.status,labelMode:reviewed.labelGate.mode,creator:reviewed.creator.status,releaseStatus:reviewed.releaseStatus},null,2));if(!reviewed.bilingualGate.pass||!reviewed.labelGate.pass||!reviewed.creator.pass)process.exitCode=1;}
   }
   catch(error){console.error(`Offline evaluation review failed: ${error.message}`);process.exitCode=1;}
 }

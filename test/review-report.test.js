@@ -8,7 +8,7 @@ import {fileURLToPath} from 'node:url';
 import {FakeLanguageModel} from '../src/providers.js';
 import {MODEL_CONTRACT_VERSION} from '../src/model-contracts.js';
 import {checkBilingualConsistency,dimensions,inputChecksum,outputChecksum,stability} from '../evaluation/checks.js';
-import {captureModelRunSource,createReviewedReport,reviewArtifacts} from '../evaluation/review-report.js';
+import {captureCurrentSource,captureModelRunSource,createReviewedReport,reviewArtifacts} from '../evaluation/review-report.js';
 
 const manifest=JSON.parse(await readFile(new URL('../evaluation/v1/manifest.json',import.meta.url)));
 
@@ -35,6 +35,54 @@ async function fixtures(){
   const currentSource={codeChecksum:'d'.repeat(64),files:{'evaluation/run.js':'e'.repeat(64),...Object.fromEntries(protectedFiles.map((file,index)=>[file,String(index+1).repeat(64)]))}};
   return {raw,frozen,audit,reviewPacket,semanticReviews,source,currentSource,manifest,humanLabels:{schemaVersion:2,contractVersion:MODEL_CONTRACT_VERSION,status:'pending-human-review',labels:[]},creator:{schemaVersion:2,contractVersion:MODEL_CONTRACT_VERSION,creator:null,attestedAt:null,loops:[]}};
 }
+
+function approveFixtureLabels(input){
+  input.humanLabels={schemaVersion:2,contractVersion:MODEL_CONTRACT_VERSION,labelProvenance:{mode:'persona-drafted-ai-approved',drafter:'Rater persona',approver:'Independent AI reviewer'},labels:input.reviewPacket.map(item=>({caseId:item.caseId,inputChecksum:item.inputChecksum,status:'approved',reviewerType:'ai',reviewer:'Independent AI reviewer',reviewedAt:'2026-09-24T01:00:00Z',rationale:'The quoted answer shows a concrete basis for the ratings.',ranges:Object.fromEntries(dimensions.map(d=>[d,[1,4]])),evidenceQuotes:[item.transcript.slice(0,Math.min(12,item.transcript.length))],requiredFindings:['Demonstration rating only'],forbiddenFindings:['Invented specific metric'],bilingualSemanticConsistency:'approved'}))};
+  input.creator={validationMode:'ai-persona',creator:null,attestedBy:'Independent AI verifier',attestedAt:'2026-09-24T01:00:00Z',loops:Array.from({length:5},(_,i)=>({recordId:`record-${i}`,snapshotId:`snapshot-${i%2}`,category:i%2?'behavioral':'role-fit',completedAt:'2026-09-24T00:00:00Z',completed:true,synthetic:true,inputMode:'text',persona:'Test persona',evidence:'docs/verification/test-persona.md',experienceGap:i===0,inducedFailure:i===1?{type:'cancelled and retried',recovered:true}:null}))};
+}
+
+test('offline review compares all sixty outputs against twenty AI-approved labels before AI validation',async()=>{
+  const input=await fixtures();approveFixtureLabels(input);
+  const reviewed=reviewArtifacts(input);
+  assert.equal(reviewed.labelGate.status,'PASS');
+  assert.equal(reviewed.labelGate.mode,'ai');
+  assert.equal(reviewed.labelGate.approved,20);
+  assert.equal(reviewed.labelGate.comparedOutputs,60);
+  assert.equal(reviewed.releaseStatus,'AI-validated');
+});
+
+test('offline review blocks ranges and required or forbidden literal findings that fail saved feedback',async()=>{
+  for(const [change,message] of [
+    [label=>{label.ranges.support=[4,4];},/support rating outside approved range/],
+    [label=>{label.requiredFindings=['never-written-finding'];},/Required finding missing/],
+    [label=>{label.forbiddenFindings=['You supplied an answer to review.'];},/Forbidden finding present/]
+  ]){
+    const input=await fixtures();approveFixtureLabels(input);change(input.humanLabels.labels[0]);
+    const reviewed=reviewArtifacts(input);
+    assert.equal(input.raw.automatedPass,true);
+    assert.deepEqual(input.raw.failures,[]);
+    assert.equal(reviewed.automaticRevalidation.pass,true);
+    assert.equal(reviewed.labelGate.status,'FAIL');
+    assert.equal(reviewed.releaseStatus,'BLOCKED');
+    assert.match(reviewed.labelGate.comparisonFailures[0].error,message);
+  }
+});
+
+test('saved Codex run retains automatic PASS while approved label mismatches block release',async()=>{
+  const root=join(dirname(fileURLToPath(import.meta.url)),'..');
+  const paths={raw:'evaluation/results/codex-v3.json',frozen:'evaluation/v3/codex-analysis.json',audit:'evaluation/v3/codex-bilingual-audit.json',reviewPacket:'evaluation/v3/codex-review-packet.json',semanticReviews:'evaluation/v3/semantic-reviews.json',source:'docs/verification/codex-v3-model-run-source.json',manifest:'evaluation/v1/manifest.json',humanLabels:'evaluation/v3/human-labels.json',creator:'evaluation/v3/creator-validation.json'};
+  const artifacts=Object.fromEntries(await Promise.all(Object.entries(paths).map(async([name,path])=>[name,JSON.parse(await readFile(join(root,path),'utf8'))])));
+  const reviewed=reviewArtifacts({...artifacts,currentSource:await captureCurrentSource({codeRoot:root})});
+  assert.equal(artifacts.raw.automatedPass,true);
+  assert.deepEqual(artifacts.raw.failures,[]);
+  assert.equal(reviewed.automaticRevalidation.pass,true);
+  assert.equal(reviewed.labelGate.mode,'ai');
+  assert.equal(reviewed.labelGate.approved,20);
+  assert.equal(reviewed.labelGate.comparedOutputs,60);
+  assert.equal(reviewed.labelGate.comparisonFailures.length,8);
+  assert.equal(reviewed.labelGate.status,'FAIL');
+  assert.equal(reviewed.releaseStatus,'BLOCKED');
+});
 
 test('offline review verifies all sixty outputs and clears only the bilingual gate',async()=>{
   const input=await fixtures(),before=structuredClone(input);

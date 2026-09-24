@@ -54,12 +54,49 @@ export function labelStatus(packet,labels){
   const current=packet.some(item=>item.contractVersion);
   if(labels.schemaVersion!==(current?2:1))errors.push('Unsupported label schema');
   if(current&&labels.contractVersion!==MODEL_CONTRACT_VERSION)errors.push('Stale model contract version');
-  for(const item of packet){const matches=labels.labels.filter(l=>l.caseId===item.caseId);const l=matches[0];try{
+  const entries=Array.isArray(labels.labels)?labels.labels:[];
+  if(!Array.isArray(labels.labels))errors.push('Label entries must be an array');
+  const typed=entries.some(label=>Object.hasOwn(label,'reviewerType'));
+  const personaApproved=labels.labelProvenance?.mode==='persona-drafted-ai-approved';
+  const reviewerTypes=entries.map(label=>Object.hasOwn(label,'reviewerType')?label.reviewerType:'human');
+  const mode=reviewerTypes.length===0?'none':new Set(reviewerTypes).size===1?reviewerTypes[0]:'mixed';
+  for(const item of packet){const matches=entries.filter(l=>l.caseId===item.caseId);const l=matches[0];try{
     assert.equal(matches.length,1);assert.equal(l.inputChecksum,item.inputChecksum);assert.equal(l.status,'approved');assert.ok(l.reviewer?.trim());assert.ok(Number.isFinite(Date.parse(l.reviewedAt)));assert.ok(l.rationale?.trim());
+    assert.ok(!typed||Object.hasOwn(l,'reviewerType'),'Mixed typed and untyped approvals are not allowed');
+    assert.ok(!Object.hasOwn(l,'reviewerType')||['human','ai'].includes(l.reviewerType),'Invalid label reviewer type');
+    assert.ok(!personaApproved||l.reviewerType==='ai','Persona-drafted AI approvals require reviewerType ai');
     keys(l.ranges,dimensions);for(const d of dimensions){assert.equal(l.ranges[d].length,2);const [min,max]=l.ranges[d];assert.ok(Number.isInteger(min)&&Number.isInteger(max)&&min>=1&&max<=4&&min<=max);}
     assert.ok(l.evidenceQuotes.length>0&&l.evidenceQuotes.every(q=>q&&item.transcript.includes(q)));assert.ok(Array.isArray(l.requiredFindings)&&Array.isArray(l.forbiddenFindings));assert.ok([...l.requiredFindings,...l.forbiddenFindings].every(f=>typeof f==='string'&&f.trim()));if(current)assert.equal(l.bilingualSemanticConsistency,'approved');approved.push(l);
-  }catch{errors.push(`${item.caseId}: missing, stale or invalid human approval`);}}
-  return {pass:errors.length===0&&packet.length===20,approved,errors};
+  }catch{errors.push(`${item.caseId}: missing, stale or invalid evaluation approval`);}}
+  return {pass:errors.length===0&&packet.length===20,mode,approved,errors};
+}
+export function compareLabelExpectations(results,approved){
+  const comparisons=[],failures=[];
+  for(const label of approved)for(const result of results.filter(item=>item.caseId===label.caseId)){
+    const feedback=result.feedback;
+    const generated=[...dimensions.flatMap(d=>[feedback.ratings[d].reason,feedback.ratings[d].reasonZh]),feedback.strength.text,feedback.strength.textZh,feedback.priorityImprovement.text,feedback.priorityImprovement.textZh].join('\n');
+    const errors=[];
+    for(const d of dimensions){const [minimum,maximum]=label.ranges[d],level=feedback.ratings[d].level;if(level<minimum||level>maximum)errors.push(`${d} rating outside approved range`);}
+    if(label.requiredFindings.some(finding=>!generated.includes(finding)))errors.push('Required finding missing');
+    if(label.forbiddenFindings.some(finding=>generated.includes(finding)))errors.push('Forbidden finding present');
+    const comparison={caseId:label.caseId,repeat:result.repeat,pass:errors.length===0,errors};
+    comparisons.push(comparison);
+    if(errors.length)failures.push({caseId:label.caseId,repeat:result.repeat,check:'evaluation label expectations',error:errors.join('; ')});
+  }
+  return {comparisons,failures};
+}
+export function evaluationGateSummary({failures,results,repeated,semanticReview,labels,comparedLabels,creator,live}){
+  const automatedPass=failures.length===0&&results.length===60;
+  const labelPass=labels.pass&&comparedLabels.failures.length===0;
+  const labelGate={pass:labelPass,status:labelPass?'PASS':labels.approved.length?'FAIL':'PENDING',mode:labels.mode,errors:labels.errors,comparisonFailures:comparedLabels.failures};
+  const blockers=[];
+  if(failures.length||results.length!==60)blockers.push('Critical automatic constraints failed');
+  if(!repeated.pass)blockers.push('Three-repeat stability failed');
+  if(!semanticReview.pass)blockers.push('Independent bilingual semantic review pending, stale or inconsistent');
+  if(!labelPass)blockers.push('Evaluation labels pending, stale or outside approved expectations');
+  blockers.push(...creator.errors);
+  if(!live)blockers.push('Live-model semantic quality and rating stability not evaluated; fixed fake ratings are not quality evidence');
+  return {automatedPass,labelGate,blockers,releaseStatus:blockers.length?'BLOCKED':creator.validationMode==='ai-persona'?'AI-validated':'PASS'};
 }
 export function semanticReviewStatus(audits,artifact){
   const errors=[];const reviewed=[];
