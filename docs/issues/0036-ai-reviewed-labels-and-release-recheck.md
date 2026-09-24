@@ -1,5 +1,5 @@
 ---
-status: ready-for-agent
+status: needs-info
 ---
 
 # Twenty AI-reviewed labels on the v3 Codex packet, offline release recheck and summary update
@@ -70,3 +70,11 @@ node evaluation/review-report.js
 - [Issue 0034](./0034-fifth-persona-loop-and-ai-attestation.md) — only for the final release-status line; labelling can start once 0035 is done.
 
 ## Comments
+
+### 2026-09-24 — Blocked prerequisites; no labels drafted or approved
+
+- Required predecessor [0035](./0035-codex-evaluation-and-semantic-review.md) is `needs-info`: its only authorized run failed the Codex binary trust check before inference, leaving no frozen analysis and zero packet outputs. There are no valid generated-question checksums on which to base the twenty labels. No rater persona was started, no label implementation/drafting/approval was performed, and no approval was attributed to a human or AI reviewer.
+- The handoff requires listed blockers completed before work starts. [0034](./0034-fifth-persona-loop-and-ai-attestation.md) also remains `needs-info` because of 0033's historical provenance gap, so the final creator gate is unavailable.
+- Current live-run gates: automated **FAIL** (0/60 outputs, stability 0/0); semantic review **NOT RUN** (no outputs); labels **NOT RUN** (no qualifying packet); creator/AI-persona **PENDING** (four loops, fifth and independent attestation absent). Release status is **BLOCKED**, not AI-validated and never human-validated.
+- `node evaluation/review-report.js` was independently checked in 0035 and exits 1 on missing frozen analysis; no model calls occur. Resume only after 0035 has a valid, independently reviewed packet and the required dependency status is resolved. No automatic second evaluation is authorized.
+- This is a dependency disposition, not a claim of completed labelling or failed label tests. All acceptance criteria remain unchecked. Post-v1 real creator use, real speech/comprehension validation and human labelling remain outstanding under ADR 0020.
