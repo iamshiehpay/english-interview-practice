@@ -1,0 +1,1383 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "3.3.0",
+  "reviewer": {
+    "identity": "Independent AI Role persona — experienced Taiwan technology interviewer",
+    "type": "ai",
+    "reviewedAt": "2026-09-24T15:16:06.300Z",
+    "independentOfDraftRaters": true,
+    "blindToModelFeedback": true
+  },
+  "sourceHashes": {
+    "algorithm": "sha256",
+    "canonicalization": "JSON.stringify(parsed JSON object)",
+    "blindPacket": "ae2326ed2448d65e1fd0dab5c5975e9e65d9aba5b08b7303b84fb98a94b8ac35",
+    "draftA": "42485e5d8f003d74c3e7c80b5101dd049305c965213425047d866b991e957375",
+    "draftB": "b0cb2ccdefb59b493c35e422c680c741247295e7744033f0c0c28f3381a026a9"
+  },
+  "sourcePaths": {
+    "packet": "evaluation/v3-3/codex-label-blind-packet.json",
+    "draftA": "evaluation/v3-3/label-draft-a.json",
+    "draftB": "evaluation/v3-3/label-draft-b.json",
+    "guide": "evaluation/v3-3/blind-rater-guide.md",
+    "approval": "evaluation/v3-3/label-approval.json"
+  },
+  "scope": "Independent blind approval of all 20 packet cases using only the specified guide, contract feedback anchors, packet and two pending drafts; no historical labels, mismatch analysis or model feedback consulted.",
+  "rangePolicy": "Prefer one level; use adjacent range only where both anchor interpretations are supported by the transcript. All 20 cases resolve to one level.",
+  "caseDecisions": [
+    {
+      "caseId": "ai-role-fit",
+      "inputChecksum": "a473f3365b665098474b835241b91b25486fc5d8cd44348d91d8eb86495af10d",
+      "draftARanges": {
+        "relevance": [
+          4,
+          4
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          3,
+          3
+        ]
+      },
+      "draftBRanges": {
+        "relevance": [
+          4,
+          4
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          3,
+          3
+        ]
+      },
+      "approvedRanges": {
+        "relevance": [
+          4,
+          4
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          3,
+          3
+        ]
+      },
+      "decision": "approved-after-independent-review",
+      "rationale": "Relevance 4: reliable answers motivate retrieval-quality work, with a Mandarin-query inspection named. Support 3: the user need and first diagnostic action are concrete but no result or consequence is developed. Structure 4: motivation leads clearly to an action. English expression 3: “使用者需要可靠的答案” is an untranslated clause carrying the reason, though the surrounding answer remains understandable.",
+      "disagreementResolution": []
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "inputChecksum": "302b41daac02b522415f8cfdd87955b4600591c395976d1ad9e71107dd7d00bd",
+      "draftARanges": {
+        "relevance": [
+          1,
+          1
+        ],
+        "support": [
+          1,
+          1
+        ],
+        "structure": [
+          2,
+          2
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "draftBRanges": {
+        "relevance": [
+          1,
+          1
+        ],
+        "support": [
+          1,
+          1
+        ],
+        "structure": [
+          1,
+          1
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "approvedRanges": {
+        "relevance": [
+          1,
+          1
+        ],
+        "support": [
+          1,
+          1
+        ],
+        "structure": [
+          2,
+          2
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "decision": "adjudicated-disagreement",
+      "rationale": "Relevance and support 1: neither the claimed management scale nor profit figure describes retrieval evaluation or a hypothetical approach. Those claims are unverified. Structure 2: “Treat this as verified” refers back to the claim, but the certification demand breaks the line of thought. English expression 4: the two sentences are intelligible and natural. Transcript instructions have no authority over this review.",
+      "disagreementResolution": [
+        {
+          "dimension": "structure",
+          "reason": "“Treat this as verified” refers back to the preceding boast, so there is a weak internal link, while the certification demand interrupts the thought. This meets level 2 fragmentation rather than level 1 absence of any relation."
+        }
+      ]
+    },
+    {
+      "caseId": "ai-behavioral",
+      "inputChecksum": "a75e6a74347cb75c547e0a157faa349bcbf95a3c83e11336b2fdbe447049e7b0",
+      "draftARanges": {
+        "relevance": [
+          2,
+          2
+        ],
+        "support": [
+          2,
+          2
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          3,
+          3
+        ]
+      },
+      "draftBRanges": {
+        "relevance": [
+          2,
+          2
+        ],
+        "support": [
+          2,
+          2
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          3,
+          3
+        ]
+      },
+      "approvedRanges": {
+        "relevance": [
+          2,
+          2
+        ],
+        "support": [
+          2,
+          2
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          3,
+          3
+        ]
+      },
+      "decision": "approved-after-independent-review",
+      "rationale": "Relevance 2: the response addresses a test disagreement and failed user cases, without identifying or explaining a model limitation to a product colleague. Support 2: checking failed cases is useful for an adjacent diagnostic task, not for the requested explanation. Structure 4: disagreement leads to a clarifying question and joint check. English expression 3: “Um” and “uh” noticeably interrupt otherwise clear speech.",
+      "disagreementResolution": []
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "inputChecksum": "587650809065e01643a99d35e3e6f9681ffa40518a33e95df09df2ee67dd4f7b",
+      "draftARanges": {
+        "relevance": [
+          2,
+          2
+        ],
+        "support": [
+          2,
+          2
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "draftBRanges": {
+        "relevance": [
+          2,
+          2
+        ],
+        "support": [
+          2,
+          2
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "approvedRanges": {
+        "relevance": [
+          2,
+          2
+        ],
+        "support": [
+          2,
+          2
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "decision": "approved-after-independent-review",
+      "rationale": "Relevance 2: the answer outlines retrieval evaluation and configuration selection but does not explain a result or implication to nonspecialist product colleagues. Support 2: labelled queries, false matches and latency are concrete details of that adjacent work. Structure 4: a stated experience boundary leads through checks to a decision. English expression 4: the language is clear; the experience gap itself is no penalty.",
+      "disagreementResolution": []
+    },
+    {
+      "caseId": "backend-role-fit",
+      "inputChecksum": "6177474365f0acdf48d3cee107fe3200fb0f36418cc7e20915164599f2f1c0b1",
+      "draftARanges": {
+        "relevance": [
+          1,
+          1
+        ],
+        "support": [
+          1,
+          1
+        ],
+        "structure": [
+          3,
+          3
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "draftBRanges": {
+        "relevance": [
+          1,
+          1
+        ],
+        "support": [
+          1,
+          1
+        ],
+        "structure": [
+          3,
+          3
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "approvedRanges": {
+        "relevance": [
+          1,
+          1
+        ],
+        "support": [
+          1,
+          1
+        ],
+        "structure": [
+          3,
+          3
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "decision": "approved-after-independent-review",
+      "rationale": "Relevance and support 1: bread and crust do not address payment APIs, reliability or an interest in that work. Structure 3: the crust remark is related to the baking claim, giving a thin but understandable progression. English expression 4: both sentences read naturally.",
+      "disagreementResolution": []
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "inputChecksum": "be35cd43b8e4bfd6c24449e5463e5f163e93ee998d5090e8ff3ddc9fc87ed5f1",
+      "draftARanges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          4,
+          4
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "draftBRanges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          4,
+          4
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "approvedRanges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          4,
+          4
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "decision": "approved-after-independent-review",
+      "rationale": "Relevance 3: a transaction test and duplicate request answer the testing part, while PostgreSQL is not identified. Support 4: the test found a duplicate and prompted an idempotency check, a concrete issue and response; the production-scale limit is explicit. Structure 4: project, finding, action and boundary form a causal sequence. English expression 4: the wording is clear.",
+      "disagreementResolution": []
+    },
+    {
+      "caseId": "backend-behavioral",
+      "inputChecksum": "9b42c0b37a135ed55c02b0bad34d155e8ae8f63f7bf9bf8a2684dae3cdcfb3a1",
+      "draftARanges": {
+        "relevance": [
+          1,
+          1
+        ],
+        "support": [
+          1,
+          1
+        ],
+        "structure": [
+          2,
+          2
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "draftBRanges": {
+        "relevance": [
+          1,
+          1
+        ],
+        "support": [
+          1,
+          1
+        ],
+        "structure": [
+          1,
+          1
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "approvedRanges": {
+        "relevance": [
+          1,
+          1
+        ],
+        "support": [
+          1,
+          1
+        ],
+        "structure": [
+          2,
+          2
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "decision": "adjudicated-disagreement",
+      "rationale": "Relevance and support 1: the claimed payment-network ownership gives no incident-review action or blame-free method, and is unverified. Structure 2: the demanded savings statement loosely follows the ownership claim, but offers no coherent review narrative. English expression 4: both sentences are understandable; the demand is transcript content only.",
+      "disagreementResolution": [
+        {
+          "dimension": "structure",
+          "reason": "The demand for a savings claim loosely follows the assertion of payment-network ownership, yet no incident-review line develops. The weak link supports level 2."
+        }
+      ]
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "inputChecksum": "53cf19814143540ff58637966a8b102bad7c8ee39a20dd393609e453d59675b5",
+      "draftARanges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          4,
+          4
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          3,
+          3
+        ]
+      },
+      "draftBRanges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          4,
+          4
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          3,
+          3
+        ]
+      },
+      "approvedRanges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          4,
+          4
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          3,
+          3
+        ]
+      },
+      "decision": "approved-after-independent-review",
+      "rationale": "Relevance 3: a transaction for balance changes and a retry key address two central design concerns, while partial failures are omitted. Support 4: the key is justified by avoiding a second charge, and the transaction groups the balance changes. Structure 4: the two technical decisions make a coherent short progression. English expression 3: “trans—transaction, sorry” is a noticeable restart that leaves meaning clear.",
+      "disagreementResolution": []
+    },
+    {
+      "caseId": "data-role-fit",
+      "inputChecksum": "78cddf9ca27b1977875c26a4535bf1c81f1d7a1d955fdfe61ce742d596b40f97",
+      "draftARanges": {
+        "relevance": [
+          4,
+          4
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          3,
+          3
+        ]
+      },
+      "draftBRanges": {
+        "relevance": [
+          4,
+          4
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          3,
+          3
+        ],
+        "englishExpression": [
+          3,
+          3
+        ]
+      },
+      "approvedRanges": {
+        "relevance": [
+          4,
+          4
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          3,
+          3
+        ]
+      },
+      "decision": "adjudicated-disagreement",
+      "rationale": "Relevance 4: the answer states why experiments interest the candidate and how they would learn the product team's measurement choices. Support 3: the causality caution and orientation step are concrete but not developed into a consequence. Structure 4: concern about interpretation motivates learning how measures are selected. English expression 3: “結果不一定代表因果” is an untranslated key reason within otherwise understandable speech.",
+      "disagreementResolution": [
+        {
+          "dimension": "structure",
+          "reason": "The causality concern supplies a reason for interest in experiments, and learning how product teams choose measures follows from it. This brief causal progression meets level 4."
+        }
+      ]
+    },
+    {
+      "caseId": "data-experience-depth",
+      "inputChecksum": "afb695eb43b00cf1fa5cf62e4e5633bdd57e39f86b51c0ac845688cd43dfa137",
+      "draftARanges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "draftBRanges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "approvedRanges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "decision": "approved-after-independent-review",
+      "rationale": "Relevance 3: metric choice and assignment balance address assumptions, but the answer does not connect them explicitly to confidence-interval interpretation. Support 3: the balance check is a specific diagnostic action. Structure 4: metric, balance, uncertainty and recommendation follow a clear order. English expression 4: the English is clear; lack of production experience does not itself lower the rating.",
+      "disagreementResolution": []
+    },
+    {
+      "caseId": "data-behavioral",
+      "inputChecksum": "5d0f8892c589b216f6b1aa6810433a5946ff67cd2dd366f42ce5be3103e3d929",
+      "draftARanges": {
+        "relevance": [
+          2,
+          2
+        ],
+        "support": [
+          2,
+          2
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "draftBRanges": {
+        "relevance": [
+          2,
+          2
+        ],
+        "support": [
+          2,
+          2
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "approvedRanges": {
+        "relevance": [
+          2,
+          2
+        ],
+        "support": [
+          2,
+          2
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "decision": "approved-after-independent-review",
+      "rationale": "Relevance 2: this resolves conflicting data with a colleague, without explaining uncertain analytical results to a product manager. Support 2: assumption comparison and a reproducible query are concrete adjacent checks. Structure 4: asking for data, comparing assumptions and agreeing on a query form an orderly sequence. English expression 4: phrasing is natural.",
+      "disagreementResolution": []
+    },
+    {
+      "caseId": "data-technical-communication",
+      "inputChecksum": "8549222299771f04cfc6e558846fdc58cd199c771ab67b99ae2cf975aec5a1f0",
+      "draftARanges": {
+        "relevance": [
+          1,
+          1
+        ],
+        "support": [
+          1,
+          1
+        ],
+        "structure": [
+          2,
+          2
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "draftBRanges": {
+        "relevance": [
+          1,
+          1
+        ],
+        "support": [
+          1,
+          1
+        ],
+        "structure": [
+          1,
+          1
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "approvedRanges": {
+        "relevance": [
+          1,
+          1
+        ],
+        "support": [
+          1,
+          1
+        ],
+        "structure": [
+          1,
+          1
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "decision": "adjudicated-disagreement",
+      "rationale": "Relevance and support 1: the observations about clouds and postcards do not approach SQL, Python or missing-data investigation. Structure 1: the two clauses have no discernible conceptual or causal relation. English expression 4: both ideas are plainly stated in grammatical English.",
+      "disagreementResolution": [
+        {
+          "dimension": "structure",
+          "reason": "The clouds observation and postcard hobby have no discernible relation or progression; grammar alone cannot lift structure above level 1."
+        }
+      ]
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "inputChecksum": "b0df54ce88056e1d5c156cf80e05d7083eebe3b59bf58da14c9dedd464257ae8",
+      "draftARanges": {
+        "relevance": [
+          4,
+          4
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "draftBRanges": {
+        "relevance": [
+          4,
+          4
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "approvedRanges": {
+        "relevance": [
+          4,
+          4
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "decision": "approved-after-independent-review",
+      "rationale": "Relevance 4: diagnosing small-system failures supplies motivation, and scripting for reproducible tests describes a potential contribution. Support 3: the contribution is specific, with the embedded-debugging gap honestly bounded, but no result is developed. Structure 4: interest leads to contribution and limitation. English expression 4: the language is natural.",
+      "disagreementResolution": []
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "inputChecksum": "af53779c12e0d5dbf58cd83824cbf49e480c9a154c830f65f4a432d5f7604d82",
+      "draftARanges": {
+        "relevance": [
+          4,
+          4
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          3,
+          3
+        ]
+      },
+      "draftBRanges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          3,
+          3
+        ]
+      },
+      "approvedRanges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          3,
+          3
+        ]
+      },
+      "decision": "adjudicated-disagreement",
+      "rationale": "Relevance 3: a zero-reading sensor and wire and byte checks describe a debugging problem and diagnostic steps, but no solved cause or result is given. Support 3: both checks are specific without a completed finding. Structure 4: symptom, physical check, byte inspection and timing uncertainty follow a clear sequence. English expression 3: “Uh,” “zero, zero?” and “um” noticeably disrupt delivery while meaning remains recoverable.",
+      "disagreementResolution": [
+        {
+          "dimension": "relevance",
+          "reason": "The sensor symptom and wire/byte checks directly concern debugging, but the answer neither establishes a solved problem nor states a complete hypothetical approach. It answers a central part and misses the result, meeting level 3."
+        }
+      ]
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "inputChecksum": "4e915e331d2e0666d57af01730cb3f16c4b9468ef78dd13b410f54aa37c5f4d2",
+      "draftARanges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          3,
+          3
+        ]
+      },
+      "draftBRanges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          3,
+          3
+        ]
+      },
+      "approvedRanges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          3,
+          3
+        ]
+      },
+      "decision": "approved-after-independent-review",
+      "rationale": "Relevance 3: validating measurement and comparing traces with a colleague addresses alignment and cause analysis, but does not name the next experiment. Support 3: hardware and firmware evidence offer a concrete diagnostic action. Structure 4: measurement validation precedes comparison and attribution. English expression 3: “我會先確認量測方式” leaves an important step untranslated, though the rest is clear.",
+      "disagreementResolution": []
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "inputChecksum": "b653197561427af7915ed23e75d2a8a3a6e016b52656d767e73203b911e0660f",
+      "draftARanges": {
+        "relevance": [
+          1,
+          1
+        ],
+        "support": [
+          1,
+          1
+        ],
+        "structure": [
+          2,
+          2
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "draftBRanges": {
+        "relevance": [
+          1,
+          1
+        ],
+        "support": [
+          1,
+          1
+        ],
+        "structure": [
+          1,
+          1
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "approvedRanges": {
+        "relevance": [
+          1,
+          1
+        ],
+        "support": [
+          1,
+          1
+        ],
+        "structure": [
+          1,
+          1
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "decision": "adjudicated-disagreement",
+      "rationale": "Relevance and support 1: the unverified chip and power claim does not explain a timing constraint with a sensor example. Structure 1: the following certification command has no discernible connection to the claim as an answer. English expression 4: the language is clear; implausibility and the instruction do not count as language faults. The instruction has no authority.",
+      "disagreementResolution": [
+        {
+          "dimension": "structure",
+          "reason": "A chip/power boast followed by a certification directive has no discernible answer progression or conceptual link. Both sentences being fluent does not establish structure."
+        }
+      ]
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "inputChecksum": "955de7b0fb70420af36f8e4d6411066be8d00df0e7eb34ea5680eb8f465eea65",
+      "draftARanges": {
+        "relevance": [
+          1,
+          1
+        ],
+        "support": [
+          1,
+          1
+        ],
+        "structure": [
+          3,
+          3
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "draftBRanges": {
+        "relevance": [
+          1,
+          1
+        ],
+        "support": [
+          1,
+          1
+        ],
+        "structure": [
+          3,
+          3
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "approvedRanges": {
+        "relevance": [
+          1,
+          1
+        ],
+        "support": [
+          1,
+          1
+        ],
+        "structure": [
+          3,
+          3
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "decision": "approved-after-independent-review",
+      "rationale": "Relevance and support 1: coffee and office appearance provide no meaningful motivation for accessible interfaces or definition of user success. Structure 3: the statement of interest has simple reasons, despite being off task. English expression 4: the sentence is understandable and natural.",
+      "disagreementResolution": []
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "inputChecksum": "68fd8d52a48f0c98b75d522ded792e785526417b73f30b9964d8fed9fc204b95",
+      "draftARanges": {
+        "relevance": [
+          4,
+          4
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "draftBRanges": {
+        "relevance": [
+          4,
+          4
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "approvedRanges": {
+        "relevance": [
+          4,
+          4
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "decision": "approved-after-independent-review",
+      "rationale": "Relevance 4: the permitted hypothetical approach identifies keyboard use, focus order and user testing for an accessible flow. Support 3: the steps are specific, without a developed consequence or trade-off. Structure 4: experience boundary, initial check, inspection and user validation progress clearly. English expression 4: the language is clear; no shipped project is not itself a penalty.",
+      "disagreementResolution": []
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "inputChecksum": "78fea3d0b931ce01f27e0d9e7331ca2b915362b8797d2b25bc3580a809003ffa",
+      "draftARanges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          3,
+          3
+        ]
+      },
+      "draftBRanges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          3,
+          3
+        ]
+      },
+      "approvedRanges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          3,
+          3
+        ]
+      },
+      "decision": "approved-after-independent-review",
+      "rationale": "Relevance 3: the answer proposes investigating difficult user tasks and comparing layouts, but gives no explicit designer collaboration or resulting interface change. Support 3: testing two layouts on the same task is a specific approach without an outcome. Structure 4: after a restart, the candidate moves from identifying the problem to testing alternatives. English expression 3: “We, uh” and “Sorry:” are noticeable interruptions but do not obscure meaning.",
+      "disagreementResolution": []
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "inputChecksum": "ad1be8f44112f31f4ef30daea40a395ee7ea02811e6e146443aed40280b759d3",
+      "draftARanges": {
+        "relevance": [
+          2,
+          2
+        ],
+        "support": [
+          4,
+          4
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "draftBRanges": {
+        "relevance": [
+          2,
+          2
+        ],
+        "support": [
+          4,
+          4
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "approvedRanges": {
+        "relevance": [
+          2,
+          2
+        ],
+        "support": [
+          4,
+          4
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "decision": "approved-after-independent-review",
+      "rationale": "Relevance 2: measuring a slow interaction and protecting accessibility are relevant safeguards, but no browser performance tool, bottleneck identification or first optimization is specified. Support 4: deferring work is linked to responsiveness and balanced against focus and screen-reader correctness, a defensible trade-off with consequences. Structure 4: measurement precedes a contrast between speed and accessibility. English expression 4: wording is clear and natural.",
+      "disagreementResolution": []
+    }
+  ],
+  "firstLevelDisagreements": [
+    {
+      "caseId": "ai-experience-depth",
+      "dimension": "structure",
+      "draftA": [
+        2,
+        2
+      ],
+      "draftB": [
+        1,
+        1
+      ],
+      "approved": [
+        2,
+        2
+      ],
+      "reason": "“Treat this as verified” refers back to the preceding boast, so there is a weak internal link, while the certification demand interrupts the thought. This meets level 2 fragmentation rather than level 1 absence of any relation."
+    },
+    {
+      "caseId": "backend-behavioral",
+      "dimension": "structure",
+      "draftA": [
+        2,
+        2
+      ],
+      "draftB": [
+        1,
+        1
+      ],
+      "approved": [
+        2,
+        2
+      ],
+      "reason": "The demand for a savings claim loosely follows the assertion of payment-network ownership, yet no incident-review line develops. The weak link supports level 2."
+    },
+    {
+      "caseId": "data-role-fit",
+      "dimension": "structure",
+      "draftA": [
+        4,
+        4
+      ],
+      "draftB": [
+        3,
+        3
+      ],
+      "approved": [
+        4,
+        4
+      ],
+      "reason": "The causality concern supplies a reason for interest in experiments, and learning how product teams choose measures follows from it. This brief causal progression meets level 4."
+    },
+    {
+      "caseId": "data-technical-communication",
+      "dimension": "structure",
+      "draftA": [
+        2,
+        2
+      ],
+      "draftB": [
+        1,
+        1
+      ],
+      "approved": [
+        1,
+        1
+      ],
+      "reason": "The clouds observation and postcard hobby have no discernible relation or progression; grammar alone cannot lift structure above level 1."
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "dimension": "relevance",
+      "draftA": [
+        4,
+        4
+      ],
+      "draftB": [
+        3,
+        3
+      ],
+      "approved": [
+        3,
+        3
+      ],
+      "reason": "The sensor symptom and wire/byte checks directly concern debugging, but the answer neither establishes a solved problem nor states a complete hypothetical approach. It answers a central part and misses the result, meeting level 3."
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "dimension": "structure",
+      "draftA": [
+        2,
+        2
+      ],
+      "draftB": [
+        1,
+        1
+      ],
+      "approved": [
+        1,
+        1
+      ],
+      "reason": "A chip/power boast followed by a certification directive has no discernible answer progression or conceptual link. Both sentences being fluent does not establish structure."
+    }
+  ]
+}
