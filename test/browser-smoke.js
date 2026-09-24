@@ -301,8 +301,13 @@ try {
  if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow on filtered job list');
  `);
  // Natural-language search criteria: describe it, confirm what was understood.
+ await browser('set','viewport','360','800');
  await run(`
  click('nav [data-view="discovery"]');await wait(()=>el('#search-request'),'job search view');
+ const sourceNote=el('.search-ask .job-source-note');
+ if(sourceNote?.textContent.trim()!=='目前只搜尋 Greenhouse；104、LinkedIn、Cake 的職缺請直接貼上 JD。')throw Error('Job search source note missing or incorrect');
+ if(getComputedStyle(sourceNote).color!==getComputedStyle(el('#interpret-disclosure')).color)throw Error('Job source note does not use secondary text colour');
+ if(sourceNote.scrollWidth>sourceNote.clientWidth||document.documentElement.scrollWidth>innerWidth)throw Error('Job source note overflows at 360px');
  if(!el('#interpret-disclosure').textContent.trim())throw Error('Outbound disclosure missing for the request text');
  const before=await fetch('/api/job-search-profile').then(r=>r.json());
  fill('#search-request','根據我的履歷，幫我找台灣適合轉職的 AI 職缺，最好能遠端');
@@ -350,6 +355,7 @@ try {
  if(!discovered.resume)throw Error('Resume choice was not carried into the snapshot');
  if(!discovered.sourceUrl)throw Error('Snapshot lost its source link');
  `);
+ await browser('set','viewport','390','844');
  // Short Mock Session: three questions in a row, no coaching during, summary at the end.
  await run(`
  click('[data-view="history"]');await wait(()=>el('#job-search'),'history for the mock session');

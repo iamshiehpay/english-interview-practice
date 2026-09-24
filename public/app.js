@@ -2058,6 +2058,7 @@ async function renderDiscovery() {
   const ask = document.createElement('section'); ask.className = 'settings-section search-ask'; ask.setAttribute('aria-labelledby', 'ask-heading');
   ask.innerHTML = `<h2 id="ask-heading">用一句話說你想找什麼</h2><label for="search-request">例如：根據我的履歷，幫我找台灣適合轉職的 AI 職缺，最好能遠端</label>
     <textarea id="search-request" rows="3" placeholder="用中文或英文都可以。"></textarea>
+    <p class="meta job-source-note">目前只搜尋 Greenhouse；104、LinkedIn、Cake 的職缺請直接貼上 JD。</p>
     <p class="data-note" id="interpret-disclosure"></p>
     <div class="button-row" id="interpret-actions"></div>
     <div id="interpret-result" aria-live="polite"></div>`;

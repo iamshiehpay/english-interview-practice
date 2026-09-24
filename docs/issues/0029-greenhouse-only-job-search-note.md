@@ -1,5 +1,5 @@
 ---
-status: ready-for-agent
+status: completed
 ---
 
 # Job-search page states that only Greenhouse is searched
@@ -28,10 +28,10 @@ changes.
 
 ## Acceptance criteria
 
-- [ ] The job-search view shows the exact copy above near the search request.
-- [ ] The line uses existing secondary-text tokens and wraps cleanly at 360 px width without horizontal scroll.
-- [ ] Browser smoke asserts the copy on the job-search view.
-- [ ] `npm test` and `npm run test:browser` pass.
+- [x] The job-search view shows the exact copy above near the search request.
+- [x] The line uses existing secondary-text tokens and wraps cleanly at 360 px width without horizontal scroll.
+- [x] Browser smoke asserts the copy on the job-search view.
+- [x] `npm test` and `npm run test:browser` pass.
 
 ## Files likely touched
 
@@ -51,3 +51,10 @@ npm run test:browser
 None — can start immediately.
 
 ## Comments
+
+### 2026-09-24 — AI implementation and independent verification
+
+- Implemented by `frontend-developer`; independently verified by `test-automator` and reviewed by `reviewer` using code-review (Standards PASS, Spec PASS; no findings).
+- `node --check public/app.js`, `npm test` (202/202), and `npm run test:browser` passed. Initial sandbox loopback binding failed with `listen EPERM`; the authorized isolated rerun passed. The developer first observed the new copy assertion fail before adding the note.
+- Independent agent-browser check on a temporary workspace and own server at 360 px: exact copy, matching existing secondary text colour, two readable lines, note client/scroll widths 279/279 px, document width 345 <= 360 px. Own browser session and server were closed; 4310 was never contacted.
+- Scope is static disclosure only; live Greenhouse availability was not tested and is outside this change. No new out-of-scope defect was found.

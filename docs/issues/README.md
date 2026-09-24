@@ -32,7 +32,7 @@ Local issue tracker for the Adaptive English Interview Coach. All issues below w
 | [0026 — Remaining views restyle (含練習紀錄標題截短)](./0026-remaining-views.md) | completed | 0022 |
 | [0027 — Short Mock Session dark room](./0027-mock-session-dark-room.md) | completed | 0022, 0024 |
 | [0028 — Verification: browser smoke, screenshots, runbook label sync](./0028-verification-and-runbook-sync.md) | completed | 0022, 0023, 0024, 0025, 0026, 0027 |
-| [0029 — Job-search page states that only Greenhouse is searched](./0029-greenhouse-only-job-search-note.md) | ready-for-agent | None |
+| [0029 — Job-search page states that only Greenhouse is searched](./0029-greenhouse-only-job-search-note.md) | completed | None |
 | [0030 — `/find-104-jobs` project skill](./0030-find-104-jobs-skill.md) | ready-for-agent | None |
 | [0031 — Common Questions mechanism: pinned self-introduction](./0031-common-questions-self-introduction.md) | ready-for-agent | None |
 | [0032 — Five common behavioural questions (常見行為題)](./0032-common-behavioural-questions.md) | ready-for-agent | 0031 |
