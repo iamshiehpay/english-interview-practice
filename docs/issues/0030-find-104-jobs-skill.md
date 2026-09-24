@@ -1,5 +1,5 @@
 ---
-status: ready-for-agent
+status: completed
 ---
 
 # `/find-104-jobs` project skill: search 104, save clean JDs, create Job Snapshots
@@ -49,13 +49,13 @@ permission approval.
 
 ## Acceptance criteria
 
-- [ ] The skill exists with valid frontmatter and a description that triggers on 104 job-search requests.
-- [ ] It enforces the default three / explicit five import limit.
-- [ ] Saved files follow the naming, first-line and second-line rules and live only in `.workspace/jds/`.
-- [ ] Duplicate 104 postings are skipped with a message; `.workspace/validation-jds/` is never written.
-- [ ] Snapshots are created only through the existing endpoint; no questions are generated.
-- [ ] An unreachable app produces a clear message and no server control actions.
-- [ ] Agent-run check (recorded under Comments): against the agent's own server (another port, temporary `WORKSPACE_DIR`, JD files in a temporary folder), one real job104 search imports 1–3 postings whose job titles read `職稱 — 公司`; a second run with the same posting skips it; no questions were generated; 4310 was never contacted.
+- [x] The skill exists with valid frontmatter and a description that triggers on 104 job-search requests.
+- [x] It enforces the default three / explicit five import limit.
+- [x] Saved files follow the naming, first-line and second-line rules and live only in `.workspace/jds/`.
+- [x] Duplicate 104 postings are skipped with a message; `.workspace/validation-jds/` is never written.
+- [x] Snapshots are created only through the existing endpoint; no questions are generated.
+- [x] An unreachable app produces a clear message and no server control actions.
+- [x] Agent-run check (recorded under Comments): against the agent's own server (another port, temporary `WORKSPACE_DIR`, JD files in a temporary folder), one real job104 search imports 1–3 postings whose job titles read `職稱 — 公司`; a second run with the same posting skips it; no questions were generated; 4310 was never contacted.
 
 ## Files likely touched
 
@@ -75,3 +75,11 @@ git check-ignore .workspace/jds/example.txt
 None — can start immediately.
 
 ## Comments
+
+### 2026-09-24 — AI implementation, independent check and review
+
+- Implemented by `backend-developer`; independent `test-automator` verified all seven criteria; `reviewer` returned Standards PASS and issue Spec PASS.
+- `git check-ignore -v .workspace/jds/example.txt` confirms `.gitignore:1`; frontmatter, selection, three/five cap, safe paths and provenance rules were reviewed directly in the Markdown skill.
+- Real job104 MCP search/detail was exercised via its installed Python SDK stdio transport. The independent disposable acceptance script `/private/tmp/issue0030_acceptance.py` ran with `/Users/shiehpay/Desktop/resume/.tools/job104-mcp/.venv/bin/python`, using an isolated server on port 62171 and temporary workspace/JD directories. It returned 12 candidates and imported selected posting `8t66j` as `資深後端工程師 — 聯想感行銷科技股份有限公司`, with URL/retrieval date on line two; created snapshot `cb612487-787e-403e-beec-ea3e0251ae23`; repeated selection skipped the duplicate. Workspace totals: one snapshot, zero analyses, zero records. The unreachable-app case retained the JD and reported failure. No request to 4310 occurred; only the owned test server was stopped. The developer separately completed the same real check on port 60902.
+- This instruction skill was verified through static review and a script following its workflow, not an executable skill interpreter. Import limits and other unexercised edge rules are instruction-reviewed, not claimed as runtime-tested. Public 104 network and loopback access used the normal escalation flow.
+- PRD story 19 requests a direct snapshot link, but this issue explicitly accepts its ID and excludes app changes. The app currently has no snapshot URL route; the skill honestly supplies ID plus base URL. Follow-up [0037](./0037-job-snapshot-deep-links.md) tracks that out-of-scope gap.
