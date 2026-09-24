@@ -12,7 +12,7 @@
 
 以下是 2026-09-23 從程式碼確認的事實，規劃必須面對，不能假設不存在。
 
-- **本機優先是既有決策**：ADR 0008（本機執行、雲端模型可替換）與 ADR 0013（最少化且由本機掌控練習資料）。部署到雲端會改變產品邊界，依 `AGENTS.md` 須先寫新 ADR（暫定 0020）。
+- **本機優先是既有決策**：ADR 0008（本機執行、雲端模型可替換）與 ADR 0013（最少化且由本機掌控練習資料）。部署到雲端會改變產品邊界，依 `AGENTS.md` 須先寫新 ADR（暫定 0021，0020 已用於 MVP 驗收規則調整，2026-09-24）。
 - **沒有登入機制**：服務假設只有一位受信任的本機使用者。直接公開到網路，任何人都能使用伺服器上的 API key，並讀取履歷、逐字稿與錄音。
 - **儲存是單一 JSON 檔**：`.workspace/workspace.json`，以「寫入 .tmp 再 rename」保證原子性（`src/store.js`）；錄音另存於 `.workspace/recordings/`。只能單一行程、單一實例，需要持久化磁碟。無狀態平台（Cloud Run 類）與 FUSE 掛載的物件儲存不保證 rename 原子性，不適合。
 - **Codex 訂閱只能在 macOS 執行**：`src/codex-sandbox.js:16` 強制 `process.platform==='darwin'`，靠 `sandbox-exec` 隔離。雲端 Linux 主機無法使用 Codex 訂閱，只能用 OpenAI／Claude API key 或 fake provider。
@@ -40,7 +40,7 @@
 - 練習用 Codex 預設改為 `gpt-5.6-luna`、reasoning effort `xhigh`，Codex 逾時提高到 180 秒。已實作於 `914c842`；server 原本拒絕超過 120 秒的逾時，上限改為 300 秒，修正於 `31badc4`。2026-09-23。
 - Issue 0010–0021 狀態改為 `awaiting-human-validation`。已提交於 `94614ed`。2026-09-23。
 - **部署對象**：雲端只放給面試官／招募者看的公開 Demo，免登入、隨時可開、不含個人資料、不花 API 費用；創作者本人的日常練習留在本機 Mac（使用 Codex 訂閱）。使用者於 2026-09-23 確認（「本來就是這樣」）。
-- **Demo 資料隔離**：每位訪客一份獨立的暫存 workspace（以 cookie 區分 session），建立時複製一組種子資料（示範職缺與已完成的練習紀錄），閒置 1 小時自動刪除；頁面顯示「Demo 使用示範模型，請勿輸入真實個人資料」。種子資料先用 fake 模型產生。使用者於 2026-09-23 確認。這需要修改 server 依 session 選擇 store，屬於程式變更，須寫進 ADR 0020。
+- **Demo 資料隔離**：每位訪客一份獨立的暫存 workspace（以 cookie 區分 session），建立時複製一組種子資料（示範職缺與已完成的練習紀錄），閒置 1 小時自動刪除；頁面顯示「Demo 使用示範模型，請勿輸入真實個人資料」。種子資料先用 fake 模型產生。使用者於 2026-09-23 確認。這需要修改 server 依 session 選擇 store，屬於程式變更，須寫進 ADR 0021（0020 已用於 MVP 驗收規則調整，2026-09-24）。
 - **練習用模型維持 Codex 訂閱**：`gpt-5.6-luna`、xhigh、預設開 Fast 模式（service tier `priority`，1.5 倍速、較耗訂閱額度），已實作於 `27a1190`。合成 Practice Loop 從 118 秒降到 78 秒。2026-09-23。
 - **不做 Claude 訂閱 provider（暫緩）**：2026-09-23 查證，Claude Agent SDK 文件仍寫明未經核准不得讓第三方產品提供 claude.ai 登入或訂閱額度；2026 年的計費調整已暫停，個人自用 `claude -p` 仍計入訂閱額度。本專案要公開為作品集，把訂閱登入做成功能不合適，且要重做與 Codex 同等的隔離。使用者表示「如果不行就保留 codex」。
 - **託管：只用 GCP Cloud Run**。使用者於 2026-09-23 確認；Cloudflare 邊緣層原列為選配，同日討論後改為「有需要才加」。
@@ -48,7 +48,7 @@
   - 訪客隔離在 app 內做（每個 session 一個暫存目錄），不依賴平台；Cloud Run 不保證 sticky routing。
   - Cloudflare 邊緣層（Worker 放在 Cloud Run 前面，負責網址、限流、Turnstile、靜態檔快取，不存 workspace）**暫不做**：多一個平台要多管帳號、權限、Terraform provider、state 與分散的 log，而在 Demo 規模下效益很小（egress 最壞約 $0.05／月且 gzip 可省大半；session 上限已擋住濫用；網址面試官只點一次）。作品集重點是每個元件都講得出存在理由。
   - 觸發條件（任一出現才加邊緣層）：billing budget 告警實際寄出（開始有 egress 費用）、出現濫用使 Demo 常態額滿、購買了網域。
-  - 需要的程式變更：`src/server.js:762` 監聽位址寫死 `127.0.0.1`（ADR 0013 的刻意設計），改為 `HOST` 環境變數，本機預設不變，僅容器設 `0.0.0.0`；須寫進 ADR 0020。
+  - 需要的程式變更：`src/server.js:762` 監聽位址寫死 `127.0.0.1`（ADR 0013 的刻意設計），改為 `HOST` 環境變數，本機預設不變，僅容器設 `0.0.0.0`；須寫進 ADR 0021（0020 已用於 MVP 驗收規則調整，2026-09-24）。
   - 不選 Cloudflare Workers 改寫（方案 C）：`src/` 21 個檔案中 11 個使用 `node:fs`／`child_process`／`http`，要維護兩種執行環境並放棄零依賴；列為 DevOps 完成後的獨立架構延伸。`store.js` 抽成可替換介面的重構兩者共用。
 - **CI／CD 範圍**（GitHub Actions）。使用者於 2026-09-23 確認。
   - PR／分支 push（只檢查）：`npm test`、`npm run evaluate`（fake provider）、`docker build` 後啟動容器打 `/api/health` smoke、Trivy 映像掃描、hadolint、`terraform fmt`／`validate`／`plan`（結果貼到 PR）。
@@ -87,7 +87,7 @@
   5. 刻意推一個會讓 smoke 失敗的版本，驗證 CI 自動 rollback，過程記錄於 `docs/verification/`。
   6. 觸發一次告警並確認 email 收到。
   7. Trivy 掃描無 HIGH／CRITICAL。
-  8. ADR 0020：本機限定改為公開 Demo 的產品邊界變更。
+  8. ADR 0021（0020 已用於 MVP 驗收規則調整，2026-09-24）：本機限定改為公開 Demo 的產品邊界變更。
   9. `docs/devops/runbook.md`：部署、rollback、Demo 額滿、budget 告警的處理。
   10. `docs/devops/cost.md`：逐項說明為何是 $0，及 2027 年告警收費的應對。
   - 明確不做：Kubernetes、staging／prod 多環境、Cloudflare（未達觸發條件）、真實模型的 Demo。
