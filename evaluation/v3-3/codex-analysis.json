@@ -327,6 +327,466 @@
           }
         ]
       }
+    ],
+    [
+      "Analyze product experiments in Hsinchu.\nUse SQL and Python to investigate missing data.\nCommunicate uncertainty to product managers.\nExplain experiment assumptions and confidence intervals.",
+      {
+        "capabilities": [
+          {
+            "id": "cap-1",
+            "description": "Analyze product experiments in Hsinchu.",
+            "evidence": "Analyze product experiments in Hsinchu.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap-2",
+            "description": "Use SQL and Python to investigate missing data.",
+            "evidence": "Use SQL and Python to investigate missing data.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap-3",
+            "description": "Communicate uncertainty to product managers.",
+            "evidence": "Communicate uncertainty to product managers.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap-4",
+            "description": "Explain experiment assumptions and confidence intervals.",
+            "evidence": "Explain experiment assumptions and confidence intervals.",
+            "kind": "fact"
+          }
+        ],
+        "questions": [
+          {
+            "id": "q-1",
+            "text": "What interests you about analyzing product experiments in Hsinchu, and how would you get oriented to the product context?",
+            "meaningZh": "你對在新竹分析產品實驗的哪一部分感興趣？你會如何熟悉產品脈絡？",
+            "rationale": "This assesses motivation and fit for the stated product-experiment context and location.",
+            "rationaleZh": "這可評估你對題述產品實驗情境與地點的動機及契合度。",
+            "category": "role-fit",
+            "capabilityIds": [
+              "cap-1"
+            ],
+            "evidence": "Analyze product experiments in Hsinchu."
+          },
+          {
+            "id": "q-2",
+            "text": "How would you combine SQL and Python to investigate a dataset with missing data? Please walk through your workflow and decision points.",
+            "meaningZh": "你會如何結合 SQL 與 Python 來調查含有缺失資料的資料集？請逐步說明你的工作流程與決策點。",
+            "rationale": "This tests whether you can design a concrete SQL-and-Python workflow for investigating missing data.",
+            "rationaleZh": "這可測試你是否能設計具體的 SQL 與 Python 工作流程來調查缺失資料。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap-2"
+            ],
+            "evidence": "Use SQL and Python to investigate missing data."
+          },
+          {
+            "id": "q-3",
+            "text": "How would you communicate uncertainty in an analysis to a product manager without overstating or hiding it?",
+            "meaningZh": "你會如何向產品經理傳達分析中的不確定性，同時避免誇大或掩蓋它？",
+            "rationale": "This checks whether you can communicate analytical uncertainty clearly to a product audience.",
+            "rationaleZh": "這可檢視你是否能向產品受眾清楚傳達分析不確定性。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap-3"
+            ],
+            "evidence": "Communicate uncertainty to product managers."
+          },
+          {
+            "id": "q-4",
+            "text": "What assumptions would you explain when presenting an experiment result, and how would you relate them to its confidence interval?",
+            "meaningZh": "在呈現實驗結果時，你會解釋哪些假設？你會如何說明這些假設與信賴區間的關係？",
+            "rationale": "This probes depth of understanding about experiment assumptions and confidence intervals.",
+            "rationaleZh": "這可深入了解你對實驗假設與信賴區間的理解程度。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap-4"
+            ],
+            "evidence": "Explain experiment assumptions and confidence intervals."
+          },
+          {
+            "id": "q-5",
+            "text": "If you have investigated missing data before, describe how you determined its cause and impact; if you have not encountered this, how would you approach it?",
+            "meaningZh": "如果你過去曾調查缺失資料，請說明你如何判定其原因與影響；如果你尚未遇過這種情況，你會如何處理？",
+            "rationale": "This evaluates practical depth in diagnosing missing data while allowing a hypothetical response if prior experience is unavailable.",
+            "rationaleZh": "這可評估你診斷缺失資料的實務深度，同時讓沒有相關經驗時可以用假設情境回答。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap-2"
+            ],
+            "evidence": "Use SQL and Python to investigate missing data."
+          },
+          {
+            "id": "q-6",
+            "text": "Tell me about a time you communicated uncertain analytical results to a product manager, or explain how you would approach this if you have not encountered it.",
+            "meaningZh": "請分享一次你向產品經理傳達不確定分析結果的經驗；如果你尚未遇過這種情況，請說明你會如何處理。",
+            "rationale": "This assesses behavioral evidence of communicating uncertainty, without presuming that you have done so before.",
+            "rationaleZh": "這可評估你傳達不確定性的行為表現，但不預設你過去一定做過這件事。",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap-3"
+            ],
+            "evidence": "Communicate uncertainty to product managers."
+          },
+          {
+            "id": "q-7",
+            "text": "Describe a time when an experiment assumption or confidence interval was challenged, or how would you approach this if you have not encountered it?",
+            "meaningZh": "請描述一次有人質疑實驗假設或信賴區間的情況；如果你尚未遇過這種情況，你會如何處理？",
+            "rationale": "This evaluates how you respond when the foundations or uncertainty of an experiment are questioned.",
+            "rationaleZh": "這可評估當實驗基礎或不確定性受到質疑時，你會如何回應。",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap-4"
+            ],
+            "evidence": "Explain experiment assumptions and confidence intervals."
+          },
+          {
+            "id": "q-8",
+            "text": "Suppose a product manager asks for a quick experiment conclusion, but the data is incomplete. How would you balance usefulness, uncertainty, and next steps?",
+            "meaningZh": "假設產品經理要求快速得出實驗結論，但資料並不完整，你會如何平衡實用性、不確定性與後續步驟？",
+            "rationale": "This assesses judgment when product decisions must be supported despite uncertainty.",
+            "rationaleZh": "這可評估在必須支援產品決策但存在不確定性時的判斷力。",
+            "category": "role-fit",
+            "capabilityIds": [
+              "cap-3"
+            ],
+            "evidence": "Communicate uncertainty to product managers."
+          },
+          {
+            "id": "q-9",
+            "text": "How would you check that a SQL-and-Python finding about missing data is reliable before explaining it to a product manager?",
+            "meaningZh": "在向產品經理解釋之前，你會如何確認 SQL 與 Python 得出的缺失資料發現是可靠的？",
+            "rationale": "This tests the connection between technical validation and clear communication of a data-quality finding.",
+            "rationaleZh": "這可測試你如何把技術驗證與清楚傳達資料品質發現連結起來。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap-2"
+            ],
+            "evidence": "Use SQL and Python to investigate missing data."
+          },
+          {
+            "id": "q-10",
+            "text": "How would you explain a confidence interval to a product manager using an experiment example without implying certainty?",
+            "meaningZh": "你會如何用實驗範例向產品經理解釋信賴區間，同時避免讓對方以為結果是確定的？",
+            "rationale": "This checks whether you can translate statistical uncertainty into an accurate product-facing explanation.",
+            "rationaleZh": "這可檢視你是否能將統計不確定性轉化為準確、面向產品的說明。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap-4"
+            ],
+            "evidence": "Explain experiment assumptions and confidence intervals."
+          }
+        ]
+      }
+    ],
+    [
+      "Build embedded sensor software in Hsinchu.\nDebug C firmware and serial communication.\nCoordinate hardware and software investigations.\nExplain timing and memory constraints.",
+      {
+        "capabilities": [
+          {
+            "id": "cap-embedded-sensor",
+            "description": "Build embedded sensor software in Hsinchu.",
+            "evidence": "Build embedded sensor software in Hsinchu.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap-c-debugging",
+            "description": "Debug C firmware and serial communication.",
+            "evidence": "Debug C firmware and serial communication.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap-hw-sw-coordination",
+            "description": "Coordinate hardware and software investigations.",
+            "evidence": "Coordinate hardware and software investigations.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap-constraints-communication",
+            "description": "Explain timing and memory constraints.",
+            "evidence": "Explain timing and memory constraints.",
+            "kind": "fact"
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "text": "What interests you about building embedded sensor software in Hsinchu, and how would you contribute in this role?",
+            "meaningZh": "是什麼讓你對在新竹開發嵌入式感測器軟體感興趣？你會如何在這個職位中做出貢獻？",
+            "rationale": "This assesses motivation and alignment with the embedded sensor software role.",
+            "rationaleZh": "這能評估你的動機，以及你與嵌入式感測器軟體職位的契合度。",
+            "category": "role-fit",
+            "capabilityIds": [
+              "cap-embedded-sensor"
+            ],
+            "evidence": "Build embedded sensor software in Hsinchu."
+          },
+          {
+            "id": "q2",
+            "text": "Describe a C-firmware or serial-communication debugging problem you have solved, or how would you approach one if you have not encountered it?",
+            "meaningZh": "請描述一個你曾解決的 C 韌體或串列通訊除錯問題；如果你尚未遇過這類問題，你會如何處理？",
+            "rationale": "This probes practical debugging depth while allowing a hypothetical answer when direct experience is unavailable.",
+            "rationaleZh": "這能探查實務除錯深度；如果缺乏直接經驗，也允許你以假設情境回答。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap-c-debugging"
+            ],
+            "evidence": "Debug C firmware and serial communication."
+          },
+          {
+            "id": "q3",
+            "text": "Suppose a sensor reports intermittent corrupted frames over a serial link. Walk through how you would isolate the fault and validate the fix.",
+            "meaningZh": "假設感測器透過串列連線間歇性回報損壞的資料框，請逐步說明你會如何隔離故障並驗證修正結果。",
+            "rationale": "This evaluates a structured approach to diagnosing firmware and serial-communication failures.",
+            "rationaleZh": "這能評估你診斷韌體與串列通訊故障時是否具備有條理的方法。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap-c-debugging"
+            ],
+            "evidence": "Debug C firmware and serial communication."
+          },
+          {
+            "id": "q4",
+            "text": "How would you determine whether a sensor defect comes from C firmware, the serial protocol, or the hardware?",
+            "meaningZh": "你會如何判斷感測器故障是來自 C 韌體、串列通訊協定，還是硬體？",
+            "rationale": "This tests fault isolation across the software, communication, and hardware boundaries.",
+            "rationaleZh": "這能測試你在軟體、通訊與硬體邊界之間進行故障隔離的能力。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap-c-debugging",
+              "cap-hw-sw-coordination"
+            ],
+            "evidence": "Debug C firmware and serial communication."
+          },
+          {
+            "id": "q5",
+            "text": "Describe a time you coordinated hardware and software investigations, or how would you approach this if you have not encountered it?",
+            "meaningZh": "請描述一次你協調硬體與軟體調查的經驗；如果你尚未遇過這種情況，你會如何處理？",
+            "rationale": "This assesses cross-functional investigation practices without assuming prior coordination experience.",
+            "rationaleZh": "這能評估你進行跨職能調查的方法，同時不預設你已有協調經驗。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap-hw-sw-coordination"
+            ],
+            "evidence": "Coordinate hardware and software investigations."
+          },
+          {
+            "id": "q6",
+            "text": "If hardware and software engineers disagree about the cause of a sensor failure, how would you build alignment and decide the next experiment?",
+            "meaningZh": "如果硬體與軟體工程師對感測器故障原因有不同看法，你會如何建立共識並決定下一個實驗？",
+            "rationale": "This examines collaborative reasoning and evidence-based coordination during an investigation.",
+            "rationaleZh": "這能檢視你在調查過程中進行協作推理與依據證據協調的能力。",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap-hw-sw-coordination"
+            ],
+            "evidence": "Coordinate hardware and software investigations."
+          },
+          {
+            "id": "q7",
+            "text": "Tell me about a time you explained timing or memory constraints to another person, or how would you approach this if you have not encountered it?",
+            "meaningZh": "請告訴我一次你向他人解釋時序或記憶體限制的經驗；如果你尚未遇過這種情況，你會如何處理？",
+            "rationale": "This assesses communication of embedded-system constraints while providing a hypothetical alternative.",
+            "rationaleZh": "這能評估你溝通嵌入式系統限制的能力，同時提供假設情境作為替代回答方式。",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap-constraints-communication"
+            ],
+            "evidence": "Explain timing and memory constraints."
+          },
+          {
+            "id": "q8",
+            "text": "How would you explain a timing constraint to a non-specialist using a concrete sensor example?",
+            "meaningZh": "你會如何用具體的感測器例子，向非專業人士解釋時序限制？",
+            "rationale": "This tests whether you can translate timing concepts into clear, concrete language.",
+            "rationaleZh": "這能測試你是否能將時序概念轉化為清楚且具體的語言。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap-constraints-communication"
+            ],
+            "evidence": "Explain timing and memory constraints."
+          },
+          {
+            "id": "q9",
+            "text": "How would you explain a memory constraint in C firmware, including the trade-off you would ask the team to consider?",
+            "meaningZh": "你會如何解釋 C 韌體中的記憶體限制，包括你會請團隊考量的取捨？",
+            "rationale": "This evaluates technical explanation and awareness of engineering trade-offs involving memory.",
+            "rationaleZh": "這能評估你進行技術解釋的能力，以及你對記憶體相關工程取捨的理解。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap-constraints-communication"
+            ],
+            "evidence": "Explain timing and memory constraints."
+          },
+          {
+            "id": "q10",
+            "text": "Imagine a sensor task occasionally misses its deadline after a firmware change. What measurements, hypotheses, and trade-offs would you communicate?",
+            "meaningZh": "假設韌體變更後，感測器工作偶爾錯過截止時間，你會溝通哪些測量結果、假設與取捨？",
+            "rationale": "This combines timing analysis with concise communication of evidence and possible trade-offs.",
+            "rationaleZh": "這能結合時序分析，以及對證據與可能取捨進行簡潔溝通的能力。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap-constraints-communication"
+            ],
+            "evidence": "Explain timing and memory constraints."
+          }
+        ]
+      }
+    ],
+    [
+      "Build accessible web interfaces in Taipei.\nUse JavaScript and browser performance tools.\nCollaborate with designers on usability feedback.\nExplain accessibility and rendering trade-offs.",
+      {
+        "capabilities": [
+          {
+            "id": "cap-accessibility",
+            "description": "Build accessible web interfaces in Taipei.",
+            "evidence": "Build accessible web interfaces in Taipei.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap-javascript-performance",
+            "description": "Use JavaScript and browser performance tools.",
+            "evidence": "Use JavaScript and browser performance tools.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap-designer-collaboration",
+            "description": "Collaborate with designers on usability feedback.",
+            "evidence": "Collaborate with designers on usability feedback.",
+            "kind": "fact"
+          },
+          {
+            "id": "cap-tradeoffs",
+            "description": "Explain accessibility and rendering trade-offs.",
+            "evidence": "Explain accessibility and rendering trade-offs.",
+            "kind": "fact"
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "text": "What interests you about building accessible web interfaces in Taipei, and how would you define a successful outcome for users?",
+            "meaningZh": "是什麼讓你對在臺北打造無障礙網頁介面感興趣？你會如何定義對使用者而言成功的成果？",
+            "rationale": "This assesses motivation for the role and whether the candidate centers accessible user outcomes.",
+            "rationaleZh": "這能評估對該職位的動機，以及候選人是否以使用者可及的成果為中心。",
+            "category": "role-fit",
+            "capabilityIds": [
+              "cap-accessibility"
+            ],
+            "evidence": "Build accessible web interfaces in Taipei."
+          },
+          {
+            "id": "q2",
+            "text": "Suppose a JavaScript-driven interface feels slow in the browser. How would you use browser performance tools to locate the bottleneck and decide what to optimize first?",
+            "meaningZh": "假設由 JavaScript 驅動的介面在瀏覽器中感覺緩慢，你會如何使用瀏覽器效能工具找出瓶頸，並決定先優化什麼？",
+            "rationale": "This probes practical use of JavaScript and browser performance tools, including prioritization.",
+            "rationaleZh": "這能探查 JavaScript 與瀏覽器效能工具的實際使用能力，包括優先順序判斷。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap-javascript-performance"
+            ],
+            "evidence": "Use JavaScript and browser performance tools."
+          },
+          {
+            "id": "q3",
+            "text": "Describe an accessible web interface you have built, including the user needs you considered; if you have not built one, how would you approach building one?",
+            "meaningZh": "請描述你曾經打造的無障礙網頁介面，包括你考量的使用者需求；如果你尚未打造過，會如何著手打造？",
+            "rationale": "This tests depth of accessible-interface experience without assuming the candidate has prior experience.",
+            "rationaleZh": "這能測試無障礙介面經驗的深度，但不預設候選人一定有先前經驗。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap-accessibility"
+            ],
+            "evidence": "Build accessible web interfaces in Taipei."
+          },
+          {
+            "id": "q4",
+            "text": "How would you explain to a non-specialist why an accessibility improvement might affect rendering performance, and how would you present the trade-off?",
+            "meaningZh": "你會如何向非專業人士解釋為什麼無障礙改善可能影響渲染效能，以及你會如何呈現這項取捨？",
+            "rationale": "This assesses the ability to communicate technical trade-offs clearly to a non-specialist.",
+            "rationaleZh": "這能評估向非專業人士清楚傳達技術取捨的能力。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap-tradeoffs"
+            ],
+            "evidence": "Explain accessibility and rendering trade-offs."
+          },
+          {
+            "id": "q5",
+            "text": "Tell me about a time you collaborated with a designer on usability feedback and changed an interface as a result, or how would you approach this if you have not encountered it?",
+            "meaningZh": "請分享一次你與設計師合作處理可用性回饋並因此修改介面的經驗；如果你尚未遇過這種情況，你會如何處理？",
+            "rationale": "This evaluates collaboration, receptiveness to usability feedback, and the ability to turn feedback into interface changes.",
+            "rationaleZh": "這能評估合作能力、接受可用性回饋的態度，以及將回饋轉化為介面修改的能力。",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap-designer-collaboration"
+            ],
+            "evidence": "Collaborate with designers on usability feedback."
+          },
+          {
+            "id": "q6",
+            "text": "When building a web interface, how would you test whether it is accessible rather than assuming it is?",
+            "meaningZh": "打造網頁介面時，你會如何測試它是否具備無障礙性，而不是直接假設它具備無障礙性？",
+            "rationale": "This probes whether the candidate uses a deliberate validation approach for accessible interfaces.",
+            "rationaleZh": "這能探查候選人是否會對無障礙介面採取有意識的驗證方法。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap-accessibility"
+            ],
+            "evidence": "Build accessible web interfaces in Taipei."
+          },
+          {
+            "id": "q7",
+            "text": "Given a page with slow rendering after adding JavaScript interactions, what measurements would you collect, what hypotheses would you test, and how would you validate the fix?",
+            "meaningZh": "假設加入 JavaScript 互動後頁面渲染變慢，你會蒐集哪些測量資料、測試哪些假設，以及如何驗證修正結果？",
+            "rationale": "This examines depth in diagnosing rendering regressions and validating performance improvements.",
+            "rationaleZh": "這能檢視診斷渲染退化及驗證效能改善的深度。",
+            "category": "experience-depth",
+            "capabilityIds": [
+              "cap-javascript-performance"
+            ],
+            "evidence": "Use JavaScript and browser performance tools."
+          },
+          {
+            "id": "q8",
+            "text": "Tell me about a disagreement with a designer or teammate over usability or accessibility, and how you resolved it, or how would you approach it if you have not encountered it?",
+            "meaningZh": "請分享一次你與設計師或隊友在可用性或無障礙性上意見不一致的經驗，以及你如何解決；如果你尚未遇過這種情況，你會如何處理？",
+            "rationale": "This assesses respectful collaboration and decision-making when usability or accessibility concerns conflict.",
+            "rationaleZh": "這能評估在可用性或無障礙性考量衝突時的尊重式合作與決策能力。",
+            "category": "behavioral",
+            "capabilityIds": [
+              "cap-designer-collaboration"
+            ],
+            "evidence": "Collaborate with designers on usability feedback."
+          },
+          {
+            "id": "q9",
+            "text": "When accessibility and rendering goals conflict, how would you compare the options and communicate your recommendation to designers and stakeholders?",
+            "meaningZh": "當無障礙目標與渲染目標衝突時，你會如何比較各種方案，並向設計師與利害關係人傳達你的建議？",
+            "rationale": "This tests structured trade-off analysis and clear communication across technical and design audiences.",
+            "rationaleZh": "這能測試結構化的取捨分析，以及在技術與設計受眾之間清楚溝通的能力。",
+            "category": "technical-communication",
+            "capabilityIds": [
+              "cap-tradeoffs"
+            ],
+            "evidence": "Explain accessibility and rendering trade-offs."
+          },
+          {
+            "id": "q10",
+            "text": "What would you prioritize in your first implementation of an accessible web interface in Taipei, and why?",
+            "meaningZh": "在臺北首次實作無障礙網頁介面時，你會優先處理什麼，以及為什麼？",
+            "rationale": "This reveals how the candidate translates the role requirement into concrete implementation priorities.",
+            "rationaleZh": "這能了解候選人如何將職位要求轉化為具體的實作優先順序。",
+            "category": "role-fit",
+            "capabilityIds": [
+              "cap-accessibility"
+            ],
+            "evidence": "Build accessible web interfaces in Taipei."
+          }
+        ]
+      }
     ]
   ]
 }
