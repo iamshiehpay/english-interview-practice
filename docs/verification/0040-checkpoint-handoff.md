@@ -1,0 +1,5 @@
+# 0040 — checkpoint handoff
+
+The contract 3.1 runner writes each validated feedback result to a fsynced, atomically renamed checkpoint. On `--resume`, it validates the full fixture, source, model configuration, frozen question, feedback and input/output checksums before starting provider work. Exactly the saved case/repeat keys are reused. Missing and failed keys are attempted once; evaluation disables the app's validation retry. Complete replay opens no workspace and uses zero feedback calls. Reports distinguish fresh calls, new results, reused results and total evidence. Three-repeat stability remains unchanged.
+
+Current output uses `v3-1`, `codex-v3-1` or `live-v3-1` paths, preserving frozen contract 3.0 evidence. The interrupted fake-provider integration test kills a run after the first durable entry, resumes the remaining keys, and verifies complete offline replay. Unit tests reject stale source/fixture/configuration, altered checksums, tampered output, duplicates, missing analysis and temporary partial files. No live model or 4310 access occurred. Release still requires new authorized model output and independent review.

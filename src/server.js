@@ -35,7 +35,7 @@ export function operationBudgets(env = process.env) {
   const operationTimeoutMs = Number(env.COACH_TIMEOUT_MS || (provider === 'codex' ? 180000 : provider === 'claude' ? 90000 : 30000));
   return {operationTimeoutMs, generationTimeoutMs: env.COACH_GENERATION_TIMEOUT_MS ? Number(env.COACH_GENERATION_TIMEOUT_MS) : Math.min(2 * operationTimeoutMs, MAX_GENERATION_TIMEOUT_MS)};
 }
-export async function createApplication({directory = '.workspace', languageModel = new FakeLanguageModel(), speechProvider = new FakeSpeechProvider(), jobSource = new FakeJobSource(), sourceTimeoutMs = 10000, operationTimeoutMs = 30000, generationTimeoutMs = Math.min(2 * operationTimeoutMs, MAX_GENERATION_TIMEOUT_MS), logRejectedOutput = process.env.NODE_TEST_CONTEXT ? () => {} : line => console.error(line)} = {}) {
+export async function createApplication({directory = '.workspace', languageModel = new FakeLanguageModel(), speechProvider = new FakeSpeechProvider(), jobSource = new FakeJobSource(), sourceTimeoutMs = 10000, operationTimeoutMs = 30000, generationTimeoutMs = Math.min(2 * operationTimeoutMs, MAX_GENERATION_TIMEOUT_MS), validationRetryLimit = 1, logRejectedOutput = process.env.NODE_TEST_CONTEXT ? () => {} : line => console.error(line)} = {}) {
   requireValue(Number.isFinite(operationTimeoutMs) && operationTimeoutMs >= 10 && operationTimeoutMs <= MAX_OPERATION_TIMEOUT_MS, `Operation timeout must be between 10 and ${MAX_OPERATION_TIMEOUT_MS} milliseconds`);
   requireValue(Number.isFinite(generationTimeoutMs) && generationTimeoutMs >= 10 && generationTimeoutMs <= MAX_GENERATION_TIMEOUT_MS, `Generation timeout must be between 10 and ${MAX_GENERATION_TIMEOUT_MS} milliseconds`);
   const store = await new LocalWorkspace(directory).open();
@@ -74,9 +74,9 @@ export async function createApplication({directory = '.workspace', languageModel
   // reaches the workspace, an operation record or a response. Quiet under node --test.
   // A rejection too late in the operation's budget for another attempt is not retried
   // (see withValidationRetry); the operation records `validationRetrySkipped` instead.
-  const generate = (context, call, validate) => withValidationRetry(call, validate, {signal: context?.signal, deadline: context?.deadline, onRejection: (error, output, attempt, retrying) => {
+  const generate = (context, call, validate) => withValidationRetry(call, validate, {signal: context?.signal, deadline: context?.deadline, maxAttempts:validationRetryLimit+1, onRejection: (error, output, attempt, retrying) => {
     if (attempt === 1) context?.note(retrying ? {validationRetries: 1, firstRejection: error.reason} : {validationRetrySkipped: true});
-    logRejectedOutput(`[provider-output-rejected] ${context?.kind ?? 'request'} attempt ${attempt} of 2${attempt === 1 && !retrying ? ' (not retried: the operation budget cannot fit another attempt)' : ''}: ${error.reason}\n${redactSecrets(JSON.stringify(output), 200000)}`);
+    logRejectedOutput(`[provider-output-rejected] ${context?.kind ?? 'request'} attempt ${attempt} of ${validationRetryLimit+1}${attempt === 1 && !retrying ? ' (not retried)' : ''}: ${error.reason}\n${redactSecrets(JSON.stringify(output), 200000)}`);
   }});
   const item = (collection, id) => { const held = store.data[collection] || {}; const value = typeof id === 'string' && Object.hasOwn(held,id) ? held[id] : undefined; requireValue(value, 'Not found', 404); return structuredClone(value); };
   // Read-aloud resolves English text from stored content; the browser may only send a

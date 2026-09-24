@@ -104,6 +104,11 @@ test('withValidationRetry does not call again once the operation is aborted',asy
   assert.deepEqual(seen,[['Invalid provider output: x',2,1]]);
   await assert.rejects(withValidationRetry(async()=>1,()=>{throw new AppError('A session with no answers has nothing to assess',409);}),{status:409});
 });
+test('evaluation can disable the automatic validation retry without relaxing validation',async()=>{
+  let calls=0;
+  await assert.rejects(withValidationRetry(async()=>{calls++;return {};},()=>{throw new AppError('Invalid provider output: feedback ratings missing or extra fields',502);},{maxAttempts:1}),{status:502});
+  assert.equal(calls,1);
+});
 
 test('provider errors that are not validation failures are never retried',async t=>{
   const provider=new FakeLanguageModel();let calls=0,failure;provider.feedback=async()=>{calls++;throw failure;};

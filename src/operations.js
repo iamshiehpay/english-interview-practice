@@ -14,14 +14,15 @@ const failureReason = error => redactSecrets(error?.reason, 200) || '';
 // could fit another call as long as the first one: otherwise it would be cut off and
 // reported as a TIMEOUT, hiding the real reason, so the rejection is reported instead.
 export const isValidationRejection = error => error instanceof AppError && error.status === 502 && /^Invalid provider output:/.test(error.message);
-export async function withValidationRetry(call, validate, {signal, onRejection, deadline = Infinity} = {}) {
+export async function withValidationRetry(call, validate, {signal, onRejection, deadline = Infinity, maxAttempts = 2} = {}) {
+  if(!Number.isInteger(maxAttempts)||maxAttempts<1||maxAttempts>2)throw Error('Validation attempts must be one or two');
   for (let attempt = 1; ; attempt++) {
     signal?.throwIfAborted();
     const started = Date.now(), output = await call();
     try { return await validate(output); }
     catch (error) {
       if (!isValidationRejection(error)) throw error;
-      const retrying = attempt === 1 && deadline - Date.now() >= Date.now() - started;
+      const retrying = attempt < maxAttempts && deadline - Date.now() >= Date.now() - started;
       onRejection?.(error, output, attempt, retrying);
       if (!retrying) throw error;
     }
