@@ -1,91 +1,91 @@
-# Goal：以 $implement 實作 issue 0029–0036，每張實作後獨立驗證，loop 到全部完成
+# Goal: implement issues 0029–0036 with $implement, verify each one independently, and loop until all are done
 
-建立日期：2026-09-24。給 Codex（codex-cli 0.155.1）使用；subagent 對應 `~/.codex/agents/` 的自訂角色。
+Created 2026-09-24. For Codex; subagents map to the custom roles in `~/.codex/agents/`.
 
-## 背景
-- 本輪 PRD：`docs/prd-v1-readiness.md`；issue：`docs/issues/0029`–`0036`；索引：`docs/issues/README.md`。
-- v1.0.0 是 **AI-validated release**（見 `docs/next-steps-discussion.md` 最後一條決策）：沒有任何「本人」關卡。persona 練習和標註都由 AI 完成，而且一律誠實標成 AI，**絕不用使用者的名義簽署或核准**。
-- 使用者已**事先授權** 0035 的 Codex 評估：只跑一次，約 65 次訂閱呼叫。失敗時記錄原因，不得自動重跑。
-- 全程不需要問使用者。只有遇到下方「停止條件」才停下並回報。
+## Background
+- PRD for this round: `docs/prd-v1-readiness.md`; issues: `docs/issues/0029`–`0036`; index: `docs/issues/README.md`.
+- v1.0.0 is an **AI-validated release** (see the last decision in `docs/next-steps-discussion.md`): there are no creator-only gates. Persona practice and labelling are done by AI and always honestly marked as AI. **Never sign or approve anything in the user's name.**
+- The user has **pre-authorised** the Codex evaluation in 0035: exactly one run, about 65 subscription calls. If it fails, record why; never re-run it automatically.
+- Do not ask the user anything. Stop and report only under the stop conditions below.
 
-## 開始前（交給 subagent 讀，主 agent 只收摘要）
-- 用 `repo-scout` 讀 PRD、8 張 issue、`AGENTS.md`、`CONTEXT.md`、`docs/agents/issue-tracker.md`，以及 `docs/next-steps-discussion.md` 的作業規則，回傳摘要。
-- 主 agent 只負責協調：排程、派工、判斷驗證結果、更新 issue 狀態、commit。**不直接寫功能程式碼**。回報用繁體中文。
+## Before starting (delegate the reading; the main agent only receives summaries)
+- Have `repo-scout` read the PRD, the eight issues, `AGENTS.md`, `CONTEXT.md`, `docs/agents/issue-tracker.md` and the working rules in `docs/next-steps-discussion.md`, and return a summary.
+- The main agent only coordinates: scheduling, dispatching, judging verification results, updating issue status and committing. **It does not write feature code itself.**
 
-## Subagent 對應（~/.codex/agents）
+## Subagent roles (~/.codex/agents)
 
-| 用途 | agent | 模型 |
-|---|---|---|
-| 協調 | 主 session | `gpt-5.6-terra`（預設） |
-| 前端實作（`public/`） | `frontend-developer` | `gpt-5.6-sol` high |
-| 後端／評估程式實作（`src/`、`evaluation/`） | `backend-developer` | `gpt-5.6-sol` high |
-| 跑測試、browser smoke、收集驗證證據 | `test-automator` | `gpt-5.6-terra` medium |
-| `$code-review`、語意審查、標註核准 | `reviewer` | `gpt-5.6-sol` high（read-only） |
-| 找檔、讀檔 | `repo-scout` | `gpt-5.6-luna` low |
-| 改之前先摸清程式路徑 | `code-mapper` | `gpt-5.6-terra` medium |
-| 修正兩輪仍失敗時找根因 | `debugger` | `gpt-5.6-sol` high |
+| Purpose | Agent |
+|---|---|
+| Coordination | main session |
+| Frontend implementation (`public/`) | `frontend-developer` |
+| Backend / evaluation implementation (`src/`, `evaluation/`) | `backend-developer` |
+| Running tests and browser smoke, collecting verification evidence | `test-automator` |
+| `$code-review`, bilingual semantic review, label approval | `reviewer` (read-only) |
+| Finding and reading files | `repo-scout` |
+| Mapping code paths before a change | `code-mapper` |
+| Root-causing after two failed fix rounds | `debugger` |
 
-- 任務分派：
-  - `frontend-developer`：0029、0031 的 UI 部分、0032。
-  - `backend-developer`：0031 的 server 部分、0033、0035 步驟 1、0036 的 label check。
-- persona 類工作（0034 的 persona 練習、0036 的評分者 persona 起草）：先寫 persona 卡再開工。起草的人和核准的人必須是**不同的 agent**。
-- 同時最多 3 個 subagent 在跑。**0029、0031、0032 都會改 `public/app.js` 和 `test/browser-smoke.js`，必須依序做**，不能平行。
+- Assignments:
+  - `frontend-developer`: 0029, the UI part of 0031, 0032.
+  - `backend-developer`: the server part of 0031, 0033, step 1 of 0035, the label check in 0036.
+- Persona work (the persona practice loop in 0034, the rater-persona drafting in 0036): write the persona card before starting. The drafter and the approver must be **different agents**.
+- At most three subagents run at once. **0029, 0031 and 0032 all change `public/app.js` and `test/browser-smoke.js`, so they must run one after another, never in parallel.**
 
-## 排程
-- 軌道 A（依序）：0029 → 0031 → 0032 → 0034
-- 軌道 B（和 A 平行）：0033（0034 也要等它完成）
-- 軌道 C（和 A 平行）：0030 → 0035 → 0036
-- 每張 issue 開工前，先確認它的 Blocked by 都已經 `completed`。
+## Schedule
+- Track A (sequential): 0029 → 0031 → 0032 → 0034
+- Track B (parallel with A): 0033 (0034 also waits for it)
+- Track C (parallel with A): 0030 → 0035 → 0036
+- Before starting an issue, confirm every issue in its "Blocked by" is `completed`.
 
-## 每張 issue 的 loop
-1. **實作**：派對應的 developer agent，brief 只放 PRD 和**該張 issue 全文**，以及下方的硬性規則。
-   - 要求它用 `$implement`：能用 `$tdd` 就用，seam 依 PRD 的 Testing Decisions；過程中跑單一測試檔，最後跑完整 `npm test`。UI 相關的另外跑 `node --check public/app.js` 和 `npm run test:browser`。
-   - **先不要 commit**。回報內容：改了哪些檔、新增哪些測試、每條 acceptance criterion 的證據。
-2. **驗證**：派 `test-automator` 獨立重跑所有驗證指令。
-   - UI issue 要用 `$agent-browser`，在自己的 port 和暫存 `WORKSPACE_DIR` 實際操作畫面，包含 360px 寬度。
-   - 逐條核對 acceptance criteria，每條都附可重現的證據（測試名稱、指令輸出、檔案與行號）。
-   - 同時派 `reviewer` 跑 `$code-review`，基準點是這張 issue 開工前的 commit。
-   - 兩者都 PASS，才算通過。
-3. **修正**：任一方 FAIL，就把具體清單交回**同一個** developer agent 修正，再回到步驟 2。
-   - 第 2 輪仍 FAIL，先派 `debugger` 找根因。
-   - 第 3 輪仍 FAIL，這張 issue 標 `needs-info`，在 `## Comments` 寫清楚卡在哪裡，然後跳到其他不受影響的 issue。
-4. **收尾**（由主 agent 做）：
-   - acceptance criteria 打勾 `- [x]`，在 `## Comments` 追加：日期、驗證指令與結果摘要、已知限制、這一輪發現但不在範圍內的問題。
-   - front matter 的 `status` 改成 `completed`，同步更新 `docs/issues/README.md` 的狀態欄。
-   - 範圍外的問題另開新的 issue 檔（`docs/issues/0037-…` 起，狀態 `needs-triage`），不要順手修。
-   - 每張 issue 一個 commit（規則見下方）。
-5. 繼續下一張，直到 0029–0036 全部 `completed`，或只剩 `needs-info` 的 issue。
+## Per-issue loop
+1. **Implement**: dispatch the matching developer agent. The brief contains only the PRD, **the full text of that one issue**, and the hard rules below.
+   - It uses `$implement`: `$tdd` wherever possible, at the seams in the PRD's Testing Decisions; run single test files along the way and the full `npm test` at the end. For UI work also run `node --check public/app.js` and `npm run test:browser`.
+   - **Do not commit yet.** Report: files changed, tests added, and evidence for each acceptance criterion.
+2. **Verify**: dispatch `test-automator` to re-run every verification command independently.
+   - For UI issues, use `$agent-browser` on its own port with a temporary `WORKSPACE_DIR` and exercise the screens, including a 360 px width.
+   - Check every acceptance criterion with reproducible evidence (test name, command output, file and line).
+   - In parallel, dispatch `reviewer` to run `$code-review` against the commit from before the issue started.
+   - The issue passes only when both report PASS.
+3. **Fix**: on any FAIL, send the concrete list back to **the same** developer agent, then return to step 2.
+   - If round 2 still fails, dispatch `debugger` to find the root cause first.
+   - If round 3 still fails, set the issue to `needs-info`, explain under `## Comments` exactly where it is stuck, and move on to unaffected issues.
+4. **Close out** (main agent):
+   - Tick the acceptance criteria (`- [x]`) and append to `## Comments`: date, verification commands and result summary, known limitations, and anything found that is out of scope.
+   - Set the front-matter `status` to `completed` and update the status column in `docs/issues/README.md`.
+   - File out-of-scope problems as new issues (`docs/issues/0037-…` onwards, status `needs-triage`); do not fix them in passing.
+   - One commit per issue (rules below).
+5. Continue with the next issue until 0029–0036 are all `completed`, or only `needs-info` issues remain.
 
-## 各 issue 的特別注意事項
-- **0030**：實跑驗收要打到 **agent 自己開的測試 server**（另一個 port、暫存 `WORKSPACE_DIR`、JD 存到暫存資料夾），不能打 4310。skill 的 base URL 要能覆寫。
-- **0033**：ledger 的每個欄位都要從 `.workspace/persona-qa-2026-09-23/workspace.json` 核對（**只讀**），不能照文件描述填。`creator`、`attestedBy`、`attestedAt` 保持 null。
-- **0034**：在自己的 server 用真實的 Codex provider、fake speech，由 persona 用 `$agent-browser` 跑一次完整的常見題練習。只有**沒跑這次練習的** verifier 可以填 `attestedBy`／`attestedAt`，`creator` 永遠是 null。
-- **0035**：先讓 `evaluation/review-report.js` 支援 v3，並補上測試；再跑**唯一一次** `npm run evaluate -- --codex --accept-subscription-usage`。
-  - 語意審查由 `reviewer` 做，不能是跑評估的那個 agent。
-  - 需要網路或 codex binary 權限時，照正常流程申請權限提升，不要繞過 sandbox。
-- **0036**：
-  - 起草由評分者 persona 做；核准由 `reviewer` 逐題進行，並標 `reviewerType: "ai"`。不可以批次核准，也不可以宣稱是人工標註。
-  - 最後跑 `node evaluation/review-report.js`，這一步**不呼叫模型**。
-  - 摘要中的發布狀態只能寫「AI-validated」，並列出 v1.0.0 之後待做的人工驗證。
-  - **不要打 v1.0.0 tag**。
+## Issue-specific notes
+- **0030**: run the real check against **the agent's own test server** (another port, temporary `WORKSPACE_DIR`, JD files in a temporary folder), never 4310. The skill's base URL must be overridable.
+- **0033**: verify every ledger field against `.workspace/persona-qa-2026-09-23/workspace.json` (**read-only**), not against the prose. Leave `creator`, `attestedBy` and `attestedAt` null.
+- **0034**: on the agent's own server, with the real Codex provider and fake speech, a persona uses `$agent-browser` to complete one full Practice Loop on a Common Question. Only a verifier that **did not run the loop** may set `attestedBy` / `attestedAt`; `creator` stays null.
+- **0035**: first make `evaluation/review-report.js` support v3, with tests; then run `npm run evaluate -- --codex --accept-subscription-usage` **exactly once**.
+  - The semantic review is done by `reviewer`, never by the agent that ran the evaluation.
+  - If network or codex-binary access is blocked, request escalation through the normal flow; never work around the sandbox.
+- **0036**:
+  - A rater persona drafts; `reviewer` approves case by case with `reviewerType: "ai"`. No bulk approval, and never claim the labels are human.
+  - Finish with `node evaluation/review-report.js`, which **makes no model calls**.
+  - The summary's release status may only read "AI-validated", and it lists the human validation still to do after v1.0.0.
+  - **Do not create the v1.0.0 tag.**
 
-## 硬性規則（每個 subagent 的 brief 都要原文附上）
-- 使用者的 app 跑在 127.0.0.1:4310：**不得停止、重啟或呼叫它**。禁止 `pkill`／`killall` 等以名稱比對結束程序。測試用自己的 port 和暫存 `WORKSPACE_DIR`，只用自己的 PID 停止。
-- agent-browser 只關自己的 `--session`，不用 `close --all`。
-- 除非 issue 明確要求只讀，否則不讀寫 `.workspace/`。不刪除或修改任何真實的履歷、職缺快照、練習紀錄。
-- 修改任何 `src/codex-*.js` 後，必須執行 `npm run codex:verify`。
-- 改了 `src/server.js` 的靜態檔白名單，要在最後的總結**提醒使用者重啟 4310**。
-- 除非 issue 明確要求（0035），否則不改模型 contract、不呼叫付費或訂閱模型。
-- 新功能必須有新測試，不能拿舊的 PASS 當驗收。測試失敗要照實回報輸出。
+## Hard rules (paste verbatim into every subagent brief)
+- The user's app runs on 127.0.0.1:4310: **never stop, restart or call it**. No `pkill` / `killall` or any name-matched process kill. Test on your own port with a temporary `WORKSPACE_DIR` and stop only your own PID.
+- agent-browser closes only its own `--session`; never `close --all`.
+- Do not read or write `.workspace/` unless an issue explicitly asks for read-only access. Never delete or modify real resumes, Job Snapshots or practice records.
+- After changing any `src/codex-*.js`, run `npm run codex:verify`.
+- If the static-file allowlist in `src/server.js` changes, **remind the user to restart 4310** in the final report.
+- Do not change the model contract or call paid or subscription models unless an issue explicitly requires it (0035, 0034).
+- New behaviour needs new tests; an old PASS is not acceptance for new work. Report failing test output as it is.
 
-## Commit 規則（Codex 這邊沒有 hook，要自己遵守）
-- Conventional Commits，格式 `type: Capitalized description`（type 為 feat｜fix｜refactor｜docs｜chore｜perf｜revert），首字大寫，結尾不加句點。
-- **不加** Co-Authored-By 或任何 AI trailer。
-- `git add` 和 `git commit` 分開執行，`git commit` 單獨一個指令。有內文時寫進暫存檔，再用 `git commit -F <檔案>`。
-- 只 commit 到目前的 branch，不 push、不打 tag。
+## Commit rules (Codex has no hook for these; follow them yourself)
+- Conventional Commits: `type: Capitalized description` (type is feat | fix | refactor | docs | chore | perf | revert), capitalised, no trailing period.
+- **No** Co-Authored-By or any AI trailer.
+- Run `git add` and `git commit` separately, with `git commit` as its own command. For a body, write the message to a temporary file and use `git commit -F <file>`.
+- Commit only to the current branch; no push, no tag.
 
-## 停止條件與最後回報
-全部完成，或只剩 `needs-info` 的 issue 時停止，用繁體中文回報：
-- 每張 issue 的狀態、commit hash、驗證證據摘要，以及用到的 agent 與模型
-- 0035 的評估結果、四個關卡（automated／semantic／labels／creator）的狀態，以及發布狀態
-- 需要使用者處理的事（例如重啟 4310），以及新開的 0037 之後的 issue
+## Stop conditions and final report
+Stop when everything is done or only `needs-info` issues remain, and report to the user in Traditional Chinese:
+- Each issue's status, commit hash, a verification-evidence summary, and the agents used
+- The 0035 evaluation result, the status of the four gates (automated / semantic / labels / creator) and the release status
+- Anything the user must do (e.g. restart 4310), and any new issues from 0037 onwards
