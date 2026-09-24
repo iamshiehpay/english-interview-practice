@@ -1,5 +1,5 @@
 ---
-status: awaiting-human-validation
+status: completed
 ---
 
 # Design tokens and app shell (left rail with 我的進步, top job-context bar, self-hosted fonts)

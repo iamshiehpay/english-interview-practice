@@ -1,5 +1,5 @@
 ---
-status: awaiting-human-validation
+status: completed
 ---
 
 # Short Mock Session: dark interview room

@@ -1,5 +1,5 @@
 ---
-status: awaiting-human-validation
+status: completed
 ---
 
 # Home redesign: five-second hero, flow strip, static feedback preview

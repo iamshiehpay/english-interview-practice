@@ -1,5 +1,5 @@
 ---
-status: awaiting-human-validation
+status: completed
 ---
 
 # Practice screen: two-pane desktop workbench, mobile answer/feedback tabs, fixed 結束並保存

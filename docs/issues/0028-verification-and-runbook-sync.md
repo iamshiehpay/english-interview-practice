@@ -1,5 +1,5 @@
 ---
-status: awaiting-human-validation
+status: completed
 ---
 
 # Verification: browser smoke sync, new screenshots, creator-validation label sync

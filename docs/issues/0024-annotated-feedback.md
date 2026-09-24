@@ -1,5 +1,5 @@
 ---
-status: awaiting-human-validation
+status: completed
 ---
 
 # Annotated feedback: transcript marks, linked notes, rating bars, inline correction diff

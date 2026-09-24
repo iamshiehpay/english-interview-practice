@@ -1,5 +1,5 @@
 ---
-status: awaiting-human-validation
+status: completed
 ---
 
 # Remaining views: 題目集／練習紀錄（標題截短）／我的進步／我的履歷／找職缺／設定／操作列

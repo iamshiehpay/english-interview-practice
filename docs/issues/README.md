@@ -25,13 +25,13 @@ Local issue tracker for the Adaptive English Interview Coach. All issues below w
 | [0019 — Interpret a natural-language job request](./0019-interpret-a-natural-language-job-request.md) | awaiting-human-validation | None |
 | [0020 — Curate five jobs with a Fit Breakdown](./0020-curate-five-jobs-with-a-fit-breakdown.md) | awaiting-human-validation | 0019 |
 | [0021 — Hide the question in listening mode](./0021-hide-the-question-in-listening-mode.md) | awaiting-human-validation | 0014 |
-| [0022 — Design tokens and app shell (rail with 我的進步, self-hosted fonts)](./0022-design-tokens-and-app-shell.md) | awaiting-human-validation | None |
-| [0023 — Practice workbench: two-pane desktop, mobile tabs, fixed 結束並保存](./0023-practice-workbench-two-pane-and-mobile-tabs.md) | awaiting-human-validation | 0022 |
-| [0024 — Annotated feedback: transcript marks, rating bars, inline correction diff](./0024-annotated-feedback.md) | awaiting-human-validation | 0023 |
-| [0025 — Home redesign: five-second hero, flow strip, static feedback preview](./0025-home-redesign.md) | awaiting-human-validation | 0022 |
-| [0026 — Remaining views restyle (含練習紀錄標題截短)](./0026-remaining-views.md) | awaiting-human-validation | 0022 |
-| [0027 — Short Mock Session dark room](./0027-mock-session-dark-room.md) | awaiting-human-validation | 0022, 0024 |
-| [0028 — Verification: browser smoke, screenshots, runbook label sync](./0028-verification-and-runbook-sync.md) | awaiting-human-validation | 0022, 0023, 0024, 0025, 0026, 0027 |
+| [0022 — Design tokens and app shell (rail with 我的進步, self-hosted fonts)](./0022-design-tokens-and-app-shell.md) | completed | None |
+| [0023 — Practice workbench: two-pane desktop, mobile tabs, fixed 結束並保存](./0023-practice-workbench-two-pane-and-mobile-tabs.md) | completed | 0022 |
+| [0024 — Annotated feedback: transcript marks, rating bars, inline correction diff](./0024-annotated-feedback.md) | completed | 0023 |
+| [0025 — Home redesign: five-second hero, flow strip, static feedback preview](./0025-home-redesign.md) | completed | 0022 |
+| [0026 — Remaining views restyle (含練習紀錄標題截短)](./0026-remaining-views.md) | completed | 0022 |
+| [0027 — Short Mock Session dark room](./0027-mock-session-dark-room.md) | completed | 0022, 0024 |
+| [0028 — Verification: browser smoke, screenshots, runbook label sync](./0028-verification-and-runbook-sync.md) | completed | 0022, 0023, 0024, 0025, 0026, 0027 |
 
 Implementation should proceed in dependency order. Start each issue in a fresh session with the PRD and only the selected issue as the implementation brief.
 
