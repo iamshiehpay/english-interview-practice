@@ -28,6 +28,8 @@ For the v1.0.0 gate under [ADR 0020](../docs/adr/0020-validate-v1-with-ai-person
 
 The v3 check still requires the exact `caseId` and `inputChecksum`, four inclusive 1–4 rating ranges, a substantive rationale, verbatim transcript evidence quotes, required and forbidden findings, and bilingual semantic approval. Every approved range and finding is checked against **all three** saved feedback repeats. Required and forbidden findings are case-sensitive literal substrings of the four English and Chinese rating reasons plus the strength and priority-improvement text; evidence quotes are excluded from that search. Empty finding arrays are valid when no stable literal rule is justified. These literal checks do not replace independent semantic review of English and Traditional Chinese output.
 
+The [post-run review of 35 contract-3.2 rating mismatches](../docs/verification/0041-prospective-rater-calibration.md) clarifies boundaries for prospective blind rater labels only. It does not revise the frozen 3.2 ranges or make that release gate pass.
+
 The validator reports label mode `human`, `ai`, or `mixed`. Explicit `reviewerType` values may be `"human"` or `"ai"`; a typed artifact cannot mix typed and untyped entries. A persona-drafted AI artifact accepts only `"ai"`. Historical untyped schema 1 and schema 2 approvals remain human labels when their existing contract checks pass.
 
 The following instructions describe the historical contract 2 human-label workflow:
