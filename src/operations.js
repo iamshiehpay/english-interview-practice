@@ -10,17 +10,28 @@ const failureReason = error => redactSecrets(error?.reason, 200) || '';
 // on the next call. Ask once more with the same inputs; nothing else is retried — a
 // timeout, cancellation, sign-in, rate limit or transport error comes from `call`, not
 // `validate`, and propagates untouched. The acceptance rules do not change.
+// The second attempt is only made when the operation's remaining budget (`deadline`)
+// could fit another call as long as the first one: otherwise it would be cut off and
+// reported as a TIMEOUT, hiding the real reason, so the rejection is reported instead.
 export const isValidationRejection = error => error instanceof AppError && error.status === 502 && /^Invalid provider output:/.test(error.message);
-export async function withValidationRetry(call, validate, {signal, onRejection} = {}) {
+export async function withValidationRetry(call, validate, {signal, onRejection, deadline = Infinity} = {}) {
   for (let attempt = 1; ; attempt++) {
     signal?.throwIfAborted();
-    const output = await call();
+    const started = Date.now(), output = await call();
     try { return await validate(output); }
-    catch (error) { if (!isValidationRejection(error)) throw error; onRejection?.(error, output, attempt); if (attempt === 2) throw error; }
+    catch (error) {
+      if (!isValidationRejection(error)) throw error;
+      const retrying = attempt === 1 && deadline - Date.now() >= Date.now() - started;
+      onRejection?.(error, output, attempt, retrying);
+      if (!retrying) throw error;
+    }
   }
 }
 export class Operations {
-  constructor(store, timeoutMs=30000){this.store=store;this.timeoutMs=timeoutMs;this.controllers=new Map();this.notes=new Map();}
+  // `kindTimeouts` gives an operation kind its own budget (question-set generation may
+  // need two long model calls); every other kind uses `timeoutMs`.
+  constructor(store, timeoutMs=30000, kindTimeouts={}){this.store=store;this.timeoutMs=timeoutMs;this.kindTimeouts=kindTimeouts;this.controllers=new Map();this.notes=new Map();}
+  budget(kind){return Object.hasOwn(this.kindTimeouts,kind)?this.kindTimeouts[kind]:this.timeoutMs;}
   async recover(){
     if(!Object.values(this.store.data.operations||{}).some(o=>o.state==='pending'))return;
     await this.store.transact(d=>{for(const o of Object.values(d.operations||{}))if(o.state==='pending'){o.state='failed';o.retryable=true;o.errorCode='INTERRUPTED';} });
@@ -80,11 +91,11 @@ export class Operations {
       throw error;
     }
     const check=d=>requireValue(!controller.signal.aborted && (d.epoch||0)===epoch && d.operations?.[id]?.state==='pending' && d.operations[id].attempt===attempt,'Operation cancelled or superseded',409);
-    let timer;
+    let timer;const budget=this.budget(kind),deadline=Date.now()+budget;
     try{
-      const aborted=new Promise((_,reject)=>{controller.signal.addEventListener('abort',()=>reject(controller.signal.reason||new AppError('Operation cancelled',409)),{once:true});timer=setTimeout(()=>controller.abort(new AppError('Provider operation timed out; retry your original action',504)),this.timeoutMs);});
+      const aborted=new Promise((_,reject)=>{controller.signal.addEventListener('abort',()=>reject(controller.signal.reason||new AppError('Operation cancelled',409)),{once:true});timer=setTimeout(()=>controller.abort(new AppError('Provider operation timed out; retry your original action',504)),budget);});
       const complete=(d,result)=>{check(d);Object.assign(d.operations[id],notes,{state:'succeeded',retryable:false,resultId:result?.id||null,finishedAt:new Date().toISOString()});d.operationReceipts??={};d.operationReceipts[id]={id,kind,targetId,fingerprint,attempt,state:'succeeded',resultId:result?.id||null};};
-      const result=await Promise.race([execute({signal:controller.signal,check,complete,note,kind}),aborted]);
+      const result=await Promise.race([execute({signal:controller.signal,check,complete,note,kind,deadline}),aborted]);
       await this.store.transact(d=>{if(d.operations?.[id]?.state==='succeeded'&&d.operations[id].attempt===attempt)return;complete(d,result);});
       return result;
     }catch(error){

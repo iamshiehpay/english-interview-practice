@@ -21,10 +21,24 @@ async function body(req, limit = 1000000) {
   for await (const chunk of req) { raw += chunk; requireValue(raw.length <= limit, 'Request too large', 413); }
   try { const value=raw?JSON.parse(raw):{};requireValue(value && typeof value==='object' && !Array.isArray(value),'Expected JSON object');return value; } catch { throw new AppError('Invalid JSON object'); }
 }
-export async function createApplication({directory = '.workspace', languageModel = new FakeLanguageModel(), speechProvider = new FakeSpeechProvider(), jobSource = new FakeJobSource(), sourceTimeoutMs = 10000, operationTimeoutMs = 30000, logRejectedOutput = process.env.NODE_TEST_CONTEXT ? () => {} : line => console.error(line)} = {}) {
-  requireValue(Number.isFinite(operationTimeoutMs) && operationTimeoutMs >= 10 && operationTimeoutMs <= 300000, 'Operation timeout must be between 10 and 300000 milliseconds');
+// Operation budgets. `operationTimeoutMs` is sized for one model call and applies to
+// every operation kind except question-set generation (a new set, or four more
+// questions): that is the slowest call (a real ~3.5 KB JD took ~2m45s with Codex at
+// xhigh) and, after a validation rejection, it is asked twice, so its budget is two
+// single-call budgets by default. The generation cap is likewise twice the single-call
+// cap (2 × 300000), so it never grows unbounded.
+const GENERATION_KINDS = ['analysis', 'questions'];
+export const MAX_OPERATION_TIMEOUT_MS = 300000, MAX_GENERATION_TIMEOUT_MS = 2 * MAX_OPERATION_TIMEOUT_MS;
+export function operationBudgets(env = process.env) {
+  const provider = env.COACH_LANGUAGE_PROVIDER;
+  const operationTimeoutMs = Number(env.COACH_TIMEOUT_MS || (provider === 'codex' ? 180000 : provider === 'claude' ? 90000 : 30000));
+  return {operationTimeoutMs, generationTimeoutMs: env.COACH_GENERATION_TIMEOUT_MS ? Number(env.COACH_GENERATION_TIMEOUT_MS) : Math.min(2 * operationTimeoutMs, MAX_GENERATION_TIMEOUT_MS)};
+}
+export async function createApplication({directory = '.workspace', languageModel = new FakeLanguageModel(), speechProvider = new FakeSpeechProvider(), jobSource = new FakeJobSource(), sourceTimeoutMs = 10000, operationTimeoutMs = 30000, generationTimeoutMs = Math.min(2 * operationTimeoutMs, MAX_GENERATION_TIMEOUT_MS), logRejectedOutput = process.env.NODE_TEST_CONTEXT ? () => {} : line => console.error(line)} = {}) {
+  requireValue(Number.isFinite(operationTimeoutMs) && operationTimeoutMs >= 10 && operationTimeoutMs <= MAX_OPERATION_TIMEOUT_MS, `Operation timeout must be between 10 and ${MAX_OPERATION_TIMEOUT_MS} milliseconds`);
+  requireValue(Number.isFinite(generationTimeoutMs) && generationTimeoutMs >= 10 && generationTimeoutMs <= MAX_GENERATION_TIMEOUT_MS, `Generation timeout must be between 10 and ${MAX_GENERATION_TIMEOUT_MS} milliseconds`);
   const store = await new LocalWorkspace(directory).open();
-  const operations = new Operations(store, operationTimeoutMs);
+  const operations = new Operations(store, operationTimeoutMs, Object.fromEntries(GENERATION_KINDS.map(kind => [kind, generationTimeoutMs])));
   await operations.recover();
   const audioDirectory = join(directory, 'temporary-audio');
   await clearTemporaryAudio(audioDirectory);
@@ -57,9 +71,11 @@ export async function createApplication({directory = '.workspace', languageModel
   // in our own content-free wording. The rejected output itself is printed to this
   // server's terminal only, for the local operator to diagnose (ADR 0013); it never
   // reaches the workspace, an operation record or a response. Quiet under node --test.
-  const generate = (context, call, validate) => withValidationRetry(call, validate, {signal: context?.signal, onRejection: (error, output, attempt) => {
-    if (attempt === 1) context?.note({validationRetries: 1, firstRejection: error.reason});
-    logRejectedOutput(`[provider-output-rejected] ${context?.kind ?? 'request'} attempt ${attempt} of 2: ${error.reason}\n${redactSecrets(JSON.stringify(output), 200000)}`);
+  // A rejection too late in the operation's budget for another attempt is not retried
+  // (see withValidationRetry); the operation records `validationRetrySkipped` instead.
+  const generate = (context, call, validate) => withValidationRetry(call, validate, {signal: context?.signal, deadline: context?.deadline, onRejection: (error, output, attempt, retrying) => {
+    if (attempt === 1) context?.note(retrying ? {validationRetries: 1, firstRejection: error.reason} : {validationRetrySkipped: true});
+    logRejectedOutput(`[provider-output-rejected] ${context?.kind ?? 'request'} attempt ${attempt} of 2${attempt === 1 && !retrying ? ' (not retried: the operation budget cannot fit another attempt)' : ''}: ${error.reason}\n${redactSecrets(JSON.stringify(output), 200000)}`);
   }});
   const item = (collection, id) => { const held = store.data[collection] || {}; const value = typeof id === 'string' && Object.hasOwn(held,id) ? held[id] : undefined; requireValue(value, 'Not found', 404); return structuredClone(value); };
   // Read-aloud resolves English text from stored content; the browser may only send a
@@ -763,7 +779,7 @@ export async function createApplication({directory = '.workspace', languageModel
   return {server, store};
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const {server} = await createApplication({directory: process.env.WORKSPACE_DIR || '.workspace', ...configuredProviders(), operationTimeoutMs: Number(process.env.COACH_TIMEOUT_MS || (process.env.COACH_LANGUAGE_PROVIDER==='codex'?180000:process.env.COACH_LANGUAGE_PROVIDER==='claude'?90000:30000))});
+  const {server} = await createApplication({directory: process.env.WORKSPACE_DIR || '.workspace', ...configuredProviders(), ...operationBudgets()});
   const port = Number(process.env.PORT || 4310);
   server.once('error', error => {
     if (error.code === 'EADDRINUSE') {
