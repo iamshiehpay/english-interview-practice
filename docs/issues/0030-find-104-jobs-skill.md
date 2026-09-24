@@ -35,7 +35,7 @@ writing-for-agents guidance, that:
 4. Saves each JD to `.workspace/jds/YYYY-MM-DD-<company>-<title>.txt`
    (slugified): line 1 `職稱 — 公司`, line 2 the source URL and retrieval date,
    then the JD body from the job104 detail tool.
-5. Checks that the app answers on `127.0.0.1:4310`; if so, creates one Job
+5. Checks that the app answers on its base URL (default `127.0.0.1:4310`, overridable so tests can target another port); if so, creates one Job
    Snapshot per file through the existing snapshot endpoint with the file text.
    If not, keeps the files and reports that snapshots were not created. It never
    starts, stops or restarts the server and never uses `pkill`/`killall`.
@@ -55,7 +55,7 @@ permission approval.
 - [ ] Duplicate 104 postings are skipped with a message; `.workspace/validation-jds/` is never written.
 - [ ] Snapshots are created only through the existing endpoint; no questions are generated.
 - [ ] An unreachable app produces a clear message and no server control actions.
-- [ ] Creator-run check (recorded under Comments): one real run imports 1–3 postings whose job titles read `職稱 — 公司` in the app; a second run with the same posting skips it; 4310 is still running afterwards.
+- [ ] Agent-run check (recorded under Comments): against the agent's own server (another port, temporary `WORKSPACE_DIR`, JD files in a temporary folder), one real job104 search imports 1–3 postings whose job titles read `職稱 — 公司`; a second run with the same posting skips it; no questions were generated; 4310 was never contacted.
 
 ## Files likely touched
 
@@ -66,8 +66,8 @@ permission approval.
 
 ```sh
 git check-ignore .workspace/jds/example.txt
-# then, in a Claude Code session with the app running on 4310:
-# /find-104-jobs 台北 後端工程師 Python
+# then run the skill against your own test server (not 4310), e.g.
+# /find-104-jobs 台北 後端工程師 Python  (base URL overridden to the test port)
 ```
 
 ## Blocked by

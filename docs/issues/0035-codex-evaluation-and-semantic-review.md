@@ -1,5 +1,5 @@
 ---
-status: ready-for-human
+status: ready-for-agent
 ---
 
 # Codex evaluation run (v3) and independent AI bilingual semantic review
@@ -30,7 +30,7 @@ runner version 2.0.0 and may need v3 support.
    locations, contract 3.0.0) without weakening any check; keep it free of model
    calls; cover the change with a test on fixture artifacts. Run
    `npm run codex:verify` if any `src/codex-*.js` file changes.
-2. After the creator explicitly authorises it in the session, run
+2. Run (pre-authorised by the creator on 2026-09-24 for exactly one run)
    `npm run evaluate -- --codex --accept-subscription-usage` once (about 65
    subscription calls: five analyses, sixty feedback calls). This freezes the v3
    Codex analysis and produces the raw report, review packet and bilingual audit.
@@ -44,7 +44,7 @@ runner version 2.0.0 and may need v3 support.
 ## Acceptance criteria
 
 - [ ] The offline review step accepts valid v3 artifacts, rejects tampered or stale ones, and makes no model calls (tested).
-- [ ] The Codex run happened exactly once, after the creator's recorded authorisation, and its automated checks and three-repeat stability pass (or failures are recorded under Comments without re-running silently).
+- [ ] The Codex run happened exactly once under the pre-authorisation, and its automated checks and three-repeat stability pass (or failures are recorded under Comments without re-running silently).
 - [ ] The frozen v3 Codex analysis and the new review packet are committed.
 - [ ] The semantic-review artifact covers all 60 outputs; any `inconsistent` verdict is reported, not overridden.
 - [ ] The offline review step shows the semantic-review gate as PASS (human labels and creator gates may still be pending).
@@ -64,6 +64,6 @@ node evaluation/review-report.js
 
 ## Blocked by
 
-None — can start immediately (the Codex run itself waits for the creator's authorisation).
+None — can start immediately.
 
 ## Comments

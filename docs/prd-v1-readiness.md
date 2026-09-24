@@ -30,7 +30,7 @@ but the release is still **BLOCKED**:
   creator has decided that this bar, as written, is not what stands between the
   product and a useful v1.0.0. There is no recorded decision explaining the lower
   bar, and the evaluation checks still reject any AI persona loop.
-- The 20-case human-label file and the bilingual semantic review are empty, so
+- The 20-case label file and the bilingual semantic review are empty, so
   the Evaluation Suite cannot pass.
 - As a Target Learner in Taiwan, most of the postings I care about are on 104,
   but the job-search page silently searches only Greenhouse boards. I cannot tell
@@ -58,15 +58,17 @@ but the release is still **BLOCKED**:
    classic behavioural questions sit in a collapsed "常見行為題" block after the
    job-grounded questions. All are practised and coached through the existing
    Practice Loop and feedback pipeline. The model contract does not change.
-4. A new ADR 0020 revises the MVP acceptance rule to "one real creator Practice
-   Loop plus four AI persona Practice Loops", defines what an AI persona Practice
-   Loop is, and records the risk of the lower bar. The evaluation checks,
-   `MVP-ACCEPTANCE.md` and the creator-validation ledger follow it; the four
-   persona loops come from runs 2–5 of the 2026-09-23 persona walkthrough.
-5. The 20 human-labelled Evaluation Cases are drafted by an AI subagent and
-   reviewed, edited and approved one by one by the creator; one Codex evaluation
-   run and an AI bilingual semantic review of its 60 outputs complete the
-   Evaluation Suite evidence.
+4. A new ADR 0020 makes v1.0.0 an **AI-validated release**: the creator gate is
+   met by five AI persona Practice Loops (runs 2–5 of the 2026-09-23 walkthrough
+   plus one new persona loop on the Common Questions), attested by an AI
+   verifier, never in the creator's name. It defines an AI persona Practice Loop
+   and records the risk. The evaluation checks, `MVP-ACCEPTANCE.md` and the
+   creator-validation ledger follow it.
+5. The 20 labelled Evaluation Cases are drafted by a rater persona and approved
+   by an independent AI reviewer, marked `reviewerType: "ai"`; one pre-authorised
+   Codex evaluation run and an AI bilingual semantic review of its 60 outputs
+   complete the Evaluation Suite evidence. The release status says
+   "AI-validated"; real creator use and human labels move to after v1.0.0.
 
 ## User Stories
 
@@ -128,22 +130,22 @@ but the release is still **BLOCKED**:
 
 ### Revised MVP gate (ADR 0020)
 
-37. As the creator, I want an ADR that records why the acceptance bar is now one real loop plus four AI persona loops and what risk that accepts, so that the decision is explicit and reviewable.
+37. As the creator, I want an ADR that records why v1.0.0 is validated by five AI persona loops and AI-reviewed labels, and what risk that accepts, so that the decision is explicit and reviewable.
 38. As the creator, I want the ADR to define an AI persona Practice Loop precisely, so that future persona runs are comparable and cannot be quietly downgraded.
 39. As the creator, I want the evaluation checks to accept AI persona loops only when they are marked synthetic and link to their persona and verification evidence, so that synthetic loops are never mistaken for real ones.
-40. As the creator, I want the checks to require at least one real, non-synthetic creator loop, so that the gate still includes my own use.
+40. As the creator, I want the checks to keep the original human validation mode available, so that real creator loops and human labels can be added after v1.0.0 without another rewrite.
 41. As the creator, I want the existing coverage rules (two Job Snapshots, two Question Categories, one Experience Gap, one induced failure with recovery) to apply across all five loops together, so that coverage is not lowered along with the headcount.
-42. As the creator, I want the four persona loops taken from runs 2–5 of the 2026-09-23 walkthrough and written into the ledger with their real record identifiers, so that the evidence is traceable before the temporary workspace disappears.
+42. As the creator, I want four persona loops taken from runs 2–5 of the 2026-09-23 walkthrough and a fifth new persona loop on the Common Questions, all written into the ledger with their real record identifiers, so that the evidence is traceable and also exercises the new questions.
 43. As the creator, I want the walkthrough document to gain an appended note that ADR 0020 changes its status, without rewriting its original text, so that historical evidence stays intact.
-44. As the creator, I want `creator` and `attestedAt` filled only after I personally confirm, so that attestation remains mine.
+44. As the creator, I want the ledger attested by the AI verifier (`attestedBy`, `attestedAt`) with `creator` left null, so that nothing is signed in my name.
 45. As the creator, I want `MVP-ACCEPTANCE.md` and the creator-validation runbook to describe the new rule, so that anyone reading them sees one consistent gate.
 
 ### Human labels and evaluation
 
-46. As the creator, I want an AI subagent to draft all 20 human-label cases (five JDs × four question types) with score ranges, rationale, quotations, required and forbidden feedback content and bilingual-consistency notes, so that my review time is about an hour instead of a day.
-47. As the creator, I want to review, edit and approve each case individually, so that the labels are genuinely human-approved.
-48. As the creator, I want the label file and its documentation to state that drafts were AI-assisted and that I am the reviewer, so that the provenance is honest.
-49. As the creator, I want to explicitly authorise the Codex evaluation run (about 65 subscription calls) before it starts, so that no subscription usage happens without my go-ahead.
+46. As the creator, I want a rater persona to draft all 20 labelled cases (five JDs × four question types) with score ranges, rationale, quotations, required and forbidden feedback content and bilingual-consistency notes, so that the labels exist without my time.
+47. As the creator, I want an independent AI reviewer to check and approve each case individually, so that no draft is accepted unexamined.
+48. As the creator, I want the label file, checks and summary to state that labels are AI-reviewed, not human, so that the provenance is honest.
+49. As the creator, I want the single Codex evaluation run (about 65 subscription calls) pre-authorised once, with no automatic re-run on failure, so that subscription usage stays bounded.
 50. As the creator, I want the 60 bilingual outputs of that run reviewed by an AI reviewer into the semantic-review artifact the checks already accept, so that bilingual consistency has evidence.
 51. As the creator, I want the evaluation summary updated with the new results and gate status, so that the portfolio record shows exactly what passed.
 
@@ -161,7 +163,8 @@ but the release is still **BLOCKED**:
 
   Each carries an app-authored English and Chinese rationale that includes a one-line STAR hint (情境、任務、行動、結果).
 - **`/find-104-jobs` storage and volume.** JD files go to a new `.workspace/jds/` folder, never `.workspace/validation-jds/` (that folder is the runbook's fixed five-JD set). File name `YYYY-MM-DD-<company>-<title>.txt`, slugified. Line 1 is `職稱 — 公司`; line 2 records the source URL and retrieval date; the JD body follows. The skill lists about ten candidates, the creator picks; default maximum three imports per run, up to five on explicit request. Before importing, the skill checks existing files in `.workspace/jds/` by 104 job id / URL and skips duplicates with a message.
-- **AI persona Practice Loop (ADR 0020).** One complete Practice Loop run against the real local app, driven through its UI by an AI agent, with a real language-model provider (not the fake provider), playing a persona whose background is written down beforehand and which never invents experience beyond it. Each loop leaves a real record identifier and links to a verification document. Coverage minimums are the existing four rules, satisfied by all five loops together; persona loops may satisfy the Experience Gap and induced-failure rules; the one real creator loop has no category requirement. The four persona loops are runs 2–5 of the 2026-09-23 walkthrough.
+- **AI persona Practice Loop (ADR 0020).** One complete Practice Loop run against the real local app, driven through its UI by an AI agent, with a real language-model provider (not the fake provider), playing a persona whose background is written down beforehand and which never invents experience beyond it. Each loop leaves a real record identifier and links to a verification document. Coverage minimums are the existing four rules, satisfied by all five loops together. The loops are runs 2–5 of the 2026-09-23 walkthrough plus one new persona loop on the Common Questions.
+- **No creator-only gates (decided after the issue split, 2026-09-24).** v1.0.0 is an AI-validated release: five persona loops replace the real creator loop, the ledger is attested by the AI verifier with `creator` left null, the 20 labels are persona-drafted and AI-approved with `reviewerType: "ai"`, and the release status reads "AI-validated". This amends ADR 0014's "human labels are primary" for v1.0.0 only and is recorded in ADR 0020. Real creator use and human labels are post-v1.0.0 work. The single Codex evaluation run is pre-authorised; `/find-104-jobs` is verified by the agent against its own test server.
 
 ### Common Questions (self-introduction and common behavioural questions)
 
@@ -189,16 +192,16 @@ but the release is still **BLOCKED**:
 
 ### Revised MVP gate
 
-- New ADR 0020 (`docs/adr/0020-…`) records: the revised rule, the persona-loop definition above, why the bar is lowered, and the accepted risk (persona loops exercise the pipeline and UI but not a real learner's comprehension, motivation or voice; real voice is covered only if the creator's loop uses it). Note that `docs/verification/0020.md` is an unrelated issue-verification document. `docs/devops-discussion.md` already renumbers its tentative ADR to 0021; no further change is needed there.
-- Ledger loop shape gains, for synthetic loops, `persona` (name) and `evidence` (a `docs/verification/` path). Real loops keep `synthetic: false`.
-- The creator-status check changes from "every loop real" to: at least five completed loops with unique record ids; at least one `synthetic: false`; every `synthetic: true` loop has a non-empty `persona` and an `evidence` path under `docs/verification/`; the four existing coverage rules over all loops; `creator` and a valid `attestedAt` still required.
+- New ADR 0020 (`docs/adr/0020-…`) records: the AI-validated release rule, the persona-loop definition above, AI-reviewed labels, why the bar is lowered, and the accepted risk (persona loops and AI labels exercise the pipeline and UI but not a real learner's comprehension, motivation or voice, and not real speech; nothing in v1.0.0 has been validated by a human). Note that `docs/verification/0020.md` is an unrelated issue-verification document. `docs/devops-discussion.md` already renumbers its tentative ADR to 0021; no further change is needed there.
+- Ledger gains `validationMode` (`"creator"` = the original human rule, `"ai-persona"` = ADR 0020) and `attestedBy`; synthetic loops gain `persona` (name) and `evidence` (a `docs/verification/` path).
+- The creator-status check keeps the original rule for `validationMode: "creator"`. For `"ai-persona"` it requires: at least five completed loops with unique record ids, all `synthetic: true` with non-empty `persona` and `evidence` under `docs/verification/`; the four coverage rules over all loops; `creator` null; non-empty `attestedBy` and a valid `attestedAt`. Its result exposes the mode so reports can say "AI-validated".
 - The four persona entries are filled from the backed-up walkthrough workspace (copied on 2026-09-24 to `.workspace/persona-qa-2026-09-23/`, gitignored), using their real record ids, snapshot ids, categories, completion times and input mode; run 2 carries `experienceGap: true`, run 4 carries the cancel-and-retry induced failure with `recovered: true`. The implementer verifies each value against the stored records rather than the prose.
-- The creator's own loop, `creator` and `attestedAt` are added only after the creator confirms; until then the gate reports "pending creator loop".
+- The fifth loop is a new persona loop on a Common Question (issue 0034); until it and the AI attestation exist, the gate reports "pending fifth persona loop".
 
 ### Human labels and evaluation
 
-- The human-label file keeps its existing schema. An AI subagent drafts all 20 cases; the creator approves each one. The file (or its documentation) records `draftedBy: ai-assisted` and the creator as reviewer. Per ADR 0014, human labels remain primary; AI review is allowed only for the separate bilingual semantic review.
-- The Codex evaluation (`npm run evaluate -- --codex --accept-subscription-usage`, about 65 subscription calls) runs only after the creator explicitly authorises it in that session.
+- The label file keeps its schema plus `reviewerType` per label (`"human"` or `"ai"`). A rater persona drafts all 20 cases; an independent AI reviewer (a different agent) checks each one and only then sets `status: "approved"`, `reviewer` (agent / model identity), `reviewedAt` and `bilingualSemanticConsistency`. The label check accepts AI approvals only with `reviewerType: "ai"` and reports the label mode; reports must call them AI-reviewed labels, never human labels.
+- The Codex evaluation (`npm run evaluate -- --codex --accept-subscription-usage`, about 65 subscription calls) is pre-authorised by the creator for exactly one run; a failed run is recorded and not re-run without the creator.
 - The semantic-review artifact follows the shape the checks already accept (schema version 2, matching contract version, `reviewerType: "ai"`, 60 audits, each with checksum, verdict and rationale).
 
 ## Testing Decisions
@@ -206,9 +209,9 @@ but the release is still **BLOCKED**:
 - Good tests assert externally observable behaviour through the highest existing seam — HTTP responses, served Question Sets, check results, rendered text — not internal helpers.
 - **Common Questions:** node HTTP-level tests alongside the existing question-set and mock-session tests: the served Question Set has the self-introduction first and the five common behavioural questions marked as their own group, each with the expected text, gloss, category and empty capability list; old stored Question Sets serve it without migration; no Question Set means no fixed question; "add four more questions" still works and the count of job-grounded questions is unchanged; an Answer Attempt on the reserved id gets feedback through the fake provider; an Answer Attempt on a common behavioural question works the same way; a mock session opens with the self-introduction and never includes a common behavioural question. Model-output validation tests stay unchanged. Browser smoke asserts the pinned, labelled self-introduction card and the collapsed "常見行為題" block.
 - **Job-search note:** browser smoke asserts the copy on the job-search view.
-- **Revised gate:** unit tests on the creator-status check: a ledger of one real plus four valid persona loops passes; all-synthetic fails; a synthetic loop missing `persona` or `evidence` fails; coverage rules still fail when unmet; missing `creator`/`attestedAt` fails. The current "a synthetic loop fails" assertion is replaced, not deleted silently.
-- **`/find-104-jobs`:** no app tests (the app does not change). Verified by one creator-run session: clean title line, source line, dedupe skip on a second run, no questions generated, 4310 left running.
-- **Evaluation:** the existing evaluation checks are the acceptance test; `npm test` must stay green and `npm run evaluate` must report the human-label and semantic-review gates as passing.
+- **Revised gate:** unit tests on the creator-status check: `"creator"` mode behaves exactly as before; `"ai-persona"` with five valid persona loops and AI attestation passes; a non-null `creator`, missing `attestedBy`/`attestedAt`, a persona loop missing `persona` or `evidence`, fewer than five loops, or an unmet coverage rule fails. The label check gets matching tests for `reviewerType`.
+- **`/find-104-jobs`:** no app tests (the app does not change). Verified by one agent-run session against the agent's own test server (never 4310): clean title line, source line, dedupe skip on a second run, no questions generated.
+- **Evaluation:** the evaluation checks are the acceptance test; `npm test` must stay green and the offline review step must report the AI-reviewed label, semantic-review and AI-persona creator gates as passing, with the release status "AI-validated".
 - Prior art: the existing question-set, mock-session and evaluation test files, and the browser smoke script. All tests run on their own port with a temporary workspace and never touch 4310 or `.workspace/`.
 
 ## Out of Scope
@@ -223,6 +226,6 @@ but the release is still **BLOCKED**:
 
 ## Further Notes
 
-- Suggested order from the discussion: job-search note → `/find-104-jobs` → Common Questions → revised gate → Codex evaluation and AI semantic review → human labels on the resulting packet → offline recheck (`evaluation/review-report.js`, no model calls). The evaluation must precede labelling because each label is keyed to an `inputChecksum` that includes the model-generated question, and v3 has no frozen Codex analysis yet (found while splitting issues; issues 0029–0036). The revised-gate ledger work should not wait long, even though the walkthrough workspace is now backed up.
-- The human-label review costs about an hour of creator time and the evaluation about 65 subscription calls; both are human-gated and cannot be completed by an AFK agent.
+- Suggested order from the discussion: job-search note → `/find-104-jobs` → Common Questions → revised gate → Codex evaluation and AI semantic review → AI-reviewed labels on the resulting packet → offline recheck (`evaluation/review-report.js`, no model calls). The evaluation must precede labelling because each label is keyed to an `inputChecksum` that includes the model-generated question, and v3 has no frozen Codex analysis yet (found while splitting issues; issues 0029–0036). The revised-gate ledger work should not wait long, even though the walkthrough workspace is now backed up.
+- No slice needs the creator: the evaluation (about 65 subscription calls) is pre-authorised once, and the persona loop in 0034 uses a handful of real provider calls on the agent's own server. Real creator use and human labels are recorded as post-v1.0.0 work.
 - Working rules for every slice: never stop or restart the server on 127.0.0.1:4310; no `pkill`/`killall`; agent-browser closes only its own session; run `npm run codex:verify` after editing any `src/codex-*.js`; restart the server after changing the static-file allowlist; Conventional Commits with a capitalised subject, no trailing period, no AI trailer, and `git commit` as a separate command.

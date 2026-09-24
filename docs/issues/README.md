@@ -37,9 +37,9 @@ Local issue tracker for the Adaptive English Interview Coach. All issues below w
 | [0031 — Common Questions mechanism: pinned self-introduction](./0031-common-questions-self-introduction.md) | ready-for-agent | None |
 | [0032 — Five common behavioural questions (常見行為題)](./0032-common-behavioural-questions.md) | ready-for-agent | 0031 |
 | [0033 — ADR 0020: revised creator gate and persona loops in the ledger](./0033-adr-0020-revised-creator-gate.md) | ready-for-agent | None |
-| [0034 — Creator real Practice Loop and attestation](./0034-creator-real-practice-loop.md) | ready-for-human | 0033 |
-| [0035 — Codex evaluation run (v3) and AI semantic review](./0035-codex-evaluation-and-semantic-review.md) | ready-for-human | None |
-| [0036 — Human labels, offline release recheck, summary update](./0036-human-labels-and-release-recheck.md) | ready-for-human | 0035 (0034 for the final release status) |
+| [0034 — Fifth AI persona loop on Common Questions and AI attestation](./0034-fifth-persona-loop-and-ai-attestation.md) | ready-for-agent | 0031, 0032, 0033 |
+| [0035 — Codex evaluation run (v3) and AI semantic review](./0035-codex-evaluation-and-semantic-review.md) | ready-for-agent | None |
+| [0036 — AI-reviewed labels, offline release recheck, summary update](./0036-ai-reviewed-labels-and-release-recheck.md) | ready-for-agent | 0035 (0034 for the final release status) |
 
 Implementation should proceed in dependency order. Start each issue in a fresh session with the PRD and only the selected issue as the implementation brief.
 
