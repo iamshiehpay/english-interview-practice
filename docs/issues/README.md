@@ -36,7 +36,7 @@ Local issue tracker for the Adaptive English Interview Coach. All issues below w
 | [0030 — `/find-104-jobs` project skill](./0030-find-104-jobs-skill.md) | completed | None |
 | [0031 — Common Questions mechanism: pinned self-introduction](./0031-common-questions-self-introduction.md) | completed | None |
 | [0032 — Five common behavioural questions (常見行為題)](./0032-common-behavioural-questions.md) | completed | 0031 |
-| [0033 — ADR 0020: revised creator gate and persona loops in the ledger](./0033-adr-0020-revised-creator-gate.md) | needs-info | None |
+| [0033 — ADR 0020: revised creator gate and persona loops in the ledger](./0033-adr-0020-revised-creator-gate.md) | completed | None |
 | [0034 — Fifth AI persona loop on Common Questions and AI attestation](./0034-fifth-persona-loop-and-ai-attestation.md) | needs-info | 0031, 0032, 0033 |
 | [0035 — Codex evaluation run (v3) and AI semantic review](./0035-codex-evaluation-and-semantic-review.md) | needs-info | None |
 | [0036 — AI-reviewed labels, offline release recheck, summary update](./0036-ai-reviewed-labels-and-release-recheck.md) | needs-info | 0035 (0034 for the final release status) |

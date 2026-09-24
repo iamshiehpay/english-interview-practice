@@ -1,5 +1,5 @@
 ---
-status: needs-info
+status: completed
 ---
 
 # ADR 0020: an AI-validated v1.0.0 — persona creator gate and persona loops in the ledger
@@ -55,8 +55,10 @@ to `.workspace/persona-qa-2026-09-23/` (gitignored; 4 snapshots, 5 records).
   record id, snapshot id, category, completion time, input mode,
   `synthetic: true`, `persona: "林小安"`, `evidence` pointing to the walkthrough
   document; run 2 `experienceGap: true`; run 4 `inducedFailure` of the
-  cancel-and-retry type with `recovered: true`. Take every value from the
-  backed-up workspace records, not from the prose; leave `creator`,
+  cancel-and-retry type with `recovered: true`. Verify native record values against the
+  backed-up workspace records. Under the user’s explicit 2026-09-24 clarification,
+  cross-check persona/synthetic/evidence metadata and cancellation against the
+  contemporaneous walkthrough and screenshot, identifying each source; leave `creator`,
   `attestedBy` and `attestedAt` null (0034 adds the fifth loop and attests).
 - **Docs**: update `MVP-ACCEPTANCE.md` and `creator-validation.zh-TW.md` to the
   new rule (the runbook explains the AI-validated mode and keeps the human mode
@@ -68,7 +70,7 @@ to `.workspace/persona-qa-2026-09-23/` (gitignored; 4 snapshots, 5 records).
 
 - [x] ADR 0020 exists and states the AI-validated rule, the persona-loop definition, AI-reviewed labels, the coverage rules, the ADR 0014 amendment, the rationale, the risk and the post-v1.0.0 human work.
 - [x] Tests: `"creator"` mode behaves exactly as before (its existing tests still pass); `"ai-persona"` with five valid persona loops and AI attestation passes; a non-null `creator`, a missing `attestedBy`/`attestedAt`, a persona loop missing `persona` or `evidence` (or evidence outside `docs/verification/`), fewer than five loops, or any unmet coverage rule fails.
-- [ ] The ledger holds exactly the four persona loops in `"ai-persona"` mode, every field verified against `.workspace/persona-qa-2026-09-23/workspace.json`, and the check reports only the pending fifth loop and attestation.
+- [x] The ledger holds exactly the four persona loops in `"ai-persona"` mode, native fields verified against `.workspace/persona-qa-2026-09-23/workspace.json`, external provenance and cancellation independently cross-checked against the contemporaneous walkthrough/screenshot with sources disclosed, and the check reports only the pending fifth loop and attestation.
 - [x] `MVP-ACCEPTANCE.md`, the runbook and the walkthrough note agree with ADR 0020.
 - [x] `npm test` passes; the offline evaluation (`npm run evaluate`) still runs without model calls.
 
@@ -100,3 +102,11 @@ None — can start immediately.
 - Required to unblock the literal criterion: authentic contemporaneous backed-up cancellation/persona provenance evidence, or explicit authorization to change the permitted evidence sources. No acceptance wording was weakened, no history was fabricated, and the backup was not changed. No one signed or approved in the user's name.
 - Independent round-2 `npm test`: 211/211; offline `npm run evaluate`: 60/60 case runs, 80/80 stability, no external model calls. Round 3 rechecked the immutable-source failure and unchanged code without redundant suite runs. The creator check reports exactly fifth persona loop and AI attestation pending. An intervening 0031 evaluation-boundary regression was repaired and independently verified under 0031.
 - Status is `needs-info`, not completed. Dependent 0034 cannot start while this required blocker remains unresolved.
+
+### 2026-09-24 — Explicit user clarification; reopened
+
+The user explicitly approved using “備份資料＋當時截圖／紀錄” for cross-verification. This supersedes the earlier workspace-only evidence-source constraint, not the required loop count, coverage, completion, synthetic disclosure or independent attestation. Historical failed audits above remain accurate for the former criterion. The cancellation must still be supported by the original screenshot plus the successful retry record; it must not be fabricated in the backup. Reopened for independent verification and review under the clarified criterion.
+
+### Reopened verification completed under the authorized source rule
+
+Independent `test-automator` and `reviewer` rechecked the native records, original cancellation screenshot, contemporaneous persona/walkthrough and successful retry receipt; both returned PASS on all amended criteria (Standards PASS / Spec PASS). The provenance audit now clearly labels the former workspace-only conclusion as historical. `npm test` passed 216/216; offline `npm run evaluate` passed 60/60 cases and 80/80 stability without external model calls. The ledger still has exactly four loops with creator/attestation null; only 0034's fifth loop and independent attestation remain pending. Marked completed without rewriting the backup or claiming absent native events exist.

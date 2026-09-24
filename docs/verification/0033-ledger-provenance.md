@@ -45,9 +45,12 @@ backup can recover the overwritten state. The screenshot and contemporary
 walkthrough are independent evidence for the cancellation, but they are not
 fields in `workspace.json`.
 
-**Unresolved literal acceptance requirement:** issue 0033 says to take and
-verify *every* ledger value against the backed-up workspace. The backup does
+**Historical finding under the original workspace-only rule (superseded below):** issue 0033 originally required taking and
+verifying *every* ledger value against the backed-up workspace. The backup does
 not contain persona provenance, evidence-document paths, attestation fields,
 or the prior canceled attempt. The ledger records the requested four loops and
 links the available sources without fabricating a canceled receipt. Its
 `ai-persona` gate remains pending the fifth loop and independent attestation.
+
+
+**2026-09-24 — User-authorized evidence-source clarification:** The user explicitly approved cross-verification using the backup together with the original screenshot and contemporaneous walkthrough. Native record fields still require exact backup matches. Persona/synthetic/evidence metadata and the cancellation event may use the separately identified historical sources above; the successful retry must still match the saved operation/receipt. The absent canceled workspace event is not reconstructed or claimed to exist. This resolves the former evidence-source contradiction, subject to independent verification of those sources; loop coverage, completion requirements, AI disclosure and independent attestation remain unchanged.
