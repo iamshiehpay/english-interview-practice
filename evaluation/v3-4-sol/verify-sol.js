@@ -14,6 +14,8 @@ const root=dirname(fileURLToPath(import.meta.url));
 const path=join(root,'verification-attempt.json');
 const profile=resolve(process.env.COACH_CODEX_HOME||'.coach-codex');
 const binary=await verifiedBinary(process.env.COACH_CODEX_BIN||'codex');
+const binarySha256=createHash('sha256').update(await readFile(binary)).digest('hex');
+assert.equal(binarySha256,'8eaf1ad12fe6bf89b1710330f58900014322c7c5af677e43be116d8ac5fc0a9e','Sol comparison requires reviewed Codex CLI 0.155.1');
 const fingerprint=await isolationFingerprint();
 const markerPath=join(profile,'isolation-verification.json');
 const backupPath=join(profile,'isolation-verification-luna-backup.json');
@@ -23,7 +25,7 @@ assert.equal(marker.passed,true);
 assert.equal(marker.model,'gpt-5.6-luna');
 assert.equal(marker.fingerprint,fingerprint);
 assert.deepEqual(backup,marker,'Backed-up Luna marker must match the current valid marker');
-const record={schemaVersion:1,model:'gpt-5.6-sol',effort:'xhigh',serviceTier:'priority',sourceFingerprint:fingerprint,binarySha256:createHash('sha256').update(await readFile(binary)).digest('hex'),requestCap:1,status:'reserved',reservedAt:new Date().toISOString()};
+const record={schemaVersion:1,model:'gpt-5.6-sol',effort:'xhigh',serviceTier:'priority',sourceFingerprint:fingerprint,binarySha256,requestCap:1,status:'reserved',reservedAt:new Date().toISOString()};
 // Exclusive create makes an interrupted or failed verification consume this slot forever.
 const file=await open(path,'wx',0o600);
 try{await file.writeFile(JSON.stringify(record,null,2)+'\n');await file.sync();}finally{await file.close();}

@@ -53,10 +53,12 @@ for(const label of approval.labels){
 const draftA=await readSource('label-draft-a.json'),draftB=await readSource('label-draft-b.json');
 assert.deepEqual(approval.draftChecksums,{a:sha(draftA),b:sha(draftB)},'Approval must bind both independent drafts');
 const binary=await verifiedBinary(process.env.COACH_CODEX_BIN||'codex');
+const binarySha256=createHash('sha256').update(await readFile(binary)).digest('hex');
+assert.equal(binarySha256,'8eaf1ad12fe6bf89b1710330f58900014322c7c5af677e43be116d8ac5fc0a9e','Sol comparison requires reviewed Codex CLI 0.155.1');
 const model=new CodexLanguageModel({profile:process.env.COACH_CODEX_HOME,binary,model:'gpt-5.6-sol',effort:'xhigh',serviceTier:'priority'});
 const {stdout}=await promisify(execFile)(model.binary,['--version'],{timeout:5000,maxBuffer:10000});
 const cliVersion=stdout.trim();
-assert.match(cliVersion,/^codex-cli \S+$/,'Unrecognised Codex CLI version');
+assert.equal(cliVersion,'codex-cli 0.155.1','Sol comparison CLI version changed');
 const sourceFiles=['pilot-run.js','../v3-4/contract-candidate.js','../v3-4/pilot-inputs.json','../v3-4/pilot-blind-packet.json','../v3-4/pilot-blind-rater-guide.md','../v3-4/pilot-label-approval.json','../../src/model-contracts.js','../../src/codex-language.js','../../src/model-schemas.js','../../src/domain.js','../../src/codex-rpc.js','../../src/codex-profile.js','../../src/codex-audit.js','../../src/codex-sandbox.js','../../src/codex-runtime.js'];
 const sourceChecksums=Object.fromEntries(await Promise.all(sourceFiles.map(async name=>[name,sha(await readFile(at(name),'utf8'))])));
 const freeze={schemaVersion:1,contractVersion:CANDIDATE_CONTRACT_VERSION,requestCap:16,packetChecksum:sha(packet),approvalChecksum:sha(approval),promptChecksum:sha(candidateFeedbackContract),sourceChecksums,model:model.model,effort:model.effort,serviceTier:model.serviceTier,cliVersion};
@@ -67,6 +69,7 @@ assert.equal(verification.status,'completed','Sol verification must complete bef
 assert.equal(verification.model,model.model);
 assert.equal(verification.effort,model.effort);
 assert.equal(verification.serviceTier,model.serviceTier);
+assert.equal(verification.binarySha256,binarySha256,'Sol verification and feedback must use the same reviewed CLI binary');
 assert.equal(verification.requestCap,1);
 assert.ok(Number.isFinite(Date.parse(verification.completedAt)),'Sol verification completion time is required');
 await requireAudit(model.profile,model.model); // Read-only guard before reserving the first feedback slot.
@@ -109,7 +112,7 @@ try{
       const pairs=feedbackPairs(feedback);
       const automaticErrors=pairs.flatMap(([name,en,zh])=>typeof en!=='string'||!en.trim()||typeof zh!=='string'||!/\p{Script=Han}/u.test(zh)||en.normalize('NFKC').trim()===zh.normalize('NFKC').trim()?[`${name}: missing or untranslated counterpart`]:[]);
       assert.deepEqual(automaticErrors,[],'Automatic bilingual checks failed');
-      state.slots[key]={status:'completed',reservedAt:state.slots[key].reservedAt,completedAt:new Date().toISOString(),caseId:slot.caseId,repeat:slot.repeat,inputChecksum:item.inputChecksum,outputChecksum:sha({contractVersion:CANDIDATE_CONTRACT_VERSION,caseId:slot.caseId,repeat:slot.repeat,question:item.question,feedback}),feedback,automaticBilingualPairs:pairs.map(([name,en,zh])=>({name,en,zh}))};
+      state.slots[key]={status:'completed',reservedAt:state.slots[key].reservedAt,completedAt:new Date().toISOString(),caseId:slot.caseId,repeat:slot.repeat,inputChecksum:item.inputChecksum,outputChecksum:sha({contractVersion:CANDIDATE_CONTRACT_VERSION,caseId:slot.caseId,repeat:slot.repeat,question:item.question,feedback}),rawOutput:raw,feedback,automaticBilingualPairs:pairs.map(([name,en,zh])=>({name,en,zh}))};
       await writeJsonAtomic(statePath,state);
       console.log(`${key}: saved`);
     }catch(error){

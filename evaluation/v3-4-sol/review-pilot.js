@@ -15,6 +15,8 @@ assert.equal(verification.schemaVersion,1);
 assert.equal(verification.status,'completed');
 assert.equal(verification.model,'gpt-5.6-sol');
 assert.equal(verification.requestCap,1);
+assert.equal(verification.binarySha256,'8eaf1ad12fe6bf89b1710330f58900014322c7c5af677e43be116d8ac5fc0a9e');
+assert.equal(freeze.cliVersion,'codex-cli 0.155.1');
 assert.equal(packet.schemaVersion,1);
 assert.equal(packet.contractVersion,'3.4.0');
 assert.equal(freeze.model,'gpt-5.6-sol');

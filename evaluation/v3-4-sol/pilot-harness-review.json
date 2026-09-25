@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "reviewer": "Codex GPT-6 independent pre-execution reviewer, invocation 1/2, /root/sol_preflight_review",
+  "recordedAt": "2026-09-25T06:10:09Z",
+  "verdict": "pass",
+  "scope": "Contract 3.4 Sol plan and harness versus frozen prompt, inputs, blind packet, approved labels and 1+16 request caps",
+  "findingResolved": "The reviewer found that two reviewed CLI versions were accepted. Verification and feedback now pin the same reviewed Codex CLI 0.155.1 binary hash before any request slot is reserved.",
+  "remainingPrerequisite": "Set COACH_CODEX_BIN to the reviewed 0.155.1 executable; the default 0.156.1 executable is rejected before subscription use.",
+  "postReviewParentChange": "The parent clarified the plan's malformed-response evidence limit and saved every returned parsed raw feedback object separately from validated feedback. Parent syntax, fixed-input preflight and targeted checkpoint/audit tests passed after these changes. The independent reviewer did not re-review this small follow-up edit.",
+  "modelRequestsByReviewer": 0
+}

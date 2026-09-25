@@ -29,6 +29,7 @@ for(const row of packet){
     const saved=state.slots[`${row.caseId}:${repeat}`];
     assert.equal(saved?.status,'completed',`${row.caseId}:${repeat} was not completed`);
     assert.equal(saved.inputChecksum,row.inputChecksum);
+    assert.deepEqual(validateFeedback(saved.rawOutput,row.transcript),saved.feedback,'Saved parsed raw output differs from validated feedback');
     assert.deepEqual(validateFeedback(saved.feedback,row.transcript),saved.feedback);
     assert.equal(saved.outputChecksum,sha({contractVersion:'3.4.0',caseId:row.caseId,repeat,question:row.question,feedback:saved.feedback}));
     assert.equal(saved.automaticBilingualPairs.length,6);
