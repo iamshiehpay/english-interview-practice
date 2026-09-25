@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 2,
+  "contractVersion": "3.3.0",
+  "reviewerType": "ai",
+  "reviewer": {
+    "id": "codex-semantic-reviewer-repeat-1",
+    "reviewedAt": "2026-09-25T01:40:35Z"
+  },
+  "assignedRepeat": 1,
+  "sourcePacket": "evaluation/v3-3/semantic-repeat-1-packet.json",
+  "sourceAuditChecksum": "a4b58a8a98fd734bf5a1b151f73b1343380f17d73c58147bf110428555de4108",
+  "reviews": [
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 1,
+      "outputChecksum": "4c1bff7e3da57811247ed3aa81062e25708f0d92311ba149998a6b9625a83d62",
+      "verdict": "consistent",
+      "rationale": "八對均對應：動機、檢索診斷、英文夾中文的表達問題及改進方向一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "96e2a5f7087c2919941fe263e5f61349ef194b66217a0721e3d83f0d2e894e6f",
+      "verdict": "consistent",
+      "rationale": "八對均對應：離題判斷、缺少檢索評估證據與改進建議的力度一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 1,
+      "outputChecksum": "8e760a0245349dac4a58cf40e6f8cfe4c88a88f7aa984b08e7eff32ebdbdd1ff",
+      "verdict": "consistent",
+      "rationale": "八對均對應：協作檢查失敗案例的優點及未交代模型限制的缺口一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "34776eeaa9209ed9135e78b4ad93049148fccfa7766d9bb2ac1037e7f9ff126f",
+      "verdict": "consistent",
+      "rationale": "八對均對應：回答偏重評估步驟、未向產品同事解釋結果影響的評價一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 1,
+      "outputChecksum": "2d8b1f021396ba5be3246c96eb51499c72b551be1e52754295255cd31452c2fd",
+      "verdict": "consistent",
+      "rationale": "八對均對應：支付 API 動機與可靠性問題、離題評價及建議一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "5e6c5927249f2a734f6077b252bcf686af2e41da6dfcbaec7c1c4dd01c4d75d4",
+      "verdict": "consistent",
+      "rationale": "八對均對應：交易測試、冪等性檢查，以及缺少 PostgreSQL 與測試斷言細節的評價一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 1,
+      "outputChecksum": "796e0b7367f033a122a3b0fd881d0e96fa1572490a5192473fe24f67be97e500",
+      "verdict": "consistent",
+      "rationale": "八對均對應：無責備事件檢討問題、離題與英文表達評價一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "e52942b91f5d2d4398395556de7375d9882cc61d18265261aa64ef0f13bc6875",
+      "verdict": "consistent",
+      "rationale": "八對均對應：重試與防重複扣款機制、部分失敗缺口及建議一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 1,
+      "outputChecksum": "38f1502db91b74513da523aab5db38ae3c4599a51516490d26e3bf0eb14a2c8c",
+      "verdict": "consistent",
+      "rationale": "八對均對應：實驗興趣、新竹及熟悉產品脈絡的缺口與建議一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "52c31fce12aeb0b8fc7bd7bff538d722a57216b91b2c61402490047675c841a6",
+      "verdict": "consistent",
+      "rationale": "八對均對應：實驗假設、信賴區間、具體檢查行動與不足之處一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 1,
+      "outputChecksum": "cf47667fd8ce05753549b381245edeebdf1b2d9c4c1dbfdba5cbe65beabe0238",
+      "verdict": "consistent",
+      "rationale": "八對均對應：調查不確定性的步驟與尚未向產品經理溝通的缺口一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "05afa3837bf3406d5035dd67fa6b52f7ab2d40e7d43a1d9bf1337bae286adc79",
+      "verdict": "consistent",
+      "rationale": "八對均對應：SQL/Python 缺失資料工作流程問題、離題評價及改進要求一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 1,
+      "outputChecksum": "d58884fd14e19d0b7ad5bc62de8eaf73ed57c162d3cbb12ffbf8cb7fc5f23c0a",
+      "verdict": "inconsistent",
+      "rationale": "「support reason」中文新增腳本透過「可重現測試」貢獻的具體事實，英文該欄僅泛稱一種具體方式；其餘七對一致。",
+      "contradictoryPairs": [
+        "support reason"
+      ]
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "dd69fc0a8d947faa085021678ada27ade2680324cc78e81cade6557cb726aa34",
+      "verdict": "consistent",
+      "rationale": "八對均對應：C 韌體或串列通訊除錯問題、初步診斷與缺少結果的評價一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 1,
+      "outputChecksum": "aaf1040d205b6e16dfed899b5aeb25a8a92d6c0615b4ec7cee15f718e34d8f11",
+      "verdict": "consistent",
+      "rationale": "八對均對應：比較量測與證據的優點，以及未決定下一個實驗的缺口一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "7be405c94801667ef979c1daadd5f47901da6a0bed673d6e110a2561d32860c9",
+      "verdict": "consistent",
+      "rationale": "八對均對應：時序限制與感測器例子的要求、離題評價及改進方向一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 1,
+      "outputChecksum": "d209a161ff5d24406698655215b707d058480b23a2aa4daef1ca4249be2484c4",
+      "verdict": "consistent",
+      "rationale": "八對均對應：無障礙介面動機與使用者成果問題、離題判斷及建議一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "c7919f0b8a90d6dd39715d64654c109ee667ac8340a97ca9491d1229a07113fa",
+      "verdict": "consistent",
+      "rationale": "八對均對應：無障礙測試步驟、缺少使用者需求與結果連結的評價一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 1,
+      "outputChecksum": "753d41f3aae988ecce05c762e7a174b44539199204fbf35bce747c21e13a15c0",
+      "verdict": "consistent",
+      "rationale": "八對均對應：可用性測試步驟與缺少設計師合作及介面修改的評價一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "c6601de57b8a25551550b356a2272c93f1b0f6755e4e6f2e080a33472a2f4b93",
+      "verdict": "consistent",
+      "rationale": "八對均對應：先測量再優化、無障礙取捨及缺少工具與指標的評價一致。",
+      "contradictoryPairs": []
+    }
+  ]
+}

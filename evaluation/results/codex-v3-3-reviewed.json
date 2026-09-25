@@ -1,0 +1,571 @@
+{
+  "reviewVersion": "1.0.0",
+  "contractVersion": "3.3.0",
+  "generatedAt": "2026-09-25T02:29:33.916Z",
+  "rawReport": {
+    "generatedAt": "2026-09-24T15:37:54.733Z",
+    "provider": "Codex / ChatGPT subscription / gpt-5.6-luna / xhigh / fast",
+    "model": "gpt-5.6-luna",
+    "codeChecksum": "4fb4310e9abb2f596708aaebc7ce31981172903f34f1fe8c37160c4a905f8708",
+    "checksum": "101c10bdfa8f80267e9ae24f325ffe05477875f92eca34715480020f2a5bd550"
+  },
+  "sourceEvidence": {
+    "rawCodeChecksum": "4fb4310e9abb2f596708aaebc7ce31981172903f34f1fe8c37160c4a905f8708",
+    "capturedModelRunMatchesRaw": true,
+    "capturedNote": "Captured immediately before the single authorized Codex v3-3 evaluation run.",
+    "currentCodeChecksum": "4fb4310e9abb2f596708aaebc7ce31981172903f34f1fe8c37160c4a905f8708",
+    "currentMatchesRaw": true,
+    "changedFiles": []
+  },
+  "artifactChecksums": {
+    "frozenAnalysis": "a2477b1e138ee3736e2551b7814892bbc30d36df1ee6411c8cd0b6cb0e6cd1ee",
+    "reviewPacket": "54ce1603ef7c037e8ba887b25365982a6cfe39f9ab8d59aad273fa5dbd9ed40d",
+    "bilingualAudit": "a4b58a8a98fd734bf5a1b151f73b1343380f17d73c58147bf110428555de4108",
+    "semanticReviews": "d49ee4b18836dba77c11816c18472f332252186f3134c7cecab49839320f41d1",
+    "humanLabels": "4d22a3f2fce959a0210f38426b6a4429fd0e0b063d82ccbed77a3b2818a3eb4f",
+    "creatorValidation": "f18320ec328725e0cc80624052602b9f58eec13e9cf7399d13e06e7a92b08bdc",
+    "blindPacket": "ae2326ed2448d65e1fd0dab5c5975e9e65d9aba5b08b7303b84fb98a94b8ac35",
+    "labelFreeze": "e4ada334798715bfcd49df46a3d82dcca7706ae6fdcbde8f0736a069395d56ce"
+  },
+  "automaticRevalidation": {
+    "pass": true,
+    "cases": 20,
+    "repeats": 3,
+    "outputs": 60,
+    "stability": {
+      "stable": 80,
+      "total": 80,
+      "ratio": 1,
+      "pass": true
+    }
+  },
+  "bilingualGate": {
+    "status": "FAIL",
+    "pass": false,
+    "reviewedOutputs": 60,
+    "reviewer": "Three independent AI semantic reviewers (repeat 1, 2, 3)",
+    "reviewedAt": "2026-09-25T02:29:07.440Z",
+    "errors": [
+      "embedded-role-fit: reviewer found inconsistent bilingual meaning"
+    ]
+  },
+  "labelGate": {
+    "pass": false,
+    "status": "FAIL",
+    "mode": "ai",
+    "provenanceMode": "persona-drafted-ai-approved",
+    "approved": 20,
+    "comparedOutputs": 60,
+    "errors": [],
+    "comparisonFailures": [
+      {
+        "caseId": "ai-role-fit",
+        "repeat": 2,
+        "check": "evaluation label expectations",
+        "error": "structure rating outside approved range"
+      },
+      {
+        "caseId": "ai-experience-depth",
+        "repeat": 1,
+        "check": "evaluation label expectations",
+        "error": "structure rating outside approved range"
+      },
+      {
+        "caseId": "ai-behavioral",
+        "repeat": 1,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range; structure rating outside approved range; englishExpression rating outside approved range"
+      },
+      {
+        "caseId": "ai-behavioral",
+        "repeat": 2,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range; englishExpression rating outside approved range"
+      },
+      {
+        "caseId": "ai-behavioral",
+        "repeat": 3,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range; structure rating outside approved range"
+      },
+      {
+        "caseId": "ai-technical-communication",
+        "repeat": 1,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range; structure rating outside approved range"
+      },
+      {
+        "caseId": "ai-technical-communication",
+        "repeat": 2,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range"
+      },
+      {
+        "caseId": "ai-technical-communication",
+        "repeat": 3,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range"
+      },
+      {
+        "caseId": "backend-experience-depth",
+        "repeat": 1,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range"
+      },
+      {
+        "caseId": "backend-experience-depth",
+        "repeat": 2,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range"
+      },
+      {
+        "caseId": "backend-experience-depth",
+        "repeat": 3,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range"
+      },
+      {
+        "caseId": "backend-behavioral",
+        "repeat": 1,
+        "check": "evaluation label expectations",
+        "error": "structure rating outside approved range"
+      },
+      {
+        "caseId": "backend-behavioral",
+        "repeat": 2,
+        "check": "evaluation label expectations",
+        "error": "structure rating outside approved range"
+      },
+      {
+        "caseId": "backend-behavioral",
+        "repeat": 3,
+        "check": "evaluation label expectations",
+        "error": "structure rating outside approved range"
+      },
+      {
+        "caseId": "backend-technical-communication",
+        "repeat": 1,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range; structure rating outside approved range"
+      },
+      {
+        "caseId": "backend-technical-communication",
+        "repeat": 2,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range; structure rating outside approved range"
+      },
+      {
+        "caseId": "backend-technical-communication",
+        "repeat": 3,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range; structure rating outside approved range; englishExpression rating outside approved range"
+      },
+      {
+        "caseId": "data-role-fit",
+        "repeat": 1,
+        "check": "evaluation label expectations",
+        "error": "relevance rating outside approved range; structure rating outside approved range"
+      },
+      {
+        "caseId": "data-role-fit",
+        "repeat": 2,
+        "check": "evaluation label expectations",
+        "error": "relevance rating outside approved range; structure rating outside approved range"
+      },
+      {
+        "caseId": "data-role-fit",
+        "repeat": 3,
+        "check": "evaluation label expectations",
+        "error": "relevance rating outside approved range; structure rating outside approved range"
+      },
+      {
+        "caseId": "data-experience-depth",
+        "repeat": 1,
+        "check": "evaluation label expectations",
+        "error": "structure rating outside approved range"
+      },
+      {
+        "caseId": "data-experience-depth",
+        "repeat": 3,
+        "check": "evaluation label expectations",
+        "error": "relevance rating outside approved range"
+      },
+      {
+        "caseId": "data-behavioral",
+        "repeat": 1,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range"
+      },
+      {
+        "caseId": "data-behavioral",
+        "repeat": 2,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range"
+      },
+      {
+        "caseId": "data-behavioral",
+        "repeat": 3,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range"
+      },
+      {
+        "caseId": "embedded-role-fit",
+        "repeat": 1,
+        "check": "evaluation label expectations",
+        "error": "relevance rating outside approved range; structure rating outside approved range"
+      },
+      {
+        "caseId": "embedded-role-fit",
+        "repeat": 2,
+        "check": "evaluation label expectations",
+        "error": "relevance rating outside approved range; structure rating outside approved range"
+      },
+      {
+        "caseId": "embedded-role-fit",
+        "repeat": 3,
+        "check": "evaluation label expectations",
+        "error": "relevance rating outside approved range; structure rating outside approved range"
+      },
+      {
+        "caseId": "embedded-experience-depth",
+        "repeat": 1,
+        "check": "evaluation label expectations",
+        "error": "structure rating outside approved range"
+      },
+      {
+        "caseId": "embedded-experience-depth",
+        "repeat": 2,
+        "check": "evaluation label expectations",
+        "error": "structure rating outside approved range"
+      },
+      {
+        "caseId": "embedded-experience-depth",
+        "repeat": 3,
+        "check": "evaluation label expectations",
+        "error": "structure rating outside approved range"
+      },
+      {
+        "caseId": "embedded-behavioral",
+        "repeat": 1,
+        "check": "evaluation label expectations",
+        "error": "structure rating outside approved range"
+      },
+      {
+        "caseId": "embedded-technical-communication",
+        "repeat": 2,
+        "check": "evaluation label expectations",
+        "error": "structure rating outside approved range"
+      },
+      {
+        "caseId": "frontend-experience-depth",
+        "repeat": 1,
+        "check": "evaluation label expectations",
+        "error": "relevance rating outside approved range"
+      },
+      {
+        "caseId": "frontend-experience-depth",
+        "repeat": 3,
+        "check": "evaluation label expectations",
+        "error": "relevance rating outside approved range"
+      },
+      {
+        "caseId": "frontend-behavioral",
+        "repeat": 2,
+        "check": "evaluation label expectations",
+        "error": "englishExpression rating outside approved range"
+      },
+      {
+        "caseId": "frontend-behavioral",
+        "repeat": 3,
+        "check": "evaluation label expectations",
+        "error": "structure rating outside approved range"
+      },
+      {
+        "caseId": "frontend-technical-communication",
+        "repeat": 1,
+        "check": "evaluation label expectations",
+        "error": "relevance rating outside approved range; structure rating outside approved range"
+      },
+      {
+        "caseId": "frontend-technical-communication",
+        "repeat": 2,
+        "check": "evaluation label expectations",
+        "error": "relevance rating outside approved range; support rating outside approved range; structure rating outside approved range"
+      },
+      {
+        "caseId": "frontend-technical-communication",
+        "repeat": 3,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range; structure rating outside approved range"
+      }
+    ]
+  },
+  "humanLabels": {
+    "pass": false,
+    "status": "FAIL",
+    "mode": "ai",
+    "provenanceMode": "persona-drafted-ai-approved",
+    "approved": 20,
+    "comparedOutputs": 60,
+    "errors": [],
+    "comparisonFailures": [
+      {
+        "caseId": "ai-role-fit",
+        "repeat": 2,
+        "check": "evaluation label expectations",
+        "error": "structure rating outside approved range"
+      },
+      {
+        "caseId": "ai-experience-depth",
+        "repeat": 1,
+        "check": "evaluation label expectations",
+        "error": "structure rating outside approved range"
+      },
+      {
+        "caseId": "ai-behavioral",
+        "repeat": 1,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range; structure rating outside approved range; englishExpression rating outside approved range"
+      },
+      {
+        "caseId": "ai-behavioral",
+        "repeat": 2,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range; englishExpression rating outside approved range"
+      },
+      {
+        "caseId": "ai-behavioral",
+        "repeat": 3,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range; structure rating outside approved range"
+      },
+      {
+        "caseId": "ai-technical-communication",
+        "repeat": 1,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range; structure rating outside approved range"
+      },
+      {
+        "caseId": "ai-technical-communication",
+        "repeat": 2,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range"
+      },
+      {
+        "caseId": "ai-technical-communication",
+        "repeat": 3,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range"
+      },
+      {
+        "caseId": "backend-experience-depth",
+        "repeat": 1,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range"
+      },
+      {
+        "caseId": "backend-experience-depth",
+        "repeat": 2,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range"
+      },
+      {
+        "caseId": "backend-experience-depth",
+        "repeat": 3,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range"
+      },
+      {
+        "caseId": "backend-behavioral",
+        "repeat": 1,
+        "check": "evaluation label expectations",
+        "error": "structure rating outside approved range"
+      },
+      {
+        "caseId": "backend-behavioral",
+        "repeat": 2,
+        "check": "evaluation label expectations",
+        "error": "structure rating outside approved range"
+      },
+      {
+        "caseId": "backend-behavioral",
+        "repeat": 3,
+        "check": "evaluation label expectations",
+        "error": "structure rating outside approved range"
+      },
+      {
+        "caseId": "backend-technical-communication",
+        "repeat": 1,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range; structure rating outside approved range"
+      },
+      {
+        "caseId": "backend-technical-communication",
+        "repeat": 2,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range; structure rating outside approved range"
+      },
+      {
+        "caseId": "backend-technical-communication",
+        "repeat": 3,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range; structure rating outside approved range; englishExpression rating outside approved range"
+      },
+      {
+        "caseId": "data-role-fit",
+        "repeat": 1,
+        "check": "evaluation label expectations",
+        "error": "relevance rating outside approved range; structure rating outside approved range"
+      },
+      {
+        "caseId": "data-role-fit",
+        "repeat": 2,
+        "check": "evaluation label expectations",
+        "error": "relevance rating outside approved range; structure rating outside approved range"
+      },
+      {
+        "caseId": "data-role-fit",
+        "repeat": 3,
+        "check": "evaluation label expectations",
+        "error": "relevance rating outside approved range; structure rating outside approved range"
+      },
+      {
+        "caseId": "data-experience-depth",
+        "repeat": 1,
+        "check": "evaluation label expectations",
+        "error": "structure rating outside approved range"
+      },
+      {
+        "caseId": "data-experience-depth",
+        "repeat": 3,
+        "check": "evaluation label expectations",
+        "error": "relevance rating outside approved range"
+      },
+      {
+        "caseId": "data-behavioral",
+        "repeat": 1,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range"
+      },
+      {
+        "caseId": "data-behavioral",
+        "repeat": 2,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range"
+      },
+      {
+        "caseId": "data-behavioral",
+        "repeat": 3,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range"
+      },
+      {
+        "caseId": "embedded-role-fit",
+        "repeat": 1,
+        "check": "evaluation label expectations",
+        "error": "relevance rating outside approved range; structure rating outside approved range"
+      },
+      {
+        "caseId": "embedded-role-fit",
+        "repeat": 2,
+        "check": "evaluation label expectations",
+        "error": "relevance rating outside approved range; structure rating outside approved range"
+      },
+      {
+        "caseId": "embedded-role-fit",
+        "repeat": 3,
+        "check": "evaluation label expectations",
+        "error": "relevance rating outside approved range; structure rating outside approved range"
+      },
+      {
+        "caseId": "embedded-experience-depth",
+        "repeat": 1,
+        "check": "evaluation label expectations",
+        "error": "structure rating outside approved range"
+      },
+      {
+        "caseId": "embedded-experience-depth",
+        "repeat": 2,
+        "check": "evaluation label expectations",
+        "error": "structure rating outside approved range"
+      },
+      {
+        "caseId": "embedded-experience-depth",
+        "repeat": 3,
+        "check": "evaluation label expectations",
+        "error": "structure rating outside approved range"
+      },
+      {
+        "caseId": "embedded-behavioral",
+        "repeat": 1,
+        "check": "evaluation label expectations",
+        "error": "structure rating outside approved range"
+      },
+      {
+        "caseId": "embedded-technical-communication",
+        "repeat": 2,
+        "check": "evaluation label expectations",
+        "error": "structure rating outside approved range"
+      },
+      {
+        "caseId": "frontend-experience-depth",
+        "repeat": 1,
+        "check": "evaluation label expectations",
+        "error": "relevance rating outside approved range"
+      },
+      {
+        "caseId": "frontend-experience-depth",
+        "repeat": 3,
+        "check": "evaluation label expectations",
+        "error": "relevance rating outside approved range"
+      },
+      {
+        "caseId": "frontend-behavioral",
+        "repeat": 2,
+        "check": "evaluation label expectations",
+        "error": "englishExpression rating outside approved range"
+      },
+      {
+        "caseId": "frontend-behavioral",
+        "repeat": 3,
+        "check": "evaluation label expectations",
+        "error": "structure rating outside approved range"
+      },
+      {
+        "caseId": "frontend-technical-communication",
+        "repeat": 1,
+        "check": "evaluation label expectations",
+        "error": "relevance rating outside approved range; structure rating outside approved range"
+      },
+      {
+        "caseId": "frontend-technical-communication",
+        "repeat": 2,
+        "check": "evaluation label expectations",
+        "error": "relevance rating outside approved range; support rating outside approved range; structure rating outside approved range"
+      },
+      {
+        "caseId": "frontend-technical-communication",
+        "repeat": 3,
+        "check": "evaluation label expectations",
+        "error": "support rating outside approved range; structure rating outside approved range"
+      }
+    ]
+  },
+  "creator": {
+    "pass": false,
+    "status": "PENDING",
+    "count": 0,
+    "validationMode": "ai-persona"
+  },
+  "releaseStatus": "BLOCKED",
+  "blockers": [
+    "Independent bilingual semantic review pending, stale or inconsistent",
+    "Evaluation labels pending, stale or outside approved expectations",
+    "AI attestation pending: attestedBy and valid attestedAt required",
+    "Pending fifth persona loop (0/5 completed)",
+    "Coverage requires two Job Snapshots",
+    "Coverage requires two Question Categories",
+    "Coverage requires an Experience Gap",
+    "Coverage requires an induced failure with recovery"
+  ]
+}

@@ -1,0 +1,497 @@
+{
+  "schemaVersion": 2,
+  "contractVersion": "3.3.0",
+  "reviewerType": "ai",
+  "reviewer": "Three independent AI semantic reviewers (repeat 1, 2, 3)",
+  "reviewedAt": "2026-09-25T02:29:07.440Z",
+  "sources": [
+    "evaluation/v3-3/semantic-part-repeat-1.json",
+    "evaluation/v3-3/semantic-part-repeat-2.json",
+    "evaluation/v3-3/semantic-part-repeat-3.json"
+  ],
+  "sourceAuditChecksum": "a4b58a8a98fd734bf5a1b151f73b1343380f17d73c58147bf110428555de4108",
+  "reviews": [
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 1,
+      "outputChecksum": "4c1bff7e3da57811247ed3aa81062e25708f0d92311ba149998a6b9625a83d62",
+      "verdict": "consistent",
+      "rationale": "八對均對應：動機、檢索診斷、英文夾中文的表達問題及改進方向一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "96e2a5f7087c2919941fe263e5f61349ef194b66217a0721e3d83f0d2e894e6f",
+      "verdict": "consistent",
+      "rationale": "八對均對應：離題判斷、缺少檢索評估證據與改進建議的力度一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 1,
+      "outputChecksum": "8e760a0245349dac4a58cf40e6f8cfe4c88a88f7aa984b08e7eff32ebdbdd1ff",
+      "verdict": "consistent",
+      "rationale": "八對均對應：協作檢查失敗案例的優點及未交代模型限制的缺口一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "34776eeaa9209ed9135e78b4ad93049148fccfa7766d9bb2ac1037e7f9ff126f",
+      "verdict": "consistent",
+      "rationale": "八對均對應：回答偏重評估步驟、未向產品同事解釋結果影響的評價一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 1,
+      "outputChecksum": "2d8b1f021396ba5be3246c96eb51499c72b551be1e52754295255cd31452c2fd",
+      "verdict": "consistent",
+      "rationale": "八對均對應：支付 API 動機與可靠性問題、離題評價及建議一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "5e6c5927249f2a734f6077b252bcf686af2e41da6dfcbaec7c1c4dd01c4d75d4",
+      "verdict": "consistent",
+      "rationale": "八對均對應：交易測試、冪等性檢查，以及缺少 PostgreSQL 與測試斷言細節的評價一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 1,
+      "outputChecksum": "796e0b7367f033a122a3b0fd881d0e96fa1572490a5192473fe24f67be97e500",
+      "verdict": "consistent",
+      "rationale": "八對均對應：無責備事件檢討問題、離題與英文表達評價一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "e52942b91f5d2d4398395556de7375d9882cc61d18265261aa64ef0f13bc6875",
+      "verdict": "consistent",
+      "rationale": "八對均對應：重試與防重複扣款機制、部分失敗缺口及建議一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 1,
+      "outputChecksum": "38f1502db91b74513da523aab5db38ae3c4599a51516490d26e3bf0eb14a2c8c",
+      "verdict": "consistent",
+      "rationale": "八對均對應：實驗興趣、新竹及熟悉產品脈絡的缺口與建議一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "52c31fce12aeb0b8fc7bd7bff538d722a57216b91b2c61402490047675c841a6",
+      "verdict": "consistent",
+      "rationale": "八對均對應：實驗假設、信賴區間、具體檢查行動與不足之處一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 1,
+      "outputChecksum": "cf47667fd8ce05753549b381245edeebdf1b2d9c4c1dbfdba5cbe65beabe0238",
+      "verdict": "consistent",
+      "rationale": "八對均對應：調查不確定性的步驟與尚未向產品經理溝通的缺口一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "05afa3837bf3406d5035dd67fa6b52f7ab2d40e7d43a1d9bf1337bae286adc79",
+      "verdict": "consistent",
+      "rationale": "八對均對應：SQL/Python 缺失資料工作流程問題、離題評價及改進要求一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 1,
+      "outputChecksum": "d58884fd14e19d0b7ad5bc62de8eaf73ed57c162d3cbb12ffbf8cb7fc5f23c0a",
+      "verdict": "inconsistent",
+      "rationale": "「support reason」中文新增腳本透過「可重現測試」貢獻的具體事實，英文該欄僅泛稱一種具體方式；其餘七對一致。",
+      "contradictoryPairs": [
+        "support reason"
+      ]
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "dd69fc0a8d947faa085021678ada27ade2680324cc78e81cade6557cb726aa34",
+      "verdict": "consistent",
+      "rationale": "八對均對應：C 韌體或串列通訊除錯問題、初步診斷與缺少結果的評價一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 1,
+      "outputChecksum": "aaf1040d205b6e16dfed899b5aeb25a8a92d6c0615b4ec7cee15f718e34d8f11",
+      "verdict": "consistent",
+      "rationale": "八對均對應：比較量測與證據的優點，以及未決定下一個實驗的缺口一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "7be405c94801667ef979c1daadd5f47901da6a0bed673d6e110a2561d32860c9",
+      "verdict": "consistent",
+      "rationale": "八對均對應：時序限制與感測器例子的要求、離題評價及改進方向一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 1,
+      "outputChecksum": "d209a161ff5d24406698655215b707d058480b23a2aa4daef1ca4249be2484c4",
+      "verdict": "consistent",
+      "rationale": "八對均對應：無障礙介面動機與使用者成果問題、離題判斷及建議一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 1,
+      "outputChecksum": "c7919f0b8a90d6dd39715d64654c109ee667ac8340a97ca9491d1229a07113fa",
+      "verdict": "consistent",
+      "rationale": "八對均對應：無障礙測試步驟、缺少使用者需求與結果連結的評價一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 1,
+      "outputChecksum": "753d41f3aae988ecce05c762e7a174b44539199204fbf35bce747c21e13a15c0",
+      "verdict": "consistent",
+      "rationale": "八對均對應：可用性測試步驟與缺少設計師合作及介面修改的評價一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 1,
+      "outputChecksum": "c6601de57b8a25551550b356a2272c93f1b0f6755e4e6f2e080a33472a2f4b93",
+      "verdict": "consistent",
+      "rationale": "八對均對應：先測量再優化、無障礙取捨及缺少工具與指標的評價一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 2,
+      "outputChecksum": "c8d4b43b99ee825a480fe4cf5cb502de7c68d0785abb0dd0877767568053991d",
+      "verdict": "consistent",
+      "rationale": "提問的中文助理檢索動機、四項評價、具體優點與補強失敗案例說明的建議均保留。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "9350e85bff1b0ff1e6bbcbe85ea96d4d8ae9b5c230f0e59410e908e32bd9a250",
+      "verdict": "consistent",
+      "rationale": "保留可用假設回答的提問、答非所問的嚴重度、英文清楚的優點及檢索評估步驟建議。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 2,
+      "outputChecksum": "218bf5e7a4b646cbb5a15d7bface0593bf0c34c19c42996f44480e8253e1a03b",
+      "verdict": "consistent",
+      "rationale": "模型限制溝通的要求、協作診斷但未解釋限制與產品後果的評價，以及改進方向一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "48861d7d3f66ea672cb3f822f61dbee11c9de4d3274f1da6e5cba1ddf6e2a858",
+      "verdict": "consistent",
+      "rationale": "均區分檢索評估方法與向非專家解釋結果；具體檢查優點及產品影響建議一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 2,
+      "outputChecksum": "ef52e67fa59959915a5c37cac5fd29f3e2d85c35b8c18a4f98c3092c70d3d335",
+      "verdict": "consistent",
+      "rationale": "支付 API、臺北與可靠性定義三項要求及完全未回答的評價在兩種語言中一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "144a996054130387d9ad75fd56e93fa518dfc684eb7d423b1421ca368742846b",
+      "verdict": "consistent",
+      "rationale": "PostgreSQL 交易與自動測試的提問、測試發現的肯定及缺少設計與驗證細節的建議一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 2,
+      "outputChecksum": "b13da86bffcfa607707ffc6c0eb6be96645516a3963b5a8445251b2a92515279",
+      "verdict": "consistent",
+      "rationale": "無責備事件檢討的問題、無關回答的嚴重評價、英文清楚的優點及直接回答的建議一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "8480a346e6cb10584e8bbe48fa647f3088f0e496bb57db05f24069a96dc48b98",
+      "verdict": "consistent",
+      "rationale": "重試、重複請求和部分失敗的要求，以及交易與重試金鑰已有涵蓋但流程不足的評價一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 2,
+      "outputChecksum": "582d727282b62343fc979ef67fc2633a395216e2ba68d1045cf14b27d5a650cf",
+      "verdict": "consistent",
+      "rationale": "新竹產品實驗動機與熟悉產品脈絡的要求、未回應地點的評價及具體補充建議一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "0bd104df5ab425d0db95e87155c3f945b96521cefbf8b7351b168bfc9821e280",
+      "verdict": "consistent",
+      "rationale": "實驗假設與信賴區間的關係、目前只談不確定性的不足及明確連結的建議一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 2,
+      "outputChecksum": "55f343c702760d5d501ae9df0b5b71dfd576cc5f5564b396fc78eaaf3b77075c",
+      "verdict": "consistent",
+      "rationale": "向產品經理傳達不確定性的要求、資料驗證步驟的有限相關性與溝通建議一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "a69563f9c72153e311eb081ca813a4435e54c90c30f184f6a4c0f218da882f82",
+      "verdict": "consistent",
+      "rationale": "SQL 與 Python 缺失資料流程的要求、完全未回答但英文清楚的評價及逐步補答建議一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 2,
+      "outputChecksum": "f6be5822916c7ac2add7a469dfde0594d36e9a073a31f79e38453aeed3fea98a",
+      "verdict": "consistent",
+      "rationale": "新竹嵌入式感測器職務動機與貢獻、腳本測試的優點及職務連結不足均一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "882bb66fe9930f1c696f53c3bf0cc25e5cc384bc30882691879d983b3ad844d1",
+      "verdict": "consistent",
+      "rationale": "C 韌體或串列通訊除錯、初步檢查的優點、缺少觀察與診斷的限制及建議一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 2,
+      "outputChecksum": "19d9c95af508ac44995bf59f92cfcbfea007b69af83d53ef16ff6df797d977cb",
+      "verdict": "consistent",
+      "rationale": "硬軟體歧見下的協作及下一實驗、已比較證據但未說明決策規則的評價一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "b3019d867ccb03c6da14a93d9ce6593241f3974c2b271df33ddd5f14814f23ec",
+      "verdict": "consistent",
+      "rationale": "向非專家用感測器例子解釋時序限制的要求、未回答的評價及直接補答建議一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 2,
+      "outputChecksum": "1922cd69ba3ca44e9e22a8c8650a1bb5c66eba51acd8a10fecc41176ad95f969",
+      "verdict": "consistent",
+      "rationale": "臺北無障礙介面動機與使用者成功成果的雙重要求、離題評價及改進方向一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 2,
+      "outputChecksum": "3f8cf07d7c8c2201ca8f8b2d6340d6e9aaff309058e5a73da5f59a21f3b7142f",
+      "verdict": "consistent",
+      "rationale": "無障礙介面經驗或假設做法、鍵盤與焦點測試的優點及補充使用者需求的建議一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 2,
+      "outputChecksum": "c868c6b2bc68283c5e023c1571ebec7dbc7d895c4afebd2fd99980b234b0228b",
+      "verdict": "consistent",
+      "rationale": "設計師協作與可用性回饋改介面的要求、測試方法已有但協作及後續修改不足的評價一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 2,
+      "outputChecksum": "6c2bd262d7eeb93d7bce818a3c8ad24d98ac8e9221052d392d0ae725ef6ae059",
+      "verdict": "consistent",
+      "rationale": "瀏覽器效能工具、瓶頸與優先順序的要求、先量測但缺工具證據的評價及建議一致。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 3,
+      "outputChecksum": "c8f0ee3245cc81fb3e9aa9d998331c50b9c4d60d33b1cad38016eb710f4f9cdd",
+      "verdict": "consistent",
+      "rationale": "題意與動機評價一致；中文保留未翻譯片語造成口語不自然，以及釐清中文檢索失敗並改用英文表達的兩項建議。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "896af9dde165dbb3d898d9aabd17c178e517004fae4a07b91723a2d0621d1dd4",
+      "verdict": "consistent",
+      "rationale": "題目保留實例或假設做法兩種回答途徑；四項評語一致指出回答離題但英文清楚，改進建議也相同。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 3,
+      "outputChecksum": "a20738bd22d82aa56953a074ceb43d4a46cfa455f431e2c07da3ab6752cfa904",
+      "verdict": "consistent",
+      "rationale": "中文保留模型限制及產品同事的缺漏、協作診斷的優點，以及用詞與口語瑕疵；建議沒有改變。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "a572d3516844f54018590bae6ae62336effd9d3a344606b77ee61d706b1fd6ee",
+      "verdict": "consistent",
+      "rationale": "題目仍要求向非專家說明檢索結果與影響；中文忠實保留評估步驟的優點和缺少產品影響說明的問題。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-role-fit",
+      "repeat": 3,
+      "outputChecksum": "7fe31e27578853860360157c17366720e0648834126cba42506ac29449f5dfce",
+      "verdict": "consistent",
+      "rationale": "支付 API、臺北及可靠性定義三項題意完整；中文同樣判定回答離題、英文清楚，並要求補答兩部分。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "752a685cbd687b397b521290597fb2edd973c9dd7f14f025b2c0fcf8f1880a2b",
+      "verdict": "consistent",
+      "rationale": "PostgreSQL 交易、自動化測試及假設回答選項都保留；四項評語與具體補充資料庫及測試驗證內容的建議相符。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 3,
+      "outputChecksum": "5f79662111b3b31e07a7803e7fe4dabd3804dc6ceb37485d294906f719fccc72",
+      "verdict": "consistent",
+      "rationale": "無責備事件檢討題意完整；中文同樣指出回答無關、沒有相關證據，但措辭可懂，並要求實例或逐步假設方案。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "3f584965c416e4aa413e768ec64042841aaff42072faa14f78857792897df483",
+      "verdict": "consistent",
+      "rationale": "重試、重複請求與部分失敗的題意完整；中文保留交易和重試金鑰的優點，以及冪等與回應遺失復原的建議。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 3,
+      "outputChecksum": "a8f63755c8d3b5fb48d638ddb5ef520ecc729498be774cd34f6dbd2d65568564",
+      "verdict": "consistent",
+      "rationale": "新竹、產品實驗動機及熟悉產品脈絡的要求保留；中文同樣指出地點和具體熟悉計畫缺失及未翻譯中文問題。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "824a86018007b4a6b8d90b3ab815f1cde8b7e67b3d9375e25ce90a49f60f242e",
+      "verdict": "consistent",
+      "rationale": "實驗假設和信賴區間的關係保留；中文同樣肯定檢查流程，指出未說明假設及違反假設對區間的影響。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-behavioral",
+      "repeat": 3,
+      "outputChecksum": "d35a1dad3abd1e4b8910d6b534624427a407b1ea6e3293bcf4ddaa8208975761",
+      "verdict": "consistent",
+      "rationale": "題目保留向產品經理溝通不確定結果或假設處理的選項；評語和建議都區分技術調查與面向經理的溝通。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "data-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "e14cf44eafbbc94627c5892cc9aee47901d301c03f8d12adcfd03010b6928b91",
+      "verdict": "consistent",
+      "rationale": "SQL 與 Python 調查缺失資料及決策點的題意完整；中文同樣判定回答離題，建議分析缺失、處理並驗證。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 3,
+      "outputChecksum": "9474ffe6a1a4f2ad975378fb0328dee51bc15686b762d7e7476ed6ba134f0217",
+      "verdict": "consistent",
+      "rationale": "嵌入式感測器軟體、新竹、動機與貢獻的要求完整；中文保留測試優點、角色連結不足及團隊影響的建議。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "037fe81c221dadbfd3520b70ef84bcf82bf0785c84bcb8fad00fb5568919f60d",
+      "verdict": "consistent",
+      "rationale": "C 韌體或串列通訊除錯的題意及假設選項完整；中文保留症狀與初步檢查的優點和補足診斷結果的建議。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 3,
+      "outputChecksum": "c5c41ec2ee57fb80fc7ae5abefe77f5512dcd3f25d6d464d69e51b20d025c756",
+      "verdict": "consistent",
+      "rationale": "硬軟體歧見、建立共識與下一實驗的要求完整；中文保留量測與證據比對的優點，以及尚未定義實驗的缺口。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "9c598446715f1a51c693bd1bca5e600f269aad0be1c76af234d26127e7e87f13",
+      "verdict": "consistent",
+      "rationale": "以具體感測器例子向非專家解釋時序限制的要求完整；中文同樣判定回答離題但英文清楚，並要求直接補答。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "repeat": 3,
+      "outputChecksum": "039324c4cd77f4f8edc1246cc5cdd9cde2fa9f3adb3c5d83624f75eee3d6b193",
+      "verdict": "consistent",
+      "rationale": "臺北無障礙介面動機及使用者成功成果的要求完整；中文保留回答離題、語言清楚及聚焦可及性的建議。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "repeat": 3,
+      "outputChecksum": "09fb3b110a5dccda619dabbb53bf9cc6af191ea60143132d85e7cba17a35c72c",
+      "verdict": "consistent",
+      "rationale": "題目保留實際作品或假設做法兩條途徑；中文同樣肯定測試步驟，指出使用者需求及測試所得未說明。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 3,
+      "outputChecksum": "8eaf554b92a514d322c3e95aa5435297747a07a834d9ac43609ef19bae80c41e",
+      "verdict": "consistent",
+      "rationale": "設計師合作、可用性回饋與介面修改的要求完整；中文保留測試做法的優點及合作和實施步驟的缺口。",
+      "contradictoryPairs": []
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 3,
+      "outputChecksum": "39d3b031d9a781f1ff40c90979fe49acc5ca4086f038197f8335c1f457dfd571",
+      "verdict": "consistent",
+      "rationale": "瀏覽器工具定位瓶頸與決定優先優化項的要求完整；中文保留先測量及可及性取捨的優點和診斷證據不足的問題。",
+      "contradictoryPairs": []
+    }
+  ]
+}
