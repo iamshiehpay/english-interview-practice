@@ -5,6 +5,7 @@ import {dirname, join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {readAttemptLedger} from '../checkpoints.js';
 import {CANDIDATE_CONTRACT_VERSION, validateCandidateFeedback} from './evidence-first-candidate.js';
+import {assertFrozenReviewItems} from './review-source.js';
 
 const root = dirname(fileURLToPath(import.meta.url));
 const at = name => join(root, name);
@@ -44,5 +45,6 @@ for (const item of packet) for (const repeat of [1, 2]) {
   items.push({caseId: item.caseId, repeat, inputChecksum: item.inputChecksum, outputChecksum: saved.outputChecksum, question: item.question, transcript: item.transcript, requestedParts: parts[item.caseId], approvedRanges: label.ranges, ratingMisses, feedback, bilingualPairs: saved.automaticBilingualPairs});
 }
 const reviewPacket = {schemaVersion: 1, contractVersion: CANDIDATE_CONTRACT_VERSION, freezeChecksum: hash(freeze), approvalChecksum: hash(approval), items, outputLevelPass: items.filter(item => item.ratingMisses.length === 0).length, dimensionMisses: Object.fromEntries(dimensions.map(dimension => [dimension, items.filter(item => item.ratingMisses.includes(dimension)).length]))};
+assertFrozenReviewItems(items, packet, parts);
 await writeFile(at('pilot-review-packet.json'), JSON.stringify(reviewPacket, null, 2) + '\n', {flag: 'wx'});
 console.log(JSON.stringify({outputs: items.length, outputLevelPass: reviewPacket.outputLevelPass, dimensionMisses: reviewPacket.dimensionMisses, reviewPacketChecksum: hash(reviewPacket)}));

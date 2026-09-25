@@ -5,6 +5,7 @@ import {dirname, join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {readAttemptLedger} from '../checkpoints.js';
 import {CANDIDATE_CONTRACT_VERSION, validateCandidateFeedback} from './evidence-first-candidate.js';
+import {assertFrozenReviewItems} from './review-source.js';
 
 const root = dirname(fileURLToPath(import.meta.url));
 const at = name => join(root, name);
@@ -15,13 +16,16 @@ if (!process.argv.includes('--review')) {
   console.log(JSON.stringify({mode: 'describe', expectedOutputs: 16, requiredGates: ['automatic 16/16', 'all-four-dimension rating matches 16/16', 'independent bilingual semantics 16/16', 'independent decision-evidence faithfulness 16/16'], releaseStatus: 'BLOCKED until separate official evaluation'}));
   process.exit(0);
 }
-const [freeze, state, packet, approval, semantic] = await Promise.all(['pilot-freeze.json', 'pilot-results.json', 'pilot-review-packet.json', 'pilot-label-approval.json', 'pilot-semantic-review.json'].map(read));
+const [freeze, state, packet, approval, semantic, blindPacket, requestedParts] = await Promise.all(['pilot-freeze.json', 'pilot-results.json', 'pilot-review-packet.json', 'pilot-label-approval.json', 'pilot-semantic-review.json', 'pilot-blind-packet.json', 'pilot-question-parts.json'].map(read));
 assert.equal(freeze.contractVersion, CANDIDATE_CONTRACT_VERSION);
 assert.equal(freeze.requestCap, 16);
 assert.equal(packet.contractVersion, CANDIDATE_CONTRACT_VERSION);
 assert.equal(packet.freezeChecksum, hash(freeze));
 assert.equal(packet.approvalChecksum, hash(approval));
 assert.equal(state.freezeChecksum, hash(freeze));
+assert.equal(freeze.packetChecksum, hash(blindPacket));
+assert.equal(freeze.requestedPartsChecksum, hash(requestedParts));
+assertFrozenReviewItems(packet.items, blindPacket, requestedParts);
 for (const [name, checksum] of Object.entries(freeze.sourceChecksums)) assert.equal(createHash('sha256').update(await readFile(at(name), 'utf8')).digest('hex'), checksum, `Pilot source changed: ${name}`);
 keys(semantic, ['schemaVersion', 'contractVersion', 'packetChecksum', 'reviewerType', 'reviewer', 'reviewedAt', 'reviews']);
 assert.equal(semantic.schemaVersion, 1);

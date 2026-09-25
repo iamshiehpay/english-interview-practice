@@ -1,8 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
+import {readFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {candidateFeedbackContract, candidateFeedbackSchema, validateCandidateFeedback} from '../evaluation/v3-6/evidence-first-candidate.js';
+import {assertFrozenReviewItems} from '../evaluation/v3-6/review-source.js';
 
 const question = {text: 'How would you investigate a slow search and explain the trade-off?', requestedParts: ['How would you investigate a slow search', 'explain the trade-off']};
 const transcript = 'I would measure slow queries, then inspect false matches before changing the index. I would check latency again, but I cannot claim a production result.';
@@ -83,4 +85,17 @@ test('pilot runner is dry by default and refuses execution without explicit usag
   const refused = spawnSync(process.execPath, [runner, '--execute'], {encoding: 'utf8'});
   assert.notEqual(refused.status, 0);
   assert.match(refused.stderr, /Explicit subscription usage flag required/);
+});
+
+test('semantic review cannot use a transcript with added context outside the frozen blind packet', () => {
+  const directory = new URL('../evaluation/v3-6/', import.meta.url);
+  const packet = JSON.parse(readFileSync(new URL('pilot-blind-packet.json', directory), 'utf8'));
+  const parts = JSON.parse(readFileSync(new URL('pilot-question-parts.json', directory), 'utf8'));
+  const items = packet.flatMap(source => [1, 2].map(repeat => ({caseId: source.caseId, repeat, inputChecksum: source.inputChecksum, question: source.question, transcript: source.transcript, requestedParts: parts[source.caseId]})));
+  assert.doesNotThrow(() => assertFrozenReviewItems(items, packet, parts));
+  const tampered = structuredClone(items);
+  tampered[0].transcript += ' I completed a successful production rollout.';
+  assert.throws(() => assertFrozenReviewItems(tampered, packet, parts));
+  tampered[0] = {...items[0], requestedParts: ['a different requirement']};
+  assert.throws(() => assertFrozenReviewItems(tampered, packet, parts));
 });

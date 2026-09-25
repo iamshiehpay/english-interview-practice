@@ -56,7 +56,7 @@ const sourceFiles = [
   'pilot-question-parts.json', 'pilot-blind-rater-guide.md', 'label-draft-a.json',
   'label-draft-b.json', 'draft-metadata-erratum.json', 'pilot-label-approval.json',
   'verify-blind-drafts.js', 'verify-blind-approval.js', 'build-pilot-review-packet.js',
-  'review-pilot.js', 'pilot-semantic-review-guide.md', '../checkpoints.js',
+  'review-pilot.js', 'review-source.js', 'pilot-semantic-review-guide.md', '../checkpoints.js',
   '../../src/model-contracts.js', '../../src/codex-language.js', '../../src/model-schemas.js',
   '../../src/domain.js', '../../src/codex-rpc.js', '../../src/codex-profile.js',
   '../../src/codex-audit.js', '../../src/codex-sandbox.js', '../../src/codex-runtime.js'
