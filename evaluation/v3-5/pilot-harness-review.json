@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "reviewer": "Codex GPT-6 independent pre-execution reviewer, invocation 1/2, /root/v35_preflight_review",
+  "reviewedAt": "2026-09-25T06:31:14Z",
+  "verdict": "pass",
+  "reviewedCommit": "b971ae7",
+  "scope": "Contract 3.5 prompt and harness versus frozen contract 3.3 anchors, contract 3.4 inputs, blind labels and 16-request cap",
+  "packetChecksum": "83babcebec1e83d58de31b46a2ff56e98c0dd81e67311e69adc3ea29bbc23808",
+  "approvalChecksum": "bd1241910c1370401a779ba2312ca64ebe0dcdcc8388514abb3f86f46317ed81",
+  "promptChecksum": "a80739fef3b993dad9389901116236974aeac6767d91ea32667b82c5bcc5dab4",
+  "operationalPrerequisite": "Use the reviewed Codex CLI 0.155.1 binary explicitly; the default 0.156.1 binary is rejected.",
+  "limitation": "The 3.5 prompt was drafted after seeing these eight cases; any favorable result is development-set evidence only.",
+  "modelRequestsByReviewer": 0
+}
