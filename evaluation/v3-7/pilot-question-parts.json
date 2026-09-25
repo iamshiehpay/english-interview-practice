@@ -1,0 +1,10 @@
+{
+  "inventory-interest": ["Why does this inventory systems role appeal to you", "what technical skill would you bring"],
+  "forecast-skill": ["Why are you interested in demand forecasting", "which of your skills would help the team"],
+  "mobile-sync": ["How would you investigate duplicate updates in a mobile sync service", "how would you limit customer impact"],
+  "certificate-policy": ["How would you reduce certificate renewal failures", "what failure mode would remain"],
+  "cleanup-timing": ["Describe a data cleanup you completed", "how you verified it", "what still needs doing"],
+  "event-general-reason": ["Tell me about an event pipeline change you made", "the evidence that it improved reliability"],
+  "schedule-detour": ["How did you resolve a scheduling conflict with a teammate", "what agreement did you reach"],
+  "review-fragments": ["How did you respond when a teammate challenged your code review", "what changed afterward"]
+}

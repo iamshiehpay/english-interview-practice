@@ -1,0 +1,90 @@
+[
+  {
+    "caseId": "inventory-interest",
+    "inputChecksum": "984a1307211ef5854f8f69fa4fc15b455ad07d7e67f6c91f4fc0b40e1fabcf52",
+    "contractVersion": "3.7.0",
+    "question": {
+      "id": "inventory-interest",
+      "text": "Why does this inventory systems role appeal to you, and what technical skill would you bring?",
+      "category": "role-fit"
+    },
+    "transcript": "I want this role because accurate stock counts help shops avoid waste. I also like working with store teams."
+  },
+  {
+    "caseId": "forecast-skill",
+    "inputChecksum": "0a9210e5e36c1cdb1f9c20a3f288187aaba1f128ac1c97d0b4f383f1d29ee542",
+    "contractVersion": "3.7.0",
+    "question": {
+      "id": "forecast-skill",
+      "text": "Why are you interested in demand forecasting, and which of your skills would help the team?",
+      "category": "role-fit"
+    },
+    "transcript": "I enjoy finding patterns in messy demand data. I can write SQL checks that compare forecast inputs with sales records, though I have not built a production forecasting model."
+  },
+  {
+    "caseId": "mobile-sync",
+    "inputChecksum": "04198d2826615ce672bbcac5a75b6445928b95eba78b6c2a330a5c8aa1b6b4e2",
+    "contractVersion": "3.7.0",
+    "question": {
+      "id": "mobile-sync",
+      "text": "How would you investigate duplicate updates in a mobile sync service, and how would you limit customer impact?",
+      "category": "technical-communication"
+    },
+    "transcript": "I would compare client request IDs with server write IDs, then replay one duplicate in staging to see where the second write occurs. I would temporarily disable background retries for affected clients because another automatic replay could create more duplicates."
+  },
+  {
+    "caseId": "certificate-policy",
+    "inputChecksum": "3135c7ac5651bbb72e5f25ff25227955a6d83df38b6d8cf03ae332b7fd7b490d",
+    "contractVersion": "3.7.0",
+    "question": {
+      "id": "certificate-policy",
+      "text": "How would you reduce certificate renewal failures, and what failure mode would remain?",
+      "category": "technical-communication"
+    },
+    "transcript": "I would add an expiry alert because certificates are important. I would also keep a calendar reminder."
+  },
+  {
+    "caseId": "cleanup-timing",
+    "inputChecksum": "629bff93d9bb04cd787e08e859486784445e2ec5f6f8aadf9ec9a8ae9995cace",
+    "contractVersion": "3.7.0",
+    "question": {
+      "id": "cleanup-timing",
+      "text": "Describe a data cleanup you completed, how you verified it, and what still needs doing.",
+      "category": "experience-depth"
+    },
+    "transcript": "I merged duplicate customer rows on Tuesday and checked a sample of twenty records. I plan to compare the total billing amount next week; I have not done that comparison yet."
+  },
+  {
+    "caseId": "event-general-reason",
+    "inputChecksum": "a413afc8c33055aea91e2e0c207c82cfe8b37e304b033d95a13f128c6a4ec0e8",
+    "contractVersion": "3.7.0",
+    "question": {
+      "id": "event-general-reason",
+      "text": "Tell me about an event pipeline change you made and the evidence that it improved reliability.",
+      "category": "experience-depth"
+    },
+    "transcript": "I changed the event pipeline because reliable data matters. Everyone was delighted and the system became perfect."
+  },
+  {
+    "caseId": "schedule-detour",
+    "inputChecksum": "3792758eb3fbbe68f5c5887babd2b38359bb53b9bf09fbe5556910ff2a880cc2",
+    "contractVersion": "3.7.0",
+    "question": {
+      "id": "schedule-detour",
+      "text": "How did you resolve a scheduling conflict with a teammate, and what agreement did you reach?",
+      "category": "behavioral"
+    },
+    "transcript": "For my balcony plants, I first check the soil, then move the pots away from direct sun if the leaves look dry. I wait a day before watering again so I can tell whether the shade helped."
+  },
+  {
+    "caseId": "review-fragments",
+    "inputChecksum": "69a229ce97119458e88c6bfe5b78d876a23ffa0a5fbfd39796dfaec6a7c1e74b",
+    "contractVersion": "3.7.0",
+    "question": {
+      "id": "review-fragments",
+      "text": "How did you respond when a teammate challenged your code review, and what changed afterward?",
+      "category": "behavioral"
+    },
+    "transcript": "Teammate say test bad. I ask which input. We run failing case together, then I add check for empty file. We no talk about release yet."
+  }
+]
