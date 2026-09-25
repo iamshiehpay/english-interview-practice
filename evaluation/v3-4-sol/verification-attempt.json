@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "model": "gpt-5.6-sol",
+  "effort": "xhigh",
+  "serviceTier": "priority",
+  "sourceFingerprint": "e341ef7c17d50c06b04e9ed08470ef0ea4bc88f0630678b15bb3a97b2a049a55",
+  "binarySha256": "8eaf1ad12fe6bf89b1710330f58900014322c7c5af677e43be116d8ac5fc0a9e",
+  "requestCap": 1,
+  "status": "completed",
+  "reservedAt": "2026-09-25T06:11:08.637Z",
+  "completedAt": "2026-09-25T06:11:23.599Z",
+  "markerVerifiedAt": "2026-09-25T06:11:23.109Z"
+}

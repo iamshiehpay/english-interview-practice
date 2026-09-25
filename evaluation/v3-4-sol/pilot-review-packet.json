@@ -1,0 +1,1646 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "3.4.0",
+  "freezeChecksum": "97715bd002aa27a3f5c6e383ee5c357d2c821c66651dad755f394e0b771c267e",
+  "approvalChecksum": "bd1241910c1370401a779ba2312ca64ebe0dcdcc8388514abb3f86f46317ed81",
+  "resultsChecksum": "ce1cbbff0a09fd8d425fd4d6db1ef420e3c7a64f4469d33df2cfc7d966cd3406",
+  "attempts": 16,
+  "automaticPass": true,
+  "outputLevelPass": 10,
+  "dimensionMisses": {
+    "relevance": 1,
+    "support": 3,
+    "structure": 2,
+    "englishExpression": 0
+  },
+  "items": [
+    {
+      "caseId": "latency-sequence",
+      "repeat": 1,
+      "inputChecksum": "2cd28dcdc53becc38876949bb8631b8108625e09c60a5d4ee353db426e372798",
+      "outputChecksum": "f8a3b8f64012aa57e6d8cb17eb771ca1ca8721a6032525db5afee4a4ee823f7a",
+      "question": {
+        "id": "latency-sequence",
+        "text": "How would you investigate a sudden API latency increase and report the finding to your teammates?",
+        "category": "technical-communication"
+      },
+      "transcript": "I would compare latency by route, inspect traces for the slow route, and test the suspected dependency before sharing the finding.",
+      "approvedRanges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "feedback": {
+        "ratings": {
+          "relevance": {
+            "level": 3,
+            "quote": "I would compare latency by route, inspect traces for the slow route, and test the suspected dependency before sharing the finding.",
+            "reason": "The answer directly explains the investigation sequence, but it only mentions sharing the finding without explaining how it would be reported to teammates.",
+            "reasonZh": "回答直接說明了調查步驟，但只提到分享發現，沒有解釋會如何向團隊成員報告。"
+          },
+          "support": {
+            "level": 3,
+            "quote": "compare latency by route, inspect traces for the slow route, and test the suspected dependency",
+            "reason": "These concrete diagnostic actions show how the slow route and a suspected dependency would be isolated, though the answer does not explain what evidence would confirm the cause.",
+            "reasonZh": "這些具體的診斷行動說明了如何鎖定慢速路由和可疑的相依服務，但回答沒有解釋哪些證據能確認原因。"
+          },
+          "structure": {
+            "level": 4,
+            "quote": "compare latency by route, inspect traces for the slow route, and test the suspected dependency before sharing the finding",
+            "reason": "The answer presents a coherent sequence from route comparison to trace inspection, dependency testing, and communication.",
+            "reasonZh": "回答呈現了連貫的步驟，從比較路由、檢查追蹤資料，到測試相依服務並進行溝通。"
+          },
+          "englishExpression": {
+            "level": 4,
+            "quote": "I would compare latency by route, inspect traces for the slow route, and test the suspected dependency before sharing the finding.",
+            "reason": "The sentence is concise, grammatical, and natural, with precise technical wording.",
+            "reasonZh": "這個句子簡潔、文法正確且自然，並使用了精確的技術用語。"
+          }
+        },
+        "strength": {
+          "text": "The strongest element is the practical, ordered diagnostic workflow for narrowing the latency source.",
+          "textZh": "最突出的優點是以實際且有順序的診斷流程縮小延遲來源的範圍。",
+          "quote": "compare latency by route, inspect traces for the slow route, and test the suspected dependency"
+        },
+        "priorityImprovement": {
+          "text": "Explain how you would report the finding—for example, summarize the impact, supporting evidence, confidence in the suspected cause, and next steps for teammates.",
+          "textZh": "請說明會如何報告發現，例如向團隊成員摘要影響、支持證據、對可疑原因的信心程度，以及後續步驟。",
+          "quote": "before sharing the finding"
+        }
+      },
+      "automaticBilingualPairs": [
+        {
+          "name": "relevance reason",
+          "en": "The answer directly explains the investigation sequence, but it only mentions sharing the finding without explaining how it would be reported to teammates.",
+          "zh": "回答直接說明了調查步驟，但只提到分享發現，沒有解釋會如何向團隊成員報告。"
+        },
+        {
+          "name": "support reason",
+          "en": "These concrete diagnostic actions show how the slow route and a suspected dependency would be isolated, though the answer does not explain what evidence would confirm the cause.",
+          "zh": "這些具體的診斷行動說明了如何鎖定慢速路由和可疑的相依服務，但回答沒有解釋哪些證據能確認原因。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The answer presents a coherent sequence from route comparison to trace inspection, dependency testing, and communication.",
+          "zh": "回答呈現了連貫的步驟，從比較路由、檢查追蹤資料，到測試相依服務並進行溝通。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The sentence is concise, grammatical, and natural, with precise technical wording.",
+          "zh": "這個句子簡潔、文法正確且自然，並使用了精確的技術用語。"
+        },
+        {
+          "name": "strength",
+          "en": "The strongest element is the practical, ordered diagnostic workflow for narrowing the latency source.",
+          "zh": "最突出的優點是以實際且有順序的診斷流程縮小延遲來源的範圍。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Explain how you would report the finding—for example, summarize the impact, supporting evidence, confidence in the suspected cause, and next steps for teammates.",
+          "zh": "請說明會如何報告發現，例如向團隊成員摘要影響、支持證據、對可疑原因的信心程度，以及後續步驟。"
+        }
+      ],
+      "ratingMisses": []
+    },
+    {
+      "caseId": "latency-sequence",
+      "repeat": 2,
+      "inputChecksum": "2cd28dcdc53becc38876949bb8631b8108625e09c60a5d4ee353db426e372798",
+      "outputChecksum": "298bb82858ce93e4cc7c4ed368a0f733f90a67b2aae1004285dcbface0dae43b",
+      "question": {
+        "id": "latency-sequence",
+        "text": "How would you investigate a sudden API latency increase and report the finding to your teammates?",
+        "category": "technical-communication"
+      },
+      "transcript": "I would compare latency by route, inspect traces for the slow route, and test the suspected dependency before sharing the finding.",
+      "approvedRanges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "feedback": {
+        "ratings": {
+          "relevance": {
+            "level": 4,
+            "quote": "I would compare latency by route, inspect traces for the slow route, and test the suspected dependency before sharing the finding.",
+            "reason": "It directly addresses both investigation through concrete diagnostic steps and reporting by sharing the finding.",
+            "reasonZh": "回答透過具體診斷步驟直接說明如何調查，並以分享調查結果回應如何報告，涵蓋了兩個部分。"
+          },
+          "support": {
+            "level": 3,
+            "quote": "compare latency by route, inspect traces for the slow route, and test the suspected dependency",
+            "reason": "These are concrete diagnostic actions, but the answer does not explain how their results would confirm or eliminate the suspected cause.",
+            "reasonZh": "這些是具體的診斷行動，但回答未解釋其結果將如何確認或排除所懷疑的原因。"
+          },
+          "structure": {
+            "level": 4,
+            "quote": "I would compare latency by route, inspect traces for the slow route, and test the suspected dependency before sharing the finding.",
+            "reason": "The answer follows a clear stepwise progression from narrowing the affected route to tracing, testing, and sharing.",
+            "reasonZh": "回答具有清楚的逐步脈絡，從縮小受影響的路由範圍，推進到追蹤、測試與分享結果。"
+          },
+          "englishExpression": {
+            "level": 4,
+            "quote": "I would compare latency by route, inspect traces for the slow route, and test the suspected dependency before sharing the finding.",
+            "reason": "The sentence is concise, grammatical, and natural, with precise technical wording.",
+            "reasonZh": "句子簡潔、文法正確且自然，技術用詞也很精準。"
+          }
+        },
+        "strength": {
+          "text": "The answer presents a focused diagnostic sequence that narrows the scope before validating the suspected dependency.",
+          "textZh": "回答提出一套聚焦的診斷順序，先縮小範圍，再驗證所懷疑的相依服務。",
+          "quote": "compare latency by route, inspect traces for the slow route, and test the suspected dependency"
+        },
+        "priorityImprovement": {
+          "text": "Make the reporting step specific by stating that you would share the evidence, likely cause, user impact, confidence level, and recommended next action.",
+          "textZh": "讓報告步驟更具體，說明你會分享證據、可能原因、使用者影響、信心水準，以及建議的下一步行動。",
+          "quote": "before sharing the finding."
+        }
+      },
+      "automaticBilingualPairs": [
+        {
+          "name": "relevance reason",
+          "en": "It directly addresses both investigation through concrete diagnostic steps and reporting by sharing the finding.",
+          "zh": "回答透過具體診斷步驟直接說明如何調查，並以分享調查結果回應如何報告，涵蓋了兩個部分。"
+        },
+        {
+          "name": "support reason",
+          "en": "These are concrete diagnostic actions, but the answer does not explain how their results would confirm or eliminate the suspected cause.",
+          "zh": "這些是具體的診斷行動，但回答未解釋其結果將如何確認或排除所懷疑的原因。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The answer follows a clear stepwise progression from narrowing the affected route to tracing, testing, and sharing.",
+          "zh": "回答具有清楚的逐步脈絡，從縮小受影響的路由範圍，推進到追蹤、測試與分享結果。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The sentence is concise, grammatical, and natural, with precise technical wording.",
+          "zh": "句子簡潔、文法正確且自然，技術用詞也很精準。"
+        },
+        {
+          "name": "strength",
+          "en": "The answer presents a focused diagnostic sequence that narrows the scope before validating the suspected dependency.",
+          "zh": "回答提出一套聚焦的診斷順序，先縮小範圍，再驗證所懷疑的相依服務。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Make the reporting step specific by stating that you would share the evidence, likely cause, user impact, confidence level, and recommended next action.",
+          "zh": "讓報告步驟更具體，說明你會分享證據、可能原因、使用者影響、信心水準，以及建議的下一步行動。"
+        }
+      ],
+      "ratingMisses": [
+        "relevance"
+      ]
+    },
+    {
+      "caseId": "ingestion-sequence",
+      "repeat": 1,
+      "inputChecksum": "aca00a98947b6697796ab4dc799226910227a908873a211b25e11de24e7118f9",
+      "outputChecksum": "c65077d96f29e1a09260153d2d44e3828e72845fddef48c39e27dc09c971e755",
+      "question": {
+        "id": "ingestion-sequence",
+        "text": "How would you validate a changed data-ingestion rule?",
+        "category": "technical-communication"
+      },
+      "transcript": "I'd compare counts before and after the rule, sample the changed rows, and roll it back if the sample showed unexpected losses.",
+      "approvedRanges": {
+        "relevance": [
+          4,
+          4
+        ],
+        "support": [
+          4,
+          4
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "feedback": {
+        "ratings": {
+          "relevance": {
+            "level": 4,
+            "quote": "I'd compare counts before and after the rule, sample the changed rows, and roll it back if the sample showed unexpected losses.",
+            "reason": "Directly answers how to validate the rule by combining a before-and-after comparison, row sampling, and a rollback condition.",
+            "reasonZh": "直接回答如何驗證規則，結合變更前後比較、資料列抽樣，以及回滾條件。"
+          },
+          "support": {
+            "level": 4,
+            "quote": "compare counts before and after the rule, sample the changed rows, and roll it back if the sample showed unexpected losses",
+            "reason": "Provides specific, defensible checks and connects evidence of data loss to the consequence of rolling back.",
+            "reasonZh": "提供具體且合理的檢查方式，並將資料遺失的證據連結到回滾這項後續措施。"
+          },
+          "structure": {
+            "level": 4,
+            "quote": "I'd compare counts before and after the rule, sample the changed rows, and roll it back if the sample showed unexpected losses.",
+            "reason": "Uses a coherent sequence of quantitative comparison, qualitative inspection, and conditional remediation.",
+            "reasonZh": "以連貫順序呈現量化比較、質化檢查，以及有條件的補救措施。"
+          },
+          "englishExpression": {
+            "level": 4,
+            "quote": "I'd compare counts before and after the rule, sample the changed rows, and roll it back if the sample showed unexpected losses.",
+            "reason": "The sentence is concise, grammatical, and natural, with the conditional action expressed clearly.",
+            "reasonZh": "句子簡潔、文法正確且自然，並清楚表達有條件的行動。"
+          }
+        },
+        "strength": {
+          "text": "The answer efficiently combines complementary validation methods with a clear safety response.",
+          "textZh": "回答有效結合互補的驗證方法與明確的安全應對措施。",
+          "quote": "compare counts before and after the rule, sample the changed rows"
+        },
+        "priorityImprovement": {
+          "text": "Define measurable acceptance thresholds for “unexpected losses” so the rollback decision is reproducible rather than subjective.",
+          "textZh": "為「非預期的遺失」訂定可衡量的驗收門檻，讓回滾決策可重現，而非依賴主觀判斷。",
+          "quote": "unexpected losses"
+        }
+      },
+      "automaticBilingualPairs": [
+        {
+          "name": "relevance reason",
+          "en": "Directly answers how to validate the rule by combining a before-and-after comparison, row sampling, and a rollback condition.",
+          "zh": "直接回答如何驗證規則，結合變更前後比較、資料列抽樣，以及回滾條件。"
+        },
+        {
+          "name": "support reason",
+          "en": "Provides specific, defensible checks and connects evidence of data loss to the consequence of rolling back.",
+          "zh": "提供具體且合理的檢查方式，並將資料遺失的證據連結到回滾這項後續措施。"
+        },
+        {
+          "name": "structure reason",
+          "en": "Uses a coherent sequence of quantitative comparison, qualitative inspection, and conditional remediation.",
+          "zh": "以連貫順序呈現量化比較、質化檢查，以及有條件的補救措施。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The sentence is concise, grammatical, and natural, with the conditional action expressed clearly.",
+          "zh": "句子簡潔、文法正確且自然，並清楚表達有條件的行動。"
+        },
+        {
+          "name": "strength",
+          "en": "The answer efficiently combines complementary validation methods with a clear safety response.",
+          "zh": "回答有效結合互補的驗證方法與明確的安全應對措施。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Define measurable acceptance thresholds for “unexpected losses” so the rollback decision is reproducible rather than subjective.",
+          "zh": "為「非預期的遺失」訂定可衡量的驗收門檻，讓回滾決策可重現，而非依賴主觀判斷。"
+        }
+      ],
+      "ratingMisses": []
+    },
+    {
+      "caseId": "ingestion-sequence",
+      "repeat": 2,
+      "inputChecksum": "aca00a98947b6697796ab4dc799226910227a908873a211b25e11de24e7118f9",
+      "outputChecksum": "179052bd68c8f79e437434386c0b245edf30bdbe71076dc6489b43eaebcf59d3",
+      "question": {
+        "id": "ingestion-sequence",
+        "text": "How would you validate a changed data-ingestion rule?",
+        "category": "technical-communication"
+      },
+      "transcript": "I'd compare counts before and after the rule, sample the changed rows, and roll it back if the sample showed unexpected losses.",
+      "approvedRanges": {
+        "relevance": [
+          4,
+          4
+        ],
+        "support": [
+          4,
+          4
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "feedback": {
+        "ratings": {
+          "relevance": {
+            "level": 4,
+            "quote": "I'd compare counts before and after the rule, sample the changed rows, and roll it back if the sample showed unexpected losses.",
+            "reason": "Directly answers how to validate the changed rule by checking counts, inspecting affected rows, and defining a rollback condition.",
+            "reasonZh": "直接回答如何驗證變更後的規則，包括檢查筆數、檢視受影響的資料列，以及設定回滾條件。"
+          },
+          "support": {
+            "level": 3,
+            "quote": "compare counts before and after the rule, sample the changed rows, and roll it back if the sample showed unexpected losses",
+            "reason": "The count comparison, row sampling, and rollback trigger are concrete validation actions, but expected results and thresholds for identifying an unexpected loss are not defined.",
+            "reasonZh": "筆數比較、資料列抽樣與回滾觸發條件都是具體的驗證行動，但尚未定義預期結果，以及判定非預期資料損失的門檻。"
+          },
+          "structure": {
+            "level": 4,
+            "quote": "compare counts before and after the rule, sample the changed rows, and roll it back if the sample showed unexpected losses",
+            "reason": "The answer follows a clear sequence: compare, inspect, and then respond conditionally to a bad result.",
+            "reasonZh": "回答依循清楚的順序：先比較、再檢視，接著根據不良結果採取條件式應對。"
+          },
+          "englishExpression": {
+            "level": 4,
+            "quote": "I'd compare counts before and after the rule, sample the changed rows, and roll it back if the sample showed unexpected losses.",
+            "reason": "The sentence is concise, grammatical, and natural, with the conditional rollback clearly expressed.",
+            "reasonZh": "句子簡潔、合乎文法且自然，也清楚表達了條件式回滾。"
+          }
+        },
+        "strength": {
+          "text": "The response combines an aggregate check, row-level inspection, and a concrete fallback action.",
+          "textZh": "回答結合了整體層級檢查、資料列層級檢視，以及具體的備援行動。",
+          "quote": "compare counts before and after the rule, sample the changed rows, and roll it back"
+        },
+        "priorityImprovement": {
+          "text": "Define the expected count tolerance and row-level acceptance criteria so that “unexpected losses” becomes an objective rollback threshold.",
+          "textZh": "應定義預期的筆數容許範圍與資料列層級的驗收標準，使「非預期的資料損失」成為客觀的回滾門檻。",
+          "quote": "unexpected losses"
+        }
+      },
+      "automaticBilingualPairs": [
+        {
+          "name": "relevance reason",
+          "en": "Directly answers how to validate the changed rule by checking counts, inspecting affected rows, and defining a rollback condition.",
+          "zh": "直接回答如何驗證變更後的規則，包括檢查筆數、檢視受影響的資料列，以及設定回滾條件。"
+        },
+        {
+          "name": "support reason",
+          "en": "The count comparison, row sampling, and rollback trigger are concrete validation actions, but expected results and thresholds for identifying an unexpected loss are not defined.",
+          "zh": "筆數比較、資料列抽樣與回滾觸發條件都是具體的驗證行動，但尚未定義預期結果，以及判定非預期資料損失的門檻。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The answer follows a clear sequence: compare, inspect, and then respond conditionally to a bad result.",
+          "zh": "回答依循清楚的順序：先比較、再檢視，接著根據不良結果採取條件式應對。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The sentence is concise, grammatical, and natural, with the conditional rollback clearly expressed.",
+          "zh": "句子簡潔、合乎文法且自然，也清楚表達了條件式回滾。"
+        },
+        {
+          "name": "strength",
+          "en": "The response combines an aggregate check, row-level inspection, and a concrete fallback action.",
+          "zh": "回答結合了整體層級檢查、資料列層級檢視，以及具體的備援行動。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Define the expected count tolerance and row-level acceptance criteria so that “unexpected losses” becomes an objective rollback threshold.",
+          "zh": "應定義預期的筆數容許範圍與資料列層級的驗收標準，使「非預期的資料損失」成為客觀的回滾門檻。"
+        }
+      ],
+      "ratingMisses": [
+        "support"
+      ]
+    },
+    {
+      "caseId": "garden-off-topic",
+      "repeat": 1,
+      "inputChecksum": "c34e23621733397d61b8cbea39ce2de9732a77f6260414b6bd33063f4dfd6de3",
+      "outputChecksum": "1808a00934e8178085b01a48f9978094af6f1bbfaa7510621ef8b5a6948de3ba",
+      "question": {
+        "id": "garden-off-topic",
+        "text": "How would you help two teammates resolve conflicting code-review feedback?",
+        "category": "behavioral"
+      },
+      "transcript": "When I grow herbs, I prepare the soil, water the seedlings, and move them into shade if the leaves wilt.",
+      "approvedRanges": {
+        "relevance": [
+          1,
+          1
+        ],
+        "support": [
+          1,
+          1
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "feedback": {
+        "ratings": {
+          "relevance": {
+            "level": 1,
+            "quote": "When I grow herbs",
+            "reason": "The answer discusses gardening and does not address helping two teammates reconcile conflicting code-review feedback.",
+            "reasonZh": "回答討論園藝，並未說明如何協助兩位團隊成員協調互相衝突的程式碼審查意見。"
+          },
+          "support": {
+            "level": 1,
+            "quote": "I prepare the soil, water the seedlings, and move them into shade if the leaves wilt.",
+            "reason": "These concrete gardening actions do not advance any point about resolving the teammates’ conflicting feedback, so they provide no meaningful question-related support.",
+            "reasonZh": "這些具體的園藝行動並未推進任何關於解決兩位團隊成員意見衝突的論點，因此沒有提供與問題相關的實質支持。"
+          },
+          "structure": {
+            "level": 4,
+            "quote": "I prepare the soil, water the seedlings, and move them into shade if the leaves wilt.",
+            "reason": "The answer follows a coherent sequence of preparation, routine care, and a conditional response.",
+            "reasonZh": "回答依循準備、日常照料及條件式應對的連貫順序。"
+          },
+          "englishExpression": {
+            "level": 4,
+            "quote": "When I grow herbs, I prepare the soil, water the seedlings, and move them into shade if the leaves wilt.",
+            "reason": "The sentence is grammatically correct, natural, and easy to understand.",
+            "reasonZh": "這個句子文法正確、自然，而且容易理解。"
+          }
+        },
+        "strength": {
+          "text": "The response presents its actions in a clear, logical sequence.",
+          "textZh": "回答以清楚且合乎邏輯的順序呈現各項行動。",
+          "quote": "prepare the soil, water the seedlings, and move them into shade"
+        },
+        "priorityImprovement": {
+          "text": "Replace the gardening content with a direct account of how you would mediate the two teammates’ conflicting code-review feedback, including the actions you would take and the reasoning behind them.",
+          "textZh": "請將園藝內容改為直接說明你會如何調解兩位團隊成員互相衝突的程式碼審查意見，包括你會採取的行動及其背後的理由。",
+          "quote": "When I grow herbs"
+        }
+      },
+      "automaticBilingualPairs": [
+        {
+          "name": "relevance reason",
+          "en": "The answer discusses gardening and does not address helping two teammates reconcile conflicting code-review feedback.",
+          "zh": "回答討論園藝，並未說明如何協助兩位團隊成員協調互相衝突的程式碼審查意見。"
+        },
+        {
+          "name": "support reason",
+          "en": "These concrete gardening actions do not advance any point about resolving the teammates’ conflicting feedback, so they provide no meaningful question-related support.",
+          "zh": "這些具體的園藝行動並未推進任何關於解決兩位團隊成員意見衝突的論點，因此沒有提供與問題相關的實質支持。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The answer follows a coherent sequence of preparation, routine care, and a conditional response.",
+          "zh": "回答依循準備、日常照料及條件式應對的連貫順序。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The sentence is grammatically correct, natural, and easy to understand.",
+          "zh": "這個句子文法正確、自然，而且容易理解。"
+        },
+        {
+          "name": "strength",
+          "en": "The response presents its actions in a clear, logical sequence.",
+          "zh": "回答以清楚且合乎邏輯的順序呈現各項行動。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Replace the gardening content with a direct account of how you would mediate the two teammates’ conflicting code-review feedback, including the actions you would take and the reasoning behind them.",
+          "zh": "請將園藝內容改為直接說明你會如何調解兩位團隊成員互相衝突的程式碼審查意見，包括你會採取的行動及其背後的理由。"
+        }
+      ],
+      "ratingMisses": []
+    },
+    {
+      "caseId": "garden-off-topic",
+      "repeat": 2,
+      "inputChecksum": "c34e23621733397d61b8cbea39ce2de9732a77f6260414b6bd33063f4dfd6de3",
+      "outputChecksum": "62481f65fa1f1d0dda27f3e03a0f254b5c2ff09a4f10bea0eab0f546c99ca337",
+      "question": {
+        "id": "garden-off-topic",
+        "text": "How would you help two teammates resolve conflicting code-review feedback?",
+        "category": "behavioral"
+      },
+      "transcript": "When I grow herbs, I prepare the soil, water the seedlings, and move them into shade if the leaves wilt.",
+      "approvedRanges": {
+        "relevance": [
+          1,
+          1
+        ],
+        "support": [
+          1,
+          1
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "feedback": {
+        "ratings": {
+          "relevance": {
+            "level": 1,
+            "quote": "When I grow herbs",
+            "reason": "The response discusses herb care and does not address resolving the teammates’ disagreement or reconciling conflicting code-review feedback.",
+            "reasonZh": "回答討論的是香草照護，並未說明如何化解兩位隊友的分歧或協調互相衝突的程式碼審查意見。"
+          },
+          "support": {
+            "level": 1,
+            "quote": "I prepare the soil, water the seedlings, and move them into shade if the leaves wilt.",
+            "reason": "These concrete gardening actions explain plant care but provide no reasoning or evidence relevant to resolving the code-review conflict.",
+            "reasonZh": "這些具體的園藝行動說明了植物照護，但沒有提供任何與解決程式碼審查衝突相關的推理或依據。"
+          },
+          "structure": {
+            "level": 4,
+            "quote": "I prepare the soil, water the seedlings, and move them into shade if the leaves wilt.",
+            "reason": "The response has a clear stepwise progression from soil preparation to watering and then a conditional move into shade.",
+            "reasonZh": "回答具有清楚的步驟推進，從準備土壤、澆水，到在特定情況下移至陰涼處。"
+          },
+          "englishExpression": {
+            "level": 4,
+            "quote": "When I grow herbs, I prepare the soil, water the seedlings, and move them into shade if the leaves wilt.",
+            "reason": "The sentence is grammatical, natural, and easy to understand.",
+            "reasonZh": "這個句子的文法正確、表達自然，而且容易理解。"
+          }
+        },
+        "strength": {
+          "text": "The response presents its actions in a concise and logically ordered sequence.",
+          "textZh": "回答以精簡且符合邏輯順序的方式呈現各項行動。",
+          "quote": "I prepare the soil, water the seedlings, and move them into shade if the leaves wilt."
+        },
+        "priorityImprovement": {
+          "text": "Replace the gardening response with a directly relevant process for bringing both teammates together, clarifying the review criteria, comparing technical evidence and trade-offs, and agreeing on a documented decision.",
+          "textZh": "應將園藝內容改為直接相關的處理流程，包括召集兩位隊友、釐清審查標準、比較技術依據與取捨，並就有記錄的決策達成共識。",
+          "quote": "When I grow herbs"
+        }
+      },
+      "automaticBilingualPairs": [
+        {
+          "name": "relevance reason",
+          "en": "The response discusses herb care and does not address resolving the teammates’ disagreement or reconciling conflicting code-review feedback.",
+          "zh": "回答討論的是香草照護，並未說明如何化解兩位隊友的分歧或協調互相衝突的程式碼審查意見。"
+        },
+        {
+          "name": "support reason",
+          "en": "These concrete gardening actions explain plant care but provide no reasoning or evidence relevant to resolving the code-review conflict.",
+          "zh": "這些具體的園藝行動說明了植物照護，但沒有提供任何與解決程式碼審查衝突相關的推理或依據。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The response has a clear stepwise progression from soil preparation to watering and then a conditional move into shade.",
+          "zh": "回答具有清楚的步驟推進，從準備土壤、澆水，到在特定情況下移至陰涼處。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The sentence is grammatical, natural, and easy to understand.",
+          "zh": "這個句子的文法正確、表達自然，而且容易理解。"
+        },
+        {
+          "name": "strength",
+          "en": "The response presents its actions in a concise and logically ordered sequence.",
+          "zh": "回答以精簡且符合邏輯順序的方式呈現各項行動。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Replace the gardening response with a directly relevant process for bringing both teammates together, clarifying the review criteria, comparing technical evidence and trade-offs, and agreeing on a documented decision.",
+          "zh": "應將園藝內容改為直接相關的處理流程，包括召集兩位隊友、釐清審查標準、比較技術依據與取捨，並就有記錄的決策達成共識。"
+        }
+      ],
+      "ratingMisses": []
+    },
+    {
+      "caseId": "bread-off-topic",
+      "repeat": 1,
+      "inputChecksum": "27fbc32db5c0544e12d3320a52959e9321743b6a8222488b7c2cc24f11d309e1",
+      "outputChecksum": "c7fb76abec2d00b968e170514f6d1120f1e7246c90d836f5203b7a018d13ba7a",
+      "question": {
+        "id": "bread-off-topic",
+        "text": "How would you isolate an intermittent mobile-app crash?",
+        "category": "technical-communication"
+      },
+      "transcript": "I mix the dough, let it rise, then bake it after the oven reaches temperature. That sequence keeps the bread from collapsing.",
+      "approvedRanges": {
+        "relevance": [
+          1,
+          1
+        ],
+        "support": [
+          1,
+          1
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "feedback": {
+        "ratings": {
+          "relevance": {
+            "level": 1,
+            "quote": "I mix the dough, let it rise, then bake it after the oven reaches temperature.",
+            "reason": "This discusses bread preparation and does not address how to isolate an intermittent mobile-app crash.",
+            "reasonZh": "這段回答討論麵包製作，並未說明如何隔離間歇性的行動應用程式崩潰問題。"
+          },
+          "support": {
+            "level": 1,
+            "quote": "That sequence keeps the bread from collapsing.",
+            "reason": "The causal rationale supports baking, but it provides no diagnostic action, evidence, or trade-off relevant to the crash.",
+            "reasonZh": "這項因果理由支持的是烘焙做法，但未提供與崩潰問題相關的診斷行動、證據或權衡。"
+          },
+          "structure": {
+            "level": 4,
+            "quote": "I mix the dough, let it rise, then bake it after the oven reaches temperature. That sequence keeps the bread from collapsing.",
+            "reason": "The response has a clear chronological sequence followed by a directly connected consequence.",
+            "reasonZh": "回答先呈現清楚的時間順序，再說明與之直接相連的結果。"
+          },
+          "englishExpression": {
+            "level": 4,
+            "quote": "That sequence keeps the bread from collapsing.",
+            "reason": "The English is grammatically correct, natural, and easy to understand.",
+            "reasonZh": "英文文法正確、自然且容易理解。"
+          }
+        },
+        "strength": {
+          "text": "The answer communicates its step-by-step sequence and causal connection clearly.",
+          "textZh": "這個回答清楚傳達了逐步順序及其因果關係。",
+          "quote": "I mix the dough, let it rise, then bake it after the oven reaches temperature."
+        },
+        "priorityImprovement": {
+          "text": "Replace the unrelated bread-making content with a crash-isolation approach, such as reproducing the issue, collecting crash logs, narrowing affected environments, and testing hypotheses systematically.",
+          "textZh": "應將無關的麵包製作內容改為崩潰隔離方法，例如重現問題、收集崩潰日誌、縮小受影響的環境範圍，並有系統地驗證假設。",
+          "quote": "That sequence keeps the bread from collapsing."
+        }
+      },
+      "automaticBilingualPairs": [
+        {
+          "name": "relevance reason",
+          "en": "This discusses bread preparation and does not address how to isolate an intermittent mobile-app crash.",
+          "zh": "這段回答討論麵包製作，並未說明如何隔離間歇性的行動應用程式崩潰問題。"
+        },
+        {
+          "name": "support reason",
+          "en": "The causal rationale supports baking, but it provides no diagnostic action, evidence, or trade-off relevant to the crash.",
+          "zh": "這項因果理由支持的是烘焙做法，但未提供與崩潰問題相關的診斷行動、證據或權衡。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The response has a clear chronological sequence followed by a directly connected consequence.",
+          "zh": "回答先呈現清楚的時間順序，再說明與之直接相連的結果。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The English is grammatically correct, natural, and easy to understand.",
+          "zh": "英文文法正確、自然且容易理解。"
+        },
+        {
+          "name": "strength",
+          "en": "The answer communicates its step-by-step sequence and causal connection clearly.",
+          "zh": "這個回答清楚傳達了逐步順序及其因果關係。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Replace the unrelated bread-making content with a crash-isolation approach, such as reproducing the issue, collecting crash logs, narrowing affected environments, and testing hypotheses systematically.",
+          "zh": "應將無關的麵包製作內容改為崩潰隔離方法，例如重現問題、收集崩潰日誌、縮小受影響的環境範圍，並有系統地驗證假設。"
+        }
+      ],
+      "ratingMisses": []
+    },
+    {
+      "caseId": "bread-off-topic",
+      "repeat": 2,
+      "inputChecksum": "27fbc32db5c0544e12d3320a52959e9321743b6a8222488b7c2cc24f11d309e1",
+      "outputChecksum": "cd19ad23c7a70441b9d119cf625dc2475ea59f677250918f2e44ee74c70f995f",
+      "question": {
+        "id": "bread-off-topic",
+        "text": "How would you isolate an intermittent mobile-app crash?",
+        "category": "technical-communication"
+      },
+      "transcript": "I mix the dough, let it rise, then bake it after the oven reaches temperature. That sequence keeps the bread from collapsing.",
+      "approvedRanges": {
+        "relevance": [
+          1,
+          1
+        ],
+        "support": [
+          1,
+          1
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "feedback": {
+        "ratings": {
+          "relevance": {
+            "level": 1,
+            "quote": "I mix the dough, let it rise, then bake it after the oven reaches temperature.",
+            "reason": "The response discusses bread-making and does not address how to isolate an intermittent mobile-app crash.",
+            "reasonZh": "回答討論的是麵包製作，並未說明如何隔離間歇性的行動應用程式當機問題。"
+          },
+          "support": {
+            "level": 1,
+            "quote": "That sequence keeps the bread from collapsing.",
+            "reason": "The causal explanation supports a bread-making process but provides no diagnostic action, evidence, or trade-off relevant to crash isolation.",
+            "reasonZh": "這項因果解釋支持的是麵包製作流程，卻未提供任何與隔離當機問題相關的診斷行動、證據或取捨。"
+          },
+          "structure": {
+            "level": 4,
+            "quote": "I mix the dough, let it rise, then bake it after the oven reaches temperature. That sequence keeps the bread from collapsing.",
+            "reason": "The response has a clear stepwise sequence followed by a directly connected consequence.",
+            "reasonZh": "回答先提出清楚的逐步順序，再接續說明與之直接相關的結果。"
+          },
+          "englishExpression": {
+            "level": 4,
+            "quote": "That sequence keeps the bread from collapsing.",
+            "reason": "The English is grammatical, natural, and easy to understand.",
+            "reasonZh": "英文文法正確、自然且容易理解。"
+          }
+        },
+        "strength": {
+          "text": "The response communicates a process in a concise, logically ordered sequence and links it to a consequence.",
+          "textZh": "回答以精簡且合乎邏輯的順序傳達流程，並將其連結到一項結果。",
+          "quote": "I mix the dough, let it rise, then bake it after the oven reaches temperature. That sequence keeps the bread from collapsing."
+        },
+        "priorityImprovement": {
+          "text": "Replace the unrelated bread-making explanation with a crash-isolation approach, such as reproducing the failure, collecting logs, and varying one condition at a time to narrow the cause.",
+          "textZh": "應以當機隔離方法取代無關的麵包製作說明，例如重現故障、收集日誌，並一次改變一項條件來縮小原因範圍。",
+          "quote": "I mix the dough, let it rise, then bake it after the oven reaches temperature."
+        }
+      },
+      "automaticBilingualPairs": [
+        {
+          "name": "relevance reason",
+          "en": "The response discusses bread-making and does not address how to isolate an intermittent mobile-app crash.",
+          "zh": "回答討論的是麵包製作，並未說明如何隔離間歇性的行動應用程式當機問題。"
+        },
+        {
+          "name": "support reason",
+          "en": "The causal explanation supports a bread-making process but provides no diagnostic action, evidence, or trade-off relevant to crash isolation.",
+          "zh": "這項因果解釋支持的是麵包製作流程，卻未提供任何與隔離當機問題相關的診斷行動、證據或取捨。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The response has a clear stepwise sequence followed by a directly connected consequence.",
+          "zh": "回答先提出清楚的逐步順序，再接續說明與之直接相關的結果。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The English is grammatical, natural, and easy to understand.",
+          "zh": "英文文法正確、自然且容易理解。"
+        },
+        {
+          "name": "strength",
+          "en": "The response communicates a process in a concise, logically ordered sequence and links it to a consequence.",
+          "zh": "回答以精簡且合乎邏輯的順序傳達流程，並將其連結到一項結果。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Replace the unrelated bread-making explanation with a crash-isolation approach, such as reproducing the failure, collecting logs, and varying one condition at a time to narrow the cause.",
+          "zh": "應以當機隔離方法取代無關的麵包製作說明，例如重現故障、收集日誌，並一次改變一項條件來縮小原因範圍。"
+        }
+      ],
+      "ratingMisses": []
+    },
+    {
+      "caseId": "notification-no-result",
+      "repeat": 1,
+      "inputChecksum": "c550b9e9b650e763d7bf1aa5a7d9470e52f6d3d6fd0dd335a0c110f895c336a2",
+      "outputChecksum": "d2454eb7f71aeda200ffcdac9071085243dfeeaf518ad5ad39113751e4f3eec7",
+      "question": {
+        "id": "notification-no-result",
+        "text": "Tell us how you investigated duplicate notifications, including the cause and result.",
+        "category": "experience-depth"
+      },
+      "transcript": "I noticed duplicate notifications, checked delivery IDs, then compared retry logs. I have not isolated the cause yet.",
+      "approvedRanges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "feedback": {
+        "ratings": {
+          "relevance": {
+            "level": 3,
+            "quote": "I have not isolated the cause yet.",
+            "reason": "The answer directly describes the investigation and its current status, but it does not provide the requested cause or a concrete resolution or outcome.",
+            "reasonZh": "回答直接描述了調查過程及目前狀態，但未提供題目要求的原因，也沒有具體的解決方式或結果。"
+          },
+          "support": {
+            "level": 3,
+            "quote": "checked delivery IDs, then compared retry logs.",
+            "reason": "These are specific diagnostic actions that advance the investigation, though the answer does not explain what either check revealed.",
+            "reasonZh": "這些是能推進調查的具體診斷行動，但回答未說明任一項檢查發現了什麼。"
+          },
+          "structure": {
+            "level": 4,
+            "quote": "I noticed duplicate notifications, checked delivery IDs, then compared retry logs. I have not isolated the cause yet.",
+            "reason": "The answer follows a clear sequence from detecting the problem through two investigative steps to the current status.",
+            "reasonZh": "回答依照清楚的順序，從發現問題、進行兩個調查步驟，到說明目前狀態。"
+          },
+          "englishExpression": {
+            "level": 4,
+            "quote": "I noticed duplicate notifications, checked delivery IDs, then compared retry logs.",
+            "reason": "The language is concise, grammatical, and natural, with the sequence of actions easy to understand.",
+            "reasonZh": "語言簡潔、文法正確且自然，行動順序也容易理解。"
+          }
+        },
+        "strength": {
+          "text": "The answer gives a concrete, chronological investigation path rather than making a vague claim.",
+          "textZh": "回答提供了具體且按時間順序排列的調查過程，而不是籠統陳述。",
+          "quote": "checked delivery IDs, then compared retry logs."
+        },
+        "priorityImprovement": {
+          "text": "Add what the log comparison revealed, then state either the root cause and resulting fix or outcome, or—if the investigation is ongoing—the next diagnostic step and a more concrete interim result.",
+          "textZh": "補充日誌比對揭示了什麼，接著說明根本原因及由此產生的修正或結果；若調查仍在進行，則說明下一個診斷步驟及更具體的階段性結果。",
+          "quote": "I have not isolated the cause yet."
+        }
+      },
+      "automaticBilingualPairs": [
+        {
+          "name": "relevance reason",
+          "en": "The answer directly describes the investigation and its current status, but it does not provide the requested cause or a concrete resolution or outcome.",
+          "zh": "回答直接描述了調查過程及目前狀態，但未提供題目要求的原因，也沒有具體的解決方式或結果。"
+        },
+        {
+          "name": "support reason",
+          "en": "These are specific diagnostic actions that advance the investigation, though the answer does not explain what either check revealed.",
+          "zh": "這些是能推進調查的具體診斷行動，但回答未說明任一項檢查發現了什麼。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The answer follows a clear sequence from detecting the problem through two investigative steps to the current status.",
+          "zh": "回答依照清楚的順序，從發現問題、進行兩個調查步驟，到說明目前狀態。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The language is concise, grammatical, and natural, with the sequence of actions easy to understand.",
+          "zh": "語言簡潔、文法正確且自然，行動順序也容易理解。"
+        },
+        {
+          "name": "strength",
+          "en": "The answer gives a concrete, chronological investigation path rather than making a vague claim.",
+          "zh": "回答提供了具體且按時間順序排列的調查過程，而不是籠統陳述。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Add what the log comparison revealed, then state either the root cause and resulting fix or outcome, or—if the investigation is ongoing—the next diagnostic step and a more concrete interim result.",
+          "zh": "補充日誌比對揭示了什麼，接著說明根本原因及由此產生的修正或結果；若調查仍在進行，則說明下一個診斷步驟及更具體的階段性結果。"
+        }
+      ],
+      "ratingMisses": []
+    },
+    {
+      "caseId": "notification-no-result",
+      "repeat": 2,
+      "inputChecksum": "c550b9e9b650e763d7bf1aa5a7d9470e52f6d3d6fd0dd335a0c110f895c336a2",
+      "outputChecksum": "1a9da5d45d8fdcab309d2fa2d04e11c73aa48e2184860b17e58101ff996873e6",
+      "question": {
+        "id": "notification-no-result",
+        "text": "Tell us how you investigated duplicate notifications, including the cause and result.",
+        "category": "experience-depth"
+      },
+      "transcript": "I noticed duplicate notifications, checked delivery IDs, then compared retry logs. I have not isolated the cause yet.",
+      "approvedRanges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "feedback": {
+        "ratings": {
+          "relevance": {
+            "level": 3,
+            "quote": "I noticed duplicate notifications, checked delivery IDs, then compared retry logs. I have not isolated the cause yet.",
+            "reason": "The answer directly describes the investigation, but it does not provide the requested cause or a final result.",
+            "reasonZh": "回答直接描述了調查過程，但未提供題目要求的原因或最終結果。"
+          },
+          "support": {
+            "level": 3,
+            "quote": "checked delivery IDs, then compared retry logs",
+            "reason": "Checking delivery IDs and retry logs gives concrete diagnostic support, though no finding yet connects those checks to a cause or outcome.",
+            "reasonZh": "檢查傳送 ID 與重試日誌提供了具體的診斷依據，但目前尚無發現能將這些檢查連結至原因或結果。"
+          },
+          "structure": {
+            "level": 4,
+            "quote": "I noticed duplicate notifications, checked delivery IDs, then compared retry logs. I have not isolated the cause yet.",
+            "reason": "The answer follows a clear progression from observing the issue through two investigative steps to the current status.",
+            "reasonZh": "回答清楚地從發現問題，依序推進至兩個調查步驟，再交代目前狀態。"
+          },
+          "englishExpression": {
+            "level": 4,
+            "quote": "I have not isolated the cause yet.",
+            "reason": "The English is concise, grammatical, and natural, with the investigative actions and limitation expressed clearly.",
+            "reasonZh": "英文簡潔、合乎文法且自然，清楚表達了調查行動與目前的限制。"
+          }
+        },
+        "strength": {
+          "text": "You provide a concise, concrete investigation sequence and clearly distinguish completed checks from the unresolved diagnosis.",
+          "textZh": "你提供了簡潔且具體的調查順序，並清楚區分已完成的檢查與尚未解決的診斷。",
+          "quote": "checked delivery IDs, then compared retry logs"
+        },
+        "priorityImprovement": {
+          "text": "The main gap is the requested cause and result. Once established, add the confirmed root cause and the outcome of the fix or validation.",
+          "textZh": "主要缺口是題目要求的原因與結果。確認後，請補充已證實的根本原因，以及修正或驗證的結果。",
+          "quote": "I have not isolated the cause yet."
+        }
+      },
+      "automaticBilingualPairs": [
+        {
+          "name": "relevance reason",
+          "en": "The answer directly describes the investigation, but it does not provide the requested cause or a final result.",
+          "zh": "回答直接描述了調查過程，但未提供題目要求的原因或最終結果。"
+        },
+        {
+          "name": "support reason",
+          "en": "Checking delivery IDs and retry logs gives concrete diagnostic support, though no finding yet connects those checks to a cause or outcome.",
+          "zh": "檢查傳送 ID 與重試日誌提供了具體的診斷依據，但目前尚無發現能將這些檢查連結至原因或結果。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The answer follows a clear progression from observing the issue through two investigative steps to the current status.",
+          "zh": "回答清楚地從發現問題，依序推進至兩個調查步驟，再交代目前狀態。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The English is concise, grammatical, and natural, with the investigative actions and limitation expressed clearly.",
+          "zh": "英文簡潔、合乎文法且自然，清楚表達了調查行動與目前的限制。"
+        },
+        {
+          "name": "strength",
+          "en": "You provide a concise, concrete investigation sequence and clearly distinguish completed checks from the unresolved diagnosis.",
+          "zh": "你提供了簡潔且具體的調查順序，並清楚區分已完成的檢查與尚未解決的診斷。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "The main gap is the requested cause and result. Once established, add the confirmed root cause and the outcome of the fix or validation.",
+          "zh": "主要缺口是題目要求的原因與結果。確認後，請補充已證實的根本原因，以及修正或驗證的結果。"
+        }
+      ],
+      "ratingMisses": []
+    },
+    {
+      "caseId": "flaky-test-no-result",
+      "repeat": 1,
+      "inputChecksum": "f52dee5d54a191948dc12b41867c71bfb3a8a4a21f647265d5afa6728e8adefb",
+      "outputChecksum": "8ca34e0ec643f17bef91447349a0f296516d385070e7375a481bf0cd555a42e2",
+      "question": {
+        "id": "flaky-test-no-result",
+        "text": "Walk through how you investigated a flaky test and what changed.",
+        "category": "experience-depth"
+      },
+      "transcript": "I reproduced the failure, pinned the random seed, and compared the setup between runs. I do not know yet which change will fix it.",
+      "approvedRanges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "feedback": {
+        "ratings": {
+          "relevance": {
+            "level": 3,
+            "quote": "I reproduced the failure, pinned the random seed, and compared the setup between runs.",
+            "reason": "This directly addresses how the test was investigated, but it does not identify what changed, which the question also requests.",
+            "reasonZh": "這直接回答了如何調查測試，但未說明有哪些改變，而這也是問題要求的部分。"
+          },
+          "support": {
+            "level": 3,
+            "quote": "pinned the random seed, and compared the setup between runs",
+            "reason": "These are concrete diagnostic actions that support the investigation approach, though no finding or resulting change is provided.",
+            "reasonZh": "這些是支持其調查方法的具體診斷行動，但未提供調查發現或最終改變。"
+          },
+          "structure": {
+            "level": 4,
+            "quote": "I reproduced the failure, pinned the random seed, and compared the setup between runs. I do not know yet which change will fix it.",
+            "reason": "The answer follows a clear stepwise sequence and then states the current unresolved status.",
+            "reasonZh": "回答先依序說明調查步驟，接著交代目前尚未解決的狀態，脈絡清楚。"
+          },
+          "englishExpression": {
+            "level": 4,
+            "quote": "I do not know yet which change will fix it.",
+            "reason": "The wording is grammatical, natural, and easy to understand throughout.",
+            "reasonZh": "整段措辭符合文法、自然，而且容易理解。"
+          }
+        },
+        "strength": {
+          "text": "The answer gives a concise, credible diagnostic sequence rather than making an unsupported claim about the cause.",
+          "textZh": "回答提供了簡潔且可信的診斷流程，而非對原因提出缺乏依據的說法。",
+          "quote": "I reproduced the failure, pinned the random seed, and compared the setup between runs."
+        },
+        "priorityImprovement": {
+          "text": "Complete the requested outcome by explaining what the comparison revealed and either naming the resulting change or explicitly stating that no change has been made yet and giving the next diagnostic step.",
+          "textZh": "補完整問題要求的結果：說明比較後發現了什麼，並指出因此做出的改變；若尚未做出改變，則明確說明這一點並提出下一個診斷步驟。",
+          "quote": "I do not know yet which change will fix it."
+        }
+      },
+      "automaticBilingualPairs": [
+        {
+          "name": "relevance reason",
+          "en": "This directly addresses how the test was investigated, but it does not identify what changed, which the question also requests.",
+          "zh": "這直接回答了如何調查測試，但未說明有哪些改變，而這也是問題要求的部分。"
+        },
+        {
+          "name": "support reason",
+          "en": "These are concrete diagnostic actions that support the investigation approach, though no finding or resulting change is provided.",
+          "zh": "這些是支持其調查方法的具體診斷行動，但未提供調查發現或最終改變。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The answer follows a clear stepwise sequence and then states the current unresolved status.",
+          "zh": "回答先依序說明調查步驟，接著交代目前尚未解決的狀態，脈絡清楚。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The wording is grammatical, natural, and easy to understand throughout.",
+          "zh": "整段措辭符合文法、自然，而且容易理解。"
+        },
+        {
+          "name": "strength",
+          "en": "The answer gives a concise, credible diagnostic sequence rather than making an unsupported claim about the cause.",
+          "zh": "回答提供了簡潔且可信的診斷流程，而非對原因提出缺乏依據的說法。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Complete the requested outcome by explaining what the comparison revealed and either naming the resulting change or explicitly stating that no change has been made yet and giving the next diagnostic step.",
+          "zh": "補完整問題要求的結果：說明比較後發現了什麼，並指出因此做出的改變；若尚未做出改變，則明確說明這一點並提出下一個診斷步驟。"
+        }
+      ],
+      "ratingMisses": []
+    },
+    {
+      "caseId": "flaky-test-no-result",
+      "repeat": 2,
+      "inputChecksum": "f52dee5d54a191948dc12b41867c71bfb3a8a4a21f647265d5afa6728e8adefb",
+      "outputChecksum": "a25f43b6ef8fb9a1da95c580ae547d9d09888673624b5adf4f34f951bf1c203c",
+      "question": {
+        "id": "flaky-test-no-result",
+        "text": "Walk through how you investigated a flaky test and what changed.",
+        "category": "experience-depth"
+      },
+      "transcript": "I reproduced the failure, pinned the random seed, and compared the setup between runs. I do not know yet which change will fix it.",
+      "approvedRanges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "feedback": {
+        "ratings": {
+          "relevance": {
+            "level": 3,
+            "quote": "I reproduced the failure, pinned the random seed, and compared the setup between runs. I do not know yet which change will fix it.",
+            "reason": "This directly explains the investigation, but it does not identify the requested change or its effect because the fix remains unknown.",
+            "reasonZh": "這段直接說明了調查過程，但由於修正方式仍未知，因此沒有指出題目要求的變更及其效果。"
+          },
+          "support": {
+            "level": 3,
+            "quote": "I reproduced the failure, pinned the random seed, and compared the setup between runs.",
+            "reason": "These are concrete diagnostic actions that show a credible investigation approach, although no finding or observed result connects them to a root cause.",
+            "reasonZh": "這些是具體的診斷行動，呈現了可信的調查方法，但沒有提供任何發現或觀察結果來將它們連結至根本原因。"
+          },
+          "structure": {
+            "level": 4,
+            "quote": "I reproduced the failure, pinned the random seed, and compared the setup between runs. I do not know yet which change will fix it.",
+            "reason": "The answer follows a clear chronological sequence of investigation steps and then states the current status, making the progression easy to follow.",
+            "reasonZh": "回答依照清楚的時間順序說明調查步驟，接著交代目前狀態，使整體進展容易理解。"
+          },
+          "englishExpression": {
+            "level": 4,
+            "quote": "I reproduced the failure, pinned the random seed, and compared the setup between runs.",
+            "reason": "The English is concise, natural, and grammatically clear, with precise technical wording.",
+            "reasonZh": "英文簡潔、自然且文法清楚，技術用詞也很精確。"
+          }
+        },
+        "strength": {
+          "text": "The answer gives a focused, credible sequence of diagnostic actions rather than making a vague claim about debugging.",
+          "textZh": "回答提供了聚焦且可信的診斷行動順序，而不是含糊地聲稱自己進行了除錯。",
+          "quote": "I reproduced the failure, pinned the random seed, and compared the setup between runs."
+        },
+        "priorityImprovement": {
+          "text": "Complete the story by stating what ultimately changed and how that affected the flaky behavior; if the investigation is still ongoing, give the leading hypothesis and next validation step instead of ending only with uncertainty.",
+          "textZh": "請補完整個經歷，說明最後做了什麼變更，以及該變更如何影響測試不穩定的情況；如果調查仍在進行，請提供目前最可能的假設與下一個驗證步驟，而不要只以不確定性作結。",
+          "quote": "I do not know yet which change will fix it."
+        }
+      },
+      "automaticBilingualPairs": [
+        {
+          "name": "relevance reason",
+          "en": "This directly explains the investigation, but it does not identify the requested change or its effect because the fix remains unknown.",
+          "zh": "這段直接說明了調查過程，但由於修正方式仍未知，因此沒有指出題目要求的變更及其效果。"
+        },
+        {
+          "name": "support reason",
+          "en": "These are concrete diagnostic actions that show a credible investigation approach, although no finding or observed result connects them to a root cause.",
+          "zh": "這些是具體的診斷行動，呈現了可信的調查方法，但沒有提供任何發現或觀察結果來將它們連結至根本原因。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The answer follows a clear chronological sequence of investigation steps and then states the current status, making the progression easy to follow.",
+          "zh": "回答依照清楚的時間順序說明調查步驟，接著交代目前狀態，使整體進展容易理解。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The English is concise, natural, and grammatically clear, with precise technical wording.",
+          "zh": "英文簡潔、自然且文法清楚，技術用詞也很精確。"
+        },
+        {
+          "name": "strength",
+          "en": "The answer gives a focused, credible sequence of diagnostic actions rather than making a vague claim about debugging.",
+          "zh": "回答提供了聚焦且可信的診斷行動順序，而不是含糊地聲稱自己進行了除錯。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Complete the story by stating what ultimately changed and how that affected the flaky behavior; if the investigation is still ongoing, give the leading hypothesis and next validation step instead of ending only with uncertainty.",
+          "zh": "請補完整個經歷，說明最後做了什麼變更，以及該變更如何影響測試不穩定的情況；如果調查仍在進行，請提供目前最可能的假設與下一個驗證步驟，而不要只以不確定性作結。"
+        }
+      ],
+      "ratingMisses": []
+    },
+    {
+      "caseId": "batch-trade-off",
+      "repeat": 1,
+      "inputChecksum": "a8a60765c4722297092d8307a6ae156dfddd92599e4d041dcda3b3ec94e16128",
+      "outputChecksum": "ac2f9034c0930b4ce9029450eaf820f4d1493d305efe61ac9602631f00979751",
+      "question": {
+        "id": "batch-trade-off",
+        "text": "How would you balance batch throughput and error recovery, and explain the trade-off to a product manager?",
+        "category": "technical-communication"
+      },
+      "transcript": "I would measure retry volume first and keep writes idempotent so replay does not duplicate orders. I would show the product manager the observed delay, but I have not estimated the throughput cost.",
+      "approvedRanges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          4,
+          4
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "feedback": {
+        "ratings": {
+          "relevance": {
+            "level": 3,
+            "quote": "I would measure retry volume first and keep writes idempotent so replay does not duplicate orders.",
+            "reason": "This directly addresses error recovery through retry measurement and idempotent replay, but it does not explain how batch throughput would be balanced or quantify its cost.",
+            "reasonZh": "這直接以衡量重試量與冪等重播處理錯誤復原，但沒有說明如何平衡批次吞吐量，也未量化其成本。"
+          },
+          "support": {
+            "level": 3,
+            "quote": "keep writes idempotent so replay does not duplicate orders",
+            "reason": "Idempotent writes are a specific safeguard, and preventing duplicate orders provides clear causal justification; the throughput side remains unsupported because its cost has not been estimated.",
+            "reasonZh": "冪等寫入是一項具體的防護措施，而避免重複訂單提供了清楚的因果依據；由於尚未估算成本，吞吐量面向仍缺乏支持。"
+          },
+          "structure": {
+            "level": 4,
+            "quote": "I would show the product manager the observed delay, but I have not estimated the throughput cost.",
+            "reason": "The answer progresses coherently from measurement to a safeguard and its consequence, then to stakeholder communication and an explicit limitation.",
+            "reasonZh": "回答連貫地從衡量推進到防護措施及其後果，再到利害關係人溝通與明確指出限制。"
+          },
+          "englishExpression": {
+            "level": 4,
+            "quote": "I would measure retry volume first and keep writes idempotent so replay does not duplicate orders.",
+            "reason": "The English is clear and natural, with precise technical terminology and no meaningful grammar or word-choice barriers.",
+            "reasonZh": "英文清楚自然，技術用語精確，沒有明顯的文法或用字障礙。"
+          }
+        },
+        "strength": {
+          "text": "The answer gives a concrete recovery safeguard and directly explains why it matters: idempotent writes prevent duplicate orders during replay.",
+          "textZh": "回答提出具體的復原防護措施，並直接說明其重要性：冪等寫入可避免重播時產生重複訂單。",
+          "quote": "keep writes idempotent so replay does not duplicate orders"
+        },
+        "priorityImprovement": {
+          "text": "The main gap is the unquantified throughput side. Explain how retry volume and observed delay would guide a batch-size or concurrency decision, then present the resulting speed-versus-recovery trade-off to the product manager.",
+          "textZh": "主要缺口是吞吐量面向尚未量化。請說明重試量與觀察到的延遲將如何引導批次大小或並行度的決策，再向產品經理呈現由此產生的速度與復原能力之間的取捨。",
+          "quote": "I have not estimated the throughput cost."
+        }
+      },
+      "automaticBilingualPairs": [
+        {
+          "name": "relevance reason",
+          "en": "This directly addresses error recovery through retry measurement and idempotent replay, but it does not explain how batch throughput would be balanced or quantify its cost.",
+          "zh": "這直接以衡量重試量與冪等重播處理錯誤復原，但沒有說明如何平衡批次吞吐量，也未量化其成本。"
+        },
+        {
+          "name": "support reason",
+          "en": "Idempotent writes are a specific safeguard, and preventing duplicate orders provides clear causal justification; the throughput side remains unsupported because its cost has not been estimated.",
+          "zh": "冪等寫入是一項具體的防護措施，而避免重複訂單提供了清楚的因果依據；由於尚未估算成本，吞吐量面向仍缺乏支持。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The answer progresses coherently from measurement to a safeguard and its consequence, then to stakeholder communication and an explicit limitation.",
+          "zh": "回答連貫地從衡量推進到防護措施及其後果，再到利害關係人溝通與明確指出限制。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The English is clear and natural, with precise technical terminology and no meaningful grammar or word-choice barriers.",
+          "zh": "英文清楚自然，技術用語精確，沒有明顯的文法或用字障礙。"
+        },
+        {
+          "name": "strength",
+          "en": "The answer gives a concrete recovery safeguard and directly explains why it matters: idempotent writes prevent duplicate orders during replay.",
+          "zh": "回答提出具體的復原防護措施，並直接說明其重要性：冪等寫入可避免重播時產生重複訂單。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "The main gap is the unquantified throughput side. Explain how retry volume and observed delay would guide a batch-size or concurrency decision, then present the resulting speed-versus-recovery trade-off to the product manager.",
+          "zh": "主要缺口是吞吐量面向尚未量化。請說明重試量與觀察到的延遲將如何引導批次大小或並行度的決策，再向產品經理呈現由此產生的速度與復原能力之間的取捨。"
+        }
+      ],
+      "ratingMisses": [
+        "support"
+      ]
+    },
+    {
+      "caseId": "batch-trade-off",
+      "repeat": 2,
+      "inputChecksum": "a8a60765c4722297092d8307a6ae156dfddd92599e4d041dcda3b3ec94e16128",
+      "outputChecksum": "7daa8f914ef44925c4317e8e3793d1dfb6bf1e073cb238a07b3889aeda59eabd",
+      "question": {
+        "id": "batch-trade-off",
+        "text": "How would you balance batch throughput and error recovery, and explain the trade-off to a product manager?",
+        "category": "technical-communication"
+      },
+      "transcript": "I would measure retry volume first and keep writes idempotent so replay does not duplicate orders. I would show the product manager the observed delay, but I have not estimated the throughput cost.",
+      "approvedRanges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          4,
+          4
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "feedback": {
+        "ratings": {
+          "relevance": {
+            "level": 3,
+            "quote": "I would show the product manager the observed delay, but I have not estimated the throughput cost.",
+            "reason": "The answer addresses error recovery and communication with the product manager, but it does not explain how throughput would be balanced against recovery or quantify that trade-off.",
+            "reasonZh": "回答涵蓋錯誤復原及與產品經理溝通，但未說明如何在吞吐量與復原之間取得平衡，也未量化該取捨。"
+          },
+          "support": {
+            "level": 3,
+            "quote": "keep writes idempotent so replay does not duplicate orders",
+            "reason": "The idempotency mechanism provides a concrete, defensible reason for safe recovery, but the throughput impact remains unsupported.",
+            "reasonZh": "冪等性機制為安全復原提供了具體且合理的依據，但吞吐量影響仍缺乏支持。"
+          },
+          "structure": {
+            "level": 4,
+            "quote": "I would measure retry volume first and keep writes idempotent so replay does not duplicate orders. I would show the product manager the observed delay, but I have not estimated the throughput cost.",
+            "reason": "The answer follows a coherent progression from measurement to recovery protection, stakeholder communication, and an explicit limitation.",
+            "reasonZh": "回答從衡量指標推進到復原保護、利害關係人溝通，最後明確指出限制，脈絡連貫。"
+          },
+          "englishExpression": {
+            "level": 4,
+            "quote": "I would measure retry volume first and keep writes idempotent so replay does not duplicate orders.",
+            "reason": "The English is clear, natural, and technically precise, with no meaningful language barrier.",
+            "reasonZh": "英文清楚自然且技術用語精確，沒有明顯的語言障礙。"
+          }
+        },
+        "strength": {
+          "text": "You clearly connect an error-recovery safeguard to its operational consequence: idempotent writes enable replay without duplicate orders.",
+          "textZh": "你清楚地將錯誤復原防護措施連結到其操作結果：冪等寫入能讓重播不致產生重複訂單。",
+          "quote": "keep writes idempotent so replay does not duplicate orders"
+        },
+        "priorityImprovement": {
+          "text": "Complete the trade-off by estimating the recovery design's throughput cost and explaining to the product manager how that cost compares with the delay and duplicate-order risk.",
+          "textZh": "應估算復原設計造成的吞吐量成本，並向產品經理說明該成本如何與延遲及重複訂單風險相比，以完整呈現取捨。",
+          "quote": "I have not estimated the throughput cost."
+        }
+      },
+      "automaticBilingualPairs": [
+        {
+          "name": "relevance reason",
+          "en": "The answer addresses error recovery and communication with the product manager, but it does not explain how throughput would be balanced against recovery or quantify that trade-off.",
+          "zh": "回答涵蓋錯誤復原及與產品經理溝通，但未說明如何在吞吐量與復原之間取得平衡，也未量化該取捨。"
+        },
+        {
+          "name": "support reason",
+          "en": "The idempotency mechanism provides a concrete, defensible reason for safe recovery, but the throughput impact remains unsupported.",
+          "zh": "冪等性機制為安全復原提供了具體且合理的依據，但吞吐量影響仍缺乏支持。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The answer follows a coherent progression from measurement to recovery protection, stakeholder communication, and an explicit limitation.",
+          "zh": "回答從衡量指標推進到復原保護、利害關係人溝通，最後明確指出限制，脈絡連貫。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The English is clear, natural, and technically precise, with no meaningful language barrier.",
+          "zh": "英文清楚自然且技術用語精確，沒有明顯的語言障礙。"
+        },
+        {
+          "name": "strength",
+          "en": "You clearly connect an error-recovery safeguard to its operational consequence: idempotent writes enable replay without duplicate orders.",
+          "zh": "你清楚地將錯誤復原防護措施連結到其操作結果：冪等寫入能讓重播不致產生重複訂單。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Complete the trade-off by estimating the recovery design's throughput cost and explaining to the product manager how that cost compares with the delay and duplicate-order risk.",
+          "zh": "應估算復原設計造成的吞吐量成本，並向產品經理說明該成本如何與延遲及重複訂單風險相比，以完整呈現取捨。"
+        }
+      ],
+      "ratingMisses": [
+        "support"
+      ]
+    },
+    {
+      "caseId": "duplicate-row-language",
+      "repeat": 1,
+      "inputChecksum": "688a8a0917d0a9b13be10e3f33be0a10a4eed4cf99add62444d00a101c14ca18",
+      "outputChecksum": "ef886596419a5ce7d6c46dd7cfe66bec9835564ea971122fab3965346179ff66",
+      "question": {
+        "id": "duplicate-row-language",
+        "text": "How would you validate a dashboard metric before presenting it?",
+        "category": "technical-communication"
+      },
+      "transcript": "I check duplicate rows yesterday with a script, and I will recheck before launch. I have not run that check in production.",
+      "approvedRanges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          3,
+          3
+        ],
+        "englishExpression": [
+          3,
+          3
+        ]
+      },
+      "feedback": {
+        "ratings": {
+          "relevance": {
+            "level": 3,
+            "quote": "I check duplicate rows yesterday with a script, and I will recheck before launch.",
+            "reason": "This directly provides one relevant validation action and a pre-launch follow-up, but it does not explain how the metric’s calculation would be verified against its source data.",
+            "reasonZh": "這直接提出一項相關的驗證行動及上線前的後續複查，但沒有說明如何依據來源資料核對該指標的計算。"
+          },
+          "support": {
+            "level": 3,
+            "quote": "I have not run that check in production.",
+            "reason": "The script-based duplicate check is a concrete diagnostic action, and this caveat identifies a real limitation, although no check result or metric-level comparison is provided.",
+            "reasonZh": "以腳本檢查重複資料是具體的診斷行動，而這項說明也指出了真實限制；不過，回答並未提供檢查結果或指標層級的比對。"
+          },
+          "structure": {
+            "level": 4,
+            "quote": "I check duplicate rows yesterday with a script, and I will recheck before launch. I have not run that check in production.",
+            "reason": "The answer progresses coherently from a previous check to a planned recheck and then to a clear limitation.",
+            "reasonZh": "回答連貫地從先前的檢查，推進到計畫中的複查，最後清楚說明限制。"
+          },
+          "englishExpression": {
+            "level": 3,
+            "quote": "I check duplicate rows yesterday",
+            "reason": "The meaning is clear, but the past-time marker “yesterday” requires the past tense “checked,” making the tense error noticeable.",
+            "reasonZh": "意思清楚，但過去時間標記「yesterday」需要搭配過去式「checked」，因此時態錯誤相當明顯。"
+          }
+        },
+        "strength": {
+          "text": "You provide a concrete validation action and transparently disclose that it has not yet been run in production.",
+          "textZh": "你提出了具體的驗證行動，並坦白說明尚未在正式環境中執行該檢查。",
+          "quote": "I have not run that check in production."
+        },
+        "priorityImprovement": {
+          "text": "Broaden the validation beyond duplicate detection: reconcile the metric’s definition and calculation against source data, report the comparison result, and clarify whether the pre-launch check uses production-representative data.",
+          "textZh": "將驗證範圍擴展到重複資料偵測以外：依據來源資料核對指標的定義與計算、說明比對結果，並釐清上線前的檢查是否使用具正式環境代表性的資料。",
+          "quote": "I check duplicate rows yesterday with a script, and I will recheck before launch. I have not run that check in production."
+        }
+      },
+      "automaticBilingualPairs": [
+        {
+          "name": "relevance reason",
+          "en": "This directly provides one relevant validation action and a pre-launch follow-up, but it does not explain how the metric’s calculation would be verified against its source data.",
+          "zh": "這直接提出一項相關的驗證行動及上線前的後續複查，但沒有說明如何依據來源資料核對該指標的計算。"
+        },
+        {
+          "name": "support reason",
+          "en": "The script-based duplicate check is a concrete diagnostic action, and this caveat identifies a real limitation, although no check result or metric-level comparison is provided.",
+          "zh": "以腳本檢查重複資料是具體的診斷行動，而這項說明也指出了真實限制；不過，回答並未提供檢查結果或指標層級的比對。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The answer progresses coherently from a previous check to a planned recheck and then to a clear limitation.",
+          "zh": "回答連貫地從先前的檢查，推進到計畫中的複查，最後清楚說明限制。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The meaning is clear, but the past-time marker “yesterday” requires the past tense “checked,” making the tense error noticeable.",
+          "zh": "意思清楚，但過去時間標記「yesterday」需要搭配過去式「checked」，因此時態錯誤相當明顯。"
+        },
+        {
+          "name": "strength",
+          "en": "You provide a concrete validation action and transparently disclose that it has not yet been run in production.",
+          "zh": "你提出了具體的驗證行動，並坦白說明尚未在正式環境中執行該檢查。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Broaden the validation beyond duplicate detection: reconcile the metric’s definition and calculation against source data, report the comparison result, and clarify whether the pre-launch check uses production-representative data.",
+          "zh": "將驗證範圍擴展到重複資料偵測以外：依據來源資料核對指標的定義與計算、說明比對結果，並釐清上線前的檢查是否使用具正式環境代表性的資料。"
+        }
+      ],
+      "ratingMisses": [
+        "structure"
+      ]
+    },
+    {
+      "caseId": "duplicate-row-language",
+      "repeat": 2,
+      "inputChecksum": "688a8a0917d0a9b13be10e3f33be0a10a4eed4cf99add62444d00a101c14ca18",
+      "outputChecksum": "7ee38c0b66903e4a69606aab9eb35a6fc1c52223a7fc99f4b78ea67152d47f6e",
+      "question": {
+        "id": "duplicate-row-language",
+        "text": "How would you validate a dashboard metric before presenting it?",
+        "category": "technical-communication"
+      },
+      "transcript": "I check duplicate rows yesterday with a script, and I will recheck before launch. I have not run that check in production.",
+      "approvedRanges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          3,
+          3
+        ],
+        "englishExpression": [
+          3,
+          3
+        ]
+      },
+      "feedback": {
+        "ratings": {
+          "relevance": {
+            "level": 3,
+            "quote": "I check duplicate rows yesterday with a script, and I will recheck before launch.",
+            "reason": "This directly describes one relevant validation step and a planned recheck, but it does not cover validating the metric definition, calculation, or source totals.",
+            "reasonZh": "這直接描述了一個相關的驗證步驟及計畫中的複查，但未涵蓋指標定義、計算方式或來源總數的驗證。"
+          },
+          "support": {
+            "level": 3,
+            "quote": "I have not run that check in production.",
+            "reason": "The scripted duplicate-row check is a specific diagnostic action, and the production limitation is stated transparently; however, the answer does not explain how results would be evaluated or reconciled.",
+            "reasonZh": "以腳本檢查重複資料列是一項具體的診斷行動，也坦誠說明尚未在正式環境執行的限制；然而，回答未解釋如何評估或核對結果。"
+          },
+          "structure": {
+            "level": 4,
+            "quote": "I check duplicate rows yesterday with a script, and I will recheck before launch. I have not run that check in production.",
+            "reason": "The answer follows a clear progression from the completed check to the planned recheck and then to an explicit limitation.",
+            "reasonZh": "回答依序清楚說明已完成的檢查、計畫中的複查，最後指出明確限制。"
+          },
+          "englishExpression": {
+            "level": 3,
+            "quote": "I check duplicate rows yesterday with a script",
+            "reason": "The meaning is clear, but the past-time marker “yesterday” requires “checked” rather than “check.”",
+            "reasonZh": "意思清楚，但過去時間標記「yesterday」應搭配「checked」，而不是「check」。"
+          }
+        },
+        "strength": {
+          "text": "You name a concrete scripted check and openly distinguish what has and has not been tested.",
+          "textZh": "你提出了具體的腳本檢查，並坦誠區分已測試與尚未測試的部分。",
+          "quote": "I have not run that check in production."
+        },
+        "priorityImprovement": {
+          "text": "Expand the validation plan beyond duplicate rows by checking the metric definition and calculation, reconciling it with source totals, and stating what result would make it safe to present.",
+          "textZh": "將驗證計畫擴展到重複資料列之外，檢查指標定義與計算方式、與來源總數核對，並說明什麼結果代表可以安全呈現。",
+          "quote": "I will recheck before launch."
+        }
+      },
+      "automaticBilingualPairs": [
+        {
+          "name": "relevance reason",
+          "en": "This directly describes one relevant validation step and a planned recheck, but it does not cover validating the metric definition, calculation, or source totals.",
+          "zh": "這直接描述了一個相關的驗證步驟及計畫中的複查，但未涵蓋指標定義、計算方式或來源總數的驗證。"
+        },
+        {
+          "name": "support reason",
+          "en": "The scripted duplicate-row check is a specific diagnostic action, and the production limitation is stated transparently; however, the answer does not explain how results would be evaluated or reconciled.",
+          "zh": "以腳本檢查重複資料列是一項具體的診斷行動，也坦誠說明尚未在正式環境執行的限制；然而，回答未解釋如何評估或核對結果。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The answer follows a clear progression from the completed check to the planned recheck and then to an explicit limitation.",
+          "zh": "回答依序清楚說明已完成的檢查、計畫中的複查，最後指出明確限制。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The meaning is clear, but the past-time marker “yesterday” requires “checked” rather than “check.”",
+          "zh": "意思清楚，但過去時間標記「yesterday」應搭配「checked」，而不是「check」。"
+        },
+        {
+          "name": "strength",
+          "en": "You name a concrete scripted check and openly distinguish what has and has not been tested.",
+          "zh": "你提出了具體的腳本檢查，並坦誠區分已測試與尚未測試的部分。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Expand the validation plan beyond duplicate rows by checking the metric definition and calculation, reconciling it with source totals, and stating what result would make it safe to present.",
+          "zh": "將驗證計畫擴展到重複資料列之外，檢查指標定義與計算方式、與來源總數核對，並說明什麼結果代表可以安全呈現。"
+        }
+      ],
+      "ratingMisses": [
+        "structure"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "3.4.0",
+  "reviewPacketChecksum": "0ac8dd1951281351b56e07cf4423a46f6984d264673331ecdc0fe8085e88cfe1",
+  "reviewer": "gpt-6-sol",
+  "reviewedAt": "2026-09-25T06:18:27.916377Z",
+  "reviewedOutputs": 16,
+  "reviewedPairs": 96,
+  "reviews": [
+    {
+      "caseId": "latency-sequence",
+      "repeat": 1,
+      "outputChecksum": "f8a3b8f64012aa57e6d8cb17eb771ca1ca8721a6032525db5afee4a4ee823f7a",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six Traditional Chinese passages preserve the English account of route comparison, trace inspection, dependency testing, and the missing detail on teammate reporting. The improvement requests the same impact, evidence, confidence, and next-step details.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "latency-sequence",
+      "repeat": 2,
+      "outputChecksum": "298bb82858ce93e4cc7c4ed368a0f733f90a67b2aae1004285dcbface0dae43b",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs retain the investigation and sharing sequence, the unconfirmed cause, and the request to make reporting more specific. No actor, timing, or certainty changes.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "ingestion-sequence",
+      "repeat": 1,
+      "outputChecksum": "c65077d96f29e1a09260153d2d44e3828e72845fddef48c39e27dc09c971e755",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the before-and-after checks, row sampling, conditional rollback for unexpected loss, and the request for measurable thresholds.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "ingestion-sequence",
+      "repeat": 2,
+      "outputChecksum": "179052bd68c8f79e437434386c0b245edf30bdbe71076dc6489b43eaebcf59d3",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the count and row checks, conditional rollback, absence of expected-result thresholds, and the request for objective acceptance criteria.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "garden-off-topic",
+      "repeat": 1,
+      "outputChecksum": "1808a00934e8178085b01a48f9978094af6f1bbfaa7510621ef8b5a6948de3ba",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs retain the gardening topic, its lack of relevance to conflicting code-review feedback, the ordered actions, and the advice to replace the answer with a mediation process.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "garden-off-topic",
+      "repeat": 2,
+      "outputChecksum": "62481f65fa1f1d0dda27f3e03a0f254b5c2ff09a4f10bea0eab0f546c99ca337",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the herb-care actions, their irrelevance to the teammates’ review conflict, and the proposed evidence-based reconciliation steps.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "bread-off-topic",
+      "repeat": 1,
+      "outputChecksum": "c7fb76abec2d00b968e170514f6d1120f1e7246c90d836f5203b7a018d13ba7a",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the bread-making topic, its irrelevance to crash isolation, the process and causal description, and the proposed diagnostic approach.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "bread-off-topic",
+      "repeat": 2,
+      "outputChecksum": "cd19ad23c7a70441b9d119cf625dc2475ea59f677250918f2e44ee74c70f995f",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the baking process and consequence, the absence of crash evidence, and the advice to reproduce, log, and vary conditions to isolate the failure.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "notification-no-result",
+      "repeat": 1,
+      "outputChecksum": "d2454eb7f71aeda200ffcdac9071085243dfeeaf518ad5ad39113751e4f3eec7",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the completed investigative steps, the still-missing cause and outcome, and the conditional advice for either a confirmed result or an ongoing investigation.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "notification-no-result",
+      "repeat": 2,
+      "outputChecksum": "1a9da5d45d8fdcab309d2fa2d04e11c73aa48e2184860b17e58101ff996873e6",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the completed delivery-ID and retry-log checks, the unresolved diagnosis, and the instruction to add a confirmed cause and fix outcome once known.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "flaky-test-no-result",
+      "repeat": 1,
+      "outputChecksum": "8ca34e0ec643f17bef91447349a0f296516d385070e7375a481bf0cd555a42e2",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs distinguish the investigation from the missing change and preserve the conditional advice to report a resulting change or state that none has yet been made.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "flaky-test-no-result",
+      "repeat": 2,
+      "outputChecksum": "a25f43b6ef8fb9a1da95c580ae547d9d09888673624b5adf4f34f951bf1c203c",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the investigation steps, unknown fix, absent observed result, and advice to report the eventual change or the leading hypothesis and next check.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "batch-trade-off",
+      "repeat": 1,
+      "outputChecksum": "ac2f9034c0930b4ce9029450eaf820f4d1493d305efe61ac9602631f00979751",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs retain retry measurement, idempotent replay, duplicate-order prevention, the unsupported throughput cost, and the same advice on batch size, concurrency, and product-manager communication.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "batch-trade-off",
+      "repeat": 2,
+      "outputChecksum": "7daa8f914ef44925c4317e8e3793d1dfb6bf1e073cb238a07b3889aeda59eabd",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs retain the recovery safeguard, its duplicate-order consequence, the unquantified throughput impact, and the request to compare that cost with delay and order risk.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "duplicate-row-language",
+      "repeat": 1,
+      "outputChecksum": "ef886596419a5ce7d6c46dd7cfe66bec9835564ea971122fab3965346179ff66",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs distinguish the previous duplicate check from the planned pre-launch recheck, preserve the missing production check and metric reconciliation, and identify the same yesterday/check tense error.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "duplicate-row-language",
+      "repeat": 2,
+      "outputChecksum": "7ee38c0b66903e4a69606aab9eb35a6fc1c52223a7fc99f4b78ea67152d47f6e",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the completed check versus planned recheck, the production limitation, absent metric-level validation, and the yesterday/check tense correction.",
+      "ratingMissesVerified": true
+    }
+  ],
+  "summary": {
+    "consistentOutputs": 16,
+    "inconsistentOutputs": 0,
+    "contradictoryPairs": 0,
+    "verifiedRatingMisses": {
+      "relevance": 1,
+      "support": 3,
+      "structure": 2,
+      "englishExpression": 0
+    },
+    "outputsWithinApprovedRanges": 10
+  }
+}

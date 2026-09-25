@@ -1,0 +1,240 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "3.4.0",
+  "generatedAt": "2026-09-25T06:18:49.862Z",
+  "usage": {
+    "subscriptionVerificationRequests": 1,
+    "subscriptionFeedbackRequests": 16,
+    "subscriptionRequestCap": 17,
+    "independentAiReviewerInvocations": 2,
+    "reviewerInvocationCap": 2
+  },
+  "artifactChecksums": {
+    "verification": "863711352569c36593f2a5b2b81f121fbe1a8dfa38565e9c3bc180688f04a497",
+    "freeze": "97715bd002aa27a3f5c6e383ee5c357d2c821c66651dad755f394e0b771c267e",
+    "reviewPacket": "0ac8dd1951281351b56e07cf4423a46f6984d264673331ecdc0fe8085e88cfe1",
+    "semanticReview": "3a3551601387ad6d5374dd0d2504855139ffba5bf71da0538745b53ad15a2b86",
+    "approvedLabels": "bd1241910c1370401a779ba2312ca64ebe0dcdcc8388514abb3f86f46317ed81",
+    "lunaReviewPacket": "ada76d8beb3bd198cb7fb22ea67fa67a45d501bc8ee0298961facb45750eda76",
+    "lunaSemanticReview": "7bd31b440d2b52e9ab42a49225f87472bd3a56c525934102c766b92f7e85a3ab"
+  },
+  "automaticGate": {
+    "pass": true,
+    "outputs": 16
+  },
+  "ratingGate": {
+    "pass": false,
+    "outputLevelPass": 10,
+    "total": 16,
+    "dimensionMisses": {
+      "relevance": 1,
+      "support": 3,
+      "structure": 2,
+      "englishExpression": 0
+    }
+  },
+  "bilingualGate": {
+    "pass": true,
+    "consistentOutputs": 16,
+    "total": 16,
+    "reviewedPairs": 96,
+    "inconsistent": []
+  },
+  "pairedComparison": [
+    {
+      "caseId": "latency-sequence",
+      "repeat": 1,
+      "luna": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      },
+      "sol": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "latency-sequence",
+      "repeat": 2,
+      "luna": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      },
+      "sol": {
+        "ratingPass": false,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "ingestion-sequence",
+      "repeat": 1,
+      "luna": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      },
+      "sol": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "ingestion-sequence",
+      "repeat": 2,
+      "luna": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      },
+      "sol": {
+        "ratingPass": false,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "garden-off-topic",
+      "repeat": 1,
+      "luna": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      },
+      "sol": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "garden-off-topic",
+      "repeat": 2,
+      "luna": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      },
+      "sol": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "bread-off-topic",
+      "repeat": 1,
+      "luna": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      },
+      "sol": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "bread-off-topic",
+      "repeat": 2,
+      "luna": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      },
+      "sol": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "notification-no-result",
+      "repeat": 1,
+      "luna": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      },
+      "sol": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "notification-no-result",
+      "repeat": 2,
+      "luna": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      },
+      "sol": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "flaky-test-no-result",
+      "repeat": 1,
+      "luna": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      },
+      "sol": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "flaky-test-no-result",
+      "repeat": 2,
+      "luna": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      },
+      "sol": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "batch-trade-off",
+      "repeat": 1,
+      "luna": {
+        "ratingPass": false,
+        "semanticVerdict": "consistent"
+      },
+      "sol": {
+        "ratingPass": false,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "batch-trade-off",
+      "repeat": 2,
+      "luna": {
+        "ratingPass": false,
+        "semanticVerdict": "consistent"
+      },
+      "sol": {
+        "ratingPass": false,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "duplicate-row-language",
+      "repeat": 1,
+      "luna": {
+        "ratingPass": false,
+        "semanticVerdict": "consistent"
+      },
+      "sol": {
+        "ratingPass": false,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "duplicate-row-language",
+      "repeat": 2,
+      "luna": {
+        "ratingPass": false,
+        "semanticVerdict": "inconsistent"
+      },
+      "sol": {
+        "ratingPass": false,
+        "semanticVerdict": "consistent"
+      }
+    }
+  ],
+  "pilotStatus": "NO_GO",
+  "releaseStatus": "BLOCKED",
+  "note": "Controlled model comparison only. Historical 3.3 output, labels and release verdict are unchanged; this report cannot validate v1.0.0."
+}
