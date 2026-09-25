@@ -1,5 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {readFileSync} from 'node:fs';
 import {CANDIDATE_CONTRACT_VERSION, candidateFeedbackContract, validateCandidateFeedback} from '../evaluation/v3-7/evidence-first-candidate.js';
 
 const question = {text: 'Why choose this role, and which tool have you used?', requestedParts: ['Why choose this role', 'which tool have you used']};
@@ -47,4 +49,30 @@ test('a related quote must be exact and absent when no related material is claim
   absent.ratings.relevance.level = 1;
   absent.decisionEvidence.relevance = {...absent.decisionEvidence.relevance, coverage: 'none', parts: absent.decisionEvidence.relevance.parts.map(part => ({...part, answerQuote: ''}))};
   assert.throws(() => validateCandidateFeedback(absent, question, transcript), /relevance related quote/);
+});
+
+test('pilot feedback requires the frozen requested parts rather than choosing convenient spans', () => {
+  const missingParts = {text: question.text};
+  assert.throws(() => validateCandidateFeedback(feedback(), missingParts, transcript), /frozen requested parts/);
+  const substituted = {...question, requestedParts: ['Why']};
+  assert.throws(() => validateCandidateFeedback(feedback(), substituted, transcript), /relevance requested-part coverage/);
+});
+
+test('bare support cannot carry a purported supporting quote', () => {
+  const contradicted = feedback();
+  contradicted.decisionEvidence.support.supportQuote = 'I care about dependable systems.';
+  assert.throws(() => validateCandidateFeedback(contradicted, question, transcript), /support absent detail/);
+});
+
+test('replacement blind packet binds opaque IDs and frozen requested parts into every input checksum', () => {
+  const packet = JSON.parse(readFileSync(new URL('../evaluation/v3-7/pilot-blind-packet-v2.json', import.meta.url), 'utf8'));
+  assert.equal(packet.length, 8);
+  packet.forEach((item, index) => {
+    assert.equal(item.caseId, `c${String(index + 1).padStart(2, '0')}`);
+    assert.equal(item.question.id, item.caseId);
+    assert.equal(item.packetVersion, 2);
+    assert.ok(item.requestedParts.length > 0 && item.requestedParts.every(part => item.question.text.includes(part)));
+    const {inputChecksum, caseId, ...source} = item;
+    assert.equal(createHash('sha256').update(JSON.stringify(source)).digest('hex'), inputChecksum);
+  });
 });

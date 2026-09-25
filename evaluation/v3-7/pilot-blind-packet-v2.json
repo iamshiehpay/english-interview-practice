@@ -1,0 +1,131 @@
+[
+  {
+    "caseId": "c01",
+    "inputChecksum": "9afdbb4201830917f37d0c8d03eb14e97b23f656685d76f0c86158fef1850987",
+    "packetVersion": 2,
+    "contractVersion": "3.7.0",
+    "question": {
+      "id": "c01",
+      "text": "Why does this inventory systems role appeal to you, and what technical skill would you bring?",
+      "category": "role-fit"
+    },
+    "transcript": "I want this role because accurate stock counts help shops avoid waste. I also like working with store teams.",
+    "requestedParts": [
+      "Why does this inventory systems role appeal to you",
+      "what technical skill would you bring"
+    ]
+  },
+  {
+    "caseId": "c02",
+    "inputChecksum": "08d3536b78262f4fc5bf78f0a7e536c1f5a88dec43300c24445d4c1834757648",
+    "packetVersion": 2,
+    "contractVersion": "3.7.0",
+    "question": {
+      "id": "c02",
+      "text": "Why are you interested in demand forecasting, and which of your skills would help the team?",
+      "category": "role-fit"
+    },
+    "transcript": "I enjoy finding patterns in messy demand data. I can write SQL checks that compare forecast inputs with sales records, though I have not built a production forecasting model.",
+    "requestedParts": [
+      "Why are you interested in demand forecasting",
+      "which of your skills would help the team"
+    ]
+  },
+  {
+    "caseId": "c03",
+    "inputChecksum": "17303f6230ef2f2991ac294cba5cddddce3735385f1a21abf5f7c88b82e6f1d1",
+    "packetVersion": 2,
+    "contractVersion": "3.7.0",
+    "question": {
+      "id": "c03",
+      "text": "How would you investigate duplicate updates in a mobile sync service, and how would you limit customer impact?",
+      "category": "technical-communication"
+    },
+    "transcript": "I would compare client request IDs with server write IDs, then replay one duplicate in staging to see where the second write occurs. I would temporarily disable background retries for affected clients because another automatic replay could create more duplicates.",
+    "requestedParts": [
+      "How would you investigate duplicate updates in a mobile sync service",
+      "how would you limit customer impact"
+    ]
+  },
+  {
+    "caseId": "c04",
+    "inputChecksum": "ce9b66694c22daea1b96886db69d2ef34738b484c486087b23b5dfee91aa738d",
+    "packetVersion": 2,
+    "contractVersion": "3.7.0",
+    "question": {
+      "id": "c04",
+      "text": "How would you reduce certificate renewal failures, and what failure mode would remain?",
+      "category": "technical-communication"
+    },
+    "transcript": "I would add an expiry alert because certificates are important. I would also keep a calendar reminder.",
+    "requestedParts": [
+      "How would you reduce certificate renewal failures",
+      "what failure mode would remain"
+    ]
+  },
+  {
+    "caseId": "c05",
+    "inputChecksum": "918ca8ba975fcddbd8652a2b3009beae609979d096c477712fbcb4b50dc4324a",
+    "packetVersion": 2,
+    "contractVersion": "3.7.0",
+    "question": {
+      "id": "c05",
+      "text": "Describe a data cleanup you completed, how you verified it, and what still needs doing.",
+      "category": "experience-depth"
+    },
+    "transcript": "I merged duplicate customer rows on Tuesday and checked a sample of twenty records. I plan to compare the total billing amount next week; I have not done that comparison yet.",
+    "requestedParts": [
+      "Describe a data cleanup you completed",
+      "how you verified it",
+      "what still needs doing"
+    ]
+  },
+  {
+    "caseId": "c06",
+    "inputChecksum": "8e6c24ee9952a10964f5dc31d8ef0851045b5b8c9c31441f39520a8455b7e08a",
+    "packetVersion": 2,
+    "contractVersion": "3.7.0",
+    "question": {
+      "id": "c06",
+      "text": "Tell me about an event pipeline change you made and the evidence that it improved reliability.",
+      "category": "experience-depth"
+    },
+    "transcript": "I changed the event pipeline because reliable data matters. Everyone was delighted and the system became perfect.",
+    "requestedParts": [
+      "Tell me about an event pipeline change you made",
+      "the evidence that it improved reliability"
+    ]
+  },
+  {
+    "caseId": "c07",
+    "inputChecksum": "c6542fdb431649ed0dbd6b7f6695ca25eeed3accf3f453e5c00b5b04c0a44810",
+    "packetVersion": 2,
+    "contractVersion": "3.7.0",
+    "question": {
+      "id": "c07",
+      "text": "How did you resolve a scheduling conflict with a teammate, and what agreement did you reach?",
+      "category": "behavioral"
+    },
+    "transcript": "For my balcony plants, I first check the soil, then move the pots away from direct sun if the leaves look dry. I wait a day before watering again so I can tell whether the shade helped.",
+    "requestedParts": [
+      "How did you resolve a scheduling conflict with a teammate",
+      "what agreement did you reach"
+    ]
+  },
+  {
+    "caseId": "c08",
+    "inputChecksum": "e15572d1eaac77d1c15a4c1594841144f56f09b0e44e428e5b9b5fed6e581ec3",
+    "packetVersion": 2,
+    "contractVersion": "3.7.0",
+    "question": {
+      "id": "c08",
+      "text": "How did you respond when a teammate challenged your code review, and what changed afterward?",
+      "category": "behavioral"
+    },
+    "transcript": "Teammate say test bad. I ask which input. We run failing case together, then I add check for empty file. We no talk about release yet.",
+    "requestedParts": [
+      "How did you respond when a teammate challenged your code review",
+      "what changed afterward"
+    ]
+  }
+]

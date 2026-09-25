@@ -52,10 +52,8 @@ export function validateCandidateFeedback(value, question, transcript, requested
   requireEvidence(Object.hasOwn(levels.relevance, relevance.coverage) && feedback.ratings.relevance.level === levels.relevance[relevance.coverage], 'relevance level');
   requireEvidence(Array.isArray(relevance.parts) && relevance.parts.length > 0 && relevance.parts.every(part => fields(part, ['questionPartQuote', 'answerQuote']) && exact(questionText, part.questionPartQuote) && (part.answerQuote === '' || exact(transcript, part.answerQuote))), 'relevance part quotes');
   requireEvidence(new Set(relevance.parts.map(part => part.questionPartQuote)).size === relevance.parts.length, 'relevance duplicate parts');
-  if (requestedParts !== undefined) {
-    requireEvidence(Array.isArray(requestedParts) && requestedParts.length > 0 && requestedParts.every(part => exact(questionText, part)), 'frozen requested parts');
-    requireEvidence(JSON.stringify(relevance.parts.map(part => part.questionPartQuote)) === JSON.stringify(requestedParts), 'relevance requested-part coverage');
-  }
+  requireEvidence(Array.isArray(requestedParts) && requestedParts.length > 0 && requestedParts.every(part => exact(questionText, part)), 'frozen requested parts');
+  requireEvidence(JSON.stringify(relevance.parts.map(part => part.questionPartQuote)) === JSON.stringify(requestedParts), 'relevance requested-part coverage');
   const answered = relevance.parts.filter(part => part.answerQuote !== '').length;
   requireEvidence(relevance.coverage !== 'all' || answered === relevance.parts.length, 'relevance all coverage');
   requireEvidence(relevance.coverage !== 'core-only' || answered > 0 && answered < relevance.parts.length, 'relevance partial coverage');
@@ -72,6 +70,7 @@ export function validateCandidateFeedback(value, question, transcript, requested
   requireEvidence(Object.hasOwn(levels.support, support.basis) && feedback.ratings.support.level === levels.support[support.basis], 'support level');
   requireEvidence(support.basis === 'none' ? support.pointQuote === '' : exact(transcript, support.pointQuote), 'support point quote');
   requireEvidence(support.supportQuote === '' || exact(transcript, support.supportQuote), 'support detail quote');
+  requireEvidence(!['bare-or-adjacent', 'none'].includes(support.basis) || support.supportQuote === '', 'support absent detail');
   requireEvidence(typeof support.reasoningLink === 'string', 'support reasoning');
   requireEvidence(support.basis !== 'none' || support.supportQuote === '' && support.reasoningLink === '', 'support absent evidence');
   requireEvidence(!['reasoned', 'concrete'].includes(support.basis) || support.supportQuote !== '', 'support concrete evidence');
