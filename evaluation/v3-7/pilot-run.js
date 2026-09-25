@@ -10,6 +10,7 @@ import {requireAudit} from '../../src/codex-audit.js';
 import {verifiedBinary} from '../../src/codex-sandbox.js';
 import {readAttemptLedger, reserveModelAttempt, writeAttemptLedger, writeJsonAtomic} from '../checkpoints.js';
 import {candidateFeedbackContract, candidateFeedbackSchema, CANDIDATE_CONTRACT_VERSION, validateCandidateFeedback} from './evidence-first-candidate.js';
+import {orderedPilotSlots, ratingMisses} from './pilot-policy.js';
 
 const root = dirname(fileURLToPath(import.meta.url));
 const at = name => join(root, name);
@@ -43,13 +44,14 @@ for (const [index, label] of approval.labels.entries()) {
   assert.deepEqual(Object.keys(label.ranges).sort(), ['englishExpression', 'relevance', 'structure', 'support']);
   for (const range of Object.values(label.ranges)) assert.ok(Array.isArray(range) && range.length === 2 && range.every(level => Number.isInteger(level) && level >= 1 && level <= 4) && range[0] <= range[1] && range[1] - range[0] <= 1);
 }
-const slots = packet.flatMap(item => [1, 2].map(repeat => ({caseId: item.caseId, repeat})));
+const slots = orderedPilotSlots(packet);
+const labels = new Map(approval.labels.map(label => [label.caseId, label]));
 assert.equal(slots.length, 16);
 const execute = process.argv.includes('--execute');
 const preflight = process.argv.includes('--preflight');
 assert.ok(!(execute && preflight), 'Choose execute or preflight');
 if (!execute && !preflight) {
-  console.log(JSON.stringify({mode: 'dry-run', contractVersion: CANDIDATE_CONTRACT_VERSION, packetVersion: 2, cases: packet.length, feedbackRequestCap: slots.length, independentSemanticReviewRequired: true, packetChecksum: hash(packet), approvalChecksum: hash(approval), promptChecksum: hash(candidateFeedbackContract), requires: 'separate user approval for subscription feedback; --execute --accept-subscription-usage'}, null, 2));
+  console.log(JSON.stringify({mode: 'dry-run', contractVersion: CANDIDATE_CONTRACT_VERSION, packetVersion: 2, cases: packet.length, firstPassRequests: packet.length, repeatsOnlyIfFirstPassPasses: true, stopOnFirstRatingMiss: true, feedbackRequestCap: slots.length, independentSemanticReviewRequired: true, packetChecksum: hash(packet), approvalChecksum: hash(approval), promptChecksum: hash(candidateFeedbackContract), requires: 'separate user approval for subscription feedback; --execute --accept-subscription-usage'}, null, 2));
   process.exit(0);
 }
 if (execute) assert.ok(process.argv.includes('--accept-subscription-usage'), 'Explicit subscription usage flag required');
@@ -57,7 +59,7 @@ const binary = await verifiedBinary(process.env.COACH_CODEX_BIN || 'codex');
 const model = new CodexLanguageModel({profile: process.env.COACH_CODEX_HOME, binary, model: 'gpt-5.6-luna', effort: 'xhigh', serviceTier: 'priority'});
 const {stdout} = await promisify(execFile)(binary, ['--version'], {timeout: 5000, maxBuffer: 10000});
 const sourceFiles = [
-  'pilot-run.js', 'evidence-first-candidate.js', 'pilot-inputs.json', 'pilot-blind-packet.json',
+  'pilot-run.js', 'pilot-policy.js', 'evidence-first-candidate.js', 'pilot-inputs.json', 'pilot-blind-packet.json',
   'pilot-question-parts.json', 'build-blind-packet-v2.js', 'pilot-blind-packet-v2.json',
   'pilot-blind-rater-guide-v2.md', 'label-draft-a-v2.json', 'label-draft-b-v2.json',
   'pilot-label-approval-v2.json', 'verify-blind-drafts-v2.js', 'verify-blind-approval-v2.js', 'build-pilot-review-packet.js',
@@ -104,6 +106,7 @@ try {
   const automaticPairs = feedback => pairList(feedback).map(([name, en, zh]) => ({name, en, zh}));
   const bilingualPass = pairs => pairs.length === 6 && pairs.every(({en, zh}) => typeof en === 'string' && /\p{Script=Latin}/u.test(en) && typeof zh === 'string' && /\p{Script=Han}/u.test(zh) && en.normalize('NFKC').trim() !== zh.normalize('NFKC').trim());
   const allowedKeys = new Set(slots.map(({caseId, repeat}) => `${caseId}:${repeat}`));
+  const savedRatingFailures = [];
   for (const [key, saved] of Object.entries(state.slots)) {
     assert.ok(allowedKeys.has(key));
     assert.equal(saved.status, 'completed', 'Failed or interrupted pilot slot must not be retried');
@@ -114,7 +117,9 @@ try {
     assert.equal(saved.outputChecksum, hash({contractVersion: CANDIDATE_CONTRACT_VERSION, caseId: saved.caseId, repeat: saved.repeat, question: item.question, feedback: saved.feedback}));
     assert.deepEqual(saved.automaticBilingualPairs, automaticPairs(saved.feedback));
     assert.ok(bilingualPass(saved.automaticBilingualPairs));
+    if (ratingMisses(saved.feedback, labels.get(item.caseId).ranges).length > 0) savedRatingFailures.push(key);
   }
+  assert.equal(savedRatingFailures.length, 0, `Frozen rating gate already failed in ${savedRatingFailures.join(', ')}; no further requests`);
   const attempts = [];
   for (const slot of slots) {
     const key = `${slot.caseId}:${slot.repeat}`;
@@ -138,6 +143,8 @@ try {
       await writeJsonAtomic(statePath, state);
       throw Error(`${key}: ${error.message}; no retry attempted`);
     }
+    const misses = ratingMisses(state.slots[key].feedback, labels.get(item.caseId).ranges);
+    if (misses.length > 0) throw Error(`${key}: frozen rating range failed (${misses.join(', ')}); no further requests`);
   }
   console.log(JSON.stringify({saved: Object.values(state.slots).filter(slot => slot.status === 'completed').length, requestCap: 16, attempts: (await readAttemptLedger(ledgerPath, {identity: freeze})).length, output: statePath}, null, 2));
 } finally {

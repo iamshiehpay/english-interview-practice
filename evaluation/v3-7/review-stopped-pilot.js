@@ -5,6 +5,7 @@ import {dirname, join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {readAttemptLedger} from '../checkpoints.js';
 import {CANDIDATE_CONTRACT_VERSION, validateCandidateFeedback} from './evidence-first-candidate.js';
+import {orderedPilotSlots, ratingMisses} from './pilot-policy.js';
 
 const root = dirname(fileURLToPath(import.meta.url));
 const at = name => join(root, name);
@@ -25,10 +26,9 @@ assert.equal(state.freezeChecksum, hash(freeze));
 for (const [name, checksum] of Object.entries(freeze.sourceChecksums)) assert.equal(hash(await readFile(at(name), 'utf8')), checksum, `Pilot source changed: ${name}`);
 const attempts = await readAttemptLedger(at('pilot-attempts.json'), {identity: freeze});
 assert.ok(attempts.length > 0 && attempts.length <= 16 && attempts.every(kind => kind === 'feedback'));
-const expectedOrder = packet.flatMap(item => [1, 2].map(repeat => `${item.caseId}:${repeat}`));
+const expectedOrder = orderedPilotSlots(packet).map(({caseId, repeat}) => `${caseId}:${repeat}`);
 const keys = Object.keys(state.slots);
 assert.deepEqual(keys, expectedOrder.slice(0, attempts.length));
-const dimensions = ['relevance', 'support', 'structure', 'englishExpression'];
 const entries = [];
 for (const key of keys) {
   const slot = state.slots[key];
@@ -44,8 +44,8 @@ for (const key of keys) {
     const feedback = validateCandidateFeedback(slot.rawOutput, {...item.question, requestedParts: item.requestedParts}, item.transcript);
     assert.deepEqual(slot.feedback, feedback);
     assert.equal(slot.outputChecksum, hash({contractVersion: CANDIDATE_CONTRACT_VERSION, caseId, repeat, question: item.question, feedback}));
-    const ratingMisses = dimensions.filter(dimension => feedback.ratings[dimension].level < label.ranges[dimension][0] || feedback.ratings[dimension].level > label.ranges[dimension][1]);
-    entries.push({caseId, repeat, status: 'completed', inputChecksum: slot.inputChecksum, outputChecksum: slot.outputChecksum, ratingMisses});
+    const misses = ratingMisses(feedback, label.ranges);
+    entries.push({caseId, repeat, status: 'completed', inputChecksum: slot.inputChecksum, outputChecksum: slot.outputChecksum, ratingMisses: misses});
   } else {
     assert.ok(['failed', 'reserved'].includes(slot.status));
     if (slot.status === 'failed') assert.ok(slot.error?.trim());
@@ -55,12 +55,12 @@ for (const key of keys) {
     entries.push({caseId, repeat, status: slot.status === 'reserved' ? 'interrupted' : 'failed', ...(slot.rawOutput ? {rawOutputChecksum: hash(slot.rawOutput)} : {}), ...(slot.error ? {error: slot.error} : {})});
   }
 }
-assert.ok(entries.some(entry => entry.status !== 'completed'), 'This report is only for a stopped run');
+assert.ok(entries.some(entry => entry.status !== 'completed' || entry.ratingMisses.length > 0), 'This report is only for a stopped run');
 const completed = entries.filter(entry => entry.status === 'completed');
 const failed = entries.filter(entry => entry.status === 'failed');
 const interrupted = entries.filter(entry => entry.status === 'interrupted');
 const ratingMatches = completed.filter(entry => entry.ratingMisses.length === 0).length;
-const report = {schemaVersion: 1, contractVersion: CANDIDATE_CONTRACT_VERSION, generatedAt: new Date().toISOString(), artifactChecksums: {freeze: hash(freeze), state: hash(state), packet: hash(packet), approval: hash(approval)}, usage: {subscriptionFeedbackRequests: attempts.length, approvedRequestCap: 16, completedOutputs: completed.length, failedSlots: failed.length, interruptedSlots: interrupted.length, unusedAuthorizedSlots: 16 - attempts.length}, entries, automaticGate: {pass: false, reason: 'Fewer than sixteen valid outputs; a failed or interrupted slot stopped the pilot without retry'}, ratingGate: {pass: false, validOutputMatches: ratingMatches, validOutputs: completed.length, completeSetRequired: 16}, bilingualSemanticGate: {status: 'NOT_REVIEWED', reason: 'The predeclared sixteen-output gate already failed; the reserved post-run AI review task was not used'}, evidenceSemanticGate: {status: 'NOT_REVIEWED'}, pilotStatus: 'NO_GO', releaseStatus: 'BLOCKED', note: 'Partial fixed-input diagnostic only. Saved raw output and feedback remain unmodified; historical 3.3 outputs, labels and release gates remain unchanged.'};
+const report = {schemaVersion: 1, contractVersion: CANDIDATE_CONTRACT_VERSION, generatedAt: new Date().toISOString(), artifactChecksums: {freeze: hash(freeze), state: hash(state), packet: hash(packet), approval: hash(approval)}, usage: {subscriptionFeedbackRequests: attempts.length, approvedRequestCap: 16, completedOutputs: completed.length, failedSlots: failed.length, interruptedSlots: interrupted.length, unusedAuthorizedSlots: 16 - attempts.length}, entries, automaticGate: {pass: false, reason: 'The sixteen-output gate cannot pass after a frozen rating miss, failed slot or interrupted slot'}, ratingGate: {pass: false, validOutputMatches: ratingMatches, validOutputs: completed.length, completeSetRequired: 16}, bilingualSemanticGate: {status: 'NOT_REVIEWED', reason: 'The predeclared sixteen-output gate already failed; the reserved post-run AI review task was not used'}, evidenceSemanticGate: {status: 'NOT_REVIEWED'}, pilotStatus: 'NO_GO', releaseStatus: 'BLOCKED', note: 'Partial fixed-input diagnostic only. Saved raw output and feedback remain unmodified; historical 3.3 outputs, labels and release gates remain unchanged.'};
 if (verify) {
   const saved = await read('pilot-stopped-reviewed.json');
   assert.ok(saved.generatedAt);

@@ -6,6 +6,7 @@ import {readFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {CANDIDATE_CONTRACT_VERSION, candidateFeedbackContract, validateCandidateFeedback} from '../evaluation/v3-7/evidence-first-candidate.js';
 import {assertFrozenReviewItems} from '../evaluation/v3-7/review-source.js';
+import {orderedPilotSlots, ratingMisses} from '../evaluation/v3-7/pilot-policy.js';
 
 const question = {text: 'Why choose this role, and which tool have you used?', requestedParts: ['Why choose this role', 'which tool have you used']};
 const transcript = 'I care about dependable systems. I enjoy collaborating with others.';
@@ -84,10 +85,25 @@ test('3.7 pilot is dry by default and rejects execution without the usage flag',
   const runner = fileURLToPath(new URL('../evaluation/v3-7/pilot-run.js', import.meta.url));
   const dry = spawnSync(process.execPath, [runner], {encoding: 'utf8'});
   assert.equal(dry.status, 0, dry.stderr);
-  assert.equal(JSON.parse(dry.stdout).feedbackRequestCap, 16);
+  const plan = JSON.parse(dry.stdout);
+  assert.equal(plan.feedbackRequestCap, 16);
+  assert.equal(plan.firstPassRequests, 8);
+  assert.equal(plan.repeatsOnlyIfFirstPassPasses, true);
+  assert.equal(plan.stopOnFirstRatingMiss, true);
   const refused = spawnSync(process.execPath, [runner, '--execute'], {encoding: 'utf8'});
   assert.notEqual(refused.status, 0);
   assert.match(refused.stderr, /Explicit subscription usage flag required/);
+});
+
+test('cost-limited policy runs distinct first cases before repeats and identifies frozen rating misses', () => {
+  const packet = JSON.parse(readFileSync(new URL('../evaluation/v3-7/pilot-blind-packet-v2.json', import.meta.url), 'utf8'));
+  const slots = orderedPilotSlots(packet);
+  assert.deepEqual(slots.slice(0, 8), packet.map(item => ({caseId: item.caseId, repeat: 1})));
+  assert.deepEqual(slots.slice(8), packet.map(item => ({caseId: item.caseId, repeat: 2})));
+  const ranges = {relevance: [3, 3], support: [2, 2], structure: [3, 3], englishExpression: [4, 4]};
+  assert.deepEqual(ratingMisses(feedback(), ranges), []);
+  ranges.support = [3, 3];
+  assert.deepEqual(ratingMisses(feedback(), ranges), ['support']);
 });
 
 test('semantic review is bound to the v2 question, transcript and requested parts', () => {
