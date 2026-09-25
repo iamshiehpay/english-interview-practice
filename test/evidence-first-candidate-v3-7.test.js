@@ -1,8 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
+import {spawnSync} from 'node:child_process';
 import {readFileSync} from 'node:fs';
+import {fileURLToPath} from 'node:url';
 import {CANDIDATE_CONTRACT_VERSION, candidateFeedbackContract, validateCandidateFeedback} from '../evaluation/v3-7/evidence-first-candidate.js';
+import {assertFrozenReviewItems} from '../evaluation/v3-7/review-source.js';
 
 const question = {text: 'Why choose this role, and which tool have you used?', requestedParts: ['Why choose this role', 'which tool have you used']};
 const transcript = 'I care about dependable systems. I enjoy collaborating with others.';
@@ -75,4 +78,25 @@ test('replacement blind packet binds opaque IDs and frozen requested parts into 
     const {inputChecksum, caseId, ...source} = item;
     assert.equal(createHash('sha256').update(JSON.stringify(source)).digest('hex'), inputChecksum);
   });
+});
+
+test('3.7 pilot is dry by default and rejects execution without the usage flag', () => {
+  const runner = fileURLToPath(new URL('../evaluation/v3-7/pilot-run.js', import.meta.url));
+  const dry = spawnSync(process.execPath, [runner], {encoding: 'utf8'});
+  assert.equal(dry.status, 0, dry.stderr);
+  assert.equal(JSON.parse(dry.stdout).feedbackRequestCap, 16);
+  const refused = spawnSync(process.execPath, [runner, '--execute'], {encoding: 'utf8'});
+  assert.notEqual(refused.status, 0);
+  assert.match(refused.stderr, /Explicit subscription usage flag required/);
+});
+
+test('semantic review is bound to the v2 question, transcript and requested parts', () => {
+  const packet = JSON.parse(readFileSync(new URL('../evaluation/v3-7/pilot-blind-packet-v2.json', import.meta.url), 'utf8'));
+  const items = packet.flatMap(source => [1, 2].map(repeat => ({caseId: source.caseId, repeat, inputChecksum: source.inputChecksum, question: source.question, transcript: source.transcript, requestedParts: source.requestedParts})));
+  assert.doesNotThrow(() => assertFrozenReviewItems(items, packet));
+  const changed = structuredClone(items);
+  changed[0].transcript += ' Extra reported success.';
+  assert.throws(() => assertFrozenReviewItems(changed, packet));
+  changed[0] = {...items[0], requestedParts: ['a different part']};
+  assert.throws(() => assertFrozenReviewItems(changed, packet));
 });
