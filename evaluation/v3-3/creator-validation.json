@@ -1,8 +1,78 @@
 {
   "schemaVersion": 1,
+  "contractVersion": "3.3.0",
   "validationMode": "ai-persona",
   "creator": null,
-  "attestedBy": null,
-  "attestedAt": null,
-  "loops": []
+  "attestedBy": "Codex AI independent verifier (/root/persona_attest_v33)",
+  "attestedAt": "2026-09-25T03:50:21Z",
+  "loops": [
+    {
+      "recordId": "bdbc4ce7-d70e-4cc6-b72c-baf037c97b59",
+      "snapshotId": "160f24f4-b021-4cf0-affd-fa5018626972",
+      "category": "role-fit",
+      "completedAt": "2026-09-25T03:17:33.132Z",
+      "completed": true,
+      "synthetic": true,
+      "inputMode": "text",
+      "persona": "林小安",
+      "evidence": "docs/verification/0041-v3-3-persona-walkthrough.md",
+      "experienceGap": true,
+      "inducedFailure": null
+    },
+    {
+      "recordId": "272dae9e-fb82-440b-a6ad-94c19a3a1296",
+      "snapshotId": "160f24f4-b021-4cf0-affd-fa5018626972",
+      "category": "behavioral",
+      "completedAt": "2026-09-25T03:20:30.988Z",
+      "completed": true,
+      "synthetic": true,
+      "inputMode": "text",
+      "persona": "林小安",
+      "evidence": "docs/verification/0041-v3-3-persona-walkthrough.md",
+      "experienceGap": false,
+      "inducedFailure": null
+    },
+    {
+      "recordId": "4622ee1d-d15b-4170-9f91-53c8008129cb",
+      "snapshotId": "160f24f4-b021-4cf0-affd-fa5018626972",
+      "category": "experience-depth",
+      "completedAt": "2026-09-25T03:24:44.982Z",
+      "completed": true,
+      "synthetic": true,
+      "inputMode": "text",
+      "persona": "林小安",
+      "evidence": "docs/verification/0041-v3-3-persona-walkthrough.md",
+      "experienceGap": true,
+      "inducedFailure": {
+        "type": "cancelled pending feedback in UI, then retried same saved answer to success",
+        "recovered": true
+      }
+    },
+    {
+      "recordId": "21ea81a0-97fb-40c2-94b4-a00e5cd5ac29",
+      "snapshotId": "233fa8a0-fbcc-4b9a-8f64-835485e9eb10",
+      "category": "technical-communication",
+      "completedAt": "2026-09-25T03:29:27.898Z",
+      "completed": true,
+      "synthetic": true,
+      "inputMode": "text",
+      "persona": "林小安",
+      "evidence": "docs/verification/0041-v3-3-persona-walkthrough.md",
+      "experienceGap": false,
+      "inducedFailure": null
+    },
+    {
+      "recordId": "062a911b-8140-465e-8683-274b049cbf0b",
+      "snapshotId": "233fa8a0-fbcc-4b9a-8f64-835485e9eb10",
+      "category": "role-fit",
+      "completedAt": "2026-09-25T03:35:55.565Z",
+      "completed": true,
+      "synthetic": true,
+      "inputMode": "text",
+      "persona": "林小安",
+      "evidence": "docs/verification/0041-v3-3-persona-walkthrough.md",
+      "experienceGap": true,
+      "inducedFailure": null
+    }
+  ]
 }
