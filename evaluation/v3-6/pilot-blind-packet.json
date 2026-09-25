@@ -1,0 +1,90 @@
+[
+  {
+    "caseId": "flag-rollback",
+    "inputChecksum": "9a68078178b1fd7bef3fc77fb02dcc7bb636e022b40e1821742d016980410280",
+    "contractVersion": "3.6.0",
+    "question": {
+      "id": "flag-rollback",
+      "text": "Describe how you investigated a bad feature-flag rollout, what you found, and what you told the team.",
+      "category": "experience-depth"
+    },
+    "transcript": "I saw the error rate rise after the flag changed. I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped. I have not confirmed the underlying cause, so I would tell the team that the rollback is a containment step."
+  },
+  {
+    "caseId": "thin-motivation",
+    "inputChecksum": "1a798c542a90667d3d04b877e6919a5ca35eb120c756a072137898292bd1cf37",
+    "contractVersion": "3.6.0",
+    "question": {
+      "id": "thin-motivation",
+      "text": "Why do you want this software reliability role, and which of your skills would help the team?",
+      "category": "role-fit"
+    },
+    "transcript": "I like reliability work because stable services matter. I also enjoy helping colleagues."
+  },
+  {
+    "caseId": "travel-off-topic",
+    "inputChecksum": "b1221fb562e8e5a1acf671632b2309a80f942f4949b38b9601dc7f012afc2aff",
+    "contractVersion": "3.6.0",
+    "question": {
+      "id": "travel-off-topic",
+      "text": "How would you resolve disagreement between two engineers about a security review?",
+      "category": "behavioral"
+    },
+    "transcript": "When my train is delayed, I check the next departure, compare it with the bus time, and message my friend before changing routes."
+  },
+  {
+    "caseId": "cache-related-points",
+    "inputChecksum": "94cc84261bb418aba4624205e00122edcff460c24baf62958c245d3f90b3fb8b",
+    "contractVersion": "3.6.0",
+    "question": {
+      "id": "cache-related-points",
+      "text": "How would you choose a cache invalidation strategy and explain its failure mode?",
+      "category": "technical-communication"
+    },
+    "transcript": "I would set an expiry time because stale entries are risky. I would also add a manual purge button."
+  },
+  {
+    "caseId": "sales-audience-gap",
+    "inputChecksum": "8a2f551b9c4775c184198be5212ad5b0efa38fe09bff2671d2724e09a4592c61",
+    "contractVersion": "3.6.0",
+    "question": {
+      "id": "sales-audience-gap",
+      "text": "How would you investigate a sudden drop in qualified leads and explain the finding to a sales manager?",
+      "category": "technical-communication"
+    },
+    "transcript": "I would compare event counts before and after the tracking change, inspect missing campaign IDs, and test whether the filter excludes valid leads. If the IDs disappeared after deployment, I would roll back the filter while we repair the mapping."
+  },
+  {
+    "caseId": "accessibility-timing",
+    "inputChecksum": "0bc568b8442af22b66f3dc3fe74831f36078936b2d902ff0b89a986c4cf0136a",
+    "contractVersion": "3.6.0",
+    "question": {
+      "id": "accessibility-timing",
+      "text": "Tell me about an accessibility change you completed, how you verified it, and what remains.",
+      "category": "experience-depth"
+    },
+    "transcript": "I checked the heading order last week and fixed two missing labels. I will test the screen-reader flow next sprint. I have not deployed the change."
+  },
+  {
+    "caseId": "sensor-language",
+    "inputChecksum": "35bc46b84cf187810a42b0b76e370c390b416ffa79dbdb6417164ee1ee9f21ba",
+    "contractVersion": "3.6.0",
+    "question": {
+      "id": "sensor-language",
+      "text": "How would you check whether a sensor reading has drifted and communicate the uncertainty?",
+      "category": "technical-communication"
+    },
+    "transcript": "先比對基準值. Then I would repeat the measurement at two temperatures before recommending recalibration. I would say the cause is still uncertain."
+  },
+  {
+    "caseId": "unsupported-handoff",
+    "inputChecksum": "bba750331c279cff6ad20f4daf389bd8bcac69f8bc7955cc1c6aa17580231ed9",
+    "contractVersion": "3.6.0",
+    "question": {
+      "id": "unsupported-handoff",
+      "text": "How did you handle conflicting feedback from a teammate, and what changed in the work?",
+      "category": "behavioral"
+    },
+    "transcript": "I led a global team of ten thousand engineers and resolved every disagreement instantly. The project improved by nine hundred percent."
+  }
+]

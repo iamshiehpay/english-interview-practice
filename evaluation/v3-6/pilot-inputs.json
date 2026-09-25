@@ -1,0 +1,50 @@
+[
+  {
+    "caseId": "flag-rollback",
+    "group": "developed sequence with missing result",
+    "question": {"id": "flag-rollback", "text": "Describe how you investigated a bad feature-flag rollout, what you found, and what you told the team.", "category": "experience-depth"},
+    "transcript": "I saw the error rate rise after the flag changed. I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped. I have not confirmed the underlying cause, so I would tell the team that the rollback is a containment step."
+  },
+  {
+    "caseId": "thin-motivation",
+    "group": "thin structure despite clear language",
+    "question": {"id": "thin-motivation", "text": "Why do you want this software reliability role, and which of your skills would help the team?", "category": "role-fit"},
+    "transcript": "I like reliability work because stable services matter. I also enjoy helping colleagues."
+  },
+  {
+    "caseId": "travel-off-topic",
+    "group": "developed off-topic organization",
+    "question": {"id": "travel-off-topic", "text": "How would you resolve disagreement between two engineers about a security review?", "category": "behavioral"},
+    "transcript": "When my train is delayed, I check the next departure, compare it with the bus time, and message my friend before changing routes."
+  },
+  {
+    "caseId": "cache-related-points",
+    "group": "related safeguards without a developed link",
+    "question": {"id": "cache-related-points", "text": "How would you choose a cache invalidation strategy and explain its failure mode?", "category": "technical-communication"},
+    "transcript": "I would set an expiry time because stale entries are risky. I would also add a manual purge button."
+  },
+  {
+    "caseId": "sales-audience-gap",
+    "group": "concrete support with missing requested audience",
+    "question": {"id": "sales-audience-gap", "text": "How would you investigate a sudden drop in qualified leads and explain the finding to a sales manager?", "category": "technical-communication"},
+    "transcript": "I would compare event counts before and after the tracking change, inspect missing campaign IDs, and test whether the filter excludes valid leads. If the IDs disappeared after deployment, I would roll back the filter while we repair the mapping."
+  },
+  {
+    "caseId": "accessibility-timing",
+    "group": "completed versus planned bilingual distinction",
+    "question": {"id": "accessibility-timing", "text": "Tell me about an accessibility change you completed, how you verified it, and what remains.", "category": "experience-depth"},
+    "transcript": "I checked the heading order last week and fixed two missing labels. I will test the screen-reader flow next sprint. I have not deployed the change."
+  },
+  {
+    "caseId": "sensor-language",
+    "group": "mixed-language expression versus organization",
+    "question": {"id": "sensor-language", "text": "How would you check whether a sensor reading has drifted and communicate the uncertainty?", "category": "technical-communication"},
+    "transcript": "先比對基準值. Then I would repeat the measurement at two temperatures before recommending recalibration. I would say the cause is still uncertain."
+  },
+  {
+    "caseId": "unsupported-handoff",
+    "group": "fluent unsupported claim versus task fit",
+    "question": {"id": "unsupported-handoff", "text": "How did you handle conflicting feedback from a teammate, and what changed in the work?", "category": "behavioral"},
+    "transcript": "I led a global team of ten thousand engineers and resolved every disagreement instantly. The project improved by nine hundred percent."
+  }
+]
