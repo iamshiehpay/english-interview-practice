@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "3.4.0",
+  "packetChecksum": "83babcebec1e83d58de31b46a2ff56e98c0dd81e67311e69adc3ea29bbc23808",
+  "draftChecksums": {
+    "a": "fe6686b9c9ccb85bedbd34ebf59b6b4b8511ce1ec96bdad995024023379d34e3",
+    "b": "6a0ff7e43e67075785afd3b36465ea8ea8956d27eb159e1f407cf4b279bd18c2"
+  },
+  "approvedBy": "Independent AI Role persona reviewer C (GPT-6)",
+  "approvedAt": "2026-09-25T05:33:06Z",
+  "blindToModelFeedback": true,
+  "approvalRationale": "I independently checked all 32 dimension scores against the guide and the eight question-transcript pairs. Both drafts' single-level ranges are supported. In particular, the unrelated gardening and bread answers retain strong internal structure and English scores while receiving no relevance or question-related support; the two unresolved investigations retain strong structure but only partial relevance; and the duplicate-row answer has a localized tense error. No draft level required adjudication.",
+  "labels": [
+    {
+      "caseId": "latency-sequence",
+      "inputChecksum": "2cd28dcdc53becc38876949bb8631b8108625e09c60a5d4ee353db426e372798",
+      "ranges": {"relevance": [3, 3], "support": [3, 3], "structure": [4, 4], "englishExpression": [4, 4]},
+      "rationale": "The response gives three specific investigation actions in a clear sequence, supporting that central part of the question. It only says the finding would be shared, without explaining the report to teammates, so relevance stops at 3. The actions lack a stated finding or reasoned consequence, making support 3 rather than 4. The spoken English is clear.",
+      "evidenceQuotes": ["compare latency by route, inspect traces for the slow route, and test the suspected dependency before sharing the finding"],
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    },
+    {
+      "caseId": "ingestion-sequence",
+      "inputChecksum": "aca00a98947b6697796ab4dc799226910227a908873a211b25e11de24e7118f9",
+      "ranges": {"relevance": [4, 4], "support": [4, 4], "structure": [4, 4], "englishExpression": [4, 4]},
+      "rationale": "Count comparison and sampling directly validate the changed rule, while unexpected losses trigger rollback. That conditional consequence supplies reasoned support. The checks and response form a coherent sequence in clear English.",
+      "evidenceQuotes": ["I'd compare counts before and after the rule, sample the changed rows, and roll it back if the sample showed unexpected losses."],
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    },
+    {
+      "caseId": "garden-off-topic",
+      "inputChecksum": "c34e23621733397d61b8cbea39ce2de9732a77f6260414b6bd33063f4dfd6de3",
+      "ranges": {"relevance": [1, 1], "support": [1, 1], "structure": [4, 4], "englishExpression": [4, 4]},
+      "rationale": "Growing herbs offers no answer or supporting point about resolving conflicting code-review feedback. Within the transcript, preparation, watering, and a conditional response to wilted leaves form a clear stepwise line. The wording is natural and intelligible.",
+      "evidenceQuotes": ["When I grow herbs, I prepare the soil, water the seedlings, and move them into shade if the leaves wilt."],
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    },
+    {
+      "caseId": "bread-off-topic",
+      "inputChecksum": "27fbc32db5c0544e12d3320a52959e9321743b6a8222488b7c2cc24f11d309e1",
+      "ranges": {"relevance": [1, 1], "support": [1, 1], "structure": [4, 4], "englishExpression": [4, 4]},
+      "rationale": "Bread making does not address an intermittent app crash or support a crash investigation. The transcript itself develops ordered steps and states their consequence, so its structure earns 4. Its English is clear and natural.",
+      "evidenceQuotes": ["I mix the dough, let it rise, then bake it after the oven reaches temperature. That sequence keeps the bread from collapsing."],
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    },
+    {
+      "caseId": "notification-no-result",
+      "inputChecksum": "c550b9e9b650e763d7bf1aa5a7d9470e52f6d3d6fd0dd335a0c110f895c336a2",
+      "ranges": {"relevance": [3, 3], "support": [3, 3], "structure": [4, 4], "englishExpression": [4, 4]},
+      "rationale": "The candidate describes concrete investigation steps for duplicate notifications, but explicitly has no isolated cause and gives no result. Delivery IDs and retry logs provide specific support for the investigation, though no reasoned finding or consequence. Observation, checks, and unresolved status form a clear progression in natural English.",
+      "evidenceQuotes": ["I noticed duplicate notifications, checked delivery IDs, then compared retry logs. I have not isolated the cause yet."],
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    },
+    {
+      "caseId": "flaky-test-no-result",
+      "inputChecksum": "f52dee5d54a191948dc12b41867c71bfb3a8a4a21f647265d5afa6728e8adefb",
+      "ranges": {"relevance": [3, 3], "support": [3, 3], "structure": [4, 4], "englishExpression": [4, 4]},
+      "rationale": "Reproducing the failure, fixing the random seed, and comparing setup answer the investigation part with specific actions. The candidate cannot identify what changed to fix the test, leaving the second requested part unanswered. The ordered investigation and explicit unresolved status have clear internal progression, and the language is natural.",
+      "evidenceQuotes": ["I reproduced the failure, pinned the random seed, and compared the setup between runs. I do not know yet which change will fix it."],
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    },
+    {
+      "caseId": "batch-trade-off",
+      "inputChecksum": "a8a60765c4722297092d8307a6ae156dfddd92599e4d041dcda3b3ec94e16128",
+      "ranges": {"relevance": [3, 3], "support": [4, 4], "structure": [4, 4], "englishExpression": [4, 4]},
+      "rationale": "The answer covers recovery and what delay to show the product manager, but has no throughput-cost estimate and therefore does not fully explain the requested balance. Idempotent writes are tied to the concrete consequence of avoiding duplicate orders on replay, which warrants support 4. Measurement, mitigation, and communication form a coherent line in clear English.",
+      "evidenceQuotes": ["keep writes idempotent so replay does not duplicate orders", "I would show the product manager the observed delay, but I have not estimated the throughput cost."],
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    },
+    {
+      "caseId": "duplicate-row-language",
+      "inputChecksum": "688a8a0917d0a9b13be10e3f33be0a10a4eed4cf99add62444d00a101c14ca18",
+      "ranges": {"relevance": [3, 3], "support": [3, 3], "structure": [3, 3], "englishExpression": [3, 3]},
+      "rationale": "Checking duplicate rows with a script addresses one concrete part of validating the metric, while broader validation is missing and the check has not run in production. The check and planned recheck are specific but give no reasoned consequence. The two related statements are understandable but thin. 'I check duplicate rows yesterday' has a noticeable tense error without hiding the meaning.",
+      "evidenceQuotes": ["I check duplicate rows yesterday with a script, and I will recheck before launch. I have not run that check in production."],
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    }
+  ]
+}

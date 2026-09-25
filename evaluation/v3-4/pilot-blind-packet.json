@@ -1,0 +1,90 @@
+[
+  {
+    "caseId": "latency-sequence",
+    "inputChecksum": "2cd28dcdc53becc38876949bb8631b8108625e09c60a5d4ee353db426e372798",
+    "contractVersion": "3.4.0",
+    "question": {
+      "id": "latency-sequence",
+      "text": "How would you investigate a sudden API latency increase and report the finding to your teammates?",
+      "category": "technical-communication"
+    },
+    "transcript": "I would compare latency by route, inspect traces for the slow route, and test the suspected dependency before sharing the finding."
+  },
+  {
+    "caseId": "ingestion-sequence",
+    "inputChecksum": "aca00a98947b6697796ab4dc799226910227a908873a211b25e11de24e7118f9",
+    "contractVersion": "3.4.0",
+    "question": {
+      "id": "ingestion-sequence",
+      "text": "How would you validate a changed data-ingestion rule?",
+      "category": "technical-communication"
+    },
+    "transcript": "I'd compare counts before and after the rule, sample the changed rows, and roll it back if the sample showed unexpected losses."
+  },
+  {
+    "caseId": "garden-off-topic",
+    "inputChecksum": "c34e23621733397d61b8cbea39ce2de9732a77f6260414b6bd33063f4dfd6de3",
+    "contractVersion": "3.4.0",
+    "question": {
+      "id": "garden-off-topic",
+      "text": "How would you help two teammates resolve conflicting code-review feedback?",
+      "category": "behavioral"
+    },
+    "transcript": "When I grow herbs, I prepare the soil, water the seedlings, and move them into shade if the leaves wilt."
+  },
+  {
+    "caseId": "bread-off-topic",
+    "inputChecksum": "27fbc32db5c0544e12d3320a52959e9321743b6a8222488b7c2cc24f11d309e1",
+    "contractVersion": "3.4.0",
+    "question": {
+      "id": "bread-off-topic",
+      "text": "How would you isolate an intermittent mobile-app crash?",
+      "category": "technical-communication"
+    },
+    "transcript": "I mix the dough, let it rise, then bake it after the oven reaches temperature. That sequence keeps the bread from collapsing."
+  },
+  {
+    "caseId": "notification-no-result",
+    "inputChecksum": "c550b9e9b650e763d7bf1aa5a7d9470e52f6d3d6fd0dd335a0c110f895c336a2",
+    "contractVersion": "3.4.0",
+    "question": {
+      "id": "notification-no-result",
+      "text": "Tell us how you investigated duplicate notifications, including the cause and result.",
+      "category": "experience-depth"
+    },
+    "transcript": "I noticed duplicate notifications, checked delivery IDs, then compared retry logs. I have not isolated the cause yet."
+  },
+  {
+    "caseId": "flaky-test-no-result",
+    "inputChecksum": "f52dee5d54a191948dc12b41867c71bfb3a8a4a21f647265d5afa6728e8adefb",
+    "contractVersion": "3.4.0",
+    "question": {
+      "id": "flaky-test-no-result",
+      "text": "Walk through how you investigated a flaky test and what changed.",
+      "category": "experience-depth"
+    },
+    "transcript": "I reproduced the failure, pinned the random seed, and compared the setup between runs. I do not know yet which change will fix it."
+  },
+  {
+    "caseId": "batch-trade-off",
+    "inputChecksum": "a8a60765c4722297092d8307a6ae156dfddd92599e4d041dcda3b3ec94e16128",
+    "contractVersion": "3.4.0",
+    "question": {
+      "id": "batch-trade-off",
+      "text": "How would you balance batch throughput and error recovery, and explain the trade-off to a product manager?",
+      "category": "technical-communication"
+    },
+    "transcript": "I would measure retry volume first and keep writes idempotent so replay does not duplicate orders. I would show the product manager the observed delay, but I have not estimated the throughput cost."
+  },
+  {
+    "caseId": "duplicate-row-language",
+    "inputChecksum": "688a8a0917d0a9b13be10e3f33be0a10a4eed4cf99add62444d00a101c14ca18",
+    "contractVersion": "3.4.0",
+    "question": {
+      "id": "duplicate-row-language",
+      "text": "How would you validate a dashboard metric before presenting it?",
+      "category": "technical-communication"
+    },
+    "transcript": "I check duplicate rows yesterday with a script, and I will recheck before launch. I have not run that check in production."
+  }
+]

@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "3.4.0",
+  "role": "Independent AI Role persona draft B",
+  "packetChecksum": "83babcebec1e83d58de31b46a2ff56e98c0dd81e67311e69adc3ea29bbc23808",
+  "draftedAt": "2026-09-25T05:31:12Z",
+  "labels": [
+    {
+      "caseId": "latency-sequence",
+      "inputChecksum": "2cd28dcdc53becc38876949bb8631b8108625e09c60a5d4ee353db426e372798",
+      "ranges": {
+        "relevance": [3, 3],
+        "support": [3, 3],
+        "structure": [4, 4],
+        "englishExpression": [4, 4]
+      },
+      "rationale": "The answer gives a concrete investigation path, but only says it would share a finding; it does not explain what would be reported to teammates. The route comparison, traces, and dependency test advance the investigation without stating an observed result or a reasoned trade-off. The steps form a clear sequence, and the wording is natural.",
+      "evidenceQuotes": ["compare latency by route, inspect traces for the slow route, and test the suspected dependency before sharing the finding"],
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    },
+    {
+      "caseId": "ingestion-sequence",
+      "inputChecksum": "aca00a98947b6697796ab4dc799226910227a908873a211b25e11de24e7118f9",
+      "ranges": {
+        "relevance": [4, 4],
+        "support": [4, 4],
+        "structure": [4, 4],
+        "englishExpression": [4, 4]
+      },
+      "rationale": "The response directly describes how to validate the changed rule: compare counts, examine changed rows, and reverse the rule if that check reveals losses. The conditional rollback gives the checks a consequence. The steps and condition form a clear line, expressed naturally.",
+      "evidenceQuotes": ["I'd compare counts before and after the rule, sample the changed rows, and roll it back if the sample showed unexpected losses."],
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    },
+    {
+      "caseId": "garden-off-topic",
+      "inputChecksum": "c34e23621733397d61b8cbea39ce2de9732a77f6260414b6bd33063f4dfd6de3",
+      "ranges": {
+        "relevance": [1, 1],
+        "support": [1, 1],
+        "structure": [4, 4],
+        "englishExpression": [4, 4]
+      },
+      "rationale": "Gardening supplies no meaningful answer or support for resolving conflicting code-review feedback. Within its own topic, the sentence has a clear preparation, care, and conditional response sequence. Its English is clear and natural.",
+      "evidenceQuotes": ["I prepare the soil, water the seedlings, and move them into shade if the leaves wilt"],
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    },
+    {
+      "caseId": "bread-off-topic",
+      "inputChecksum": "27fbc32db5c0544e12d3320a52959e9321743b6a8222488b7c2cc24f11d309e1",
+      "ranges": {
+        "relevance": [1, 1],
+        "support": [1, 1],
+        "structure": [4, 4],
+        "englishExpression": [4, 4]
+      },
+      "rationale": "Bread preparation does not address isolating a mobile-app crash, so it offers no question-related point to support. Internally, it presents ordered steps and a stated consequence for that sequence. The language is clear and natural.",
+      "evidenceQuotes": ["I mix the dough, let it rise, then bake it after the oven reaches temperature. That sequence keeps the bread from collapsing."],
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    },
+    {
+      "caseId": "notification-no-result",
+      "inputChecksum": "c550b9e9b650e763d7bf1aa5a7d9470e52f6d3d6fd0dd335a0c110f895c336a2",
+      "ranges": {
+        "relevance": [3, 3],
+        "support": [3, 3],
+        "structure": [4, 4],
+        "englishExpression": [4, 4]
+      },
+      "rationale": "The response concretely explains the investigation but explicitly has no isolated cause, and gives no result. Checking delivery IDs and retry logs supplies specific support for its investigation account. It moves clearly from observation to checks to current status, with natural English.",
+      "evidenceQuotes": ["checked delivery IDs, then compared retry logs. I have not isolated the cause yet."],
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    },
+    {
+      "caseId": "flaky-test-no-result",
+      "inputChecksum": "f52dee5d54a191948dc12b41867c71bfb3a8a4a21f647265d5afa6728e8adefb",
+      "ranges": {
+        "relevance": [3, 3],
+        "support": [3, 3],
+        "structure": [4, 4],
+        "englishExpression": [4, 4]
+      },
+      "rationale": "The answer gives concrete investigation steps but identifies no change that fixed the flaky test. Reproduction, a pinned seed, and setup comparison provide specific question-related actions. The ordered checks followed by an explicit unresolved status make a clear progression, and the wording is natural.",
+      "evidenceQuotes": ["I reproduced the failure, pinned the random seed, and compared the setup between runs. I do not know yet which change will fix it."],
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    },
+    {
+      "caseId": "batch-trade-off",
+      "inputChecksum": "a8a60765c4722297092d8307a6ae156dfddd92599e4d041dcda3b3ec94e16128",
+      "ranges": {
+        "relevance": [3, 3],
+        "support": [4, 4],
+        "structure": [4, 4],
+        "englishExpression": [4, 4]
+      },
+      "rationale": "The answer addresses recovery and names a delay to show the product manager, but it does not establish the throughput cost or fully explain the balance between throughput and recovery. Idempotent writes are justified by the consequence of avoiding duplicate orders on replay, giving strong hypothetical technical support. The response connects measurement, safeguard, and communication in a clear sequence, with natural English.",
+      "evidenceQuotes": ["keep writes idempotent so replay does not duplicate orders", "I would show the product manager the observed delay, but I have not estimated the throughput cost."],
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    },
+    {
+      "caseId": "duplicate-row-language",
+      "inputChecksum": "688a8a0917d0a9b13be10e3f33be0a10a4eed4cf99add62444d00a101c14ca18",
+      "ranges": {
+        "relevance": [3, 3],
+        "support": [3, 3],
+        "structure": [3, 3],
+        "englishExpression": [3, 3]
+      },
+      "rationale": "Checking for duplicate rows is a concrete way to validate one aspect of the dashboard metric before presentation, but the answer does not describe a broader metric check and admits the check has not run in production. The script and planned recheck are specific actions. The two related statements are understandable but thin. 'I check duplicate rows yesterday' has a noticeable tense error, although the intended meaning remains clear.",
+      "evidenceQuotes": ["I check duplicate rows yesterday with a script, and I will recheck before launch. I have not run that check in production."],
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    }
+  ]
+}
