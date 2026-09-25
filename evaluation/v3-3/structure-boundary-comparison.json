@@ -1,0 +1,913 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-25T08:07:25.470Z",
+  "purpose": "Diagnostic comparison after independent blind adjudication; historical labels and outputs unchanged",
+  "artifactChecksums": {
+    "packet": "eb0a43f1ebd8e674ce8604da06db6ecd211f7fd077e7dca19451d23035d98e02",
+    "raterA": "01ac0703264416d8b27f065a1118b9c55d38cafe5f44dec1f4eb0e1e368977f7",
+    "raterB": "6429e72fce8f0456b714add2747ecf1f239b270acb744cf22857cb17d57f415c",
+    "blindAdjudication": "8a6a0aabc9250ec702a5956c84d0768b580f849294b3e9bef156d38d85c14d69",
+    "historicalLabelApproval": "ad1898c13b56c2c7518578abf0b552fa352b10b74e828d92fdd49a0bd4535a58",
+    "historicalRawReport": "101c10bdfa8f80267e9ae24f325ffe05477875f92eca34715480020f2a5bd550"
+  },
+  "historicalReleaseStatus": "BLOCKED",
+  "raterAgreementCases": 17,
+  "unresolvedRaterDisagreements": 0,
+  "structureMisses": 27,
+  "structureMissesByDirection": {
+    "below": 26,
+    "above": 1
+  },
+  "failedRepeatsByBlindSupportCount": {
+    "0": 7,
+    "1": 4,
+    "2": 0,
+    "3": 16
+  },
+  "cases": [
+    {
+      "caseId": "ai-role-fit",
+      "inputChecksum": "a473f3365b665098474b835241b91b25486fc5d8cd44348d91d8eb86495af10d",
+      "approvedRange": [
+        4,
+        4
+      ],
+      "blindLevels": [
+        3,
+        4,
+        3
+      ],
+      "blindSupportCount": 1,
+      "raterDisagreement": true,
+      "disagreementResolved": true,
+      "repeats": [
+        {
+          "repeat": 1,
+          "modelLevel": 4,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        },
+        {
+          "repeat": 2,
+          "modelLevel": 3,
+          "modelOutsideApproved": true,
+          "direction": "below"
+        },
+        {
+          "repeat": 3,
+          "modelLevel": 4,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        }
+      ]
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "inputChecksum": "302b41daac02b522415f8cfdd87955b4600591c395976d1ad9e71107dd7d00bd",
+      "approvedRange": [
+        2,
+        2
+      ],
+      "blindLevels": [
+        2,
+        2,
+        2
+      ],
+      "blindSupportCount": 3,
+      "raterDisagreement": false,
+      "disagreementResolved": false,
+      "repeats": [
+        {
+          "repeat": 1,
+          "modelLevel": 1,
+          "modelOutsideApproved": true,
+          "direction": "below"
+        },
+        {
+          "repeat": 2,
+          "modelLevel": 2,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        },
+        {
+          "repeat": 3,
+          "modelLevel": 2,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        }
+      ]
+    },
+    {
+      "caseId": "ai-behavioral",
+      "inputChecksum": "a75e6a74347cb75c547e0a157faa349bcbf95a3c83e11336b2fdbe447049e7b0",
+      "approvedRange": [
+        4,
+        4
+      ],
+      "blindLevels": [
+        4,
+        4,
+        4
+      ],
+      "blindSupportCount": 3,
+      "raterDisagreement": false,
+      "disagreementResolved": false,
+      "repeats": [
+        {
+          "repeat": 1,
+          "modelLevel": 3,
+          "modelOutsideApproved": true,
+          "direction": "below"
+        },
+        {
+          "repeat": 2,
+          "modelLevel": 4,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        },
+        {
+          "repeat": 3,
+          "modelLevel": 3,
+          "modelOutsideApproved": true,
+          "direction": "below"
+        }
+      ]
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "inputChecksum": "587650809065e01643a99d35e3e6f9681ffa40518a33e95df09df2ee67dd4f7b",
+      "approvedRange": [
+        4,
+        4
+      ],
+      "blindLevels": [
+        4,
+        4,
+        4
+      ],
+      "blindSupportCount": 3,
+      "raterDisagreement": false,
+      "disagreementResolved": false,
+      "repeats": [
+        {
+          "repeat": 1,
+          "modelLevel": 3,
+          "modelOutsideApproved": true,
+          "direction": "below"
+        },
+        {
+          "repeat": 2,
+          "modelLevel": 4,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        },
+        {
+          "repeat": 3,
+          "modelLevel": 4,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        }
+      ]
+    },
+    {
+      "caseId": "backend-role-fit",
+      "inputChecksum": "6177474365f0acdf48d3cee107fe3200fb0f36418cc7e20915164599f2f1c0b1",
+      "approvedRange": [
+        3,
+        3
+      ],
+      "blindLevels": [
+        3,
+        3,
+        3
+      ],
+      "blindSupportCount": 3,
+      "raterDisagreement": false,
+      "disagreementResolved": false,
+      "repeats": [
+        {
+          "repeat": 1,
+          "modelLevel": 3,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        },
+        {
+          "repeat": 2,
+          "modelLevel": 3,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        },
+        {
+          "repeat": 3,
+          "modelLevel": 3,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        }
+      ]
+    },
+    {
+      "caseId": "backend-experience-depth",
+      "inputChecksum": "be35cd43b8e4bfd6c24449e5463e5f163e93ee998d5090e8ff3ddc9fc87ed5f1",
+      "approvedRange": [
+        4,
+        4
+      ],
+      "blindLevels": [
+        4,
+        4,
+        4
+      ],
+      "blindSupportCount": 3,
+      "raterDisagreement": false,
+      "disagreementResolved": false,
+      "repeats": [
+        {
+          "repeat": 1,
+          "modelLevel": 4,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        },
+        {
+          "repeat": 2,
+          "modelLevel": 4,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        },
+        {
+          "repeat": 3,
+          "modelLevel": 4,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        }
+      ]
+    },
+    {
+      "caseId": "backend-behavioral",
+      "inputChecksum": "9b42c0b37a135ed55c02b0bad34d155e8ae8f63f7bf9bf8a2684dae3cdcfb3a1",
+      "approvedRange": [
+        2,
+        2
+      ],
+      "blindLevels": [
+        2,
+        3,
+        3
+      ],
+      "blindSupportCount": 1,
+      "raterDisagreement": true,
+      "disagreementResolved": true,
+      "repeats": [
+        {
+          "repeat": 1,
+          "modelLevel": 1,
+          "modelOutsideApproved": true,
+          "direction": "below"
+        },
+        {
+          "repeat": 2,
+          "modelLevel": 1,
+          "modelOutsideApproved": true,
+          "direction": "below"
+        },
+        {
+          "repeat": 3,
+          "modelLevel": 1,
+          "modelOutsideApproved": true,
+          "direction": "below"
+        }
+      ]
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "inputChecksum": "53cf19814143540ff58637966a8b102bad7c8ee39a20dd393609e453d59675b5",
+      "approvedRange": [
+        4,
+        4
+      ],
+      "blindLevels": [
+        3,
+        3,
+        3
+      ],
+      "blindSupportCount": 0,
+      "raterDisagreement": false,
+      "disagreementResolved": false,
+      "repeats": [
+        {
+          "repeat": 1,
+          "modelLevel": 3,
+          "modelOutsideApproved": true,
+          "direction": "below"
+        },
+        {
+          "repeat": 2,
+          "modelLevel": 3,
+          "modelOutsideApproved": true,
+          "direction": "below"
+        },
+        {
+          "repeat": 3,
+          "modelLevel": 3,
+          "modelOutsideApproved": true,
+          "direction": "below"
+        }
+      ]
+    },
+    {
+      "caseId": "data-role-fit",
+      "inputChecksum": "78cddf9ca27b1977875c26a4535bf1c81f1d7a1d955fdfe61ce742d596b40f97",
+      "approvedRange": [
+        4,
+        4
+      ],
+      "blindLevels": [
+        3,
+        3,
+        3
+      ],
+      "blindSupportCount": 0,
+      "raterDisagreement": false,
+      "disagreementResolved": false,
+      "repeats": [
+        {
+          "repeat": 1,
+          "modelLevel": 3,
+          "modelOutsideApproved": true,
+          "direction": "below"
+        },
+        {
+          "repeat": 2,
+          "modelLevel": 3,
+          "modelOutsideApproved": true,
+          "direction": "below"
+        },
+        {
+          "repeat": 3,
+          "modelLevel": 3,
+          "modelOutsideApproved": true,
+          "direction": "below"
+        }
+      ]
+    },
+    {
+      "caseId": "data-experience-depth",
+      "inputChecksum": "afb695eb43b00cf1fa5cf62e4e5633bdd57e39f86b51c0ac845688cd43dfa137",
+      "approvedRange": [
+        4,
+        4
+      ],
+      "blindLevels": [
+        4,
+        4,
+        4
+      ],
+      "blindSupportCount": 3,
+      "raterDisagreement": false,
+      "disagreementResolved": false,
+      "repeats": [
+        {
+          "repeat": 1,
+          "modelLevel": 3,
+          "modelOutsideApproved": true,
+          "direction": "below"
+        },
+        {
+          "repeat": 2,
+          "modelLevel": 4,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        },
+        {
+          "repeat": 3,
+          "modelLevel": 4,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        }
+      ]
+    },
+    {
+      "caseId": "data-behavioral",
+      "inputChecksum": "5d0f8892c589b216f6b1aa6810433a5946ff67cd2dd366f42ce5be3103e3d929",
+      "approvedRange": [
+        4,
+        4
+      ],
+      "blindLevels": [
+        4,
+        4,
+        4
+      ],
+      "blindSupportCount": 3,
+      "raterDisagreement": false,
+      "disagreementResolved": false,
+      "repeats": [
+        {
+          "repeat": 1,
+          "modelLevel": 4,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        },
+        {
+          "repeat": 2,
+          "modelLevel": 4,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        },
+        {
+          "repeat": 3,
+          "modelLevel": 4,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        }
+      ]
+    },
+    {
+      "caseId": "data-technical-communication",
+      "inputChecksum": "8549222299771f04cfc6e558846fdc58cd199c771ab67b99ae2cf975aec5a1f0",
+      "approvedRange": [
+        1,
+        1
+      ],
+      "blindLevels": [
+        2,
+        1,
+        1
+      ],
+      "blindSupportCount": 2,
+      "raterDisagreement": true,
+      "disagreementResolved": true,
+      "repeats": [
+        {
+          "repeat": 1,
+          "modelLevel": 1,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        },
+        {
+          "repeat": 2,
+          "modelLevel": 1,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        },
+        {
+          "repeat": 3,
+          "modelLevel": 1,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        }
+      ]
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "inputChecksum": "b0df54ce88056e1d5c156cf80e05d7083eebe3b59bf58da14c9dedd464257ae8",
+      "approvedRange": [
+        4,
+        4
+      ],
+      "blindLevels": [
+        4,
+        4,
+        4
+      ],
+      "blindSupportCount": 3,
+      "raterDisagreement": false,
+      "disagreementResolved": false,
+      "repeats": [
+        {
+          "repeat": 1,
+          "modelLevel": 3,
+          "modelOutsideApproved": true,
+          "direction": "below"
+        },
+        {
+          "repeat": 2,
+          "modelLevel": 3,
+          "modelOutsideApproved": true,
+          "direction": "below"
+        },
+        {
+          "repeat": 3,
+          "modelLevel": 3,
+          "modelOutsideApproved": true,
+          "direction": "below"
+        }
+      ]
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "inputChecksum": "af53779c12e0d5dbf58cd83824cbf49e480c9a154c830f65f4a432d5f7604d82",
+      "approvedRange": [
+        4,
+        4
+      ],
+      "blindLevels": [
+        4,
+        4,
+        4
+      ],
+      "blindSupportCount": 3,
+      "raterDisagreement": false,
+      "disagreementResolved": false,
+      "repeats": [
+        {
+          "repeat": 1,
+          "modelLevel": 3,
+          "modelOutsideApproved": true,
+          "direction": "below"
+        },
+        {
+          "repeat": 2,
+          "modelLevel": 3,
+          "modelOutsideApproved": true,
+          "direction": "below"
+        },
+        {
+          "repeat": 3,
+          "modelLevel": 3,
+          "modelOutsideApproved": true,
+          "direction": "below"
+        }
+      ]
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "inputChecksum": "4e915e331d2e0666d57af01730cb3f16c4b9468ef78dd13b410f54aa37c5f4d2",
+      "approvedRange": [
+        4,
+        4
+      ],
+      "blindLevels": [
+        4,
+        4,
+        4
+      ],
+      "blindSupportCount": 3,
+      "raterDisagreement": false,
+      "disagreementResolved": false,
+      "repeats": [
+        {
+          "repeat": 1,
+          "modelLevel": 3,
+          "modelOutsideApproved": true,
+          "direction": "below"
+        },
+        {
+          "repeat": 2,
+          "modelLevel": 4,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        },
+        {
+          "repeat": 3,
+          "modelLevel": 4,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        }
+      ]
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "inputChecksum": "b653197561427af7915ed23e75d2a8a3a6e016b52656d767e73203b911e0660f",
+      "approvedRange": [
+        1,
+        1
+      ],
+      "blindLevels": [
+        2,
+        2,
+        2
+      ],
+      "blindSupportCount": 0,
+      "raterDisagreement": false,
+      "disagreementResolved": false,
+      "repeats": [
+        {
+          "repeat": 1,
+          "modelLevel": 1,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        },
+        {
+          "repeat": 2,
+          "modelLevel": 2,
+          "modelOutsideApproved": true,
+          "direction": "above"
+        },
+        {
+          "repeat": 3,
+          "modelLevel": 1,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        }
+      ]
+    },
+    {
+      "caseId": "frontend-role-fit",
+      "inputChecksum": "955de7b0fb70420af36f8e4d6411066be8d00df0e7eb34ea5680eb8f465eea65",
+      "approvedRange": [
+        3,
+        3
+      ],
+      "blindLevels": [
+        3,
+        3,
+        3
+      ],
+      "blindSupportCount": 3,
+      "raterDisagreement": false,
+      "disagreementResolved": false,
+      "repeats": [
+        {
+          "repeat": 1,
+          "modelLevel": 3,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        },
+        {
+          "repeat": 2,
+          "modelLevel": 3,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        },
+        {
+          "repeat": 3,
+          "modelLevel": 3,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        }
+      ]
+    },
+    {
+      "caseId": "frontend-experience-depth",
+      "inputChecksum": "68fd8d52a48f0c98b75d522ded792e785526417b73f30b9964d8fed9fc204b95",
+      "approvedRange": [
+        4,
+        4
+      ],
+      "blindLevels": [
+        4,
+        4,
+        4
+      ],
+      "blindSupportCount": 3,
+      "raterDisagreement": false,
+      "disagreementResolved": false,
+      "repeats": [
+        {
+          "repeat": 1,
+          "modelLevel": 4,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        },
+        {
+          "repeat": 2,
+          "modelLevel": 4,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        },
+        {
+          "repeat": 3,
+          "modelLevel": 4,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        }
+      ]
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "inputChecksum": "78fea3d0b931ce01f27e0d9e7331ca2b915362b8797d2b25bc3580a809003ffa",
+      "approvedRange": [
+        4,
+        4
+      ],
+      "blindLevels": [
+        4,
+        4,
+        4
+      ],
+      "blindSupportCount": 3,
+      "raterDisagreement": false,
+      "disagreementResolved": false,
+      "repeats": [
+        {
+          "repeat": 1,
+          "modelLevel": 4,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        },
+        {
+          "repeat": 2,
+          "modelLevel": 4,
+          "modelOutsideApproved": false,
+          "direction": "inside"
+        },
+        {
+          "repeat": 3,
+          "modelLevel": 3,
+          "modelOutsideApproved": true,
+          "direction": "below"
+        }
+      ]
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "inputChecksum": "ad1be8f44112f31f4ef30daea40a395ee7ea02811e6e146443aed40280b759d3",
+      "approvedRange": [
+        4,
+        4
+      ],
+      "blindLevels": [
+        4,
+        4,
+        4
+      ],
+      "blindSupportCount": 3,
+      "raterDisagreement": false,
+      "disagreementResolved": false,
+      "repeats": [
+        {
+          "repeat": 1,
+          "modelLevel": 3,
+          "modelOutsideApproved": true,
+          "direction": "below"
+        },
+        {
+          "repeat": 2,
+          "modelLevel": 3,
+          "modelOutsideApproved": true,
+          "direction": "below"
+        },
+        {
+          "repeat": 3,
+          "modelLevel": 3,
+          "modelOutsideApproved": true,
+          "direction": "below"
+        }
+      ]
+    }
+  ],
+  "failedRepeats": [
+    {
+      "caseId": "ai-role-fit",
+      "repeat": 2,
+      "direction": "below",
+      "blindSupportCount": 1
+    },
+    {
+      "caseId": "ai-experience-depth",
+      "repeat": 1,
+      "direction": "below",
+      "blindSupportCount": 3
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 1,
+      "direction": "below",
+      "blindSupportCount": 3
+    },
+    {
+      "caseId": "ai-behavioral",
+      "repeat": 3,
+      "direction": "below",
+      "blindSupportCount": 3
+    },
+    {
+      "caseId": "ai-technical-communication",
+      "repeat": 1,
+      "direction": "below",
+      "blindSupportCount": 3
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 1,
+      "direction": "below",
+      "blindSupportCount": 1
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 2,
+      "direction": "below",
+      "blindSupportCount": 1
+    },
+    {
+      "caseId": "backend-behavioral",
+      "repeat": 3,
+      "direction": "below",
+      "blindSupportCount": 1
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 1,
+      "direction": "below",
+      "blindSupportCount": 0
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 2,
+      "direction": "below",
+      "blindSupportCount": 0
+    },
+    {
+      "caseId": "backend-technical-communication",
+      "repeat": 3,
+      "direction": "below",
+      "blindSupportCount": 0
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 1,
+      "direction": "below",
+      "blindSupportCount": 0
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 2,
+      "direction": "below",
+      "blindSupportCount": 0
+    },
+    {
+      "caseId": "data-role-fit",
+      "repeat": 3,
+      "direction": "below",
+      "blindSupportCount": 0
+    },
+    {
+      "caseId": "data-experience-depth",
+      "repeat": 1,
+      "direction": "below",
+      "blindSupportCount": 3
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 1,
+      "direction": "below",
+      "blindSupportCount": 3
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 2,
+      "direction": "below",
+      "blindSupportCount": 3
+    },
+    {
+      "caseId": "embedded-role-fit",
+      "repeat": 3,
+      "direction": "below",
+      "blindSupportCount": 3
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 1,
+      "direction": "below",
+      "blindSupportCount": 3
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 2,
+      "direction": "below",
+      "blindSupportCount": 3
+    },
+    {
+      "caseId": "embedded-experience-depth",
+      "repeat": 3,
+      "direction": "below",
+      "blindSupportCount": 3
+    },
+    {
+      "caseId": "embedded-behavioral",
+      "repeat": 1,
+      "direction": "below",
+      "blindSupportCount": 3
+    },
+    {
+      "caseId": "embedded-technical-communication",
+      "repeat": 2,
+      "direction": "above",
+      "blindSupportCount": 0
+    },
+    {
+      "caseId": "frontend-behavioral",
+      "repeat": 3,
+      "direction": "below",
+      "blindSupportCount": 3
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 1,
+      "direction": "below",
+      "blindSupportCount": 3
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 2,
+      "direction": "below",
+      "blindSupportCount": 3
+    },
+    {
+      "caseId": "frontend-technical-communication",
+      "repeat": 3,
+      "direction": "below",
+      "blindSupportCount": 3
+    }
+  ]
+}
