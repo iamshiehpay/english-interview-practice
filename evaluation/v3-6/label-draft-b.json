@@ -1,0 +1,302 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "3.6.0",
+  "role": "Independent AI Role persona draft B",
+  "packetChecksum": "19b772356223965af2d747e12046bf98facdbfd4a169b90c0",
+  "draftedAt": "2026-09-25T10:42:56.012461Z",
+  "blindToModelFeedback": true,
+  "labels": [
+    {
+      "caseId": "flag-rollback",
+      "inputChecksum": "9a68078178b1fd7bef3fc77fb02dcc7bb636e022b40e1821742d016980410280",
+      "ranges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          4,
+          4
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "rationale": "Relevance 3: investigation and team message are present, but no observed rollback result or confirmed underlying finding is supplied. Support 4: flagged versus unflagged comparison and rollback check give a defensible diagnostic and containment rationale. Structure 4: observed error rise leads to a comparison and intervention, then uncertainty narrows the team message. English 4: natural and clear.",
+      "evidenceQuotes": [
+        "I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped."
+      ],
+      "structureEvidence": {
+        "spanQuotes": [
+          "I saw the error rate rise after the flag changed.",
+          "I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped.",
+          "I have not confirmed the underlying cause, so I would tell the team that the rollback is a containment step."
+        ],
+        "advancement": "The comparison and rollback check test the initial signal; the final qualification limits what can be claimed and shapes the team message.",
+        "boundaryUncertainty": "none"
+      },
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    },
+    {
+      "caseId": "thin-motivation",
+      "inputChecksum": "1a798c542a90667d3d04b877e6919a5ca35eb120c756a072137898292bd1cf37",
+      "ranges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          2,
+          2
+        ],
+        "structure": [
+          3,
+          3
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "rationale": "Relevance 3: states motivation but does not identify a skill that would help the team. Support 2: stable services matter is a bare relevant reason; enjoyment of helping colleagues adds no example or demonstrated skill. Structure 3: a simple reason followed by a related preference forms a thin, understandable line. English 4: natural and clear.",
+      "evidenceQuotes": [
+        "I like reliability work because stable services matter."
+      ],
+      "structureEvidence": {
+        "spanQuotes": [
+          "I like reliability work because stable services matter.",
+          "I also enjoy helping colleagues."
+        ],
+        "advancement": "The second sentence adds a related preference but does not test, narrow, or develop the first.",
+        "boundaryUncertainty": "none"
+      },
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    },
+    {
+      "caseId": "travel-off-topic",
+      "inputChecksum": "b1221fb562e8e5a1acf671632b2309a80f942f4949b38b9601dc7f012afc2aff",
+      "ranges": {
+        "relevance": [
+          1,
+          1
+        ],
+        "support": [
+          1,
+          1
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "rationale": "Relevance 1: the travel scenario does not address engineer disagreement or a security review. Support 1: no question-related support. Structure 4: the response moves from checking an option to comparing alternatives and informing another person before acting. English 4: natural and clear.",
+      "evidenceQuotes": [
+        "I check the next departure, compare it with the bus time, and message my friend before changing routes."
+      ],
+      "structureEvidence": {
+        "spanQuotes": [
+          "I check the next departure",
+          "compare it with the bus time",
+          "message my friend before changing routes"
+        ],
+        "advancement": "The comparison evaluates the checked option, and the message communicates the decision context before the route change.",
+        "boundaryUncertainty": "none"
+      },
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    },
+    {
+      "caseId": "cache-related-points",
+      "inputChecksum": "94cc84261bb418aba4624205e00122edcff460c24baf62958c245d3f90b3fb8b",
+      "ranges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          3,
+          3
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "rationale": "Relevance 3: selects expiry and mentions stale entries, but does not explain when or how that strategy fails. Support 3: stale-entry risk is a concrete reason for expiry, and manual purge is a relevant action, though neither is developed. Structure 3: a claim with a simple reason and another related tactic is coherent but thin. English 4: natural and clear.",
+      "evidenceQuotes": [
+        "I would set an expiry time because stale entries are risky."
+      ],
+      "structureEvidence": {
+        "spanQuotes": [
+          "I would set an expiry time because stale entries are risky.",
+          "I would also add a manual purge button."
+        ],
+        "advancement": "The second tactic adds a related option without explaining how it changes or tests the expiry choice.",
+        "boundaryUncertainty": "The manual purge might be read as a response to expiry lag, but the answer does not make that link; this favors 3 over 4."
+      },
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    },
+    {
+      "caseId": "sales-audience-gap",
+      "inputChecksum": "8a2f551b9c4775c184198be5212ad5b0efa38fe09bff2671d2724e09a4592c61",
+      "ranges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          4,
+          4
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "rationale": "Relevance 3: gives an investigation and conditional remedy, but supplies no current finding or explanation addressed to the sales manager. Support 4: before/after counts, missing IDs, filter testing, and conditional rollback form a defensible diagnostic response. Structure 4: a sequence of checks narrows the possible cause, then a conditional result triggers a repair action. English 4: natural and clear.",
+      "evidenceQuotes": [
+        "If the IDs disappeared after deployment, I would roll back the filter while we repair the mapping."
+      ],
+      "structureEvidence": {
+        "spanQuotes": [
+          "I would compare event counts before and after the tracking change, inspect missing campaign IDs, and test whether the filter excludes valid leads.",
+          "If the IDs disappeared after deployment, I would roll back the filter while we repair the mapping."
+        ],
+        "advancement": "The conditional rollback acts on a possible result of the earlier checks.",
+        "boundaryUncertainty": "none"
+      },
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    },
+    {
+      "caseId": "accessibility-timing",
+      "inputChecksum": "0bc568b8442af22b66f3dc3fe74831f36078936b2d902ff0b89a986c4cf0136a",
+      "ranges": {
+        "relevance": [
+          3,
+          3
+        ],
+        "support": [
+          3,
+          3
+        ],
+        "structure": [
+          3,
+          3
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "rationale": "Relevance 3: describes completed label fixes and remaining screen-reader and deployment work, but does not show verification of the fixes. Support 3: the heading check and two fixed labels are concrete actions, with the verification gap left open. Structure 3: completed work, future test, and deployment status make an understandable but mostly listed sequence. English 4: natural and clear.",
+      "evidenceQuotes": [
+        "I checked the heading order last week and fixed two missing labels."
+      ],
+      "structureEvidence": {
+        "spanQuotes": [
+          "I checked the heading order last week and fixed two missing labels.",
+          "I will test the screen-reader flow next sprint.",
+          "I have not deployed the change."
+        ],
+        "advancement": "The later sentences locate testing and deployment after the fix, without showing a test result or a developed decision based on the fix.",
+        "boundaryUncertainty": "The undeployed status qualifies completion, but the answer does not develop a causal or decision line enough for 4."
+      },
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    },
+    {
+      "caseId": "sensor-language",
+      "inputChecksum": "35bc46b84cf187810a42b0b76e370c390b416ffa79dbdb6417164ee1ee9f21ba",
+      "ranges": {
+        "relevance": [
+          4,
+          4
+        ],
+        "support": [
+          4,
+          4
+        ],
+        "structure": [
+          4,
+          4
+        ],
+        "englishExpression": [
+          3,
+          3
+        ]
+      },
+      "rationale": "Relevance 4: gives drift checks and communicates uncertainty. Support 4: reference comparison and repeat measurements at two temperatures before recommending recalibration form a reasoned diagnostic sequence. Structure 4: the second measurement tests the initial comparison before a recommendation; the final sentence qualifies the cause. English 3: the opening Chinese phrase is untranslated, although the overall meaning remains clear.",
+      "evidenceQuotes": [
+        "先比對基準值."
+      ],
+      "structureEvidence": {
+        "spanQuotes": [
+          "先比對基準值.",
+          "Then I would repeat the measurement at two temperatures before recommending recalibration.",
+          "I would say the cause is still uncertain."
+        ],
+        "advancement": "Repeating at two temperatures tests the initial baseline comparison before action, and the final sentence limits the causal claim.",
+        "boundaryUncertainty": "none"
+      },
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    },
+    {
+      "caseId": "unsupported-handoff",
+      "inputChecksum": "bba750331c279cff6ad20f4daf389bd8bcac69f8bc7955cc1c6aa17580231ed9",
+      "ranges": {
+        "relevance": [
+          2,
+          2
+        ],
+        "support": [
+          2,
+          2
+        ],
+        "structure": [
+          3,
+          3
+        ],
+        "englishExpression": [
+          4,
+          4
+        ]
+      },
+      "rationale": "Relevance 2: mentions resolving disagreement and an outcome, but gives no action explaining how conflicting feedback was handled. Support 2: team size, instant resolution, and improvement are bare assertions rather than a reason or example of handling the feedback. Structure 3: resolution claim followed by outcome claim is a thin but intelligible progression. English 4: natural and clear.",
+      "evidenceQuotes": [
+        "I led a global team of ten thousand engineers and resolved every disagreement instantly."
+      ],
+      "structureEvidence": {
+        "spanQuotes": [
+          "I led a global team of ten thousand engineers and resolved every disagreement instantly.",
+          "The project improved by nine hundred percent."
+        ],
+        "advancement": "The second sentence states an outcome after the claimed resolution, without explaining the link or developing the process.",
+        "boundaryUncertainty": "none"
+      },
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    }
+  ]
+}

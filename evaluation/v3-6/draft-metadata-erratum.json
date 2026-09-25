@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "affectedDraft": "label-draft-b.json",
+  "draftChecksum": "90ec374ff3847b39288bfb871a7d7e83c87cf52e84e4104c6fa5b1f06c91258d",
+  "reportedPacketChecksum": "19b772356223965af2d747e12046bf98facdbfd4a169b90c0",
+  "actualPacketChecksum": "19b772356223965af2d747e12046bf98facdbf23376b11859fdbfd4a169b90c0",
+  "cause": "The parent task prompt supplied a truncated packet checksum to rater B. The saved draft is retained verbatim; no rating or quote has been edited.",
+  "verification": "Require all eight case IDs, individual input checksums, order and exact transcript quotes to match the frozen packet before adjudication."
+}
