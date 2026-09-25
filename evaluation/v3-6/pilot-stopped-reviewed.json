@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "3.6.0",
+  "generatedAt": "2026-09-25T11:09:03.743Z",
+  "artifactChecksums": {
+    "freeze": "291684087a38b759176838d1208c51052e6ef2f66c5c1b8b4c7c0e5c626e11fb",
+    "state": "259df0438f73912f0cc68d33c96b765214065c071334fdd17175c8b8ed6c603b",
+    "packet": "19b772356223965af2d747e12046bf98facdbf23376b11859fdbfd4a169b90c0",
+    "requestedParts": "1f64244e09173369645416bf0549e7036de20968e4e6ecf27c42fa601f9f7b75",
+    "approval": "fdc91cb6ac194317bb7e5a4e35e03ebd21ecb8e07b1ad6d5f85a5e24cb95ab54"
+  },
+  "usage": {
+    "subscriptionFeedbackRequests": 4,
+    "approvedRequestCap": 16,
+    "completedOutputs": 3,
+    "failedSlots": 1,
+    "unusedAuthorizedSlots": 12
+  },
+  "entries": [
+    {
+      "caseId": "flag-rollback",
+      "repeat": 1,
+      "status": "completed",
+      "inputChecksum": "9a68078178b1fd7bef3fc77fb02dcc7bb636e022b40e1821742d016980410280",
+      "outputChecksum": "b86d653571bbc9dcad8f01e41a42a63a00ae8d9f4952e9187f6ad9c6fa1df634",
+      "ratingMisses": []
+    },
+    {
+      "caseId": "flag-rollback",
+      "repeat": 2,
+      "status": "completed",
+      "inputChecksum": "9a68078178b1fd7bef3fc77fb02dcc7bb636e022b40e1821742d016980410280",
+      "outputChecksum": "e81c5b6308e538df96e12fc63dac36ee128249958b4f25f6a995403ff7eda196",
+      "ratingMisses": []
+    },
+    {
+      "caseId": "thin-motivation",
+      "repeat": 1,
+      "status": "completed",
+      "inputChecksum": "1a798c542a90667d3d04b877e6919a5ca35eb120c756a072137898292bd1cf37",
+      "outputChecksum": "814d2bdeeb7401cb59dcc916ba97ac3be22cd45a1c1bb45d4e239432432ed1a3",
+      "ratingMisses": [
+        "relevance",
+        "support"
+      ]
+    },
+    {
+      "caseId": "thin-motivation",
+      "repeat": 2,
+      "status": "failed",
+      "rawOutputChecksum": "9111efa6b5b7bb80ba9fe198b35183d1f2944a0f6a16bd0868079a4479c9cdba",
+      "error": "Invalid candidate decision evidence: relevance related quote"
+    }
+  ],
+  "automaticGate": {
+    "pass": false,
+    "reason": "Fewer than sixteen valid outputs; an invalid output stopped the pilot without retry"
+  },
+  "ratingGate": {
+    "pass": false,
+    "validOutputMatches": 2,
+    "validOutputs": 3,
+    "completeSetRequired": 16
+  },
+  "bilingualSemanticGate": {
+    "status": "NOT_REVIEWED",
+    "reason": "The predeclared sixteen-output gate already failed; the reserved post-run AI review task was not used"
+  },
+  "evidenceSemanticGate": {
+    "status": "NOT_REVIEWED"
+  },
+  "pilotStatus": "NO_GO",
+  "releaseStatus": "BLOCKED",
+  "note": "Partial fixed-input diagnostic only. The invalid raw output and all saved feedback remain unmodified; historical 3.3 outputs, labels and release gates remain unchanged."
+}

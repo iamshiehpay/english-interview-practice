@@ -1,0 +1,675 @@
+{
+  "schemaVersion": 1,
+  "freezeChecksum": "291684087a38b759176838d1208c51052e6ef2f66c5c1b8b4c7c0e5c626e11fb",
+  "slots": {
+    "flag-rollback:1": {
+      "status": "completed",
+      "reservedAt": "2026-09-25T11:01:40.461Z",
+      "completedAt": "2026-09-25T11:03:11.006Z",
+      "caseId": "flag-rollback",
+      "repeat": 1,
+      "inputChecksum": "9a68078178b1fd7bef3fc77fb02dcc7bb636e022b40e1821742d016980410280",
+      "outputChecksum": "b86d653571bbc9dcad8f01e41a42a63a00ae8d9f4952e9187f6ad9c6fa1df634",
+      "rawOutput": {
+        "decisionEvidence": {
+          "relevance": {
+            "coverage": "core-only",
+            "parts": [
+              {
+                "questionPartQuote": "how you investigated a bad feature-flag rollout",
+                "answerQuote": "I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped."
+              },
+              {
+                "questionPartQuote": "what you found",
+                "answerQuote": "I have not confirmed the underlying cause"
+              },
+              {
+                "questionPartQuote": "what you told the team",
+                "answerQuote": ""
+              }
+            ],
+            "relatedQuote": ""
+          },
+          "support": {
+            "basis": "reasoned",
+            "pointQuote": "I compared flagged and unflagged requests",
+            "supportQuote": "then disabled the flag to check whether the errors stopped.",
+            "reasoningLink": "The comparison creates a flagged-versus-unflagged contrast, and disabling the flag checks the expected error response."
+          },
+          "structure": {
+            "organization": "developed",
+            "spanQuotes": [
+              "I saw the error rate rise after the flag changed.",
+              "I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped.",
+              "I have not confirmed the underlying cause, so I would tell the team that the rollback is a containment step."
+            ],
+            "linkType": "stepwise",
+            "advancement": "It moves from observing the signal, to testing the flag's relationship to errors, then to qualifying the conclusion and framing rollback as containment."
+          },
+          "englishExpression": {
+            "impact": "none",
+            "issueQuote": "",
+            "issue": ""
+          }
+        },
+        "ratings": {
+          "relevance": {
+            "level": 3,
+            "quote": "I have not confirmed the underlying cause, so I would tell the team that the rollback is a containment step.",
+            "reason": "It explains the investigation and states that the cause remains unconfirmed, but it does not report what was actually told to the team.",
+            "reasonZh": "它說明了調查方式，也表明原因尚未確認，但沒有報告實際告訴團隊的內容。"
+          },
+          "support": {
+            "level": 4,
+            "quote": "I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped.",
+            "reason": "It gives two concrete diagnostic checks and explains their purpose: testing whether the flag change was associated with the errors.",
+            "reasonZh": "它提出兩項具體的診斷檢查，並說明目的：測試旗標變更是否與錯誤有關。"
+          },
+          "structure": {
+            "level": 4,
+            "quote": "I saw the error rate rise after the flag changed. I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped. I have not confirmed the underlying cause, so I would tell the team that the rollback is a containment step.",
+            "reason": "It progresses from the observed signal, to diagnostic action, to a qualified communication plan.",
+            "reasonZh": "內容依序從觀察到錯誤率上升，進展到診斷行動，再到附有限定條件的溝通計畫。"
+          },
+          "englishExpression": {
+            "level": 4,
+            "quote": "I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped.",
+            "reason": "The wording is clear and natural technical spoken English with no meaningful language barrier.",
+            "reasonZh": "措辭清楚、自然，且沒有造成理解障礙的語言問題。"
+          }
+        },
+        "strength": {
+          "text": "The answer gives a concrete, stepwise diagnostic approach and appropriately distinguishes containment from a confirmed root cause.",
+          "textZh": "回答提供具體、按步驟的診斷方式，並適當地區分了遏制措施與已確認的根本原因。",
+          "quote": "I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped."
+        },
+        "priorityImprovement": {
+          "text": "State the observed result of the comparison and rollback check, then report what you actually told the team rather than what you would tell them; the current answer leaves both points incomplete.",
+          "textZh": "先說明比較與回滾檢查觀察到的結果，再報告你實際告訴團隊的內容，而不是你會告訴他們的內容；目前回答讓這兩點都不完整。",
+          "quote": "I have not confirmed the underlying cause, so I would tell the team that the rollback is a containment step."
+        }
+      },
+      "feedback": {
+        "decisionEvidence": {
+          "relevance": {
+            "coverage": "core-only",
+            "parts": [
+              {
+                "questionPartQuote": "how you investigated a bad feature-flag rollout",
+                "answerQuote": "I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped."
+              },
+              {
+                "questionPartQuote": "what you found",
+                "answerQuote": "I have not confirmed the underlying cause"
+              },
+              {
+                "questionPartQuote": "what you told the team",
+                "answerQuote": ""
+              }
+            ],
+            "relatedQuote": ""
+          },
+          "support": {
+            "basis": "reasoned",
+            "pointQuote": "I compared flagged and unflagged requests",
+            "supportQuote": "then disabled the flag to check whether the errors stopped.",
+            "reasoningLink": "The comparison creates a flagged-versus-unflagged contrast, and disabling the flag checks the expected error response."
+          },
+          "structure": {
+            "organization": "developed",
+            "spanQuotes": [
+              "I saw the error rate rise after the flag changed.",
+              "I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped.",
+              "I have not confirmed the underlying cause, so I would tell the team that the rollback is a containment step."
+            ],
+            "linkType": "stepwise",
+            "advancement": "It moves from observing the signal, to testing the flag's relationship to errors, then to qualifying the conclusion and framing rollback as containment."
+          },
+          "englishExpression": {
+            "impact": "none",
+            "issueQuote": "",
+            "issue": ""
+          }
+        },
+        "ratings": {
+          "relevance": {
+            "level": 3,
+            "quote": "I have not confirmed the underlying cause, so I would tell the team that the rollback is a containment step.",
+            "reason": "It explains the investigation and states that the cause remains unconfirmed, but it does not report what was actually told to the team.",
+            "reasonZh": "它說明了調查方式，也表明原因尚未確認，但沒有報告實際告訴團隊的內容。"
+          },
+          "support": {
+            "level": 4,
+            "quote": "I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped.",
+            "reason": "It gives two concrete diagnostic checks and explains their purpose: testing whether the flag change was associated with the errors.",
+            "reasonZh": "它提出兩項具體的診斷檢查，並說明目的：測試旗標變更是否與錯誤有關。"
+          },
+          "structure": {
+            "level": 4,
+            "quote": "I saw the error rate rise after the flag changed. I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped. I have not confirmed the underlying cause, so I would tell the team that the rollback is a containment step.",
+            "reason": "It progresses from the observed signal, to diagnostic action, to a qualified communication plan.",
+            "reasonZh": "內容依序從觀察到錯誤率上升，進展到診斷行動，再到附有限定條件的溝通計畫。"
+          },
+          "englishExpression": {
+            "level": 4,
+            "quote": "I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped.",
+            "reason": "The wording is clear and natural technical spoken English with no meaningful language barrier.",
+            "reasonZh": "措辭清楚、自然，且沒有造成理解障礙的語言問題。"
+          }
+        },
+        "strength": {
+          "text": "The answer gives a concrete, stepwise diagnostic approach and appropriately distinguishes containment from a confirmed root cause.",
+          "textZh": "回答提供具體、按步驟的診斷方式，並適當地區分了遏制措施與已確認的根本原因。",
+          "quote": "I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped."
+        },
+        "priorityImprovement": {
+          "text": "State the observed result of the comparison and rollback check, then report what you actually told the team rather than what you would tell them; the current answer leaves both points incomplete.",
+          "textZh": "先說明比較與回滾檢查觀察到的結果，再報告你實際告訴團隊的內容，而不是你會告訴他們的內容；目前回答讓這兩點都不完整。",
+          "quote": "I have not confirmed the underlying cause, so I would tell the team that the rollback is a containment step."
+        }
+      },
+      "automaticBilingualPairs": [
+        {
+          "name": "relevance reason",
+          "en": "It explains the investigation and states that the cause remains unconfirmed, but it does not report what was actually told to the team.",
+          "zh": "它說明了調查方式，也表明原因尚未確認，但沒有報告實際告訴團隊的內容。"
+        },
+        {
+          "name": "support reason",
+          "en": "It gives two concrete diagnostic checks and explains their purpose: testing whether the flag change was associated with the errors.",
+          "zh": "它提出兩項具體的診斷檢查，並說明目的：測試旗標變更是否與錯誤有關。"
+        },
+        {
+          "name": "structure reason",
+          "en": "It progresses from the observed signal, to diagnostic action, to a qualified communication plan.",
+          "zh": "內容依序從觀察到錯誤率上升，進展到診斷行動，再到附有限定條件的溝通計畫。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The wording is clear and natural technical spoken English with no meaningful language barrier.",
+          "zh": "措辭清楚、自然，且沒有造成理解障礙的語言問題。"
+        },
+        {
+          "name": "strength",
+          "en": "The answer gives a concrete, stepwise diagnostic approach and appropriately distinguishes containment from a confirmed root cause.",
+          "zh": "回答提供具體、按步驟的診斷方式，並適當地區分了遏制措施與已確認的根本原因。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "State the observed result of the comparison and rollback check, then report what you actually told the team rather than what you would tell them; the current answer leaves both points incomplete.",
+          "zh": "先說明比較與回滾檢查觀察到的結果，再報告你實際告訴團隊的內容，而不是你會告訴他們的內容；目前回答讓這兩點都不完整。"
+        }
+      ]
+    },
+    "flag-rollback:2": {
+      "status": "completed",
+      "reservedAt": "2026-09-25T11:03:11.016Z",
+      "completedAt": "2026-09-25T11:04:46.319Z",
+      "caseId": "flag-rollback",
+      "repeat": 2,
+      "inputChecksum": "9a68078178b1fd7bef3fc77fb02dcc7bb636e022b40e1821742d016980410280",
+      "outputChecksum": "e81c5b6308e538df96e12fc63dac36ee128249958b4f25f6a995403ff7eda196",
+      "rawOutput": {
+        "decisionEvidence": {
+          "relevance": {
+            "coverage": "core-only",
+            "parts": [
+              {
+                "questionPartQuote": "how you investigated a bad feature-flag rollout",
+                "answerQuote": "I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped."
+              },
+              {
+                "questionPartQuote": "what you found",
+                "answerQuote": "I saw the error rate rise after the flag changed."
+              },
+              {
+                "questionPartQuote": "what you told the team",
+                "answerQuote": ""
+              }
+            ],
+            "relatedQuote": ""
+          },
+          "support": {
+            "basis": "reasoned",
+            "pointQuote": "I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped.",
+            "supportQuote": "I have not confirmed the underlying cause, so I would tell the team that the rollback is a containment step.",
+            "reasoningLink": "The comparison and rollback check are purposeful diagnostics, while the stated uncertainty supports framing the rollback as containment rather than proof of the underlying cause."
+          },
+          "structure": {
+            "organization": "developed",
+            "spanQuotes": [
+              "I saw the error rate rise after the flag changed.",
+              "I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped.",
+              "I have not confirmed the underlying cause, so I would tell the team that the rollback is a containment step."
+            ],
+            "linkType": "stepwise",
+            "advancement": "It moves from the observed error increase, to diagnostic checks, then to a qualified planned message that limits the claim to containment."
+          },
+          "englishExpression": {
+            "impact": "none",
+            "issueQuote": "",
+            "issue": ""
+          }
+        },
+        "ratings": {
+          "relevance": {
+            "level": 3,
+            "quote": "I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped.",
+            "reason": "It directly covers the investigation and observed finding, but the team message is stated as what you would tell them rather than what you told them.",
+            "reasonZh": "它直接涵蓋調查方式與觀察到的發現，但團隊訊息被表述為你會告知的內容，而不是你已經告知的內容。"
+          },
+          "support": {
+            "level": 4,
+            "quote": "I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped. I have not confirmed the underlying cause, so I would tell the team that the rollback is a containment step.",
+            "reason": "It gives a concrete diagnostic sequence, its purpose, and a defensible limitation that separates containment from a confirmed cause.",
+            "reasonZh": "它提供具體的診斷步驟、步驟目的，以及將遏制措施與已確認原因區分開來的合理限制。"
+          },
+          "structure": {
+            "level": 4,
+            "quote": "I saw the error rate rise after the flag changed. I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped. I have not confirmed the underlying cause, so I would tell the team that the rollback is a containment step.",
+            "reason": "The answer progresses from an initial signal to investigation and then to a qualified communication plan, with clear causal and stepwise links.",
+            "reasonZh": "回答從初始訊號進展到調查，再到有明確限制的溝通計畫，因果與步驟連接清楚。"
+          },
+          "englishExpression": {
+            "level": 4,
+            "quote": "I have not confirmed the underlying cause, so I would tell the team that the rollback is a containment step.",
+            "reason": "The wording is clear and natural spoken English, with no language issue that impedes meaning.",
+            "reasonZh": "措辭清楚且符合自然口語英文，沒有造成理解障礙的語言問題。"
+          }
+        },
+        "strength": {
+          "text": "It clearly separates the observed signal, the diagnostic actions, and the containment framing.",
+          "textZh": "它清楚區分了觀察到的訊號、診斷行動，以及將回滾定位為遏制措施。",
+          "quote": "I saw the error rate rise after the flag changed. I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped."
+        },
+        "priorityImprovement": {
+          "text": "Add the concrete result of the comparison and rollback check, and state what you actually told the team rather than only what you would tell them.",
+          "textZh": "補上比較旗標與未套用旗標請求及回滾檢查的具體結果，並說明你實際告訴團隊的內容，而不只是你會告訴他們的內容。",
+          "quote": "I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped. I have not confirmed the underlying cause, so I would tell the team that the rollback is a containment step."
+        }
+      },
+      "feedback": {
+        "decisionEvidence": {
+          "relevance": {
+            "coverage": "core-only",
+            "parts": [
+              {
+                "questionPartQuote": "how you investigated a bad feature-flag rollout",
+                "answerQuote": "I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped."
+              },
+              {
+                "questionPartQuote": "what you found",
+                "answerQuote": "I saw the error rate rise after the flag changed."
+              },
+              {
+                "questionPartQuote": "what you told the team",
+                "answerQuote": ""
+              }
+            ],
+            "relatedQuote": ""
+          },
+          "support": {
+            "basis": "reasoned",
+            "pointQuote": "I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped.",
+            "supportQuote": "I have not confirmed the underlying cause, so I would tell the team that the rollback is a containment step.",
+            "reasoningLink": "The comparison and rollback check are purposeful diagnostics, while the stated uncertainty supports framing the rollback as containment rather than proof of the underlying cause."
+          },
+          "structure": {
+            "organization": "developed",
+            "spanQuotes": [
+              "I saw the error rate rise after the flag changed.",
+              "I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped.",
+              "I have not confirmed the underlying cause, so I would tell the team that the rollback is a containment step."
+            ],
+            "linkType": "stepwise",
+            "advancement": "It moves from the observed error increase, to diagnostic checks, then to a qualified planned message that limits the claim to containment."
+          },
+          "englishExpression": {
+            "impact": "none",
+            "issueQuote": "",
+            "issue": ""
+          }
+        },
+        "ratings": {
+          "relevance": {
+            "level": 3,
+            "quote": "I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped.",
+            "reason": "It directly covers the investigation and observed finding, but the team message is stated as what you would tell them rather than what you told them.",
+            "reasonZh": "它直接涵蓋調查方式與觀察到的發現，但團隊訊息被表述為你會告知的內容，而不是你已經告知的內容。"
+          },
+          "support": {
+            "level": 4,
+            "quote": "I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped. I have not confirmed the underlying cause, so I would tell the team that the rollback is a containment step.",
+            "reason": "It gives a concrete diagnostic sequence, its purpose, and a defensible limitation that separates containment from a confirmed cause.",
+            "reasonZh": "它提供具體的診斷步驟、步驟目的，以及將遏制措施與已確認原因區分開來的合理限制。"
+          },
+          "structure": {
+            "level": 4,
+            "quote": "I saw the error rate rise after the flag changed. I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped. I have not confirmed the underlying cause, so I would tell the team that the rollback is a containment step.",
+            "reason": "The answer progresses from an initial signal to investigation and then to a qualified communication plan, with clear causal and stepwise links.",
+            "reasonZh": "回答從初始訊號進展到調查，再到有明確限制的溝通計畫，因果與步驟連接清楚。"
+          },
+          "englishExpression": {
+            "level": 4,
+            "quote": "I have not confirmed the underlying cause, so I would tell the team that the rollback is a containment step.",
+            "reason": "The wording is clear and natural spoken English, with no language issue that impedes meaning.",
+            "reasonZh": "措辭清楚且符合自然口語英文，沒有造成理解障礙的語言問題。"
+          }
+        },
+        "strength": {
+          "text": "It clearly separates the observed signal, the diagnostic actions, and the containment framing.",
+          "textZh": "它清楚區分了觀察到的訊號、診斷行動，以及將回滾定位為遏制措施。",
+          "quote": "I saw the error rate rise after the flag changed. I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped."
+        },
+        "priorityImprovement": {
+          "text": "Add the concrete result of the comparison and rollback check, and state what you actually told the team rather than only what you would tell them.",
+          "textZh": "補上比較旗標與未套用旗標請求及回滾檢查的具體結果，並說明你實際告訴團隊的內容，而不只是你會告訴他們的內容。",
+          "quote": "I compared flagged and unflagged requests, then disabled the flag to check whether the errors stopped. I have not confirmed the underlying cause, so I would tell the team that the rollback is a containment step."
+        }
+      },
+      "automaticBilingualPairs": [
+        {
+          "name": "relevance reason",
+          "en": "It directly covers the investigation and observed finding, but the team message is stated as what you would tell them rather than what you told them.",
+          "zh": "它直接涵蓋調查方式與觀察到的發現，但團隊訊息被表述為你會告知的內容，而不是你已經告知的內容。"
+        },
+        {
+          "name": "support reason",
+          "en": "It gives a concrete diagnostic sequence, its purpose, and a defensible limitation that separates containment from a confirmed cause.",
+          "zh": "它提供具體的診斷步驟、步驟目的，以及將遏制措施與已確認原因區分開來的合理限制。"
+        },
+        {
+          "name": "structure reason",
+          "en": "The answer progresses from an initial signal to investigation and then to a qualified communication plan, with clear causal and stepwise links.",
+          "zh": "回答從初始訊號進展到調查，再到有明確限制的溝通計畫，因果與步驟連接清楚。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The wording is clear and natural spoken English, with no language issue that impedes meaning.",
+          "zh": "措辭清楚且符合自然口語英文，沒有造成理解障礙的語言問題。"
+        },
+        {
+          "name": "strength",
+          "en": "It clearly separates the observed signal, the diagnostic actions, and the containment framing.",
+          "zh": "它清楚區分了觀察到的訊號、診斷行動，以及將回滾定位為遏制措施。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Add the concrete result of the comparison and rollback check, and state what you actually told the team rather than only what you would tell them.",
+          "zh": "補上比較旗標與未套用旗標請求及回滾檢查的具體結果，並說明你實際告訴團隊的內容，而不只是你會告訴他們的內容。"
+        }
+      ]
+    },
+    "thin-motivation:1": {
+      "status": "completed",
+      "reservedAt": "2026-09-25T11:04:46.331Z",
+      "completedAt": "2026-09-25T11:05:55.834Z",
+      "caseId": "thin-motivation",
+      "repeat": 1,
+      "inputChecksum": "1a798c542a90667d3d04b877e6919a5ca35eb120c756a072137898292bd1cf37",
+      "outputChecksum": "814d2bdeeb7401cb59dcc916ba97ac3be22cd45a1c1bb45d4e239432432ed1a3",
+      "rawOutput": {
+        "decisionEvidence": {
+          "relevance": {
+            "coverage": "all",
+            "parts": [
+              {
+                "questionPartQuote": "Why do you want this software reliability role",
+                "answerQuote": "I like reliability work because stable services matter."
+              },
+              {
+                "questionPartQuote": "which of your skills would help the team",
+                "answerQuote": "I also enjoy helping colleagues."
+              }
+            ],
+            "relatedQuote": ""
+          },
+          "support": {
+            "basis": "concrete",
+            "pointQuote": "I like reliability work because stable services matter.",
+            "supportQuote": "because stable services matter.",
+            "reasoningLink": "The causal clause gives a relevant general reason for the role preference, though it provides no example or consequence."
+          },
+          "structure": {
+            "organization": "thin",
+            "spanQuotes": [
+              "I like reliability work because stable services matter.",
+              "I also enjoy helping colleagues."
+            ],
+            "linkType": "simple-reason",
+            "advancement": "The first sentence gives the role motivation and its reason; the second adds a related team contribution without developing it."
+          },
+          "englishExpression": {
+            "impact": "none",
+            "issueQuote": "",
+            "issue": ""
+          }
+        },
+        "ratings": {
+          "relevance": {
+            "level": 4,
+            "quote": "I like reliability work because stable services matter. I also enjoy helping colleagues.",
+            "reason": "It addresses both requested parts: a reason for wanting reliability work and a team-oriented contribution, though briefly.",
+            "reasonZh": "它以簡短方式涵蓋兩個要求部分：想從事可靠性工作的理由，以及一項以團隊為導向的貢獻。"
+          },
+          "support": {
+            "level": 3,
+            "quote": "I like reliability work because stable services matter.",
+            "reason": "The “because” clause gives a relevant general reason, but there is no concrete example, evidence, or trade-off.",
+            "reasonZh": "「because」子句提供了相關但一般性的理由，但沒有具體例子、證據或取捨。"
+          },
+          "structure": {
+            "level": 3,
+            "quote": "I like reliability work because stable services matter. I also enjoy helping colleagues.",
+            "reason": "It gives a claim with a reason, then adds a related team contribution; the connection is understandable but not developed.",
+            "reasonZh": "它先提出主張及其理由，再補充相關的團隊貢獻；連結清楚可理解，但未加以發展。"
+          },
+          "englishExpression": {
+            "level": 4,
+            "quote": "I also enjoy helping colleagues.",
+            "reason": "The wording is clear and natural spoken English.",
+            "reasonZh": "用語清楚且符合自然的口語英語。"
+          }
+        },
+        "strength": {
+          "text": "You directly cover both the role motivation and a team-oriented contribution.",
+          "textZh": "你直接涵蓋了對該職務的動機，以及一項以團隊為導向的貢獻。",
+          "quote": "I like reliability work because stable services matter. I also enjoy helping colleagues."
+        },
+        "priorityImprovement": {
+          "text": "Add one concrete example of a skill that would help the team, and explain how it would contribute in this reliability role.",
+          "textZh": "加入一個能幫助團隊的技能具體例子，並說明它會如何在這個可靠性職務中作出貢獻。",
+          "quote": "I also enjoy helping colleagues."
+        }
+      },
+      "feedback": {
+        "decisionEvidence": {
+          "relevance": {
+            "coverage": "all",
+            "parts": [
+              {
+                "questionPartQuote": "Why do you want this software reliability role",
+                "answerQuote": "I like reliability work because stable services matter."
+              },
+              {
+                "questionPartQuote": "which of your skills would help the team",
+                "answerQuote": "I also enjoy helping colleagues."
+              }
+            ],
+            "relatedQuote": ""
+          },
+          "support": {
+            "basis": "concrete",
+            "pointQuote": "I like reliability work because stable services matter.",
+            "supportQuote": "because stable services matter.",
+            "reasoningLink": "The causal clause gives a relevant general reason for the role preference, though it provides no example or consequence."
+          },
+          "structure": {
+            "organization": "thin",
+            "spanQuotes": [
+              "I like reliability work because stable services matter.",
+              "I also enjoy helping colleagues."
+            ],
+            "linkType": "simple-reason",
+            "advancement": "The first sentence gives the role motivation and its reason; the second adds a related team contribution without developing it."
+          },
+          "englishExpression": {
+            "impact": "none",
+            "issueQuote": "",
+            "issue": ""
+          }
+        },
+        "ratings": {
+          "relevance": {
+            "level": 4,
+            "quote": "I like reliability work because stable services matter. I also enjoy helping colleagues.",
+            "reason": "It addresses both requested parts: a reason for wanting reliability work and a team-oriented contribution, though briefly.",
+            "reasonZh": "它以簡短方式涵蓋兩個要求部分：想從事可靠性工作的理由，以及一項以團隊為導向的貢獻。"
+          },
+          "support": {
+            "level": 3,
+            "quote": "I like reliability work because stable services matter.",
+            "reason": "The “because” clause gives a relevant general reason, but there is no concrete example, evidence, or trade-off.",
+            "reasonZh": "「because」子句提供了相關但一般性的理由，但沒有具體例子、證據或取捨。"
+          },
+          "structure": {
+            "level": 3,
+            "quote": "I like reliability work because stable services matter. I also enjoy helping colleagues.",
+            "reason": "It gives a claim with a reason, then adds a related team contribution; the connection is understandable but not developed.",
+            "reasonZh": "它先提出主張及其理由，再補充相關的團隊貢獻；連結清楚可理解，但未加以發展。"
+          },
+          "englishExpression": {
+            "level": 4,
+            "quote": "I also enjoy helping colleagues.",
+            "reason": "The wording is clear and natural spoken English.",
+            "reasonZh": "用語清楚且符合自然的口語英語。"
+          }
+        },
+        "strength": {
+          "text": "You directly cover both the role motivation and a team-oriented contribution.",
+          "textZh": "你直接涵蓋了對該職務的動機，以及一項以團隊為導向的貢獻。",
+          "quote": "I like reliability work because stable services matter. I also enjoy helping colleagues."
+        },
+        "priorityImprovement": {
+          "text": "Add one concrete example of a skill that would help the team, and explain how it would contribute in this reliability role.",
+          "textZh": "加入一個能幫助團隊的技能具體例子，並說明它會如何在這個可靠性職務中作出貢獻。",
+          "quote": "I also enjoy helping colleagues."
+        }
+      },
+      "automaticBilingualPairs": [
+        {
+          "name": "relevance reason",
+          "en": "It addresses both requested parts: a reason for wanting reliability work and a team-oriented contribution, though briefly.",
+          "zh": "它以簡短方式涵蓋兩個要求部分：想從事可靠性工作的理由，以及一項以團隊為導向的貢獻。"
+        },
+        {
+          "name": "support reason",
+          "en": "The “because” clause gives a relevant general reason, but there is no concrete example, evidence, or trade-off.",
+          "zh": "「because」子句提供了相關但一般性的理由，但沒有具體例子、證據或取捨。"
+        },
+        {
+          "name": "structure reason",
+          "en": "It gives a claim with a reason, then adds a related team contribution; the connection is understandable but not developed.",
+          "zh": "它先提出主張及其理由，再補充相關的團隊貢獻；連結清楚可理解，但未加以發展。"
+        },
+        {
+          "name": "englishExpression reason",
+          "en": "The wording is clear and natural spoken English.",
+          "zh": "用語清楚且符合自然的口語英語。"
+        },
+        {
+          "name": "strength",
+          "en": "You directly cover both the role motivation and a team-oriented contribution.",
+          "zh": "你直接涵蓋了對該職務的動機，以及一項以團隊為導向的貢獻。"
+        },
+        {
+          "name": "priority improvement",
+          "en": "Add one concrete example of a skill that would help the team, and explain how it would contribute in this reliability role.",
+          "zh": "加入一個能幫助團隊的技能具體例子，並說明它會如何在這個可靠性職務中作出貢獻。"
+        }
+      ]
+    },
+    "thin-motivation:2": {
+      "status": "failed",
+      "reservedAt": "2026-09-25T11:05:55.844Z",
+      "failedAt": "2026-09-25T11:06:26.275Z",
+      "caseId": "thin-motivation",
+      "repeat": 2,
+      "error": "Invalid candidate decision evidence: relevance related quote",
+      "rawOutput": {
+        "decisionEvidence": {
+          "relevance": {
+            "coverage": "core-only",
+            "parts": [
+              {
+                "questionPartQuote": "Why do you want this software reliability role",
+                "answerQuote": "I like reliability work because stable services matter."
+              },
+              {
+                "questionPartQuote": "which of your skills would help the team",
+                "answerQuote": ""
+              }
+            ],
+            "relatedQuote": "I also enjoy helping colleagues."
+          },
+          "support": {
+            "basis": "concrete",
+            "pointQuote": "I like reliability work because stable services matter.",
+            "supportQuote": "I like reliability work because stable services matter.",
+            "reasoningLink": "The importance of stable services gives a direct reason for the motivation, but the answer provides no concrete example or trade-off."
+          },
+          "structure": {
+            "organization": "thin",
+            "spanQuotes": [
+              "I like reliability work because stable services matter.",
+              "I also enjoy helping colleagues."
+            ],
+            "linkType": "simple-reason",
+            "advancement": "The second statement adds a related team-oriented interest but does not develop it into a named skill or further reasoning."
+          },
+          "englishExpression": {
+            "impact": "none",
+            "issueQuote": "",
+            "issue": ""
+          }
+        },
+        "ratings": {
+          "relevance": {
+            "level": 3,
+            "quote": "I like reliability work because stable services matter.",
+            "reason": "It directly explains the motivation for reliability work, but it does not identify a skill that would help the team.",
+            "reasonZh": "它直接說明想從事可靠性工作的動機，但沒有指出能幫助團隊的技能。"
+          },
+          "support": {
+            "level": 3,
+            "quote": "I like reliability work because stable services matter.",
+            "reason": "The answer gives a direct reason—stable services matter—but offers no concrete example or trade-off.",
+            "reasonZh": "回答提供了直接理由——穩定的服務很重要——但沒有提供具體例子或取捨。"
+          },
+          "structure": {
+            "level": 3,
+            "quote": "I like reliability work because stable services matter.",
+            "reason": "It starts with a motivation and its reason, then adds a related colleague-focused statement, but does not develop either into a skill example.",
+            "reasonZh": "回答先提出動機及其理由，接著加入與同事相關的陳述，但沒有將任何一點發展成技能例子。"
+          },
+          "englishExpression": {
+            "level": 4,
+            "quote": "I like reliability work because stable services matter.",
+            "reason": "The wording is clear and natural spoken English, with no meaningful language barrier.",
+            "reasonZh": "措辭清楚且符合自然的口語英語，沒有實質的語言障礙。"
+          }
+        },
+        "strength": {
+          "text": "It gives a clear, concise reason for wanting reliability work.",
+          "textZh": "它清楚且簡潔地說明了想從事可靠性工作的理由。",
+          "quote": "I like reliability work because stable services matter."
+        },
+        "priorityImprovement": {
+          "text": "Name a specific skill and connect it to a team benefit; enjoying helping colleagues describes an interest, not a skill.",
+          "textZh": "指出一項具體技能，並說明它如何讓團隊受益；喜歡幫助同事描述的是興趣，而不是技能。",
+          "quote": "I also enjoy helping colleagues."
+        }
+      }
+    }
+  }
+}
