@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "3.4.0",
+  "generatedAt": "2026-09-25T05:45:43.647Z",
+  "usage": {
+    "subscriptionFeedbackRequests": 16,
+    "subscriptionRequestCap": 16,
+    "independentAiReviewerInvocations": 4,
+    "reviewerInvocationCap": 4
+  },
+  "artifactChecksums": {
+    "freeze": "a7270fe0bd50f33e60868c239035448eed97f44e98e8749923c0ca00d0012c37",
+    "reviewPacket": "ada76d8beb3bd198cb7fb22ea67fa67a45d501bc8ee0298961facb45750eda76",
+    "semanticReview": "7bd31b440d2b52e9ab42a49225f87472bd3a56c525934102c766b92f7e85a3ab",
+    "approvedLabels": "bd1241910c1370401a779ba2312ca64ebe0dcdcc8388514abb3f86f46317ed81"
+  },
+  "automaticGate": {
+    "pass": true,
+    "outputs": 16
+  },
+  "ratingGate": {
+    "pass": true,
+    "outputLevelPass": 12,
+    "total": 16,
+    "dimensionMisses": {
+      "relevance": 0,
+      "support": 2,
+      "structure": 2,
+      "englishExpression": 0
+    }
+  },
+  "bilingualGate": {
+    "pass": false,
+    "consistentOutputs": 15,
+    "total": 16,
+    "reviewedPairs": 96,
+    "inconsistent": [
+      {
+        "caseId": "duplicate-row-language",
+        "repeat": 2,
+        "outputChecksum": "39bdea5c943cc328e64221db2505d8f618af777c232e7b754713280f37510764",
+        "contradictoryPairs": [
+          {
+            "name": "strength",
+            "issue": "English says the answer specifies that the completed duplicate-row check uses a script; Traditional Chinese says the answer explains it will use a script (會使用腳本). This shifts a confirmed past action into a future commitment. The transcript confirms script use yesterday and does not say the planned recheck will use a script."
+          }
+        ]
+      }
+    ]
+  },
+  "pilotStatus": "NO_GO",
+  "releaseStatus": "BLOCKED",
+  "note": "Diagnostic pilot only. Historical 3.3 output, labels and release verdict are unchanged; this report cannot validate v1.0.0."
+}

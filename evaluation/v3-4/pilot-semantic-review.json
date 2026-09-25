@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "3.4.0",
+  "reviewPacketChecksum": "ada76d8beb3bd198cb7fb22ea67fa67a45d501bc8ee0298961facb45750eda76",
+  "reviewer": "Codex GPT-6 independent semantic reviewer, invocation 4/4, id 8f9f6b90",
+  "reviewedAt": "2026-09-25T05:44:37.754093Z",
+  "reviewedOutputs": 16,
+  "reviewedPairs": 96,
+  "reviews": [
+    {
+      "caseId": "latency-sequence",
+      "repeat": 1,
+      "outputChecksum": "b71009a21cd46f2fda08256ed5adb50691605749cf26f7d992daeb8f82cfc7ec",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the investigation sequence, missing reporting detail, language assessment, and advice about evidence and impact.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "latency-sequence",
+      "repeat": 2,
+      "outputChecksum": "c2cbd64055fd9645bea2495668905a9c7c06440562065f6d8a6d620f0420b8fd",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs align on the diagnostic sequence, unresolved reporting detail, and the recommended evidence, impact, and next step.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "ingestion-sequence",
+      "repeat": 1,
+      "outputChecksum": "cec0443ad4904a4b72579f6f98acac7f2c989368f9f878dece5926d40bbfaae4",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve comparison, sampling, conditional rollback for unexpected losses, and the suggested broader acceptance checks.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "ingestion-sequence",
+      "repeat": 2,
+      "outputChecksum": "c4e2403e5bdc2e0d96b4d827c468e5f9c2686fe833ecac44fc7d1d9b57f2b174",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the validation sequence, conditional rollback safeguard, and advice to define acceptable counts and sample results.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "garden-off-topic",
+      "repeat": 1,
+      "outputChecksum": "c625af67cd8a58637ce94b8c931251db101fcb1dcc1167181f09f7428d7f96de",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs consistently identify the gardening answer as off topic while preserving its ordered actions and advice for resolving conflicting review feedback.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "garden-off-topic",
+      "repeat": 2,
+      "outputChecksum": "38f68154132c336b9ba05d3dde8f483e29665cc1c7b6a5724d6553f681a2add9",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs consistently distinguish clear English and structure from the off-topic gardening answer and give the same code-review advice.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "bread-off-topic",
+      "repeat": 1,
+      "outputChecksum": "e772ba06c990072c8adb8f1c657808d35c2cb5ac6d444860516ebaacca9dd29e",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the baking-versus-crash mismatch, causal action sequence, and recommendation to describe crash isolation.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "bread-off-topic",
+      "repeat": 2,
+      "outputChecksum": "012493650a8636390e8419c40415b55aebbec81ff95535403372e2e43028bd3c",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the off-topic baking assessment, causal sequence, and crash-isolation advice.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "notification-no-result",
+      "repeat": 1,
+      "outputChecksum": "3680d6ac2f13eb778239c41e60c596b67b17f44f945c8643f59f1434aa2e0cd8",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the notification investigation, its unresolved cause, the absence of findings, and the requested result.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "notification-no-result",
+      "repeat": 2,
+      "outputChecksum": "61c3b52ef86aca4957def536d44fefdcb19fdf44a7d900a73f7dcd7b12083831",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the diagnostic sequence and the distinction between completed checks and an unresolved cause.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "flaky-test-no-result",
+      "repeat": 1,
+      "outputChecksum": "49e9d0d8bd8ded8b37532881d0b069cdcb84f3677423793a076e78177faf78e6",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the flaky-test diagnostic steps, missing fix or result, and advice to explain whether a change reduced the failure.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "flaky-test-no-result",
+      "repeat": 2,
+      "outputChecksum": "43b3770b9fdc510084dda3091ded5b44bc2a5dc28274a4a940a0092e9afc9415",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve reproduction, seed control, run comparison, the unknown fix, and the proposed hypothesis or validation step.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "batch-trade-off",
+      "repeat": 1,
+      "outputChecksum": "1bbd5b883b236ad3ac84bc45f6be352282383b88ef7c7afa41a88c013dcf1c95",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve idempotent writes preventing duplicate orders, the missing throughput estimate, and the advised comparison of recovery cost.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "batch-trade-off",
+      "repeat": 2,
+      "outputChecksum": "ea6fdd8c8eab4a092b743e3ec1da097228187454cc53b018a5a37d31b56565a4",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve retry measurement, idempotent writes, duplicate-order prevention, and the unquantified throughput trade-off.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "duplicate-row-language",
+      "repeat": 1,
+      "outputChecksum": "e00ba99be9f162143ce7c1e332ff37c77df25197d4dd8369a2ac0808a6161a24",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the past-tense error, prior scripted duplicate-row check, planned pre-launch recheck, production limitation, and broader metric-validation advice.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "duplicate-row-language",
+      "repeat": 2,
+      "outputChecksum": "39bdea5c943cc328e64221db2505d8f618af777c232e7b754713280f37510764",
+      "verdict": "inconsistent",
+      "contradictoryPairs": [
+        {
+          "name": "strength",
+          "issue": "English says the answer specifies that the completed duplicate-row check uses a script; Traditional Chinese says the answer explains it will use a script (會使用腳本). This shifts a confirmed past action into a future commitment. The transcript confirms script use yesterday and does not say the planned recheck will use a script."
+        }
+      ],
+      "rationale": "The first four pairs and priority-improvement pair align, but the strength pair changes the script use from an observed past action to a future plan; the transcript confirms only past script use.",
+      "ratingMissesVerified": true
+    }
+  ],
+  "summary": "Independent packet-only review found one bilingual timing mismatch in duplicate-row-language repeat 2 strength: English describes past script use, whereas Traditional Chinese implies future script use. The other 95 pairs preserve the same coaching meaning. All 16 ratingMisses lists match the supplied ratings and approved ranges; support misses occur in both batch-trade-off outputs and structure misses in both duplicate-row-language outputs. This is a diagnostic pilot review, not release validation."
+}
