@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "3.7.0",
+  "packetVersion": 2,
+  "role": "Independent AI Role persona draft B",
+  "packetChecksum": "8a6b36a1c469700ce36f88789ddf96cb5d197abbac5cf7d508345d54c4da448f",
+  "draftedAt": "2026-09-25T14:05:47Z",
+  "blindToModelFeedback": true,
+  "labels": [
+    {
+      "caseId": "c01",
+      "inputChecksum": "9afdbb4201830917f37d0c8d03eb14e97b23f656685d76f0c86158fef1850987",
+      "ranges": {"relevance": [3, 3], "support": [2, 2], "structure": [3, 3], "englishExpression": [4, 4]},
+      "rationale": "Relevance: explains the appeal through useful stock counts and store-team work, but names no technical skill. Support: avoiding waste is a general consequence, with no concrete evidence or example. Structure: the reason for interest and the related team preference form an understandable but thin line. English expression: clear and natural throughout.",
+      "evidenceQuotes": ["I want this role because accurate stock counts help shops avoid waste.", "I also like working with store teams."],
+      "structureEvidence": {"spanQuotes": ["I want this role because accurate stock counts help shops avoid waste.", "I also like working with store teams."], "advancement": "The second sentence adds a related preference; it does not test, narrow, or act on the first.", "boundaryUncertainty": "No substantial 3/4 uncertainty: the two points have no developed relationship."},
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    },
+    {
+      "caseId": "c02",
+      "inputChecksum": "08d3536b78262f4fc5bf78f0a7e536c1f5a88dec43300c24445d4c1834757648",
+      "ranges": {"relevance": [4, 4], "support": [3, 3], "structure": [4, 4], "englishExpression": [4, 4]},
+      "rationale": "Relevance: states an interest in demand patterns and identifies SQL checks as a useful skill. Support: comparing forecast inputs with sales records is a concrete action, though no observed result is given. Structure: moves from interest to a practical skill and then qualifies the scope of that skill by acknowledging limited production-model experience. English expression: clear and natural throughout.",
+      "evidenceQuotes": ["I enjoy finding patterns in messy demand data.", "I can write SQL checks that compare forecast inputs with sales records, though I have not built a production forecasting model."],
+      "structureEvidence": {"spanQuotes": ["I enjoy finding patterns in messy demand data.", "I can write SQL checks that compare forecast inputs with sales records", "though I have not built a production forecasting model."], "advancement": "The SQL-check action makes the initial interest practical, and the final qualification narrows the claimed experience.", "boundaryUncertainty": "A 3 reading is plausible if the final qualification is treated as merely local, but the explicit limit on the earlier skill claim makes 4 the better fit."},
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    },
+    {
+      "caseId": "c03",
+      "inputChecksum": "17303f6230ef2f2991ac294cba5cddddce3735385f1a21abf5f7c88b82e6f1d1",
+      "ranges": {"relevance": [4, 4], "support": [4, 4], "structure": [4, 4], "englishExpression": [4, 4]},
+      "rationale": "Relevance: supplies an investigation and a temporary customer-impact limit. Support: compares identifiers, reproduces the duplicate in staging, and explains how disabling retries could prevent further duplicates. Structure: the comparison leads to a targeted replay, followed by a mitigation tied to the suspected replay mechanism. English expression: clear and natural throughout.",
+      "evidenceQuotes": ["I would compare client request IDs with server write IDs, then replay one duplicate in staging to see where the second write occurs.", "I would temporarily disable background retries for affected clients because another automatic replay could create more duplicates."],
+      "structureEvidence": {"spanQuotes": ["compare client request IDs with server write IDs", "then replay one duplicate in staging to see where the second write occurs", "because another automatic replay could create more duplicates."], "advancement": "The replay tests where duplicate writes arise after the ID comparison; the mitigation then acts on the risk of another replay.", "boundaryUncertainty": "No substantial 3/4 uncertainty: later steps test and act on earlier ones."},
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    },
+    {
+      "caseId": "c04",
+      "inputChecksum": "ce9b66694c22daea1b96886db69d2ef34738b484c486087b23b5dfee91aa738d",
+      "ranges": {"relevance": [3, 3], "support": [3, 3], "structure": [3, 3], "englishExpression": [4, 4]},
+      "rationale": "Relevance: gives two preventive actions but identifies no remaining failure mode. Support: an expiry alert and calendar reminder are concrete actions, while the importance claim supplies little reasoning. Structure: the two related safeguards are easy to follow but do not develop or qualify one another. English expression: clear and natural throughout.",
+      "evidenceQuotes": ["I would add an expiry alert because certificates are important.", "I would also keep a calendar reminder."],
+      "structureEvidence": {"spanQuotes": ["I would add an expiry alert because certificates are important.", "I would also keep a calendar reminder."], "advancement": "The second sentence adds another safeguard without testing, narrowing, or acting on the first.", "boundaryUncertainty": "No substantial 3/4 uncertainty: the explanation and addition remain thin."},
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    },
+    {
+      "caseId": "c05",
+      "inputChecksum": "918ca8ba975fcddbd8652a2b3009beae609979d096c477712fbcb4b50dc4324a",
+      "ranges": {"relevance": [4, 4], "support": [3, 3], "structure": [4, 4], "englishExpression": [4, 4]},
+      "rationale": "Relevance: states a completed merge, a completed sample check, and the outstanding billing-total comparison. Support: the twenty-record sample is a concrete verification action, but its findings and the broader billing comparison are absent. Structure: proceeds from cleanup to a limited check, then explicitly marks a further comparison as unfinished, narrowing what has been verified. English expression: clear and natural throughout.",
+      "evidenceQuotes": ["I merged duplicate customer rows on Tuesday and checked a sample of twenty records.", "I plan to compare the total billing amount next week; I have not done that comparison yet."],
+      "structureEvidence": {"spanQuotes": ["I merged duplicate customer rows on Tuesday", "checked a sample of twenty records.", "I plan to compare the total billing amount next week; I have not done that comparison yet."], "advancement": "The sample check follows the merge; the planned billing comparison qualifies the scope of completed verification and identifies the next step.", "boundaryUncertainty": "A 3 reading is possible because the check's result is unstated, but the explicit boundary between completed and pending verification supports 4 for organization alone."},
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    },
+    {
+      "caseId": "c06",
+      "inputChecksum": "8e6c24ee9952a10964f5dc31d8ef0851045b5b8c9c31441f39520a8455b7e08a",
+      "ranges": {"relevance": [2, 2], "support": [2, 2], "structure": [3, 3], "englishExpression": [4, 4]},
+      "rationale": "Relevance: mentions changing the pipeline and an alleged outcome, but describes neither the change made nor evidence of improved reliability. Support: the importance claim and unsubstantiated praise/perfection claim are bare assertions. Structure: a change claim with a generic reason and asserted outcome has a discernible but thin line. English expression: grammatical and understandable; implausibility is not a language fault.",
+      "evidenceQuotes": ["I changed the event pipeline because reliable data matters.", "Everyone was delighted and the system became perfect."],
+      "structureEvidence": {"spanQuotes": ["I changed the event pipeline because reliable data matters.", "Everyone was delighted and the system became perfect."], "advancement": "The second sentence asserts an outcome after the change, but does not test, narrow, or explain the first claim.", "boundaryUncertainty": "No substantial 3/4 uncertainty: the outcome assertion does not develop the causal line."},
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    },
+    {
+      "caseId": "c07",
+      "inputChecksum": "c6542fdb431649ed0dbd6b7f6695ca25eeed3accf3f453e5c00b5b04c0a44810",
+      "ranges": {"relevance": [1, 1], "support": [1, 1], "structure": [4, 4], "englishExpression": [4, 4]},
+      "rationale": "Relevance: discusses balcony plants and answers neither the teammate conflict nor the agreement requested. Support: gives no question-related support. Structure: a conditional plant-care sequence ends with a delayed observation that tests whether the earlier shade intervention helped. English expression: clear and natural throughout.",
+      "evidenceQuotes": ["For my balcony plants, I first check the soil, then move the pots away from direct sun if the leaves look dry.", "I wait a day before watering again so I can tell whether the shade helped."],
+      "structureEvidence": {"spanQuotes": ["then move the pots away from direct sun if the leaves look dry.", "I wait a day before watering again so I can tell whether the shade helped."], "advancement": "The delayed watering and observation test whether the earlier move into shade helped.", "boundaryUncertainty": "No substantial 3/4 uncertainty: the later step explicitly tests the earlier intervention despite the answer's irrelevance."},
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    },
+    {
+      "caseId": "c08",
+      "inputChecksum": "e15572d1eaac77d1c15a4c1594841144f56f09b0e44e428e5b9b5fed6e581ec3",
+      "ranges": {"relevance": [4, 4], "support": [3, 3], "structure": [4, 4], "englishExpression": [3, 3]},
+      "rationale": "Relevance: asks for a concrete input, reproduces the failure with the teammate, and adds a check afterward. Support: gives a concrete response and code change, though no result of the new check is stated. Structure: clarification leads to a shared failing case, which leads to a targeted check; the final sentence marks the release discussion as pending. English expression: meaning is clear, but missing articles and verb inflections in 'Teammate say test bad' and 'We no talk' are noticeable.",
+      "evidenceQuotes": ["Teammate say test bad.", "I ask which input.", "We run failing case together, then I add check for empty file.", "We no talk about release yet."],
+      "structureEvidence": {"spanQuotes": ["I ask which input.", "We run failing case together, then I add check for empty file.", "We no talk about release yet."], "advancement": "The question identifies an input to test; the shared reproduction prompts an empty-file check, while release discussion remains explicitly pending.", "boundaryUncertainty": "No substantial 3/4 uncertainty: each later move acts on an earlier one."},
+      "requiredFindings": [],
+      "forbiddenFindings": []
+    }
+  ]
+}
