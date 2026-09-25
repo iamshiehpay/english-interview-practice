@@ -1,5 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {spawnSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
 import {candidateFeedbackContract, candidateFeedbackSchema, validateCandidateFeedback} from '../evaluation/v3-6/evidence-first-candidate.js';
 
 const question = {text: 'How would you investigate a slow search and explain the trade-off?', requestedParts: ['How would you investigate a slow search', 'explain the trade-off']};
@@ -71,4 +73,14 @@ test('candidate keeps language judgment separate and requires a quoted wording p
   feedback.decisionEvidence.englishExpression.issueQuote = 'I would check latency again';
   feedback.decisionEvidence.englishExpression.issue = 'Claimed wording issue';
   assert.equal(validateCandidateFeedback(feedback, question, transcript).ratings.englishExpression.level, 3);
+});
+
+test('pilot runner is dry by default and refuses execution without explicit usage flag', () => {
+  const runner = fileURLToPath(new URL('../evaluation/v3-6/pilot-run.js', import.meta.url));
+  const dry = spawnSync(process.execPath, [runner], {encoding: 'utf8'});
+  assert.equal(dry.status, 0, dry.stderr);
+  assert.equal(JSON.parse(dry.stdout).feedbackRequestCap, 16);
+  const refused = spawnSync(process.execPath, [runner, '--execute'], {encoding: 'utf8'});
+  assert.notEqual(refused.status, 0);
+  assert.match(refused.stderr, /Explicit subscription usage flag required/);
 });
