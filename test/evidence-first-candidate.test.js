@@ -2,12 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {candidateFeedbackContract, candidateFeedbackSchema, validateCandidateFeedback} from '../evaluation/v3-6/evidence-first-candidate.js';
 
-const question = {text: 'How would you investigate a slow search and explain the trade-off?'};
+const question = {text: 'How would you investigate a slow search and explain the trade-off?', requestedParts: ['How would you investigate a slow search', 'explain the trade-off']};
 const transcript = 'I would measure slow queries, then inspect false matches before changing the index. I would check latency again, but I cannot claim a production result.';
 const rating = (level, quote) => ({level, quote, reason: 'Grounded in the answer.', reasonZh: '根據回答中的證據。'});
 const valid = () => ({
   decisionEvidence: {
-    relevance: {coverage: 'core-only', questionPartQuotes: ['investigate a slow search', 'explain the trade-off'], answerQuotes: ['measure slow queries'], missingPartQuotes: ['explain the trade-off']},
+    relevance: {coverage: 'core-only', parts: [{questionPartQuote: question.requestedParts[0], answerQuote: 'measure slow queries'}, {questionPartQuote: question.requestedParts[1], answerQuote: ''}], relatedQuote: ''},
     support: {basis: 'reasoned', pointQuote: 'measure slow queries', supportQuote: 'check latency again', reasoningLink: 'The second measurement checks whether the index change helped.'},
     structure: {organization: 'developed', spanQuotes: ['measure slow queries', 'inspect false matches', 'check latency again'], linkType: 'stepwise', advancement: 'Measurement leads to diagnosis and then validation.'},
     englishExpression: {impact: 'none', issueQuote: '', issue: ''}
@@ -41,11 +41,26 @@ test('candidate rejects evidence/rating disagreement and invented question or tr
   mismatch.ratings.support.level = 3;
   assert.throws(() => validateCandidateFeedback(mismatch, question, transcript), /support level/);
   const inventedPart = valid();
-  inventedPart.decisionEvidence.relevance.missingPartQuotes = ['report the revenue'];
-  assert.throws(() => validateCandidateFeedback(inventedPart, question, transcript), /relevance answer or missing quotes/);
+  inventedPart.decisionEvidence.relevance.parts[1].questionPartQuote = 'report the revenue';
+  assert.throws(() => validateCandidateFeedback(inventedPart, question, transcript), /relevance part quotes/);
   const inventedSpan = valid();
   inventedSpan.decisionEvidence.structure.spanQuotes[1] = 'deployed to production';
   assert.throws(() => validateCandidateFeedback(inventedSpan, question, transcript), /structure spans/);
+});
+
+test('a compound question cannot receive relevance 4 by silently omitting a frozen requested part', () => {
+  const feedback = valid();
+  feedback.ratings.relevance.level = 4;
+  feedback.decisionEvidence.relevance.coverage = 'all';
+  feedback.decisionEvidence.relevance.parts.pop();
+  assert.throws(() => validateCandidateFeedback(feedback, question, transcript), /relevance requested-part coverage/);
+});
+
+test('support level 1 can truthfully record no question-related point', () => {
+  const feedback = valid();
+  feedback.ratings.support.level = 1;
+  feedback.decisionEvidence.support = {basis: 'none', pointQuote: '', supportQuote: '', reasoningLink: ''};
+  assert.equal(validateCandidateFeedback(feedback, question, transcript).ratings.support.level, 1);
 });
 
 test('candidate keeps language judgment separate and requires a quoted wording problem below 4', () => {

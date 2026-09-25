@@ -1,0 +1,10 @@
+{
+  "flag-rollback": ["how you investigated a bad feature-flag rollout", "what you found", "what you told the team"],
+  "thin-motivation": ["Why do you want this software reliability role", "which of your skills would help the team"],
+  "travel-off-topic": ["How would you resolve disagreement between two engineers about a security review"],
+  "cache-related-points": ["choose a cache invalidation strategy", "explain its failure mode"],
+  "sales-audience-gap": ["investigate a sudden drop in qualified leads", "explain the finding to a sales manager"],
+  "accessibility-timing": ["an accessibility change you completed", "how you verified it", "what remains"],
+  "sensor-language": ["check whether a sensor reading has drifted", "communicate the uncertainty"],
+  "unsupported-handoff": ["handle conflicting feedback from a teammate", "what changed in the work"]
+}
