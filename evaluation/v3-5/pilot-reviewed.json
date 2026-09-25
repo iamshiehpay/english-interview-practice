@@ -1,0 +1,240 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "3.5.0",
+  "labelPacketContractVersion": "3.4.0",
+  "generatedAt": "2026-09-25T06:40:05.095Z",
+  "usage": {
+    "subscriptionVerificationRequests": 0,
+    "subscriptionFeedbackRequests": 16,
+    "subscriptionRequestCap": 16,
+    "independentAiReviewerInvocations": 2,
+    "reviewerInvocationCap": 2
+  },
+  "artifactChecksums": {
+    "freeze": "1d6044a2a5d6cf706ba5b13fc31dc1464c908031560cfca555a9f18e540d3813",
+    "reviewPacket": "5567595314e203468f30fa9de7a9a3714d4b30f3a7e303fd9e03196df4dd8876",
+    "semanticReview": "e3e419b389629690eacc726e369aa62611986d2c4fc88243335ee4aa1ca51d50",
+    "approvedLabels": "bd1241910c1370401a779ba2312ca64ebe0dcdcc8388514abb3f86f46317ed81",
+    "priorReviewPacket": "ada76d8beb3bd198cb7fb22ea67fa67a45d501bc8ee0298961facb45750eda76",
+    "priorSemanticReview": "7bd31b440d2b52e9ab42a49225f87472bd3a56c525934102c766b92f7e85a3ab"
+  },
+  "automaticGate": {
+    "pass": true,
+    "outputs": 16
+  },
+  "ratingGate": {
+    "pass": false,
+    "outputLevelPass": 9,
+    "total": 16,
+    "dimensionMisses": {
+      "relevance": 1,
+      "support": 0,
+      "structure": 6,
+      "englishExpression": 0
+    }
+  },
+  "bilingualGate": {
+    "pass": true,
+    "consistentOutputs": 16,
+    "total": 16,
+    "reviewedPairs": 96,
+    "inconsistent": []
+  },
+  "pairedComparison": [
+    {
+      "caseId": "latency-sequence",
+      "repeat": 1,
+      "contract3_4": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      },
+      "contract3_5": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "latency-sequence",
+      "repeat": 2,
+      "contract3_4": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      },
+      "contract3_5": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "ingestion-sequence",
+      "repeat": 1,
+      "contract3_4": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      },
+      "contract3_5": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "ingestion-sequence",
+      "repeat": 2,
+      "contract3_4": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      },
+      "contract3_5": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "garden-off-topic",
+      "repeat": 1,
+      "contract3_4": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      },
+      "contract3_5": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "garden-off-topic",
+      "repeat": 2,
+      "contract3_4": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      },
+      "contract3_5": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "bread-off-topic",
+      "repeat": 1,
+      "contract3_4": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      },
+      "contract3_5": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "bread-off-topic",
+      "repeat": 2,
+      "contract3_4": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      },
+      "contract3_5": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "notification-no-result",
+      "repeat": 1,
+      "contract3_4": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      },
+      "contract3_5": {
+        "ratingPass": false,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "notification-no-result",
+      "repeat": 2,
+      "contract3_4": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      },
+      "contract3_5": {
+        "ratingPass": false,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "flaky-test-no-result",
+      "repeat": 1,
+      "contract3_4": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      },
+      "contract3_5": {
+        "ratingPass": false,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "flaky-test-no-result",
+      "repeat": 2,
+      "contract3_4": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      },
+      "contract3_5": {
+        "ratingPass": false,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "batch-trade-off",
+      "repeat": 1,
+      "contract3_4": {
+        "ratingPass": false,
+        "semanticVerdict": "consistent"
+      },
+      "contract3_5": {
+        "ratingPass": false,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "batch-trade-off",
+      "repeat": 2,
+      "contract3_4": {
+        "ratingPass": false,
+        "semanticVerdict": "consistent"
+      },
+      "contract3_5": {
+        "ratingPass": false,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "duplicate-row-language",
+      "repeat": 1,
+      "contract3_4": {
+        "ratingPass": false,
+        "semanticVerdict": "consistent"
+      },
+      "contract3_5": {
+        "ratingPass": false,
+        "semanticVerdict": "consistent"
+      }
+    },
+    {
+      "caseId": "duplicate-row-language",
+      "repeat": 2,
+      "contract3_4": {
+        "ratingPass": false,
+        "semanticVerdict": "inconsistent"
+      },
+      "contract3_5": {
+        "ratingPass": true,
+        "semanticVerdict": "consistent"
+      }
+    }
+  ],
+  "pilotStatus": "NO_GO",
+  "releaseStatus": "BLOCKED",
+  "note": "Development-set prompt comparison only. Historical 3.3 output, labels and release verdict are unchanged; this report cannot validate v1.0.0."
+}

@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "3.5.0",
+  "reviewPacketChecksum": "5567595314e203468f30fa9de7a9a3714d4b30f3a7e303fd9e03196df4dd8876",
+  "reviewer": "Codex independent semantic reviewer 2/2",
+  "reviewedAt": "2026-09-25T06:39:41.566Z",
+  "reviewedOutputs": 16,
+  "reviewedPairs": 96,
+  "reviews": [
+    {
+      "caseId": "latency-sequence",
+      "repeat": 1,
+      "outputChecksum": "c5b4fbe043a8a889a91daca1c525598d8397fd79d238ae1293a7f52234069666",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the diagnostic sequence, the missing reporting detail, and the advice to state evidence, finding, impact, and next action.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "latency-sequence",
+      "repeat": 2,
+      "outputChecksum": "9e35d1609d832c5140a549b2d88229afba488cd932b749d47fdb7da0ac7fbee7",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the planned investigation steps and the distinction between merely sharing a finding and explaining a report with supporting evidence.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "ingestion-sequence",
+      "repeat": 1,
+      "outputChecksum": "4179ed4b8563ec8381f40cfcfcae533669209adfe5643a38d36867a41c233d45",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the count comparison, sampling, conditional rollback, and advice to add explicit acceptance thresholds.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "ingestion-sequence",
+      "repeat": 2,
+      "outputChecksum": "b0b8471af97833cd9d8e3a537dceab984d2e25ae2d51db897d7d0841d9937885",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the aggregate-to-row inspection sequence, conditional rollback, and requested acceptance criteria and edge cases.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "garden-off-topic",
+      "repeat": 1,
+      "outputChecksum": "760636c6a41f19f6d3463f79a15badc8cfa92a5f5da16add6769db3d6030c899",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve that the answer concerns herb care rather than conflicting code-review feedback, while crediting its sequence and advising a topic-specific answer.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "garden-off-topic",
+      "repeat": 2,
+      "outputChecksum": "c0450bd0cc87a22dc5ef2a3d68e2a211b3b6f0d64647e2369568c08c6022f38b",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the off-topic herb-care assessment, the conditional structure, and the proposed way to reconcile conflicting code-review feedback.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "bread-off-topic",
+      "repeat": 1,
+      "outputChecksum": "21efcde7690d76f14cab8ac48eb013752dbff5e254a7f21e6d5185d0b46edfe2",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the bread-versus-mobile-crash mismatch, the clear sequence, and the need for a crash-isolation plan.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "bread-off-topic",
+      "repeat": 2,
+      "outputChecksum": "acaafe02e4afe4e789732ac2300cdcc4a0bc8f85ebacc73ef230e7b8d065a0b5",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the off-topic bread assessment, the sequence and consequence, and the still-unresolved need for mobile crash diagnostics.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "notification-no-result",
+      "repeat": 1,
+      "outputChecksum": "a796ac52b6481e7438cf8ce12e37aa50d543097e6086e780871b227d423d498f",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the two completed diagnostic checks and the absence of a validated cause or outcome; the improvement asks for results or explicit uncertainty.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "notification-no-result",
+      "repeat": 2,
+      "outputChecksum": "ca9e838357465af122e880b167a1a792f0f2d99e6457a10750cc5e86a10a312b",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the completed checks, missing confirmed cause and result, and the quoted admission that the cause has not yet been isolated.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "flaky-test-no-result",
+      "repeat": 1,
+      "outputChecksum": "179584df4987f89f5297fc4feea35fc06eedbe3b150c30351993a8eba2757bf4",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the completed investigation steps, missing change or result, and the advice to explain the change and its effect on the flaky test.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "flaky-test-no-result",
+      "repeat": 2,
+      "outputChecksum": "0e5e15594818c29e63ddf27929f2d06bad2ef8f3e7fcc9fc7919b14afac712ff",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the reproducible investigation sequence, missing finding or change, and the continuing uncertainty about a fix.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "batch-trade-off",
+      "repeat": 1,
+      "outputChecksum": "160649b1bd756eb943b81a78a5391328c5d7adb9eb1c4bccc605980d7d8624b2",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the recovery mechanism, duplicate-order prevention during replay, unquantified throughput cost, and product-manager communication advice.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "batch-trade-off",
+      "repeat": 2,
+      "outputChecksum": "a9e003b62a6bfd00135139619d8b41adeaeb92946dec7f6217c71efce9741426",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs preserve the recovery safeguard and its consequence, the missing throughput trade-off, and the advice to quantify the cost for the product manager.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "duplicate-row-language",
+      "repeat": 1,
+      "outputChecksum": "2b3e207b83f2bde6f189eaad3336d29ee792ea84fd30eb73d02850c91f478227",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs distinguish the past duplicate-row check from the planned pre-launch recheck and preserve the tense correction and missing outcome.",
+      "ratingMissesVerified": true
+    },
+    {
+      "caseId": "duplicate-row-language",
+      "repeat": 2,
+      "outputChecksum": "e5ad4ae6dad6a024a65e6c67a521833f4f09485106f0b8079c1a1b31d28a7691",
+      "verdict": "consistent",
+      "contradictoryPairs": [],
+      "rationale": "All six pairs distinguish the past check from the planned recheck, preserve the production limitation and tense correction, and request evidence before presenting the metric.",
+      "ratingMissesVerified": true
+    }
+  ],
+  "summary": {
+    "consistentOutputs": 16,
+    "inconsistentOutputs": 0,
+    "contradictoryPairs": 0,
+    "ratingMissesVerifiedOutputs": 16,
+    "ratingMissesByDimension": {
+      "relevance": 1,
+      "support": 0,
+      "structure": 6,
+      "englishExpression": 0
+    },
+    "outputLevelPassVerified": 9,
+    "assessment": "No substantive English–Traditional Chinese contradictions found across the 96 reviewed pairs. Packet rating misses and output-level pass count match independent recalculation."
+  }
+}

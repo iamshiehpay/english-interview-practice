@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "3.5.0",
+  "labelPacketContractVersion": "3.4.0",
+  "requestCap": 16,
+  "packetChecksum": "83babcebec1e83d58de31b46a2ff56e98c0dd81e67311e69adc3ea29bbc23808",
+  "approvalChecksum": "bd1241910c1370401a779ba2312ca64ebe0dcdcc8388514abb3f86f46317ed81",
+  "promptChecksum": "a80739fef3b993dad9389901116236974aeac6767d91ea32667b82c5bcc5dab4",
+  "sourceChecksums": {
+    "pilot-run.js": "a6f86e561af4177197fe74e4d7ec0f09ce6b5bb66ce3c26c3878eccbb97ed329",
+    "contract-candidate.js": "82f7564df2934fde6d7c3b233db1b02f3ecc71ea40f599c4f454ee7326853ab6",
+    "../v3-4/pilot-inputs.json": "ca32edf77ff7629f4ef6e0d77b11b929aa3a707d8d1e52c64d5a2c61c43627fb",
+    "../v3-4/pilot-blind-packet.json": "417ddab0826af75c0d4fd21ced1b54514ef153261224e99982b3e38b04db18d9",
+    "../v3-4/pilot-blind-rater-guide.md": "eb7da81d8b8effad4702b83f1238a50a58a3d031fbaccd98da620b03a81d845a",
+    "../v3-4/pilot-label-approval.json": "39229eb6c27268d3ce68a6a96183257e476f0d9813077995466465085e78b853",
+    "../../src/model-contracts.js": "63f8c3cacc6bcb9953601d970db1e7a0824e59f8be7da9fb5fa9a45aede665e1",
+    "../../src/codex-language.js": "0d21dd03935c2b038ad7a22cc9542965b16fbd9aa1f238684dafb3dce2fe396d",
+    "../../src/model-schemas.js": "491244c1916f4e4696ab5e237a01b45f9c10326f8fc40f4308bca93e016dcd70",
+    "../../src/domain.js": "da14ab080620381fb83e4451efbcbafe974ab03b3c70691ab368afcbfa2ed86a",
+    "../../src/codex-rpc.js": "de1cade90cbf00fdf2a7069acbd4337bf2aa2b1eb0121bcacf4aa32b4ec2435a",
+    "../../src/codex-profile.js": "f5a7cf356f2904b15b2d4f5f23d46c6a4f32a488ebcd53eb306a62d61761ffe3",
+    "../../src/codex-audit.js": "79c5f4ad49376b8feba7082493f903ff607bd2ca937bc4058950a9a40c2f9386",
+    "../../src/codex-sandbox.js": "61b3735ba43390d526ee79165c2574a6e71065b597fd6d0ea0c15dcff2737abb",
+    "../../src/codex-runtime.js": "48e1c83f15cd68fdbf4a6cd69c30aa34ae45df7f5bf109d148b07c185083ee32"
+  },
+  "model": "gpt-5.6-luna",
+  "effort": "xhigh",
+  "serviceTier": "priority",
+  "cliVersion": "codex-cli 0.155.1"
+}
