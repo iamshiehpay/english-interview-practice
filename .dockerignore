@@ -1,0 +1,16 @@
+.git
+.github
+.workspace
+.coach-codex
+.claude
+.env
+.env.*
+node_modules
+test-results
+docs
+evaluation
+infra
+scripts
+test
+*.md
+.DS_Store

@@ -16,6 +16,40 @@ npm start
 npm test
 ```
 
+## Public Cloud Run demo
+
+The deployable public build is a **v0.9 synthetic portfolio demo**. It always uses fake language, speech, and job providers. Each browser receives an isolated temporary copy of [`demo/seed/workspace.json`](demo/seed/workspace.json); the copy expires after one idle hour, is limited to 2 MB, and disappears when the Cloud Run instance stops. Do not enter a real resume or other personal information. The creator's local `.workspace` and provider credentials are never copied into the image.
+
+```mermaid
+flowchart LR
+  GH[GitHub Actions] -->|OIDC / WIF| AR[Artifact Registry]
+  AR --> CR[Cloud Run\nasia-east1 · min 0 · max 1]
+  Browser -->|secure session cookie| CR
+  CR --> Temp[isolated temporary workspace]
+  Monitor[Cloud Monitoring\nhealth · 5xx · memory] --> CR
+  Budget[USD 1 budget alerts] --> Operator[operator email]
+```
+
+The deployment uses Terraform and GitHub Workload Identity Federation, so GitHub stores no GCP service-account key. Run the repeatable setup wizard from a terminal after installing `gcloud`, `terraform`, `gh`, and Docker:
+
+```sh
+./scripts/setup-gcp.sh
+```
+
+See the [deployment runbook](docs/devops/runbook.md) for rollout and incident steps and the [cost model](docs/devops/cost.md) for the free allowances, remaining egress risk, and budget behavior.
+
+The wizard signs in through official browser flows, collects the GCP project, billing account, notification email, and GitHub repository, shows the Terraform plan, then asks before creating resources. It configures the repository variables used by [the production workflow](.github/workflows/deploy.yml) and walks through the GitHub `production` approval rule. API activation itself is free; deployed resources and network traffic can incur usage charges. The USD 1 budget alerts near USD 0.01, USD 0.50, and USD 1.00 but does not cap spending.
+
+For a manual review, see [`infra/README.md`](infra/README.md). Local container smoke:
+
+```sh
+docker build -t interview-coach:demo .
+docker run --rm -p 8080:8080 interview-coach:demo
+# Open http://127.0.0.1:8080
+```
+
+Cloud deployment success does not change the separate blocked v1.0.0 model-quality gate. The current public artifact remains labelled as a deterministic workflow demo.
+
 `npm start` reads `process.env` and **never reads a credentials file**. To keep speech credentials in a file instead of exporting them by hand, put them in `~/.config/interview-coach/speech.env` (mode 600) and run `npm run start:speech`, which sources that file into the server process and starts the server; override the path with `COACH_SPEECH_ENV`. The key stays in that process's environment and never reaches the browser, the workspace, test artifacts, Git or a log.
 
 ## Start and manually test optional follow-ups

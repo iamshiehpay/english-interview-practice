@@ -1,8 +1,9 @@
-import {mkdir, writeFile, unlink, readdir, readFile} from 'node:fs/promises';
+import {mkdir, unlink, readdir, readFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {randomUUID} from 'node:crypto';
 import {requireValue, nonempty} from './domain.js';
 import {RECORDING_MAX_BASE64, RECORDING_MAX_BYTES, recordingMediaTypes} from './speech.js';
+import {WorkspaceQuota} from './workspace-quota.js';
 
 // Answer Recordings live as files beside the practice database, never as base64 inside
 // the JSON document, which is rewritten on every transaction. The database holds only a
@@ -12,13 +13,13 @@ const extensions = {'audio/webm': 'webm', 'audio/ogg': 'ogg', 'audio/mp4': 'm4a'
 const identifier = /^[0-9a-f-]{36}$/;
 
 export class RecordingStore {
-  constructor(directory) { this.directory = join(directory, 'recordings'); }
+  constructor(directory, {quota = new WorkspaceQuota(directory)} = {}) { this.directory = join(directory, 'recordings'); this.quota=quota; }
   async open() { await mkdir(this.directory, {recursive: true, mode: 0o700}); return this; }
   path(entry) {
     requireValue(identifier.test(entry.id) && Object.hasOwn(extensions, entry.mimeType), 'Not found', 404);
     return join(this.directory, `${entry.id}.${extensions[entry.mimeType]}`);
   }
-  async write(entry, bytes) { await writeFile(this.path(entry), bytes, {mode: 0o600}); }
+  async write(entry, bytes) { await this.quota.write(this.path(entry), bytes, {mode: 0o600}); }
   async read(entry) { return readFile(this.path(entry)); }
   async remove(entries) {
     for (const entry of entries) await unlink(this.path(entry)).catch(error => { if (error.code !== 'ENOENT') throw error; });

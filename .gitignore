@@ -2,6 +2,12 @@
 .env
 node_modules/
 test-results/
+.gcp-deploy.env
+*.tfstate
+*.tfstate.*
+*.tfplan
+infra/bootstrap/terraform.auto.tfvars
+.terraform/
 
 .coach-codex/
 

@@ -1,6 +1,13 @@
 # 下一批規劃：雲端部署與 DevOps
 
-日期：2026-09-23。狀態：grill-with-docs 討論已於 2026-09-23 完成 Q1–Q10，尚未產生 ADR／PRD／issue；未列在「已確認決策」的選項不視為定案。
+日期：2026-09-23。狀態：討論已完成；ADR 0021 與 issue 0042 已於 2026-09-29 實作並通過本機驗證，等待建立外部 GCP／GitHub 資源與正式環境證據。未列在「已確認決策」的選項不視為定案。
+
+## 2026-09-29 實作更新
+
+- 公開 Demo gateway、合成 seed、非 root Node 22 distroless image、GitHub Actions、Terraform、監控、預算與設定精靈已完成；證據見 [`verification/0042-cloud-run-demo.md`](verification/0042-cloud-run-demo.md)。
+- 實際容器不掛持久 volume。每位訪客使用 `/tmp` 內的隔離暫存 workspace，instance 或 process 重啟時全部清除，符合 ADR 0021 的公開合成 Demo 邊界。
+- [`devops/runbook.md`](devops/runbook.md) 記錄首次部署、一般部署、rollback、Demo 額滿、告警與 budget 處理。
+- 尚未完成的正式環境證據包括 `run.app` URL、dashboard 截圖、真實 alert email、刻意 smoke failure 的 rollback 演練，以及無漂移 plan。完成這些證據前不標記 v0.9 部署完成。
 
 ## 起點
 

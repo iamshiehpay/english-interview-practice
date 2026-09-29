@@ -9,11 +9,14 @@ import {randomUUID,createHash} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {resolve, join} from 'node:path';
+import {gzipSync} from 'node:zlib';
 import {FakeSpeechProvider, clearTemporaryAudio, readAloud, canSpeak, RECORDING_LIMIT_SECONDS, RECORDING_WARNING_SECONDS, RECORDING_MAX_BYTES, RECORDING_MAX_REQUEST_BYTES} from './speech.js';
 import {RecordingStore, captureRecording, transcribeRecording, recordingsFor} from './recordings.js';
 import {createSession, sessionsFor, sessionView, requireCurrentEntry, sessionFinished} from './mock-sessions.js';
 import {LocalWorkspace} from './store.js';
 import {FakeLanguageModel} from './providers.js';
+import {WorkspaceQuota} from './workspace-quota.js';
+import {localRequestPolicy, publicSameOriginPolicy} from './request-policy.js';
 import {questionInSet} from './common-questions.js';
 import {AppError, requireValue, requireUnambiguousQuestionSet, nonempty, redactSecrets, validateAnalysis, validateFeedback, validateCoaching, validateFollowUp, validateCorrections, validateMockSummary, dimensions, questionSetView} from './domain.js';
 
@@ -35,10 +38,15 @@ export function operationBudgets(env = process.env) {
   const operationTimeoutMs = Number(env.COACH_TIMEOUT_MS || (provider === 'codex' ? 180000 : provider === 'claude' ? 90000 : 30000));
   return {operationTimeoutMs, generationTimeoutMs: env.COACH_GENERATION_TIMEOUT_MS ? Number(env.COACH_GENERATION_TIMEOUT_MS) : Math.min(2 * operationTimeoutMs, MAX_GENERATION_TIMEOUT_MS)};
 }
-export async function createApplication({directory = '.workspace', languageModel = new FakeLanguageModel(), speechProvider = new FakeSpeechProvider(), jobSource = new FakeJobSource(), sourceTimeoutMs = 10000, operationTimeoutMs = 30000, generationTimeoutMs = Math.min(2 * operationTimeoutMs, MAX_GENERATION_TIMEOUT_MS), validationRetryLimit = 1, logRejectedOutput = process.env.NODE_TEST_CONTEXT ? () => {} : line => console.error(line)} = {}) {
+export {localRequestPolicy, publicSameOriginPolicy};
+export async function createApplication({directory = '.workspace', languageModel = new FakeLanguageModel(), speechProvider = new FakeSpeechProvider(), jobSource = new FakeJobSource(), sourceTimeoutMs = 10000, operationTimeoutMs = 30000, generationTimeoutMs = Math.min(2 * operationTimeoutMs, MAX_GENERATION_TIMEOUT_MS), validationRetryLimit = 1, logRejectedOutput = process.env.NODE_TEST_CONTEXT ? () => {} : line => console.error(line), requestPolicy = localRequestPolicy, maxWorkspaceBytes = Infinity, deployment = {mode:'local'}} = {}) {
   requireValue(Number.isFinite(operationTimeoutMs) && operationTimeoutMs >= 10 && operationTimeoutMs <= MAX_OPERATION_TIMEOUT_MS, `Operation timeout must be between 10 and ${MAX_OPERATION_TIMEOUT_MS} milliseconds`);
   requireValue(Number.isFinite(generationTimeoutMs) && generationTimeoutMs >= 10 && generationTimeoutMs <= MAX_GENERATION_TIMEOUT_MS, `Generation timeout must be between 10 and ${MAX_GENERATION_TIMEOUT_MS} milliseconds`);
-  const store = await new LocalWorkspace(directory).open();
+  const recordingMaxBytes = maxWorkspaceBytes === Infinity ? RECORDING_MAX_BYTES : Math.min(RECORDING_MAX_BYTES, Math.max(1, maxWorkspaceBytes - 100_000));
+  const recordingMaxRequestBytes = maxWorkspaceBytes === Infinity ? RECORDING_MAX_REQUEST_BYTES : Math.ceil(recordingMaxBytes / 3) * 4 + 100_000;
+  const resumeExtractRequestMaxBytes = maxWorkspaceBytes === Infinity ? 8_100_000 : Math.min(8_100_000, maxWorkspaceBytes + 100_000);
+  const quota = new WorkspaceQuota(directory,maxWorkspaceBytes);
+  const store = await new LocalWorkspace(directory,{quota}).open();
   const operations = new Operations(store, operationTimeoutMs, Object.fromEntries(GENERATION_KINDS.map(kind => [kind, generationTimeoutMs])));
   await operations.recover();
   const audioDirectory = join(directory, 'temporary-audio');
@@ -46,7 +54,7 @@ export async function createApplication({directory = '.workspace', languageModel
   // Recording recovery. A recording that was captured but never submitted is
   // temporary, so it goes; a retained Answer Recording survives a restart, and any
   // file with no reference left behind by a crash is swept.
-  const recordings = await new RecordingStore(directory).open();
+  const recordings = await new RecordingStore(directory,{quota}).open();
   if (recordingsFor(store.data, entry => entry.state !== 'retained').length) {
     await store.transact(d => { for (const entry of Object.values(d.recordings || {})) if (entry.state !== 'retained') delete d.recordings[entry.id]; });
   }
@@ -121,7 +129,7 @@ export async function createApplication({directory = '.workspace', languageModel
     const dismissOp = path.match(/^\/api\/operations\/([^/]+)$/);
     if (method === 'DELETE' && dismissOp) return operations.dismiss(dismissOp[1]);
     if (method === 'GET' && path === '/api/providers/language-status') return languageModel.status ? languageModel.status() : {provider:languageModel.name,authenticated:null,loginRequired:false};
-    if (method === 'GET' && path === '/api/providers') return {languageModel:{name:languageModel.name,subscription:!!languageModel.status,external:!!languageModel.external,outbound:languageModel.external?['JD text and selected resume for analysis','JD, selected resume and existing capability/question set for additions','current question and transcript for feedback or English assistance','primary question, frozen formal answer and completed follow-ups for follow-up generation','a question and one formal answer transcript for evidence-safe key-sentence corrections']:[]},speech:{name:speechProvider.name,external:!!speechProvider.external,canSpeak:canSpeak(speechProvider),demonstrationSpeech:!!speechProvider.demonstrationSpeech,recordingLimitSeconds:RECORDING_LIMIT_SECONDS,recordingWarningSeconds:RECORDING_WARNING_SECONDS,recordingMaxBytes:RECORDING_MAX_BYTES,outbound:speechProvider.external?['recorded audio only',...(canSpeak(speechProvider)?['English practice text for reading aloud']:[])]:[]},jobSource:{name:jobSource.name,external:!!jobSource.external,outbound:!!jobSource.external?['public board token and requested job ID; profile filtering stays local']:[]},jobCuration:{name:languageModel.name,external:!!languageModel.external,outbound:languageModel.external?['shortlisted posting excerpts and your selected resume, to explain the fit and the gaps']:[]}};
+    if (method === 'GET' && path === '/api/providers') return {languageModel:{name:languageModel.name,subscription:!!languageModel.status,external:!!languageModel.external,outbound:languageModel.external?['JD text and selected resume for analysis','JD, selected resume and existing capability/question set for additions','current question and transcript for feedback or English assistance','primary question, frozen formal answer and completed follow-ups for follow-up generation','a question and one formal answer transcript for evidence-safe key-sentence corrections']:[]},speech:{name:speechProvider.name,external:!!speechProvider.external,canSpeak:canSpeak(speechProvider),demonstrationSpeech:!!speechProvider.demonstrationSpeech,recordingLimitSeconds:RECORDING_LIMIT_SECONDS,recordingWarningSeconds:RECORDING_WARNING_SECONDS,recordingMaxBytes,outbound:speechProvider.external?['recorded audio only',...(canSpeak(speechProvider)?['English practice text for reading aloud']:[])]:[]},jobSource:{name:jobSource.name,external:!!jobSource.external,outbound:!!jobSource.external?['public board token and requested job ID; profile filtering stays local']:[]},jobCuration:{name:languageModel.name,external:!!languageModel.external,outbound:languageModel.external?['shortlisted posting excerpts and your selected resume, to explain the fit and the gaps']:[]},deployment};
     if (method === 'POST' && path === '/api/speech') {
       // Learner-initiated, nothing saved: deliberately outside the operations tracker,
       // but bounded so a held request cannot open unlimited provider calls.
@@ -700,14 +708,13 @@ export async function createApplication({directory = '.workspace', languageModel
     }
     throw new AppError('Not found', 404);
   }
-  const server = http.createServer(async (req, res) => {
+  const handler = async (req, res) => {
     try {
-      requireValue(/^(127\.0\.0\.1|localhost)(:\d+)?$/.test(req.headers.host||''),'Local host required',403);
+      requestPolicy(req);
       const path = new URL(req.url, 'http://localhost').pathname;
       // Playback of one retained Answer Recording. Binary, local-only, never cached.
       const playback = path.match(/^\/api\/recordings\/([^/]+)$/);
       if (req.method === 'GET' && playback) {
-        if (req.headers.origin) requireValue(req.headers.origin === `http://${req.headers.host}`, 'Cross-origin request rejected', 403);
         const entry = store.data.recordings?.[playback[1]];
         // Defence in depth: an entry whose owning practice or session is gone is treated
         // as deleted, so no recording can outlive the thing the learner deleted.
@@ -721,8 +728,7 @@ export async function createApplication({directory = '.workspace', languageModel
         return;
       }
       if (path.startsWith('/api/')) {
-        if (req.headers.origin) requireValue(req.headers.origin === `http://${req.headers.host}`, 'Cross-origin request rejected', 403);
-        const input = ['POST', 'PUT', 'PATCH'].includes(req.method) ? await body(req, path.endsWith('/transcription') ? RECORDING_MAX_REQUEST_BYTES : path === '/api/resume/extract' ? 8_100_000 : 1_000_000) : {};
+        const input = ['POST', 'PUT', 'PATCH'].includes(req.method) ? await body(req, path.endsWith('/transcription') ? recordingMaxRequestBytes : path === '/api/resume/extract' ? resumeExtractRequestMaxBytes : 1_000_000) : {};
         let external;
         if(req.method==='POST'){
           const standard=path.match(/^\/api\/(?:snapshots|records)\/([^/]+)\/(analysis|questions|feedback|transcription|coaching|corrections)$/);
@@ -767,12 +773,14 @@ export async function createApplication({directory = '.workspace', languageModel
         const fonts = ['inter-latin-400-normal', 'inter-latin-500-normal', 'inter-latin-600-normal', 'inter-latin-700-normal', 'jetbrains-mono-latin-400-normal', 'jetbrains-mono-latin-500-normal'];
         const name = {'/': 'index.html', '/app.js': 'app.js', '/annotate.js': 'annotate.js', '/voice.js': 'voice.js', '/style.css': 'style.css', ...Object.fromEntries(fonts.map(font => [`/fonts/${font}.woff2`, `fonts/${font}.woff2`]))}[path];
         requireValue(name, 'Not found', 404);
-        const content = await readFile(new URL(`../public/${name}`, import.meta.url));
-        res.writeHead(200, {'Content-Type': name.endsWith('.js') ? 'text/javascript' : name.endsWith('.css') ? 'text/css' : name.endsWith('.woff2') ? 'font/woff2' : 'text/html', // media-src must name blob: explicitly: read-aloud audio is fetched as JSON and
+        let content = await readFile(new URL(`../public/${name}`, import.meta.url));
+        const headers = {'Content-Type': name.endsWith('.js') ? 'text/javascript' : name.endsWith('.css') ? 'text/css' : name.endsWith('.woff2') ? 'font/woff2' : 'text/html', // media-src must name blob: explicitly: read-aloud audio is fetched as JSON and
 // played from a blob URL, which 'self' does not cover, so without this every
 // reading fails with MEDIA_ERR_SRC_NOT_SUPPORTED. Retained recordings stream from
 // this origin and are covered by 'self'.
-'Content-Security-Policy': "default-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; media-src 'self' blob:; object-src 'none'; base-uri 'none'"}); res.end(content);
+'Content-Security-Policy': "default-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; media-src 'self' blob:; object-src 'none'; base-uri 'none'", 'Vary':'Accept-Encoding'};
+        if (!name.endsWith('.woff2') && /(?:^|,)\s*gzip(?:\s*;|\s*,|$)/i.test(String(req.headers['accept-encoding'] || ''))) {content=gzipSync(content);headers['Content-Encoding']='gzip';}
+        res.writeHead(200, headers); res.end(content);
       }
     } catch (error) {
       res.writeHead(error.status || 502, {'Content-Type': 'application/json'});
@@ -782,20 +790,34 @@ export async function createApplication({directory = '.workspace', languageModel
       // so it is safe to return; anything else still falls back to the generic text.
       res.end(JSON.stringify({error: error.status===504?'Provider operation timed out; retry your original action.':error.status===429?'Provider rate limit reached; retry later.':error instanceof AppError ? error.reason : 'Provider or storage operation failed; your saved work is retained. Retry.', retryable: !error.status || error.status === 429 || error.status >= 500}));
     }
-  });
-  return {server, store};
+  };
+  const server = http.createServer(handler);
+  return {server, store, handler};
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const {server} = await createApplication({directory: process.env.WORKSPACE_DIR || '.workspace', ...configuredProviders(), ...operationBudgets()});
+  const demo=process.env.COACH_DEPLOYMENT_MODE==='demo';
+  requireValue(!process.env.COACH_DEPLOYMENT_MODE||demo,'Unsupported deployment mode');
+  const application=demo
+    ? await (await import('./demo-server.js')).createDemoApplication({applicationFactory:createApplication,rootDirectory:process.env.DEMO_WORKSPACE_ROOT||'/tmp/interview-coach-demo',seedDirectory:process.env.DEMO_SEED_DIR||fileURLToPath(new URL('../demo/seed',import.meta.url))})
+    : await createApplication({directory: process.env.WORKSPACE_DIR || '.workspace', ...configuredProviders(), ...operationBudgets()});
+  const {server}=application;
   const port = Number(process.env.PORT || 4310);
+  const host=process.env.HOST||(demo?'0.0.0.0':'127.0.0.1');
+  let stopping=false;
+  const stop=()=>{
+    if(stopping)return;stopping=true;
+    server.close(async()=>{try{await application.close?.();}finally{process.exit(0);}});
+    setTimeout(()=>process.exit(1),10_000).unref();
+  };
+  process.once('SIGTERM',stop);process.once('SIGINT',stop);
   server.once('error', error => {
     if (error.code === 'EADDRINUSE') {
-      console.error(`無法啟動：127.0.0.1:${port} 已被其他服務占用。`);
-      console.error(`若 Interview Coach 已在執行，請開啟 http://127.0.0.1:${port}；若要切換模型服務，請先在原本的終端機按 Ctrl+C，再重新啟動。`);
+      console.error(`無法啟動：${host}:${port} 已被其他服務占用。`);
+      console.error(`若 Interview Coach 已在執行，請先停止原本的服務，再重新啟動。`);
     } else {
       console.error(`無法啟動 Interview Coach：${error.code || error.message}`);
     }
     process.exitCode = 1;
   });
-  server.listen(port, '127.0.0.1', () => console.log(`Interview Coach: http://127.0.0.1:${server.address().port}`));
+  server.listen(port, host, () => console.log(`Interview Coach: http://${host}:${server.address().port}`));
 }

@@ -1,0 +1,6 @@
+project_id           = "your-gcp-project-id"
+github_owner         = "your-github-user"
+github_repository    = "adaptive-english-interview-coach"
+billing_account_id   = "000000-000000-000000"
+notification_email   = "you@example.com"
+# state_bucket_name  = "globally-unique-terraform-state-bucket"

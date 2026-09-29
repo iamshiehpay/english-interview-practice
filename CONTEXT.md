@@ -48,6 +48,10 @@ _Avoid_: One-off mistake, model memory, personality trait
 The learner-controlled environment in which the application runs and personal artifacts are stored, while explicitly configured external providers may perform model inference or speech transcription.
 _Avoid_: Fully offline system, hosted account, cloud workspace
 
+**Public Demo Workspace（公開示範工作區）**:
+A short-lived, isolated copy of synthetic seed data assigned to one anonymous visitor of the public portfolio demo. It expires automatically and must never contain or expose another visitor's data or the creator's Local Workspace.
+_Avoid_: Local Workspace, hosted account, shared demo data
+
 **Legacy Candidate Evidence Profile**:
 An optional learner-approved collection of experience claims and proof points, each linked to a resume excerpt or explicitly confirmed by the learner, used to personalize coaching without limiting which job capabilities may be practised.
 _Avoid_: Resume, generated biography, inferred experience

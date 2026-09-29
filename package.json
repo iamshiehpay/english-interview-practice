@@ -8,6 +8,7 @@
     "test": "node --test test/*.test.js",
     "test:browser": "node test/browser-smoke.js",
     "test:browser:deep-links": "node test/browser-deep-links.js",
+    "demo:seed": "node scripts/build-demo-seed.js",
     "evaluate": "node evaluation/run.js",
     "evaluate:release": "node evaluation/run.js --release",
     "codex:login": "node scripts/codex-account.js login",

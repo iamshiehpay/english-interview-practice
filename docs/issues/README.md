@@ -45,6 +45,7 @@ Local issue tracker for the Adaptive English Interview Coach. All issues below w
 | [0039 — Reject empty bilingual audit pass](./0039-reject-empty-bilingual-audit-pass.md) | completed | None |
 | [0040 — Resumable evaluation checkpoints](./0040-resumable-evaluation-checkpoints.md) | completed | None |
 | [0041 — Separate English expression from content quality](./0041-separate-english-expression-from-content-quality.md) | completed | None |
+| [0042 — Deploy an isolated public demo to Cloud Run](./0042-deploy-isolated-public-demo-to-cloud-run.md) | ready-for-human | GCP project/billing and GitHub production approval |
 
 Implementation should proceed in dependency order. Start each issue in a fresh session with the PRD and only the selected issue as the implementation brief.
 

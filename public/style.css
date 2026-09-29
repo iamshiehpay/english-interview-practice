@@ -195,6 +195,21 @@ svg.i { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor;
 }
 
 main { flex: 1; width: min(1120px, calc(100% - 40px)); margin: 0 auto; padding: clamp(48px, 7vw, 92px) 0 80px; }
+.demo-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+  width: min(820px, 100%);
+  margin: 0 auto var(--s-6);
+  padding: var(--s-3) var(--s-4);
+  color: var(--text-2);
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-line);
+  border-radius: var(--r-md);
+  font: 400 var(--fs-13)/1.6 var(--font-zh);
+}
+.demo-notice[hidden] { display: none; }
+.demo-notice strong { flex: none; color: var(--warn); }
 .view { display: none; }
 .view.active { display: block; animation: settle .24s ease-out; }
 .narrow { width: min(820px, 100%); margin: 0 auto; }

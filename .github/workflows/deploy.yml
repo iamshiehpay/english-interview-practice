@@ -1,0 +1,120 @@
+name: Deploy Cloud Run demo
+
+on:
+  workflow_run:
+    workflows: [Checks]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: cloud-run-production
+  cancel-in-progress: false
+
+env:
+  PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+  REGION: ${{ vars.GCP_REGION }}
+  REPOSITORY: ${{ vars.GCP_ARTIFACT_REPOSITORY }}
+  SERVICE: ${{ vars.GCP_CLOUD_RUN_SERVICE }}
+  STATE_BUCKET: ${{ vars.GCP_TERRAFORM_STATE_BUCKET }}
+  RUNTIME_SERVICE_ACCOUNT: ${{ vars.GCP_RUNTIME_SERVICE_ACCOUNT }}
+  NOTIFICATION_CHANNEL: ${{ vars.GCP_NOTIFICATION_CHANNEL }}
+  WIF_PROVIDER: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+  WIF_SERVICE_ACCOUNT: ${{ vars.GCP_WORKLOAD_IDENTITY_SERVICE_ACCOUNT }}
+  DEPLOY_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+jobs:
+  deploy:
+    if: ${{ vars.GCP_PROJECT_ID != '' && vars.GCP_WORKLOAD_IDENTITY_PROVIDER != '' && (github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'main')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ env.DEPLOY_SHA }}
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          package-manager-cache: false
+      - name: Test application
+        run: npm test
+      - name: Validate deployment variables
+        run: |
+          for name in PROJECT_ID REGION REPOSITORY SERVICE STATE_BUCKET RUNTIME_SERVICE_ACCOUNT NOTIFICATION_CHANNEL WIF_PROVIDER WIF_SERVICE_ACCOUNT; do
+            if [ -z "${!name}" ]; then
+              echo "Missing GitHub Actions variable: ${name}"
+              exit 1
+            fi
+          done
+      - id: auth
+        name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ env.WIF_PROVIDER }}
+          service_account: ${{ env.WIF_SERVICE_ACCOUNT }}
+          token_format: access_token
+      - uses: google-github-actions/setup-gcloud@v3
+      - uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: "1.14.6"
+          terraform_wrapper: false
+      - name: Configure Artifact Registry
+        run: gcloud auth configure-docker "${REGION}-docker.pkg.dev" --quiet
+      - id: previous
+        name: Record current revision
+        run: |
+          revision=$(gcloud run services describe "${SERVICE}" --project "${PROJECT_ID}" --region "${REGION}" --format='value(status.latestReadyRevisionName)' 2>/dev/null || true)
+          echo "revision=${revision}" >> "${GITHUB_OUTPUT}"
+      - name: Build and push image
+        env:
+          IMAGE: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_ARTIFACT_REPOSITORY }}/${{ vars.GCP_CLOUD_RUN_SERVICE }}:${{ env.DEPLOY_SHA }}
+        run: |
+          docker build --tag "${IMAGE}" .
+          docker push "${IMAGE}"
+      - id: deploy
+        name: Apply Cloud Run service
+        env:
+          IMAGE: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_ARTIFACT_REPOSITORY }}/${{ vars.GCP_CLOUD_RUN_SERVICE }}:${{ env.DEPLOY_SHA }}
+        run: |
+          terraform -chdir=infra/service init -input=false \
+            -backend-config="bucket=${STATE_BUCKET}" \
+            -backend-config="prefix=interview-coach/service"
+          terraform -chdir=infra/service apply -input=false -auto-approve \
+            -var="project_id=${PROJECT_ID}" \
+            -var="region=${REGION}" \
+            -var="service_name=${SERVICE}" \
+            -var="container_image=${IMAGE}" \
+            -var="runtime_service_account=${RUNTIME_SERVICE_ACCOUNT}" \
+            -var="notification_channel=${NOTIFICATION_CHANNEL}"
+          echo "url=$(terraform -chdir=infra/service output -raw service_url)" >> "${GITHUB_OUTPUT}"
+      - id: smoke
+        name: Smoke deployed revision
+        run: |
+          for _ in $(seq 1 20); do
+            if curl --fail --silent --show-error "${{ steps.deploy.outputs.url }}/api/health" | grep --quiet '"mode":"demo"'; then
+              exit 0
+            fi
+            sleep 3
+          done
+          exit 1
+      - name: Roll back traffic after a failed deploy
+        if: ${{ failure() && steps.previous.outputs.revision != '' && steps.deploy.outcome != 'skipped' }}
+        run: |
+          gcloud run services update-traffic "${SERVICE}" \
+            --project "${PROJECT_ID}" \
+            --region "${REGION}" \
+            --to-revisions "${{ steps.previous.outputs.revision }}=100" \
+            --quiet
+      - name: Deployment summary
+        if: success()
+        run: |
+          {
+            echo "### Cloud Run demo"
+            echo "${{ steps.deploy.outputs.url }}"
+            echo "Image: \`${DEPLOY_SHA}\`"
+          } >> "${GITHUB_STEP_SUMMARY}"

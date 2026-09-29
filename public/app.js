@@ -125,7 +125,8 @@ function dateLabel(value) {
 }
 function sortRecent(records) { return [...records].sort((a,b) => new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0)); }
 function modelReady() { return !providerInfo?.languageModel?.subscription || languageStatus?.ready === true; }
-function providerName(info) { return info?.external ? info.name : '本機示範服務'; }
+function isPublicDemo() { return providerInfo?.deployment?.mode === 'demo'; }
+function providerName(info) { return info?.external ? info.name : isPublicDemo() ? '公開示範服務' : '本機示範服務'; }
 function outboundLabel(value) {
   const rules = [
     [/JD text.*analysis/i, '產生題目時傳送職缺與你選用的履歷'],
@@ -2123,15 +2124,17 @@ async function renderDiscovery() {
 function renderSettings() {
   const parent = $('#provider-settings'); parent.replaceChildren();
   const names = {languageModel:'題目與回饋',speech:'語音轉錄與朗讀',jobSource:'公開職缺來源',jobCuration:'精選職缺與適配拆解'};
-  for (const [role,info] of Object.entries(providerInfo || {})) {
+  for (const role of Object.keys(names)) {
+    const info = providerInfo?.[role];
+    if (!info) continue;
     const row = document.createElement('div'); row.className = `provider-row${info.external ? ' is-external' : ''}`;
     const access = !info.external ? '' : info.subscription ? '透過你的官方訂閱登入使用；用量依方案計算，不需在本機保存 API 金鑰。' : role === 'jobSource' ? '只讀取你指定的公開職缺板；不需金鑰，也不送出個人資料。' : '使用你在啟動時設定的 API 金鑰；金鑰只從伺服器環境讀取，不會存進本機資料、也不會出現在瀏覽器或畫面上。呼叫可能依供應商方案產生費用。';
-    const speechNote = role !== 'speech' ? '' : info.demonstrationSpeech ? '目前的朗讀是本機示意音，不是真人語音。' : info.canSpeak ? '英文題目、示範回答與關鍵句修正可以朗讀；中文說明不會朗讀。' : '這個服務不支援朗讀，畫面上不會出現朗讀按鈕。';
+    const speechNote = role !== 'speech' ? '' : info.demonstrationSpeech ? `目前的朗讀是${isPublicDemo() ? '公開 Demo' : '本機'}示意音，不是真人語音。` : info.canSpeak ? '英文題目、示範回答與關鍵句修正可以朗讀；中文說明不會朗讀。' : '這個服務不支援朗讀，畫面上不會出現朗讀按鈕。';
     // Data-flow disclosure: what each configured service may receive, and when.
     const flow = info.external
       ? `<div class="flow-box"><p class="flow-title">可能送出</p><ul class="flow-list">${info.outbound.map(item => `<li>${escape(outboundLabel(item))}</li>`).join('')}</ul></div>`
-      : '<p class="meta">本機示範服務，不傳送資料到外部。</p>';
-    row.innerHTML = `<div class="pr-role"><h3>${escape(names[role] || role)}</h3><span class="chip${info.external ? ' chip-accent' : ''}">${info.external ? '外部服務' : '只在本機'}</span></div><div class="pr-body"><p class="pr-name">${escape(providerName(info))}</p>${flow}${speechNote ? `<p class="meta">${escape(speechNote)}</p>` : ''}${access ? `<p class="meta">${access}</p>` : ''}</div>`;
+      : `<p class="meta">${isPublicDemo() ? '公開 Demo 的合成資料服務，不傳送資料到外部。' : '本機示範服務，不傳送資料到外部。'}</p>`;
+    row.innerHTML = `<div class="pr-role"><h3>${escape(names[role] || role)}</h3><span class="chip${info.external ? ' chip-accent' : ''}">${info.external ? '外部服務' : isPublicDemo() ? '公開 Demo' : '只在本機'}</span></div><div class="pr-body"><p class="pr-name">${escape(providerName(info))}</p>${flow}${speechNote ? `<p class="meta">${escape(speechNote)}</p>` : ''}${access ? `<p class="meta">${access}</p>` : ''}</div>`;
     parent.append(row);
   }
   if (providerInfo?.languageModel?.subscription) {
@@ -2140,9 +2143,10 @@ function renderSettings() {
     parent.append(status);
   }
   const deletion = $('#delete-workspace'); deletion.replaceChildren();
-  deletion.innerHTML = `<p class="meta" id="recording-storage">${escape(recordingBytesLabel())}</p><p>這會刪除所有職缺、題目、練習紀錄、文字草稿、回答錄音與進步項目。若要繼續，請輸入 <strong class="confirm-phrase" lang="en">DELETE ALL LOCAL DATA</strong>。</p><label for="delete-all">確認文字</label><input id="delete-all" autocomplete="off" spellcheck="false">`;
-  button('刪除全部本機資料', async () => {
-    await api('/workspace/delete', {confirmation:$('#delete-all').value}); clearDraftSession(); disposeVoice(); followUpVoice.dispose(); followUpVoice.dispose = () => {}; followUpVoice.draftId = null; resetReadAloud(); await refreshWorkspace(); setNotice('所有本機資料已刪除。'); await navigate('home');
+  const workspaceName = isPublicDemo() ? 'Demo 暫存資料' : '本機資料';
+  deletion.innerHTML = `<p class="meta" id="recording-storage">${escape(recordingBytesLabel())}</p><p>這會刪除這個工作區的所有職缺、題目、練習紀錄、文字草稿、回答錄音與進步項目。若要繼續，請輸入 <strong class="confirm-phrase" lang="en">DELETE ALL LOCAL DATA</strong>。</p><label for="delete-all">確認文字</label><input id="delete-all" autocomplete="off" spellcheck="false">`;
+  button(`刪除全部${workspaceName}`, async () => {
+    await api('/workspace/delete', {confirmation:$('#delete-all').value}); clearDraftSession(); disposeVoice(); followUpVoice.dispose(); followUpVoice.dispose = () => {}; followUpVoice.draftId = null; resetReadAloud(); await refreshWorkspace(); setNotice(`所有${workspaceName}已刪除。`); await navigate('home');
   }, deletion, {kind:'danger'});
 }
 
@@ -2186,6 +2190,16 @@ window.addEventListener('pagehide', () => clearInterval(operationsTimer));
 async function initialize() {
   try {
     providerInfo = await api('/providers');
+    if (isPublicDemo()) {
+      const deployment = providerInfo.deployment;
+      const hours = Math.max(1, Math.round((deployment.expiresAfterSeconds || 3600) / 3600));
+      const notice = $('#demo-notice');
+      notice.querySelector('span').textContent = `這裡只使用合成資料與示範服務。你的瀏覽器有獨立的暫存工作區，閒置 ${hours} 小時後刪除；請勿輸入真實履歷或其他個人資料。`;
+      notice.hidden = false;
+      $('#history-storage-label').textContent = '這個瀏覽器的暫存 Demo 工作區';
+      $('#settings-storage-label').textContent = '服務與 Demo 暫存資料';
+      $('#delete-workspace-title').textContent = '刪除 Demo 暫存資料';
+    }
     if (providerInfo.languageModel.subscription) {
       try { languageStatus = await api('/providers/language-status'); }
       catch { languageStatus = {ready:false,authenticated:false}; }
@@ -2194,7 +2208,7 @@ async function initialize() {
     // Name the speech service in the strip: "why is it only beeping" should be
     // answerable by looking at the page, not by querying the API from a terminal.
     const speech = providerInfo.speech;
-    const speechLabel = speech.demonstrationSpeech ? '語音：本機示範（嗶聲，非真人朗讀）' : speech.external ? `語音：${speech.name}` : '語音：本機示範';
+    const speechLabel = speech.demonstrationSpeech ? `語音：${isPublicDemo() ? '公開' : '本機'}示範（嗶聲，非真人朗讀）` : speech.external ? `語音：${speech.name}` : `語音：${isPublicDemo() ? '公開' : '本機'}示範`;
     $('#provider').textContent = `${providerName(providerInfo.languageModel)} · ${speechLabel}`;
     await refreshWorkspace();
     renderSettings();

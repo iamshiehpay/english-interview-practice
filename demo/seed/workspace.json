@@ -1,0 +1,213 @@
+{
+  "version": 1,
+  "snapshots": {
+    "3275ddb2-0f39-4d52-95e3-b9d8450d5664": {
+      "id": "3275ddb2-0f39-4d52-95e3-b9d8450d5664",
+      "text": "Synthetic Backend Engineer Demo\n\nResponsibilities\n- Build reliable Node.js APIs for a fictional interview practice product.\n- Explain engineering trade-offs and validate changes with automated tests.\n- Collaborate with product and design partners.\n\nRequirements\n- Experience with JavaScript, HTTP APIs, testing, and cloud deployment.\n- Clear written and spoken communication.",
+      "sourceType": "pasted-jd",
+      "capturedAt": "2026-09-29T02:07:05.163Z",
+      "practiceVersion": 3,
+      "difficulty": "standard",
+      "resume": null,
+      "title": "Synthetic Backend Engineer"
+    }
+  },
+  "analyses": {
+    "3275ddb2-0f39-4d52-95e3-b9d8450d5664": {
+      "capabilities": [
+        {
+          "id": "c1",
+          "description": "Synthetic Backend Engineer Demo",
+          "evidence": "Synthetic Backend Engineer Demo",
+          "kind": "fact"
+        },
+        {
+          "id": "c2",
+          "description": "Responsibilities",
+          "evidence": "Responsibilities",
+          "kind": "fact"
+        },
+        {
+          "id": "c3",
+          "description": "- Build reliable Node.",
+          "evidence": "- Build reliable Node.",
+          "kind": "fact"
+        },
+        {
+          "id": "c4",
+          "description": "- Explain engineering trade-offs and validate changes with automated tests.",
+          "evidence": "- Explain engineering trade-offs and validate changes with automated tests.",
+          "kind": "fact"
+        }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "text": "Why does this responsibility interest you, and what would you aim to learn?",
+          "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？",
+          "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
+          "category": "role-fit",
+          "capabilityIds": [
+            "c1"
+          ],
+          "evidence": "Synthetic Backend Engineer Demo"
+        },
+        {
+          "id": "q2",
+          "text": "Describe a relevant project or an honest hypothetical approach.",
+          "meaningZh": "請描述一個相關專案，或誠實說明你會採取的假設性做法。",
+          "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
+          "category": "experience-depth",
+          "capabilityIds": [
+            "c2"
+          ],
+          "evidence": "Responsibilities"
+        },
+        {
+          "id": "q3",
+          "text": "How would you handle disagreement with a teammate about this work?",
+          "meaningZh": "如果你和團隊成員對這項工作有不同意見，你會如何處理？",
+          "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
+          "category": "behavioral",
+          "capabilityIds": [
+            "c3"
+          ],
+          "evidence": "- Build reliable Node."
+        },
+        {
+          "id": "q4",
+          "text": "Explain an approach and its trade-offs to a non-specialist.",
+          "meaningZh": "請向非專業人士說明一種做法及其取捨。",
+          "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
+          "category": "technical-communication",
+          "capabilityIds": [
+            "c4"
+          ],
+          "evidence": "- Explain engineering trade-offs and validate changes with automated tests."
+        },
+        {
+          "id": "q5",
+          "text": "How does this responsibility connect to your career direction?",
+          "meaningZh": "這項職責如何連結你的職涯方向？",
+          "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
+          "category": "role-fit",
+          "capabilityIds": [
+            "c1"
+          ],
+          "evidence": "Synthetic Backend Engineer Demo"
+        },
+        {
+          "id": "q6",
+          "text": "Walk through a difficult decision in a related project, or a hypothetical example.",
+          "meaningZh": "請說明相關專案中的一項艱難決策，或提供一個假設性例子。",
+          "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
+          "category": "experience-depth",
+          "capabilityIds": [
+            "c2"
+          ],
+          "evidence": "Responsibilities"
+        },
+        {
+          "id": "q7",
+          "text": "How would you prioritize this work under a tight deadline?",
+          "meaningZh": "在期限緊迫時，你會如何安排這項工作的優先順序？",
+          "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
+          "category": "behavioral",
+          "capabilityIds": [
+            "c3"
+          ],
+          "evidence": "- Build reliable Node."
+        },
+        {
+          "id": "q8",
+          "text": "What assumptions and failure cases would you test for this responsibility?",
+          "meaningZh": "針對這項職責，你會檢驗哪些假設與失敗情境？",
+          "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+          "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
+          "category": "technical-communication",
+          "capabilityIds": [
+            "c4"
+          ],
+          "evidence": "- Explain engineering trade-offs and validate changes with automated tests."
+        }
+      ]
+    }
+  },
+  "records": {
+    "35ad6534-54f6-4394-bc56-91a19b1bd0b9": {
+      "id": "35ad6534-54f6-4394-bc56-91a19b1bd0b9",
+      "snapshotId": "3275ddb2-0f39-4d52-95e3-b9d8450d5664",
+      "question": {
+        "id": "q1",
+        "text": "Why does this responsibility interest you, and what would you aim to learn?",
+        "meaningZh": "這項職責為什麼吸引你？你希望從中學到什麼？",
+        "rationale": "Coach-generated practice linked to the quoted posting responsibility; review its relevance before practising.",
+        "rationaleZh": "這是教練根據引述的職缺職責產生的練習題；請在練習前確認其相關性。",
+        "category": "role-fit",
+        "capabilityIds": [
+          "c1"
+        ],
+        "evidence": "Synthetic Backend Engineer Demo"
+      },
+      "attempts": [
+        {
+          "id": "0954d71e-fbdc-4ffe-a03b-4b6582a8bb6e",
+          "transcript": "I would begin by defining the reliability target, add an integration test for the riskiest request path, and deploy a small revision. I would compare errors and latency before expanding traffic.",
+          "inputMode": "text",
+          "submittedAt": "2026-09-29T02:07:05.179Z",
+          "feedback": {
+            "ratings": {
+              "relevance": {
+                "level": 2,
+                "quote": "I would begin by defining the reliability target, add an integration test for the riskiest request path, and deploy a small revision. I would compare errors and",
+                "reason": "Demonstration rating only; configure a model provider for substantive coaching.",
+                "reasonZh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+              },
+              "support": {
+                "level": 2,
+                "quote": "I would begin by defining the reliability target, add an integration test for the riskiest request path, and deploy a small revision. I would compare errors and",
+                "reason": "Demonstration rating only; configure a model provider for substantive coaching.",
+                "reasonZh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+              },
+              "structure": {
+                "level": 2,
+                "quote": "I would begin by defining the reliability target, add an integration test for the riskiest request path, and deploy a small revision. I would compare errors and",
+                "reason": "Demonstration rating only; configure a model provider for substantive coaching.",
+                "reasonZh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+              },
+              "englishExpression": {
+                "level": 2,
+                "quote": "I would begin by defining the reliability target, add an integration test for the riskiest request path, and deploy a small revision. I would compare errors and",
+                "reason": "Demonstration rating only; configure a model provider for substantive coaching.",
+                "reasonZh": "這只是示範評分；請設定模型供應商以取得實質回饋。"
+              }
+            },
+            "strength": {
+              "text": "You supplied an answer to review.",
+              "textZh": "你提供了一段可供檢視的回答。",
+              "quote": "I would begin by defining the reliability target, add an integration test for the riskiest request path, and deploy a small revision. I would compare errors and"
+            },
+            "priorityImprovement": {
+              "text": "Explain one concrete example or trade-off supporting your approach.",
+              "textZh": "請說明一個支持你做法的具體例子或取捨。",
+              "quote": "I would begin by defining the reliability target, add an integration test for the riskiest request path, and deploy a small revision. I would compare errors and"
+            }
+          }
+        }
+      ],
+      "followUps": [],
+      "status": "completed",
+      "createdAt": "2026-09-29T02:07:05.177Z",
+      "focusPoint": "補上一個具體的驗證結果與數字",
+      "updatedAt": "2026-09-29T02:07:05.182Z",
+      "completedAt": "2026-09-29T02:07:05.184Z"
+    }
+  }
+}

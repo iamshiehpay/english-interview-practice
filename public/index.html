@@ -44,6 +44,10 @@
         <div id="operations" aria-live="polite"></div>
         <div id="error" role="alert"></div>
         <div id="notice" role="status" aria-live="polite"></div>
+        <aside id="demo-notice" class="demo-notice" role="note" hidden>
+          <strong>公開 Demo</strong>
+          <span>這裡只使用合成資料與示範服務。你的瀏覽器有獨立的暫存工作區，閒置 1 小時後刪除；請勿輸入真實履歷或其他個人資料。</span>
+        </aside>
 
         <section id="home-view" class="view" aria-label="開始練習">
           <div id="resume-practice"></div>
@@ -90,7 +94,7 @@
         </section>
 
         <section id="history-view" class="view narrow" aria-labelledby="history-title">
-          <p class="eyebrow">保存在這台裝置</p>
+          <p id="history-storage-label" class="eyebrow">保存在這台裝置</p>
           <h1 id="history-title">練習紀錄</h1>
           <div id="history"></div>
         </section>
@@ -114,10 +118,10 @@
         </section>
 
         <section id="settings-view" class="view narrow" aria-labelledby="settings-title">
-          <p class="eyebrow">服務與本機資料</p>
+          <p id="settings-storage-label" class="eyebrow">服務與本機資料</p>
           <h1 id="settings-title">設定</h1>
           <section class="settings-section"><h2>目前使用的服務</h2><div id="provider-settings"></div></section>
-          <section class="settings-section danger-zone"><h2>刪除本機資料</h2><div id="delete-workspace"></div></section>
+          <section class="settings-section danger-zone"><h2 id="delete-workspace-title">刪除本機資料</h2><div id="delete-workspace"></div></section>
         </section>
       </main>
 

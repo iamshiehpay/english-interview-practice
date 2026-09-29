@@ -1,0 +1,86 @@
+name: Checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  secrets:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Scan complete Git history
+        run: docker run --rm --volume "${GITHUB_WORKSPACE}:/repo" ghcr.io/gitleaks/gitleaks:v8.29.1 git --redact --verbose /repo
+      - name: Lint workflows
+        run: docker run --rm --volume "${GITHUB_WORKSPACE}:/repo" --workdir /repo rhysd/actionlint:1.7.12
+
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          package-manager-cache: false
+      - name: API regression suite
+        run: npm test
+      - name: Offline evaluation
+        run: npm run evaluate
+
+  container:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - name: Lint Dockerfile
+        run: docker run --rm -i hadolint/hadolint:v2.15.1-debian < Dockerfile
+      - name: Build image
+        run: docker build --tag interview-coach:check .
+      - name: Scan image
+        run: docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:0.74.0 image --scanners vuln --exit-code 1 --ignore-unfixed --severity HIGH,CRITICAL interview-coach:check
+      - name: Start container
+        run: docker run --detach --name interview-coach-check --publish 8080:8080 interview-coach:check
+      - name: Smoke container contract
+        run: |
+          for _ in $(seq 1 20); do
+            if curl --fail --silent --show-error http://127.0.0.1:8080/api/health | grep --quiet '"mode":"demo"'; then
+              break
+            fi
+            sleep 1
+          done
+          curl --fail --silent --show-error http://127.0.0.1:8080/api/health | grep --quiet '"mode":"demo"' || { docker logs interview-coach-check; exit 1; }
+          curl --fail --silent --show-error http://127.0.0.1:8080/ | grep --quiet '公開 Demo'
+          curl --fail --silent --show-error http://127.0.0.1:8080/api/providers | node -e '
+            const body = JSON.parse(require("fs").readFileSync(0, "utf8"));
+            if (body.deployment?.mode !== "demo") process.exit(1);
+            for (const role of ["languageModel", "speech", "jobSource"])
+              if (body[role]?.external !== false) process.exit(1);
+          '
+          test "$(docker exec interview-coach-check /nodejs/bin/node -p 'process.getuid()')" = "65532"
+      - name: Stop container
+        if: always()
+        run: docker rm --force interview-coach-check 2>/dev/null || true
+
+  terraform:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: "1.14.6"
+          terraform_wrapper: false
+      - name: Check formatting
+        run: terraform fmt -check -recursive infra
+      - name: Validate bootstrap
+        run: terraform -chdir=infra/bootstrap init -backend=false -input=false && terraform -chdir=infra/bootstrap validate
+      - name: Validate service
+        run: terraform -chdir=infra/service init -backend=false -input=false && terraform -chdir=infra/service validate
