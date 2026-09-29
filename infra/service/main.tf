@@ -209,13 +209,21 @@ resource "google_logging_metric" "demo_sessions" {
   filter  = "resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"${var.service_name}\" AND (jsonPayload.event=\"demo_session_created\" OR jsonPayload.event=\"demo_session_removed\")"
 
   metric_descriptor {
-    metric_kind  = "GAUGE"
-    value_type   = "INT64"
+    metric_kind  = "DELTA"
+    value_type   = "DISTRIBUTION"
     unit         = "1"
-    display_name = "Interview Coach active demo sessions"
+    display_name = "Interview Coach observed active demo sessions"
   }
 
   value_extractor = "EXTRACT(jsonPayload.sessionCount)"
+
+  bucket_options {
+    linear_buckets {
+      num_finite_buckets = 51
+      width              = 1
+      offset             = 0
+    }
+  }
 }
 
 resource "google_monitoring_dashboard" "app" {
@@ -292,12 +300,12 @@ resource "google_monitoring_dashboard" "app" {
         {
           xPos = 0, yPos = 32, width = 48, height = 16
           widget = {
-            title = "Active demo sessions"
+            title = "Observed active demo sessions (p99)"
             xyChart = {
               dataSets = [{
                 timeSeriesQuery = { timeSeriesFilter = {
                   filter      = "metric.type=\"logging.googleapis.com/user/${google_logging_metric.demo_sessions.name}\" AND resource.type=\"cloud_run_revision\" AND resource.label.service_name=\"${var.service_name}\""
-                  aggregation = { alignmentPeriod = "60s", perSeriesAligner = "ALIGN_NEXT_OLDER", crossSeriesReducer = "REDUCE_MAX" }
+                  aggregation = { alignmentPeriod = "60s", perSeriesAligner = "ALIGN_PERCENTILE_99", crossSeriesReducer = "REDUCE_MAX" }
                 } }
                 plotType = "LINE"
               }]

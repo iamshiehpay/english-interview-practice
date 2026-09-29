@@ -4,6 +4,7 @@ import {readFile} from 'node:fs/promises';
 
 const terraform=await readFile(new URL('../infra/bootstrap/main.tf',import.meta.url),'utf8');
 const versions=await readFile(new URL('../infra/bootstrap/versions.tf',import.meta.url),'utf8');
+const serviceTerraform=await readFile(new URL('../infra/service/main.tf',import.meta.url),'utf8');
 const wizard=await readFile(new URL('../scripts/setup-gcp.sh',import.meta.url),'utf8');
 
 test('GCP bootstrap keeps the WIF provider display name within the API limit',()=>{
@@ -34,4 +35,14 @@ test('GCP budget uses the billing account currency instead of a hard-coded curre
   assert.ok(budget,'billing budget resource is present');
   assert.doesNotMatch(budget,/currency_code\s*=/,'Budget API must infer the linked billing account currency');
   assert.match(budget,/units\s*=\s*"1"/,'budget keeps the one-unit early warning amount');
+});
+
+test('GCP session-count extraction uses the required distribution metric contract',()=>{
+  const metric=serviceTerraform.match(/resource "google_logging_metric" "demo_sessions" \{([\s\S]*?)\n\}/)?.[1];
+  assert.ok(metric,'demo session log metric is present');
+  assert.match(metric,/metric_kind\s*=\s*"DELTA"/,'distribution log metrics must use DELTA');
+  assert.match(metric,/value_type\s*=\s*"DISTRIBUTION"/,'a log value extractor requires a distribution metric');
+  assert.match(metric,/value_extractor\s*=\s*"EXTRACT\(jsonPayload\.sessionCount\)"/,'session count is extracted from the structured log');
+  assert.match(metric,/bucket_options\s*\{/,'distribution metric defines histogram buckets');
+  assert.match(serviceTerraform,/title\s*=\s*"Observed active demo sessions \(p99\)"[\s\S]*?perSeriesAligner\s*=\s*"ALIGN_PERCENTILE_99"/,'the dashboard reduces the distribution to a numeric percentile');
 });
