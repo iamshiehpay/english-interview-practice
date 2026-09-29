@@ -128,7 +128,7 @@ export async function captureCurrentSource({codeRoot}={}){
 export async function captureModelRunSource({root=dirname(fileURLToPath(import.meta.url)),codeRoot=join(root,'..'),version='v3-3'}={}){
   const {name}=artifactVersion(version);
   const source={...await captureCurrentSource({codeRoot}),capturedAt:new Date().toISOString(),note:`Captured immediately before the single authorized Codex ${version} evaluation run.`};
-  const output=join(root,'..','docs','verification',`${name}-model-run-source.json`);
+  const output=join(root,'provenance',`${name}-model-run-source.json`);
   await mkdir(dirname(output),{recursive:true});
   await writeFile(output,JSON.stringify(source,null,2)+'\n',{flag:'wx'});
   return {source,output};
@@ -137,7 +137,7 @@ export async function captureModelRunSource({root=dirname(fileURLToPath(import.m
 export async function createReviewedReport({root=dirname(fileURLToPath(import.meta.url)),codeRoot=join(root,'..'),version='v3-3'}={}){
   const {contractVersion,directory,name}=artifactVersion(version);
   const paths={
-    raw:join(root,'results',`${name}.json`),frozen:join(root,directory,'codex-analysis.json'),audit:join(root,directory,'codex-bilingual-audit.json'),reviewPacket:join(root,directory,'codex-review-packet.json'),semanticReviews:join(root,directory,'semantic-reviews.json'),manifest:join(root,'v1','manifest.json'),humanLabels:join(root,directory,'human-labels.json'),creator:join(root,directory,'creator-validation.json'),source:join(root,'..','docs','verification',`${name}-model-run-source.json`),...(version==='v3-3'?{blindPacket:join(root,directory,'codex-label-blind-packet.json'),labelFreeze:join(root,directory,'codex-label-freeze.json')}:{}),output:join(root,'results',`${name}-reviewed.json`)
+    raw:join(root,'results',`${name}.json`),frozen:join(root,directory,'codex-analysis.json'),audit:join(root,directory,'codex-bilingual-audit.json'),reviewPacket:join(root,directory,'codex-review-packet.json'),semanticReviews:join(root,directory,'semantic-reviews.json'),manifest:join(root,'v1','manifest.json'),humanLabels:join(root,directory,'human-labels.json'),creator:join(root,directory,'creator-validation.json'),source:join(root,'provenance',`${name}-model-run-source.json`),...(version==='v3-3'?{blindPacket:join(root,directory,'codex-label-blind-packet.json'),labelFreeze:join(root,directory,'codex-label-freeze.json')}:{}),output:join(root,'results',`${name}-reviewed.json`)
   };
   const entries=await Promise.all(Object.entries(paths).filter(([name])=>name!=='output').map(async([name,path])=>[name,JSON.parse(await readFile(path,'utf8'))]));
   assert.equal(Object.fromEntries(entries).raw.contractVersion,contractVersion,`Raw report does not match ${version} artifacts`);

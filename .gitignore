@@ -12,3 +12,7 @@ infra/bootstrap/terraform.auto.tfvars
 .coach-codex/
 
 .claude/settings.local.json
+
+# 僅供本機開發與交接使用
+handoff-notes/
+docs/

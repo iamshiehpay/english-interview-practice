@@ -1,3 +1,0 @@
-# Separate posting facts, model analysis, and external role research
-
-A Job Snapshot will contain only the selected posting and source metadata. The model will derive a cited Job Capability Map from that snapshot, while any company, team, market, or likely-interview research will live in a separate Role Research Brief with source links and a clear distinction between observed facts and inferences. Question generation may consume these artifacts, but it must not present inferred interview expectations as statements made by the employer. The first release stops at the Job Capability Map; Role Research Briefs are a second-stage capability and do not block validating the core Practice Loop.

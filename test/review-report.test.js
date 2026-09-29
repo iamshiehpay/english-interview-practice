@@ -95,7 +95,7 @@ test('offline review blocks ranges and required or forbidden literal findings th
 
 test('saved Codex run retains automatic PASS while approved label mismatches block release',async()=>{
   const root=join(dirname(fileURLToPath(import.meta.url)),'..');
-  const paths={raw:'evaluation/results/codex-v3.json',frozen:'evaluation/v3/codex-analysis.json',audit:'evaluation/v3/codex-bilingual-audit.json',reviewPacket:'evaluation/v3/codex-review-packet.json',semanticReviews:'evaluation/v3/semantic-reviews.json',source:'docs/verification/codex-v3-model-run-source.json',manifest:'evaluation/v1/manifest.json',humanLabels:'evaluation/v3/human-labels.json',creator:'evaluation/v3/creator-validation.json'};
+  const paths={raw:'evaluation/results/codex-v3.json',frozen:'evaluation/v3/codex-analysis.json',audit:'evaluation/v3/codex-bilingual-audit.json',reviewPacket:'evaluation/v3/codex-review-packet.json',semanticReviews:'evaluation/v3/semantic-reviews.json',source:'evaluation/provenance/codex-v3-model-run-source.json',manifest:'evaluation/v1/manifest.json',humanLabels:'evaluation/v3/human-labels.json',creator:'evaluation/v3/creator-validation.json'};
   const artifacts=Object.fromEntries(await Promise.all(Object.entries(paths).map(async([name,path])=>[name,JSON.parse(await readFile(join(root,path),'utf8'))])));
   const reviewed=reviewArtifacts({...artifacts,currentSource:await captureCurrentSource({codeRoot:root})});
   assert.equal(artifacts.raw.automatedPass,true);
@@ -281,7 +281,7 @@ test('v3-3 artifact reader validates saved packet and captures ordered runner so
   try{
     const input=await fixtures();
     const captured=await captureModelRunSource({root,codeRoot});
-    assert.equal(captured.output,join(directory,'docs','verification','codex-v3-3-model-run-source.json'));
+    assert.equal(captured.output,join(root,'provenance','codex-v3-3-model-run-source.json'));
     input.raw.codeChecksum=captured.source.codeChecksum;
     const runner=await readFile(join(codeRoot,'evaluation','run.js'),'utf8');
     const runnerList=runner.match(/const codeHash=createHash\('sha256'\);for\(const file of (\[[^\]]+\])\)codeHash\.update/);
@@ -323,7 +323,7 @@ test('explicit v3 artifact reader preserves historical paths and rejects version
   try{
     const input=await fixtures('3.0.0');
     const captured=await captureModelRunSource({root,codeRoot,version:'v3'});
-    assert.equal(captured.output,join(directory,'docs','verification','codex-v3-model-run-source.json'));
+    assert.equal(captured.output,join(root,'provenance','codex-v3-model-run-source.json'));
     input.raw.codeChecksum=captured.source.codeChecksum;
     const artifacts={
       'results/codex-v3.json':input.raw,'v3/codex-analysis.json':input.frozen,
