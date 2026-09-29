@@ -4,13 +4,19 @@ Adaptive English Interview Coach
 
 [![Checks](https://github.com/iamshiehpay/english-interview-practice/actions/workflows/checks.yml/badge.svg)](https://github.com/iamshiehpay/english-interview-practice/actions/workflows/checks.yml)
 
-[工程案例說明（英文）](PORTFOLIO.md) · [本機執行](#本機執行)
+[Engineering Case Study](PORTFOLIO.md) · [Run Locally](#本機執行)
 
 這是一個為台灣軟體與 AI 求職者設計的本機優先英文面試練習工具。它會依據職缺內容建立練習題目，讓使用者以文字或語音回答，並把回饋連結到回答中的原句，方便修改答案與安排下一次練習。
 
 ![完成一次英文面試練習後的逐字稿、引用式回饋與下一步練習重點](assets/portfolio/feedback-workbench.png)
 
 _本機固定資料畫面：完成練習後，可對照逐字稿、中文回饋、英文示範與下一步練習重點。_
+
+## 本機操作流程
+
+![從首頁回顧已完成的練習、查看原句引用，並延續同一個練習重點](assets/portfolio/demo-flow.gif)
+
+_15 秒操作錄影：使用一次性本機工作區與固定示範服務，不含 API key、真實履歷或個人資料。_
 
 ## 專案總覽
 
