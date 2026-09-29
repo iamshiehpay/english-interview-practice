@@ -8,7 +8,7 @@ Adaptive English Interview Coach
 
 這是一個為台灣軟體與 AI 求職者設計的本機優先英文面試練習工具。它會依據職缺內容建立練習題目，讓使用者以文字或語音回答，並把回饋連結到回答中的原句，方便修改答案與安排下一次練習。
 
-![完成一次英文面試練習後的逐字稿、引用式回饋與下一步練習重點](assets/portfolio/feedback-workbench.png)
+![完成一次英文面試練習後的逐字稿、引用式回饋與下一步練習重點](assets/portfolio/local-feedback-workbench.png)
 
 _本機固定資料畫面：完成練習後，可對照逐字稿、中文回饋、英文示範與下一步練習重點。_
 
