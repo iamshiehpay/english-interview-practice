@@ -13,6 +13,8 @@ This runbook covers the public synthetic demo only. The creator's local workspac
 
 The setup wizard can be rerun. It keeps non-secret setup values in the ignored `.gcp-deploy.env` file and never creates a service-account key.
 
+If a bootstrap apply stops after creating some resources, keep `infra/bootstrap/terraform.tfstate`, fix the reported cause, and rerun the wizard. Terraform will retain the resources already recorded in state and plan only the remaining or changed work. Do not delete partially created resources by hand unless the state and the GCP project have first been reconciled.
+
 ## Normal deployment
 
 A successful `Checks` run for a push to `main` starts `deploy.yml`. The `production` environment pauses it for human approval. The workflow then:

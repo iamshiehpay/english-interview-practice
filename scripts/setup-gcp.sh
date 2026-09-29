@@ -235,6 +235,8 @@ gcloud projects list --format='table(projectId,name)' || true
 ask PROJECT_ID "GCP project id："
 require_value "$PROJECT_ID" '^[a-z][a-z0-9-]{4,28}[a-z0-9]$' "GCP project id"
 gcloud config set project "$PROJECT_ID" >/dev/null
+step "將 Terraform ADC 的 quota project 設為所選專案。"
+gcloud auth application-default set-quota-project "$PROJECT_ID"
 open_url "https://console.cloud.google.com/billing/linkedaccount?project=${PROJECT_ID}"
 step "確認這個專案已連結帳務帳戶，再從 Billing → Account management 複製 Billing account ID。"
 ask BILLING_ACCOUNT_ID "Billing account ID（例如 000000-000000-000000）："

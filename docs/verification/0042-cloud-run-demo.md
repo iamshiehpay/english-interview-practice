@@ -4,7 +4,7 @@ Date: 2026-09-29
 
 ## Automated evidence
 
-- `npm test`: 277/277 tests pass, including public Host/same-origin behavior, direct loopback container review, secure cookie isolation, parallel capacity, one-hour idle semantics, storage quota rollback, process restart data loss, and unchanged local Host rejection.
+- `npm test`: 279/279 tests pass, including public Host/same-origin behavior, direct loopback container review, secure cookie isolation, parallel capacity, one-hour idle semantics, storage quota rollback, process restart data loss, unchanged local Host rejection, the WIF display-name limit, and ADC quota-project ordering.
 - `npm run evaluate` in a clean `/tmp` repository copy: automatic evaluation passes with 80/80 stable dimensions. Release status remains `BLOCKED` by the existing semantic/label/live-quality gates.
 - `docker build -t interview-coach:cloud-run-check .`: builds from the Node 22 Debian 13 distroless non-root image.
 - Container smoke on an ephemeral host port: `/api/health` reports demo mode, `/` serves the public warning, `/api/providers` reports only fake providers, gzip works, and the configured user is `65532:65532`.
@@ -25,4 +25,6 @@ Date: 2026-09-29
 
 ## Human step still required
 
-No GCP or GitHub resource was created during local verification. Run `./scripts/setup-gcp.sh`, inspect the Terraform plan, approve it, configure the `production` reviewer, and approve the first workflow deployment. Record the resulting `run.app` URL after its live smoke passes, then follow the [runbook](../devops/runbook.md) to capture the remaining production evidence.
+The first approved bootstrap apply created the required APIs, Artifact Registry repository, state bucket, identities, IAM bindings, WIF pool, and email channel in `shiehpay-interview-coach-26`, then stopped before creating the WIF provider and budget. The provider display name exceeded GCP's 32-character limit, and local ADC had no quota project for the Budget API. The configuration now uses a fixed short display name, and the wizard assigns the selected project as the ADC quota project before planning; both failures have regression coverage. The private local Terraform state records every successful resource, so no manual deletion or import is needed.
+
+Rerun `./scripts/setup-gcp.sh`, inspect the recovery plan, approve it, configure the `production` reviewer, and approve the first workflow deployment. No Cloud Run service or public `run.app` deployment exists yet. Record the resulting URL after its live smoke passes, then follow the [runbook](../devops/runbook.md) to capture the remaining production evidence.
