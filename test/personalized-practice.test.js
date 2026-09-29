@@ -75,6 +75,8 @@ test('cancelled coaching and deleted records cannot be revived by a late model r
 });
 
 test('real local PDF extractor returns readable text',async t=>{
+  const {execFile}=await import('node:child_process');const {promisify}=await import('node:util');const run=promisify(execFile);
+  try{await run(process.env.PDFTOTEXT_BIN||'pdftotext',['-v']);}catch(error){if(error.code==='ENOENT'){t.skip('pdftotext integration');return;}throw error;}
   const {mkdtemp,rm}=await import('node:fs/promises');const {tmpdir}=await import('node:os');const {join}=await import('node:path');
   const dir=await mkdtemp(join(tmpdir(),'coach-doc-fixture-'));t.after(()=>rm(dir,{recursive:true,force:true}));
   const stream='BT /F1 12 Tf 50 750 Td (Python developer with PostgreSQL experience.) Tj ET';
