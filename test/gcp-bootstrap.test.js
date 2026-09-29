@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 
 const terraform=await readFile(new URL('../infra/bootstrap/main.tf',import.meta.url),'utf8');
+const versions=await readFile(new URL('../infra/bootstrap/versions.tf',import.meta.url),'utf8');
 const wizard=await readFile(new URL('../scripts/setup-gcp.sh',import.meta.url),'utf8');
 
 test('GCP bootstrap keeps the WIF provider display name within the API limit',()=>{
@@ -21,4 +22,9 @@ test('GCP wizard assigns the selected project as the ADC quota project before pl
   assert.ok(selected>=0,'wizard selects the GCP project');
   assert.ok(quota>selected,'wizard sets ADC quota project after selecting the project');
   assert.ok(plan>quota,'wizard sets ADC quota project before Terraform plan/apply');
+});
+
+test('GCP bootstrap bills quota-bearing API requests to the selected project',()=>{
+  assert.match(versions,/billing_project\s*=\s*var\.project_id/,'provider assigns the selected project as its billing project');
+  assert.match(versions,/user_project_override\s*=\s*true/,'provider sends the billing project with quota-bearing requests');
 });
