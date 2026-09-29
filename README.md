@@ -85,9 +85,9 @@ npm run evaluate
 npm run test:browser
 ```
 
-當 Pull Request 或推送到 `main` 的變更會影響應用程式、映像、評估、基礎設施、workflow 或測試時，GitHub Actions 的 `checks.yml` 會執行：
+當合併請求（Pull Request）或推送到 `main` 的變更會影響應用程式、映像、評估、基礎設施、工作流程或測試時，GitHub Actions 的 `checks.yml` 會執行：
 
-- Git 歷史機密掃描與 workflow 語法檢查
+- Git 歷史機密掃描與工作流程語法檢查
 - Node.js 回歸測試與離線評估
 - Dockerfile lint、image 弱點掃描與容器 smoke test
 - Terraform 格式與設定驗證
@@ -101,7 +101,7 @@ Cloud Run 環境用來驗證部署與資料隔離，與本機工作區完全分�
 - 每個瀏覽器取得獨立的暫存工作區
 - 只載入合成資料
 - 工作區閒置一小時後失效
-- Cloud Run instance 停止後資料會消失
+- Cloud Run 執行個體停止後資料會消失
 - 不會載入本機 `.workspace`、API key 或真實履歷
 - 每個執行個體最多服務 50 個暫存工作區
 - Cloud Run 最少 0、最多 1 個執行個體
@@ -133,14 +133,14 @@ flowchart LR
 ./scripts/setup-gcp.sh
 ```
 
-設定精靈會建立必要的 GCP bootstrap 資源、設定 GitHub Actions variables，並引導設定 `production` environment 的人工核准。
+設定精靈會建立必要的 GCP 初始資源、設定 GitHub Actions 變數，並引導設定正式環境的人工核准。
 
 日後推送到 `main` 的流程：
 
 ```text
 checks.yml 執行測試與安全檢查
           ↓
-deploy.yml 等待 production 人工核准
+deploy.yml 等待正式環境人工核准
           ↓
 建置 Docker 映像
           ↓
@@ -151,7 +151,7 @@ Terraform 更新 Cloud Run
 正式網址 /api/health 冒煙測試
 ```
 
-部署失敗且已有舊版修訂版本時，workflow 會把流量切回上一個可用版本。Terraform 與手動部署指令整理在 [`infra/README.md`](infra/README.md)。
+部署失敗且已有舊版修訂版本時，工作流程會把流量切回上一個可用版本。Terraform 與手動部署指令整理在 [`infra/README.md`](infra/README.md)。
 
 ## Docker 本機檢查
 
@@ -172,9 +172,9 @@ docker run --rm -p 8080:8080 interview-coach:demo
 | `public/` | 瀏覽器介面與靜態資源 |
 | `test/` | Node.js 回歸測試與瀏覽器冒煙測試 |
 | `evaluation/` | 固定測試資料與離線模型評估 |
-| `demo/` | 公開 Demo 使用的合成 seed |
+| `demo/` | Cloud Run 隔離環境使用的合成種子資料 |
 | `infra/` | GCP bootstrap 與 Cloud Run Terraform |
-| `.github/workflows/` | CI 與 production 部署流程 |
+| `.github/workflows/` | CI 與正式環境部署流程 |
 | `scripts/` | 本機啟動、驗證與 GCP 設定工具 |
 
 ## 資料與隱私界線
@@ -185,4 +185,4 @@ docker run --rm -p 8080:8080 interview-coach:demo
 - 只有使用者主動設定外部模型服務時，對應資料才會送往該服務。
 - 預算通知只負責提醒，不會自動停止 GCP 資源或限制費用。
 
-這個 repository 展示的是可驗證的產品流程、隱私邊界與部署工程；目前仍屬於展示／實驗版本。
+這個程式碼庫展示的是可驗證的產品流程、隱私邊界與部署工程；目前仍屬於作品集／實驗版本。
