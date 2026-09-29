@@ -6,6 +6,17 @@ const terraform=await readFile(new URL('../infra/bootstrap/main.tf',import.meta.
 const versions=await readFile(new URL('../infra/bootstrap/versions.tf',import.meta.url),'utf8');
 const serviceTerraform=await readFile(new URL('../infra/service/main.tf',import.meta.url),'utf8');
 const wizard=await readFile(new URL('../scripts/setup-gcp.sh',import.meta.url),'utf8');
+const checksWorkflow=await readFile(new URL('../.github/workflows/checks.yml',import.meta.url),'utf8');
+
+test('documentation-only changes do not trigger checks and a Cloud Run deployment',()=>{
+  const pathBlocks=[...checksWorkflow.matchAll(/^    paths:\n((?:      - .+\n)+)/gm)].map(match=>match[1]);
+  assert.equal(pathBlocks.length,2,'pull requests and main pushes both define path filters');
+  for(const block of pathBlocks){
+    for(const required of ['.github/workflows/**','Dockerfile','src/**','public/**','demo/**','infra/**','test/**'])
+      assert.match(block,new RegExp(`"${required.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}"`),`${required} changes must still run checks`);
+    assert.doesNotMatch(block,/README\.md|CONTEXT\.md|AGENTS\.md|docs\/\*\*/,'documentation must not trigger the deployment chain');
+  }
+});
 
 test('GCP bootstrap keeps the WIF provider display name within the API limit',()=>{
   const provider=terraform.match(/resource "google_iam_workload_identity_pool_provider" "github" \{([\s\S]*?)\n\}/)?.[1];

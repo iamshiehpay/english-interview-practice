@@ -77,12 +77,14 @@ npm run evaluate
 npm run test:browser
 ```
 
-GitHub Actions 的 `checks.yml` 會在 Pull Request 與推送到 `main` 時執行：
+當 Pull Request 或推送到 `main` 的變更會影響應用程式、映像、評估、基礎設施、workflow 或測試時，GitHub Actions 的 `checks.yml` 會執行：
 
 - Git 歷史機密掃描與 workflow 語法檢查
 - Node.js 回歸測試與離線評估
 - Dockerfile lint、image 弱點掃描與容器 smoke test
 - Terraform 格式與設定驗證
+
+純 README、CONTEXT、AGENTS 或本機 `docs/` 文件變更不會觸發 Cloud Run 部署。
 
 ## 公開 Cloud Run 展示版
 

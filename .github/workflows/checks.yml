@@ -2,8 +2,32 @@ name: Checks
 
 on:
   pull_request:
+    paths:
+      - ".github/workflows/**"
+      - ".dockerignore"
+      - "Dockerfile"
+      - "package.json"
+      - "src/**"
+      - "public/**"
+      - "demo/**"
+      - "evaluation/**"
+      - "infra/**"
+      - "scripts/**"
+      - "test/**"
   push:
     branches: [main]
+    paths:
+      - ".github/workflows/**"
+      - ".dockerignore"
+      - "Dockerfile"
+      - "package.json"
+      - "src/**"
+      - "public/**"
+      - "demo/**"
+      - "evaluation/**"
+      - "infra/**"
+      - "scripts/**"
+      - "test/**"
 
 permissions:
   contents: read

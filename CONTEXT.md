@@ -52,6 +52,10 @@ _Avoid_: Fully offline system, hosted account, cloud workspace
 A short-lived, isolated copy of synthetic seed data assigned to one anonymous visitor of the public portfolio demo. It expires automatically and must never contain or expose another visitor's data or the creator's Local Workspace.
 _Avoid_: Local Workspace, hosted account, shared demo data
 
+**Hosted AI Beta（託管 AI 測試版）**:
+An access-restricted evaluation environment that processes synthetic or explicitly consented practice inputs with a real external AI provider under explicit usage limits and disclosures. It remains separate from the Public Demo Workspace and does not imply a durable hosted account or product.
+_Avoid_: Public Demo Workspace, public AI demo, production hosted account
+
 **Legacy Candidate Evidence Profile**:
 An optional learner-approved collection of experience claims and proof points, each linked to a resume excerpt or explicitly confirmed by the learner, used to personalize coaching without limiting which job capabilities may be practised.
 _Avoid_: Resume, generated biography, inferred experience
