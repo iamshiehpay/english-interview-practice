@@ -74,15 +74,20 @@ test('cancelled coaching and deleted records cannot be revived by a late model r
   assert.equal((await api(`/records/${record.id}`)).status,404);
 });
 
-test('real local PDF and DOCX extractors return readable text',async t=>{
-  const {execFile}=await import('node:child_process');const {promisify}=await import('node:util');const run=promisify(execFile);
-  const {mkdtemp,writeFile,readFile,rm}=await import('node:fs/promises');const {tmpdir}=await import('node:os');const {join}=await import('node:path');
+test('real local PDF extractor returns readable text',async t=>{
+  const {mkdtemp,rm}=await import('node:fs/promises');const {tmpdir}=await import('node:os');const {join}=await import('node:path');
   const dir=await mkdtemp(join(tmpdir(),'coach-doc-fixture-'));t.after(()=>rm(dir,{recursive:true,force:true}));
-  await writeFile(join(dir,'resume.txt'),'Python developer with PostgreSQL experience.');
-  await run('/usr/bin/textutil',['-convert','docx',join(dir,'resume.txt'),'-output',join(dir,'resume.docx')]);
-  const docx=await extractResume({name:'resume.docx',base64:(await readFile(join(dir,'resume.docx'))).toString('base64')});assert.match(docx.text,/PostgreSQL/);
   const stream='BT /F1 12 Tf 50 750 Td (Python developer with PostgreSQL experience.) Tj ET';
   const objects=['<< /Type /Catalog /Pages 2 0 R >>','<< /Type /Pages /Kids [3 0 R] /Count 1 >>','<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>','<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>',`<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`];
   let pdf='%PDF-1.4\n';const offsets=[0];objects.forEach((o,i)=>{offsets.push(Buffer.byteLength(pdf));pdf+=`${i+1} 0 obj\n${o}\nendobj\n`;});const offset=Buffer.byteLength(pdf);pdf+=`xref\n0 6\n0000000000 65535 f \n${offsets.slice(1).map(n=>String(n).padStart(10,'0')+' 00000 n \n').join('')}trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${offset}\n%%EOF`;
   assert.match((await extractResume({name:'resume.pdf',base64:Buffer.from(pdf).toString('base64')})).text,/PostgreSQL/);
+});
+
+test('real local DOCX extractor returns readable text',{skip:process.platform!=='darwin'?'macOS textutil integration':false},async t=>{
+  const {execFile}=await import('node:child_process');const {promisify}=await import('node:util');const run=promisify(execFile);
+  const {mkdtemp,writeFile,readFile,rm}=await import('node:fs/promises');const {tmpdir}=await import('node:os');const {join}=await import('node:path');
+  const dir=await mkdtemp(join(tmpdir(),'coach-docx-fixture-'));t.after(()=>rm(dir,{recursive:true,force:true}));
+  await writeFile(join(dir,'resume.txt'),'Python developer with PostgreSQL experience.');
+  await run('/usr/bin/textutil',['-convert','docx',join(dir,'resume.txt'),'-output',join(dir,'resume.docx')]);
+  const docx=await extractResume({name:'resume.docx',base64:(await readFile(join(dir,'resume.docx'))).toString('base64')});assert.match(docx.text,/PostgreSQL/);
 });

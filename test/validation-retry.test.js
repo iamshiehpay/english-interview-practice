@@ -118,6 +118,9 @@ test('provider errors that are not validation failures are never retried',async 
     const op=(await api('/operations')).data.filter(o=>o.kind==='feedback').at(-1);assert.equal(op.validationRetries,undefined);assert.equal(op.firstRejection,undefined);
   }
   provider.feedback=args=>{calls++;return new Promise(()=>{});};calls=0;
-  const slow=await feedbackRun(t,provider,{operationTimeoutMs:40});assert.equal((await slow.api(`/records/${slow.record.id}/feedback`,{})).status,504);await delay(20);assert.equal(calls,1);
+  // Keep Question Set setup outside the intentionally tiny feedback budget. On a
+  // loaded CI runner, inheriting 2 * 40 ms here can time out setup before this test
+  // reaches the provider call it is meant to exercise.
+  const slow=await feedbackRun(t,provider,{operationTimeoutMs:40,generationTimeoutMs:5000});assert.equal((await slow.api(`/records/${slow.record.id}/feedback`,{})).status,504);await delay(20);assert.equal(calls,1);
   assert.deepEqual(logged,[]);
 });
