@@ -259,7 +259,8 @@ function syncLayoutMetrics() {
     if (foot) layoutObserver.observe(foot);
     observedFoot = foot;
   }
-  root.setProperty('--foot-h', `${foot?.offsetHeight || 0}px`);
+  const fixedFootHeight = foot && getComputedStyle(foot).position === 'fixed' ? foot.offsetHeight : 0;
+  root.setProperty('--foot-h', `${fixedFootHeight}px`);
 }
 layoutObserver.observe($('.topbar'));
 function setMenuOpen(open, {restoreFocus = false} = {}) {
@@ -377,8 +378,22 @@ function renderHome() {
   const resumeChoice = $('#resume-choice');
   resumeChoice.innerHTML = workspace.resume ? `<label class="check-label"><input id="use-resume" type="checkbox" checked>搭配履歷：${escape(workspace.resume.name)}</label><p class="meta">取消勾選即可只用 JD 出題。</p>` : '<p class="meta">還沒有履歷？可以直接開始，或到「我的履歷」上傳。</p>';
   const recent = sortRecent(Object.values(workspace.records || {}).filter(r=>r.status==='completed')).slice(0,3);
-  $('#home-progress').innerHTML = recent.length ? `<h2>下次，接著練這裡</h2>${recent.map(r=>`<article class="list-card"><p>${escape(r.focusPoint)}</p><button class="ghost" data-resume-record="${escape(r.id)}">回顧練習</button></article>`).join('')}` : '';
-  document.querySelectorAll('[data-resume-record]').forEach(b=>b.addEventListener('click',()=>showRecord(b.dataset.resumeRecord)));
+  const progress = $('#home-progress');
+  progress.replaceChildren();
+  if (recent.length) {
+    const heading = document.createElement('h2');
+    heading.textContent = '下次，接著練這裡';
+    progress.append(heading);
+    for (const record of recent) {
+      const card = document.createElement('article');
+      card.className = 'list-card';
+      const focus = document.createElement('p');
+      focus.textContent = record.focusPoint;
+      card.append(focus);
+      button('回顧練習', () => showRecord(record.id), card, {kind:'ghost', attributes:{'data-resume-record':record.id}});
+      progress.append(card);
+    }
+  }
   const gate = $('#provider-gate');
   gate.replaceChildren();
   const capture = $('#capture');
@@ -1364,7 +1379,7 @@ async function showRecord(recordId, {editing=false,feedbackOnly=false,focusFeedb
     <div class="wb-question">${questionHtml}</div>
     <div class="wb-tabs" role="tablist" aria-label="作答與回饋"><button type="button" role="tab" id="tab-answer" aria-controls="wb-answer" data-tab="answer">你的回答</button><button type="button" role="tab" id="tab-feedback" aria-controls="wb-feedback" data-tab="feedback">回饋</button></div>
     <section id="wb-answer" class="wb-answer" role="tabpanel" aria-labelledby="tab-answer">${work}</section>
-    <aside class="wb-feedback" aria-label="回饋"><div id="wb-feedback" class="fb-scroll" role="tabpanel" aria-labelledby="tab-feedback">${feedbackPane}</div>${foot ? `<div class="fb-foot">${foot}</div>` : ''}</aside>
+    <aside class="wb-feedback" aria-label="回饋"><div id="wb-feedback" class="fb-scroll" role="tabpanel" aria-labelledby="tab-feedback">${feedbackPane}</div>${foot ? `<div class="fb-foot${complete ? ' fb-foot-complete' : ''}">${foot}</div>` : ''}</aside>
   </article>`;
   setJobContext(jobTitle(snapshot));
   setSteps(step);

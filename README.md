@@ -1,8 +1,30 @@
-# 英文面試練習教練
+# Adaptive English Interview Coach
+
+**英文面試練習教練**
+
+[![Checks](https://github.com/iamshiehpay/english-interview-practice/actions/workflows/checks.yml/badge.svg)](https://github.com/iamshiehpay/english-interview-practice/actions/workflows/checks.yml)
+
+[Live Demo](https://adaptive-english-interview-coach-h72bil37kq-de.a.run.app) · [Engineering Case Study](PORTFOLIO.md) · [Run Locally](#本機執行)
+
+A local-first interview coaching application for software and AI job seekers in Taiwan. It turns a job description into grounded English interview practice, keeps feedback linked to the learner's exact words, and separates private local work from a disposable public demo.
+
+![Completed practice showing the English answer, transcript-linked feedback, and next practice focus](assets/portfolio/feedback-workbench.png)
+
+> **Portfolio status — v0.9 synthetic demo.** The public site uses deterministic demonstration providers and synthetic data. It demonstrates the complete product workflow, isolation boundary, evaluation pipeline, and cloud delivery—not validated live-model coaching quality.
+
+## 30-second overview
+
+| | |
+| --- | --- |
+| **Problem** | Technical candidates may understand English but still need job-specific practice expressing evidence, reasoning, and trade-offs clearly. |
+| **Product** | JD-grounded questions, text or voice answers, bilingual transcript-linked feedback, revision, follow-ups, and recurring-focus tracking. |
+| **Architecture** | Local-first Node.js application with replaceable language, speech, and job-source adapters. |
+| **Verification** | API and domain regression tests, browser smoke tests, versioned evaluation cases, container scanning, and Terraform validation. |
+| **Delivery** | GitHub Actions uses keyless Workload Identity Federation to deploy an isolated synthetic demo to Cloud Run. |
 
 這是一個為台灣科技職缺設計的英文面試練習工具。使用者可以貼上職缺說明與履歷，建立符合職缺需求的面試題目，完成文字或語音回答，取得中文回饋，修改答案並追蹤反覆出現的改善重點。
 
-專案採取本機優先設計。個人履歷、回答、錄音與練習紀錄預設只保存在使用者電腦，不需要註冊帳號或建立雲端資料庫。
+專案採取本機優先設計。個人履歷、回答、錄音與練習紀錄預設只保存在使用者電腦，不需要註冊帳號或建立雲端資料庫。設計取捨、信任邊界與驗證結果整理在 [`PORTFOLIO.md`](PORTFOLIO.md)。
 
 ## 主要功能
 

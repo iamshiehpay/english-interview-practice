@@ -236,7 +236,21 @@ try {
  if(statLabels.join()!=='需加強,改善中,已解決,單次重點'||!progressItems.length||statTotal!==progressItems.length)throw Error('Progress counts do not match the Focus Points: '+statLabels.join()+' '+statTotal+'/'+progressItems.length);
  `);
  await browser('set','viewport','390','844');
- await run(`if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow');if(btn('查看參考表達'))throw Error('Old reference outline shown');click('nav [data-view="home"]');await wait(()=>el('#use-resume'),'home');if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow on home');el('#use-resume').checked=false;fill('#jd','Build services and discuss engineering trade-offs.');click('#capture');await wait(()=>el('#recommended-question'),'JD only');click('#question-actions button');await wait(()=>el('#answer'),'editor');`);
+ await run(`
+ if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow');
+ if(btn('查看參考表達'))throw Error('Old reference outline shown');
+ click('nav [data-view="home"]');await wait(()=>el('#use-resume'),'home');
+ if(document.documentElement.scrollWidth>innerWidth)throw Error('Mobile overflow on home');
+ if(getComputedStyle(el('#provider')).display!=='none')throw Error('Full provider status crowds the mobile context bar');
+ const recent=el('[data-resume-record]');if(!recent)throw Error('No recent-practice CTA on home');
+ const recentId=recent.dataset.resumeRecord;
+ const recentRecord=await fetch('/api/records/'+recentId).then(response=>response.json());
+ click(recent);await wait(()=>el('#practice-view').classList.contains('active')&&el('#practice-complete'),'recent practice opens');
+ if(el('#practice-view .question-text')?.textContent!==recentRecord.question.text||!el('#feedback-heading'))throw Error('Recent-practice CTA opened the wrong record');
+ if(getComputedStyle(el('.fb-foot')).position==='fixed')throw Error('Completed-record actions cover mobile feedback');
+ click('nav [data-view="home"]');await wait(()=>el('#use-resume'),'home after recent practice');
+ el('#use-resume').checked=false;fill('#jd','Build services and discuss engineering trade-offs.');click('#capture');await wait(()=>el('#recommended-question'),'JD only');click('#question-actions button');await wait(()=>el('#answer'),'editor');
+ `);
  await shot('mobile');
  await run(`
  click(btn('看一個示範回答'));await wait(()=>el('#hint-result .coaching-text'),'illustrative');
