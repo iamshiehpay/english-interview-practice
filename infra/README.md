@@ -4,7 +4,7 @@ The infrastructure is split so a human with project and billing access creates t
 
 ## 1. Bootstrap
 
-`bootstrap/` enables the required APIs and creates Artifact Registry, the Cloud Run runtime identity, a versioned GCS state bucket, a GitHub Workload Identity provider restricted to one repository and `main`, a deployer identity, email notifications, and a USD 1 monthly budget. Its first threshold is 1%, so the first alert is approximately USD 0.01. A budget sends alerts; it does not stop spending.
+`bootstrap/` enables the required APIs and creates Artifact Registry, the Cloud Run runtime identity, a versioned GCS state bucket, a GitHub Workload Identity provider restricted to one repository and `main`, a deployer identity, email notifications, and a monthly budget of one unit in the billing account's currency. Its alert thresholds are 1%, 50%, and 100%. A budget sends alerts; it does not stop spending.
 
 Run this from an authenticated local shell. Copy `terraform.tfvars.example` to an ignored `terraform.tfvars`, then:
 

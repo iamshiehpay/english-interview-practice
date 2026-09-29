@@ -4,7 +4,7 @@ Checked against Google Cloud's published pricing on 2026-09-29. Prices are USD a
 
 ## Expected monthly cost
 
-The target is **USD 0**, with a USD 1 monthly budget and notifications at approximately USD 0.01, USD 0.50, and USD 1.00. The budget sends alerts; it does not cap usage or stop resources.
+The target is **USD 0**. The monthly budget uses one unit of the billing account's currency, with notifications at 1%, 50%, and 100%. For the current TWD account, those thresholds are approximately TWD 0.01, TWD 0.50, and TWD 1.00. The budget sends alerts; it does not cap usage or stop resources.
 
 | Service | Configuration | Free allowance and remaining risk |
 | --- | --- | --- |
@@ -12,7 +12,7 @@ The target is **USD 0**, with a USD 1 monthly budget and notifications at approx
 | Artifact Registry | Regional Docker repository with cleanup rules | The first 0.5 GiB-month of storage per billing account is free. Older images are deleted after 30 days while the ten most recent versions are retained. Storage over the allowance is billed; same-region pulls to Cloud Run are free. |
 | Terraform state | Versioned Standard GCS bucket in `us-central1` | Cloud Storage Always Free includes 5 GB-month Standard storage plus bounded operations in `us-west1`, `us-central1`, and `us-east1`, aggregated across those regions. Version history is limited to ten archived versions. Existing account usage can consume the allowance. |
 | Monitoring and Logging | Built-in Cloud Run metrics, one content-free session-count log metric, dashboard, uptime check, three alert policies | Google Cloud metrics are non-chargeable. The user-defined GAUGE metric is metered at 8 bytes per scalar point and shares a 150 MiB monthly Monitoring allowance per billing account before ingestion charges. Its source logs separately share Cloud Logging's first 50 GiB per project each month; deriving the metric does not duplicate the log entry. Uptime checks include 1 million regional executions per project each month; this five-minute check is expected to stay below that allowance, subject to its actual checker regions. Alerting charges are announced for no earlier than 2027-09-01, so pricing must be reviewed before then. External API metric queries can be billed after their own allowance. |
-| Billing budget | USD 1 budget with email notification | The Cloud Billing Budget API is free. Email and cost data can arrive hours after usage. Pub/Sub budget notifications are not enabled. |
+| Billing budget | One billing-currency-unit budget with email notification | The Cloud Billing Budget API is free. Email and cost data can arrive hours after usage. Pub/Sub budget notifications are not enabled. |
 | Network | Public HTTPS responses | Ingress and same-region Google Cloud transfer are free. Cloud Run's internet egress free tier is limited to eligible North America traffic and must not be assumed for a Taiwan service. Public response bytes can therefore create a small charge. Static text is gzip-compressed to reduce it. |
 
 Enabling an API has no separate enablement fee listed by Google, but calls and resources provided by that API can be billed. Enabling the required APIs therefore does not make the deployment itself free.
@@ -25,7 +25,7 @@ Enabling an API has no separate enablement fee listed by Google, but calls and r
 - Artifact Registry and GCS delete old versions within explicit retention limits.
 - The image is pulled from Artifact Registry in the same region as Cloud Run.
 - Static text assets use gzip when the client accepts it.
-- The first budget threshold is 1% of USD 1, approximately USD 0.01.
+- The first budget threshold is 1% of one billing-account currency unit.
 
 These controls bound common sources of spend but do not create a hard billing cap. Follow the [runbook](runbook.md) as soon as a budget notification arrives.
 

@@ -169,8 +169,7 @@ resource "google_billing_budget" "project" {
 
   amount {
     specified_amount {
-      currency_code = "USD"
-      units         = "1"
+      units = "1"
     }
   }
 

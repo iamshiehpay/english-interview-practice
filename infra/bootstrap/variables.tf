@@ -26,7 +26,7 @@ variable "deploy_branch" {
 }
 
 variable "billing_account_id" {
-  description = "Billing account id used for the one-dollar monthly alert budget."
+  description = "Billing account id used for the one-unit monthly alert budget."
   type        = string
 }
 

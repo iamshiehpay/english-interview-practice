@@ -27,7 +27,7 @@ flowchart LR
   Browser -->|secure session cookie| CR
   CR --> Temp[isolated temporary workspace]
   Monitor[Cloud Monitoring\nhealth · 5xx · memory] --> CR
-  Budget[USD 1 budget alerts] --> Operator[operator email]
+  Budget[One billing-currency-unit budget alerts] --> Operator[operator email]
 ```
 
 The deployment uses Terraform and GitHub Workload Identity Federation, so GitHub stores no GCP service-account key. Run the repeatable setup wizard from a terminal after installing `gcloud`, `terraform`, `gh`, and Docker:
@@ -38,7 +38,7 @@ The deployment uses Terraform and GitHub Workload Identity Federation, so GitHub
 
 See the [deployment runbook](docs/devops/runbook.md) for rollout and incident steps and the [cost model](docs/devops/cost.md) for the free allowances, remaining egress risk, and budget behavior.
 
-The wizard signs in through official browser flows, collects the GCP project, billing account, notification email, and GitHub repository, shows the Terraform plan, then asks before creating resources. It configures the repository variables used by [the production workflow](.github/workflows/deploy.yml) and walks through the GitHub `production` approval rule. API activation itself is free; deployed resources and network traffic can incur usage charges. The USD 1 budget alerts near USD 0.01, USD 0.50, and USD 1.00 but does not cap spending.
+The wizard signs in through official browser flows, collects the GCP project, billing account, notification email, and GitHub repository, shows the Terraform plan, then asks before creating resources. It configures the repository variables used by [the production workflow](.github/workflows/deploy.yml) and walks through the GitHub `production` approval rule. API activation itself is free; deployed resources and network traffic can incur usage charges. The budget uses the billing account's currency and alerts near 1%, 50%, and 100% of one currency unit, but does not cap spending.
 
 For a manual review, see [`infra/README.md`](infra/README.md). Local container smoke:
 

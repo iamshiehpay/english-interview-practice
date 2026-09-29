@@ -260,7 +260,7 @@ write_env GITHUB_REPOSITORY "$GITHUB_REPOSITORY"
 write_env STATE_BUCKET "$STATE_BUCKET"
 
 stage "檢查並建立 GCP 基礎資源"
-say "Terraform 將顯示完整 plan：必要 API、Artifact Registry、state bucket、WIF、服務帳號、email 通知與 USD 1 月預算。"
+say "Terraform 將顯示完整 plan：必要 API、Artifact Registry、state bucket、WIF、服務帳號、email 通知與帳務幣別 1 單位的月預算。"
 terraform -chdir=infra/bootstrap init -input=false
 plan_file=$(mktemp "${TMPDIR:-/tmp}/interview-coach-bootstrap-plan.XXXXXX")
 trap 'rm -f "$plan_file"' EXIT

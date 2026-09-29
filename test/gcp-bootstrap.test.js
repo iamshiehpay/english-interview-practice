@@ -28,3 +28,10 @@ test('GCP bootstrap bills quota-bearing API requests to the selected project',()
   assert.match(versions,/billing_project\s*=\s*var\.project_id/,'provider assigns the selected project as its billing project');
   assert.match(versions,/user_project_override\s*=\s*true/,'provider sends the billing project with quota-bearing requests');
 });
+
+test('GCP budget uses the billing account currency instead of a hard-coded currency',()=>{
+  const budget=terraform.match(/resource "google_billing_budget" "project" \{([\s\S]*)/)?.[1];
+  assert.ok(budget,'billing budget resource is present');
+  assert.doesNotMatch(budget,/currency_code\s*=/,'Budget API must infer the linked billing account currency');
+  assert.match(budget,/units\s*=\s*"1"/,'budget keeps the one-unit early warning amount');
+});

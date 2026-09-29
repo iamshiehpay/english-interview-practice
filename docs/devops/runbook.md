@@ -6,7 +6,7 @@ This runbook covers the public synthetic demo only. The creator's local workspac
 
 1. Put the full repository history on a public GitHub repository whose deployment branch is `main`.
 2. Run `./scripts/setup-gcp.sh` from the repository root.
-3. Review the bootstrap Terraform plan before answering `y`. Confirm the project id, GitHub repository, region, identities, USD 1 budget, state bucket, and Artifact Registry repository.
+3. Review the bootstrap Terraform plan before answering `y`. Confirm the project id, GitHub repository, region, identities, one-unit budget in the billing account's currency, state bucket, and Artifact Registry repository.
 4. In the GitHub `production` environment, enable a required reviewer. Approve the workflow when the wizard opens it.
 5. Open the reported `run.app` URL and verify that the public Demo warning appears. Do not enter personal information.
 6. Record the URL, successful workflow run, dashboard screenshot, alert test, and rollback exercise in `docs/verification/` before calling the v0.9 deployment complete.
