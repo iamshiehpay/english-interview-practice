@@ -4,7 +4,7 @@ Adaptive English Interview Coach
 
 [![Checks](https://github.com/iamshiehpay/english-interview-practice/actions/workflows/checks.yml/badge.svg)](https://github.com/iamshiehpay/english-interview-practice/actions/workflows/checks.yml)
 
-[Engineering Case Study](PORTFOLIO.md) · [Run Locally](#本機執行)
+[Live Demo](https://adaptive-english-interview-coach-h72bil37kq-de.a.run.app) · [Engineering Case Study](PORTFOLIO.md)
 
 這是一套英文面試練習工具，協助軟體與 AI 求職者從回答、逐句回饋到重點複習，完成一套可追蹤的練習流程。
 
