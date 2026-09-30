@@ -1,19 +1,10 @@
 name: Checks
 
 on:
+  # Every pull request runs this workflow so the required `required-checks` job always
+  # reports; a path filter here would leave a documentation-only pull request waiting
+  # forever for a check that never starts. The `changes` job skips the heavy jobs instead.
   pull_request:
-    paths:
-      - ".github/workflows/**"
-      - ".dockerignore"
-      - "Dockerfile"
-      - "package.json"
-      - "src/**"
-      - "public/**"
-      - "demo/**"
-      - "evaluation/**"
-      - "infra/**"
-      - "scripts/**"
-      - "test/**"
   push:
     branches: [main]
     paths:
@@ -33,6 +24,37 @@ permissions:
   contents: read
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      code: ${{ steps.diff.outputs.code }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - id: diff
+        name: Detect application, infrastructure or test changes
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          # Pushes to main are already filtered by the push trigger's paths.
+          if [ "${EVENT_NAME}" != "pull_request" ]; then
+            echo "code=true" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+          # Keep in sync with the push trigger's paths filter.
+          pattern='^(\.github/workflows/|\.dockerignore$|Dockerfile$|package\.json$|src/|public/|demo/|evaluation/|infra/|scripts/|test/)'
+          changed=$(git diff --name-only "origin/${BASE_REF}...HEAD")
+          if grep --quiet --extended-regexp "${pattern}" <<< "${changed}"; then
+            echo "code=true" >> "${GITHUB_OUTPUT}"
+          else
+            echo "code=false" >> "${GITHUB_OUTPUT}"
+          fi
+
+  # Runs on every pull request, including documentation-only ones: a leaked secret or a
+  # broken workflow can arrive in any file, and both scans are cheap.
   secrets:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -46,6 +68,8 @@ jobs:
         run: docker run --rm --volume "${GITHUB_WORKSPACE}:/repo" --workdir /repo rhysd/actionlint:1.7.12
 
   test:
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -60,6 +84,8 @@ jobs:
         run: npm run evaluate
 
   container:
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -94,6 +120,8 @@ jobs:
         run: docker rm --force interview-coach-check 2>/dev/null || true
 
   terraform:
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -108,3 +136,23 @@ jobs:
         run: terraform -chdir=infra/bootstrap init -backend=false -input=false && terraform -chdir=infra/bootstrap validate
       - name: Validate service
         run: terraform -chdir=infra/service init -backend=false -input=false && terraform -chdir=infra/service validate
+
+  # The single status check required on main. It passes when every job succeeded or was
+  # skipped because nothing relevant changed, and fails on any failure or cancellation.
+  required-checks:
+    if: always()
+    needs: [changes, secrets, test, container, terraform]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require every job to succeed or be skipped
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          echo "Job results: ${RESULTS}"
+          for result in ${RESULTS}; do
+            case "${result}" in
+              success|skipped) ;;
+              *) echo "A required job finished with: ${result}"; exit 1 ;;
+            esac
+          done
