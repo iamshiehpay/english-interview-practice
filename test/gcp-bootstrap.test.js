@@ -10,12 +10,30 @@ const checksWorkflow=await readFile(new URL('../.github/workflows/checks.yml',im
 
 test('documentation-only changes do not trigger checks and a Cloud Run deployment',()=>{
   const pathBlocks=[...checksWorkflow.matchAll(/^    paths:\n((?:      - .+\n)+)/gm)].map(match=>match[1]);
-  assert.equal(pathBlocks.length,2,'pull requests and main pushes both define path filters');
+  assert.equal(pathBlocks.length,1,'only main pushes define a path filter; the deployment chain starts from them');
   for(const block of pathBlocks){
     for(const required of ['.github/workflows/**','Dockerfile','src/**','public/**','demo/**','infra/**','test/**'])
       assert.match(block,new RegExp(`"${required.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}"`),`${required} changes must still run checks`);
     assert.doesNotMatch(block,/README\.md|CONTEXT\.md|AGENTS\.md|docs\/\*\*/,'documentation must not trigger the deployment chain');
   }
+});
+
+test('every pull request reports required-checks while documentation-only ones skip the heavy jobs',()=>{
+  assert.match(checksWorkflow,/^  pull_request:\n  push:/m,'pull requests are not path-filtered, so the required check always reports');
+  const pattern=checksWorkflow.match(/pattern='([^']+)'/)?.[1];
+  assert.ok(pattern,'the changes job defines the relevant-path pattern');
+  const relevant=new RegExp(pattern);
+  for(const path of ['.github/workflows/checks.yml','Dockerfile','.dockerignore','package.json','src/server.js','public/app.js','demo/seed/workspace.json','evaluation/run.js','infra/service/main.tf','scripts/setup-gcp.sh','test/practice.test.js'])
+    assert.match(path,relevant,`${path} changes must still run checks`);
+  for(const path of ['README.md','CONTEXT.md','AGENTS.md','PORTFOLIO.md','docs/adr/0001.md','assets/portfolio/demo.gif'])
+    assert.doesNotMatch(path,relevant,`${path} alone must not run the heavy jobs`);
+  for(const job of ['test','container','terraform'])
+    assert.match(checksWorkflow,new RegExp(`^  ${job}:\\n    needs: changes\\n    if: needs\\.changes\\.outputs\\.code == 'true'`,'m'),`${job} is gated on relevant changes`);
+  const required=checksWorkflow.match(/^  required-checks:\n([\s\S]*)$/m)?.[1];
+  assert.ok(required,'the required-checks aggregator job exists');
+  assert.match(required,/if: always\(\)/,'the aggregator reports even when a needed job fails or is skipped');
+  assert.match(required,/needs: \[changes, secrets, test, container, terraform\]/,'the aggregator waits for every job');
+  assert.match(required,/success\|skipped\) ;;/,'only success and skipped results pass');
 });
 
 test('GCP bootstrap keeps the WIF provider display name within the API limit',()=>{
