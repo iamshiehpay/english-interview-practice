@@ -93,14 +93,22 @@ npm run evaluate
 npm run test:browser
 ```
 
-當合併請求（Pull Request）或推送到 `main` 的變更會影響應用程式、映像、評估、基礎設施、工作流程或測試時，GitHub Actions 的 `checks.yml` 會執行：
+每個合併請求（Pull Request）都會執行 GitHub Actions 的 `checks.yml`。其中，Git 歷史機密掃描與工作流程語法檢查每次都執行；變更影響應用程式、映像、評估、基礎設施、工作流程或測試時，還會執行：
 
-- Git 歷史機密掃描與工作流程語法檢查
 - Node.js 回歸測試與離線評估
 - Dockerfile lint、image 弱點掃描與容器 smoke test
 - Terraform 格式與設定驗證
 
-純 README、CONTEXT、AGENTS 或本機 `docs/` 文件變更不會觸發 Cloud Run 部署。
+最後的 `required-checks` 彙總以上結果，是合併到 `main` 唯一必要的檢查。純 README、CONTEXT、AGENTS 或本機 `docs/` 文件變更會略過較耗時的檢查，也不會觸發 Cloud Run 部署。
+
+## 變更流程
+
+`main` 不接受直接推送，所有變更都透過合併請求：
+
+1. 每個工作項目建立一個分支；需要平行開發時可使用 `git worktree`。
+2. 推送分支並建立合併請求，標題使用 Conventional Commits 格式，例如 `feat: Add short mock session`。
+3. `required-checks` 通過後以 squash 方式合併，合併請求標題會成為 `main` 上的 commit 訊息。
+4. 影響上述路徑的合併會再執行一次 `checks.yml`，通過後在正式環境人工核准下部署到 Cloud Run。
 
 ## Cloud Run 隔離環境
 
