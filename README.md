@@ -6,7 +6,7 @@ Adaptive English Interview Coach
 
 [Engineering Case Study](PORTFOLIO.md) · [Run Locally](#本機執行)
 
-這是一套以真實職缺為起點的英文面試練習工具，協助軟體與 AI 求職者從回答、逐句回饋到重點複習，完成一套可追蹤的練習流程。
+這是一套英文面試練習工具，協助軟體與 AI 求職者從回答、逐句回饋到重點複習，完成一套可追蹤的練習流程。
 
 ## 本機操作流程
 
