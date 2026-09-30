@@ -78,14 +78,18 @@ The repository separates engineering correctness from model-quality claims:
 | Supply chain | CI scans Git history for secrets, lints workflows and Docker, scans the image, smoke-tests the container, and validates Terraform. |
 | Deployment | The production workflow builds an immutable image, deploys through Terraform, checks `/api/health`, and can return traffic to the previous revision. |
 
-The current saved Codex evidence passes automatic constraints and bilingual semantic review, but its label comparison passes only **52 of 60** outputs. Eight English-expression ratings fall outside the approved ranges, so the v1.0 quality gate remains **blocked**. The public project is consequently labelled v0.9 and makes no live-model teaching-quality claim. The machine-readable evidence is retained in [`evaluation/results/codex-v3-reviewed.json`](evaluation/results/codex-v3-reviewed.json).
+The latest saved Codex evidence (contract 3.3) passes the automatic constraints for all 60 outputs and the three-repeat stability gate for 80 of 80 case/dimension units. The v1.0 quality gate nevertheless remains **blocked** for two reasons: only **20 of 60** outputs fall within every approved rating range, and the independent AI bilingual review found one case whose English and Traditional Chinese feedback disagree in meaning. Earlier contracts were also blocked on label comparison (3.0: 52 of 60; 3.2: 25 of 60). Labels were drafted separately for each version, and from 3.2 onward they were approved before the feedback run, so these counts are not directly comparable. The public project is consequently labelled v0.9 and makes no live-model teaching-quality claim. The machine-readable evidence is retained in [`evaluation/results/codex-v3-3-reviewed.json`](evaluation/results/codex-v3-3-reviewed.json).
 
 ## Delivery path
 
 ```text
-push to main
+pull request
     ↓
-GitHub Actions checks
+GitHub Actions checks (required-checks must pass)
+    ↓
+squash merge to main
+    ↓
+checks on main
     ↓
 production approval
     ↓
